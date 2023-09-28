@@ -1,4 +1,3 @@
 User-agent: * 
 Disallow: /lecms/
 Disallow: /admin*
-Disallow: /index.php?*
