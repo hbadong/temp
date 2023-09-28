@@ -39,18 +39,26 @@ class my_control extends admin_control {
         $stat['category'] = $this->category->count();
         $stat['comment'] = $this->cms_content_comment->count();
 
-        $models = $this->models->get_models();
-        foreach ($models as $v){
-            if($v['mid'] >1){
-                $this->cms_content->table = 'cms_'.$v['tablename'];
-                if( $_ENV['_config']['admin_lang'] == 'zh-cn' ){
-                    $modelname = $v['name'];
-                }else{
-                    $modelname = ucfirst($v['tablename']);
-                }
-                $stat['content'][$modelname] = $this->cms_content->count();
-            }
+//        $models = $this->models->get_models();
+//        foreach ($models as $v){
+//            if($v['mid'] >1){
+//                $this->cms_content->table = 'cms_'.$v['tablename'];
+//                if( $_ENV['_config']['admin_lang'] == 'zh-cn' ){
+//                    $modelname = $v['name'];
+//                }else{
+//                    $modelname = ucfirst($v['tablename']);
+//                }
+//                $stat['content'][$modelname] = $this->cms_content->count();
+//            }
+//        }
+
+        $this->cms_content->table = 'cms_article';
+        if( $_ENV['_config']['admin_lang'] == 'zh-cn' ){
+            $modelname = '文章';
+        }else{
+            $modelname = 'Article';
         }
+        $stat['content'][$modelname] = $this->cms_content->count();
 
         // hook admin_my_control_index_stat_after.php
 
