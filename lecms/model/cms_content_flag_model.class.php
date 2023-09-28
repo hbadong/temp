@@ -29,6 +29,86 @@ class cms_content_flag extends model {
         return $list_arr;
     }
 
+    //获取模型属性下拉框
+    public function get_flaghtml_mid($mid = 2, $str = ''){
+        $tmp = $this->models->find_fetch(array(), array('mid'=>1));
+        $s = '<select name="mid" id="mid" '.$str.'>';
+        if(empty($tmp)) {
+            $s .= '<option value="0">'.lang('no_data').'</option>';
+        }else{
+            foreach($tmp as $v) {
+                if($v['mid'] > 1){
+                    if( $_ENV['_config']['admin_lang'] == 'zh-cn' ){
+                        $modelname = $v['name'];
+                    }else{
+                        $modelname = ucfirst($v['tablename']).' ';
+                    }
+                    $s .= '<option value="'.$v['mid'].'"'.($v['mid'] == $mid ? ' selected="selected"' : '').'>'.$modelname.'</option>';
+                }
+            }
+        }
+        $s .= '</select>';
+        // hook cms_content_flag_model_get_flaghtml_mid_after.php
+        return $s;
+    }
+
+    //属性下拉
+    public function get_flaghtml($flag = 0, $lang = 'zh-cn', $tips = '选择属性'){
+	    if($lang == 'zh-cn'){
+            $tmp = $this->cms_content->flag_arr;
+        }else{
+            $tmp = $this->cms_content->flag_arr_en;
+        }
+        // hook cms_content_flag_model_get_flaghtml_before.php
+        $s = '<select name="flag" id="flag" lay-filter="flag">';
+        if(empty($tmp)) {
+            $s .= '<option value="0">'.lang('no_data').'</option>';
+        }else{
+            $s .= '<option value="0">'.$tips.'</option>';
+            foreach($tmp as $k=>$v) {
+                $s .= '<option value="'.$k.'"'.($k == $flag ? ' selected="selected"' : '').'>'.$v.'</option>';
+            }
+        }
+        $s .= '</select>';
+        // hook cms_content_flag_model_get_flaghtml_after.php
+        return $s;
+    }
+
+    //关联删除
+    public function xdelete($table = 'article', $del_flag = 0, $id = 0){
+        if(empty($del_flag) || empty($id)){return lang('data_error');}
+        // hook cms_content_flag_model_xdelete_before.php
+
+        $this->table = 'cms_'.$table.'_flag';
+        $this->cms_content->table = 'cms_'.$table;
+
+        $cms_data = $this->cms_content->get($id);
+        if( $cms_data ){
+            $r = $this->delete($del_flag, $id);
+            if($r){
+                $flag_arr = explode(',', $cms_data['flags']);
+                $is_exists = 0;
+                foreach ($flag_arr as $k=>$flag){
+                    if($flag == $del_flag){
+                        unset($flag_arr[$k]);
+                        $is_exists = 1;
+                        break;
+                    }
+                }
+                if($is_exists){
+                    $cms_data['flags'] = implode(',', $flag_arr);
+                    $this->cms_content->update($cms_data);
+                }
+                return '';
+            }else{
+                return lang('delete_failed');
+            }
+        }else{
+            $this->delete($del_flag, $id);
+            return '';
+        }
+    }
+
     //设置属性（保留旧的）
     public function xflags($table = 'article', $id = 0, $cid = 0, $flags = array()){
         if(empty($id) || empty($cid)){return false;}

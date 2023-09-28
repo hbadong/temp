@@ -203,6 +203,7 @@ class admin_control extends control {
 
         $menu['menuInfo']['content']['child'][] = array('title' => lang('tags_manage'), 'href' => 'index.php?tag-index', 'icon' => 'fa fa-tags', 'target' => '_self');
         $menu['menuInfo']['content']['child'][] = array('title' => lang('comment_manage'), 'href' => 'index.php?comment-index', 'icon' => 'fa fa-comment-o', 'target' => '_self');
+        $menu['menuInfo']['content']['child'][] = array('title' => lang('flag_manage'), 'href' => 'index.php?flags-index', 'icon' => 'fa fa-flag', 'target' => '_self');
         $menu['menuInfo']['content']['child'][] = array('title' => lang('attach_manage'), 'href' => 'index.php?attach_manage-index', 'icon' => 'fa fa-file', 'target' => '_self');
         $menu['menuInfo']['content']['child'][] = array('title' => lang('model_manage'), 'href' => 'index.php?models-index', 'icon' => 'fa fa-cube', 'target' => '_self');
 

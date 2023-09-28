@@ -40,6 +40,7 @@ return array(
     'close_views_tips'=>'Turn off content view updates, recommended for high concurrency sites to enable',
     'set_flags'=>'Flags',
     'flags'=>'Flags',
+    'flag_manage'=>'Flag Content',
     'auto_pic'=>'Auto Pic',
     'auto_pic_tips'=>'Automatically extract images from the content as pic when no pic are uploaded',
 

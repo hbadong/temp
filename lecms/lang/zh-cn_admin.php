@@ -40,6 +40,7 @@ return array(
     'close_views_tips'=>'关闭内容浏览量实时更新，不再更新浏览量，对于高并发或不需要显示浏览量的网站，可以启用',
     'set_flags'=>'设置属性',
     'flags'=>'属性',
+    'flag_manage'=>'属性内容',
     'auto_pic'=>'自动缩略图',
     'auto_pic_tips'=>'发布内容时，未上传缩略图，自动提取内容里面的图片',
 
