@@ -66,21 +66,22 @@ class cms_content_comment extends model {
     }
 
     //获取模型评论下拉框
-    public function get_commenthtml_mid($mid = 2, $str = ''){
+    public function get_commenthtml_mid($mid = 2, $str = '', $mid1 = 0){
         $tmp = $this->models->find_fetch(array(), array('mid'=>1));
         $s = '<select name="mid" id="mid" '.$str.'>';
         if(empty($tmp)) {
             $s .= '<option value="0">'.lang('no_data').'</option>';
         }else{
             foreach($tmp as $v) {
-                if($v['mid'] > 1){
-                    if( $_ENV['_config']['admin_lang'] == 'zh-cn' ){
-                        $modelname = $v['name'];
-                    }else{
-                        $modelname = ucfirst($v['tablename']).' ';
-                    }
-                    $s .= '<option value="'.$v['mid'].'"'.($v['mid'] == $mid ? ' selected="selected"' : '').'>'.$modelname.lang('comment').'</option>';
+                if($mid1 == 0 && $v['mid'] == 1){
+                    continue;
                 }
+                if( $_ENV['_config']['admin_lang'] == 'zh-cn' ){
+                    $modelname = $v['name'];
+                }else{
+                    $modelname = ucfirst($v['tablename']).' ';
+                }
+                $s .= '<option value="'.$v['mid'].'"'.($v['mid'] == $mid ? ' selected="selected"' : '').'>'.$modelname.lang('comment').'</option>';
             }
         }
         $s .= '</select>';

@@ -27,23 +27,28 @@ function block_global_comment($conf) {
     $extra = array('block_name'=>'block_global_comment');
     // hook block_global_comment_conf_after.php
 
-	$id = &$_show['id'];
 	$mid = &$run->_var['mid'];
 
-	// 排除单页模型
-	if($mid == 1) return FALSE;
+	if($mid == 1){
+        $id = &$_show['cid'];
+        // 格式化
+        $run->category->format($run->_var);
 
-	// 格式化
-	$run->cms_content->format($_show, $mid, $dateformat);
+        $_show['comments'] = $run->cms_content_comment->find_count(array('mid'=>1, 'id'=>$run->_var['cid']));
+    }else{
+        $id = &$_show['id'];
+        // 格式化
+        $run->cms_content->format($_show, $mid, $dateformat);
+    }
 
-	// 分页相关
-	$total = &$_show['comments'];
-	$maxpage = max(1, ceil($total/$pagenum));
+    // 分页相关
+    $total = &$_show['comments'];
+    $maxpage = max(1, ceil($total/$pagenum));
     if($showmaxpage && $maxpage > $showmaxpage){
         $maxpage = $showmaxpage;
     }
-	$page = min($maxpage, max(1, (int) R('page')));
-	$_show['pages'] = paginator::$page_function($page, $maxpage, $run->cms_content->comment_url($run->_var['cid'], $id, TRUE), $pageoffset);
+    $page = min($maxpage, max(1, (int) R('page')));
+    $_show['pages'] = paginator::$page_function($page, $maxpage, $run->cms_content->comment_url($run->_var['cid'], $id, TRUE), $pageoffset);
 
     // hook block_global_comment_list_arr_before.php
 

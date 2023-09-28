@@ -16,40 +16,65 @@ class comment_control extends base_control{
 		$_GET['id'] = (int)R('id');
 		$this->_var = $this->category->get_cache($_GET['cid']);
 
-		//分类不存在或者为单页模型
-		if(empty($this->_var) || $this->_var['mid'] == 1){
+		//分类不存在
+		if(empty($this->_var)){
             core::error404();
         }
 
-		// 初始模型表名
-		$this->cms_content->table = 'cms_'.$this->_var['table'];
-
-		// 读取内容
-		$_show = $this->cms_content->read($_GET['id']);
-		if(empty($_show['cid']) || $_show['cid'] != $_GET['cid']) core::error404();
-
-        // hook comment_control_index_seo_before.php
-
-		// SEO 相关
-        if( empty($_show['seo_title']) ){
-            if( empty($this->_var['seo_title']) ){
-                $this->_cfg['titles'] = $_show['title'].'-'.$this->_var['name'].'-'.$this->_cfg['webname'];
-            }else{
-                $this->_cfg['titles'] = $_show['title'].'-'.$this->_var['seo_title'].'-'.$this->_cfg['webname'];
+		if($this->_var['mid'] == 1){
+            // 读取单页分类内容
+            $cms_page = $this->cms_page->read($_GET['cid']);
+            if( empty($cms_page) ){
+                core::error404();
             }
-        }else{
-            $this->_cfg['titles'] = $_show['seo_title'].'-'.$this->_cfg['webname'];
-        }
-        if( empty($_show['seo_keywords']) ){
-            if( empty($this->_var['seo_keywords']) ){
-                $this->_cfg['seo_keywords'] = $this->_cfg['webname'].','.$this->_var['name'].','.$_show['title'];
+            $_show = $this->_var;
+            $_show['title'] = $this->_var['name'];
+            $_show['intro'] = utf8::cutstr_cn($cms_page['content'], 200);
+            // hook comment_control_index_seo_before.php
+
+            // SEO 相关
+            if( empty($_show['seo_title']) ){
+                $this->_cfg['titles'] = $_show['name'].'-'.$this->_cfg['webname'];
             }else{
-                $this->_cfg['seo_keywords'] = $this->_cfg['webname'].','.$this->_var['seo_keywords'].','.$_show['title'];
+                $this->_cfg['titles'] = $_show['seo_title'].'-'.$this->_cfg['webname'];
             }
+            if( empty($_show['seo_keywords']) ){
+                $this->_cfg['seo_keywords'] = $_show['name'].','.$this->_cfg['webname'];
+            }else{
+                $this->_cfg['seo_keywords'] = $_show['seo_keywords'].','.$this->_cfg['webname'];
+            }
+            $this->_cfg['seo_description'] = empty($_show['seo_description']) ? $this->_cfg['webname'].'：'.$_show['name']: $_show['seo_description'];
         }else{
-            $this->_cfg['seo_keywords'] = $_show['seo_keywords'].','.$this->_var['name'].','.$this->_cfg['webname'];
+            // 初始模型表名
+            $this->cms_content->table = 'cms_'.$this->_var['table'];
+
+            // 读取内容
+            $_show = $this->cms_content->read($_GET['id']);
+            if(empty($_show['cid']) || $_show['cid'] != $_GET['cid']) core::error404();
+
+            // hook comment_control_index_seo_before.php
+
+            // SEO 相关
+            if( empty($_show['seo_title']) ){
+                if( empty($this->_var['seo_title']) ){
+                    $this->_cfg['titles'] = $_show['title'].'-'.$this->_var['name'].'-'.$this->_cfg['webname'];
+                }else{
+                    $this->_cfg['titles'] = $_show['title'].'-'.$this->_var['seo_title'].'-'.$this->_cfg['webname'];
+                }
+            }else{
+                $this->_cfg['titles'] = $_show['seo_title'].'-'.$this->_cfg['webname'];
+            }
+            if( empty($_show['seo_keywords']) ){
+                if( empty($this->_var['seo_keywords']) ){
+                    $this->_cfg['seo_keywords'] = $this->_cfg['webname'].','.$this->_var['name'].','.$_show['title'];
+                }else{
+                    $this->_cfg['seo_keywords'] = $this->_cfg['webname'].','.$this->_var['seo_keywords'].','.$_show['title'];
+                }
+            }else{
+                $this->_cfg['seo_keywords'] = $_show['seo_keywords'].','.$this->_var['name'].','.$this->_cfg['webname'];
+            }
+            $this->_cfg['seo_description'] = empty($_show['seo_description']) ? $this->_cfg['webname'].'：'.$_show['intro']: $_show['seo_description'];
         }
-        $this->_cfg['seo_description'] = empty($_show['seo_description']) ? $this->_cfg['webname'].'：'.$_show['intro']: $_show['seo_description'];
 
         $page = (int)R('page','G');
         if( $page > 1 ){

@@ -9,8 +9,8 @@ class comment_control extends admin_control {
     function __construct(){
         parent::__construct();
 
-        $this->_mid = max(2, (int)R('mid','R'));
-        if($this->_mid > 2){
+        $this->_mid = max(1, (int)R('mid','R'));
+        if($this->_mid != 2){
             $models = $this->models->get($this->_mid);
             empty($models) && $this->message(1, lang('data_error'));
 
@@ -37,7 +37,7 @@ class comment_control extends admin_control {
 	public function index() {
 		// hook admin_comment_control_index_before.php
 
-        $midhtml = $this->cms_content_comment->get_commenthtml_mid($this->_mid, 'lay-filter="mid"');
+        $midhtml = $this->cms_content_comment->get_commenthtml_mid($this->_mid, 'lay-filter="mid"', 1);
         $this->assign('midhtml',$midhtml);
         // hook admin_comment_control_index_after.php
 		$this->display();
@@ -85,23 +85,44 @@ class comment_control extends admin_control {
         foreach($cms_arr as $v) {
             $keys[] = $v['id'];
         }
-        $this->cms_content->table = 'cms_'.$this->_table;
-        $list_arr = $this->cms_content->mget($keys);
 
-        foreach($cms_arr as &$v) {
-            $this->cms_content_comment->format($v, 'Y-m-d H:i', false);
+        if($this->_mid > 1){
+            $this->cms_content->table = 'cms_'.$this->_table;
+            $list_arr = $this->cms_content->mget($keys);
 
-            $key = 'cms_'.$this->_table.'-id-'.$v['id'];
-            if(isset($list_arr[$key])){
-                $v['title'] = $list_arr[$key]['title'];
-                $v['url'] = $this->cms_content->comment_url($list_arr[$key]['cid'], $list_arr[$key]['id']);
-            }else{
-                $v['title'] = lang('unknown');
-                $v['url'] = '';
+            foreach($cms_arr as &$v) {
+                $this->cms_content_comment->format($v, 'Y-m-d H:i', false);
+
+                $key = 'cms_'.$this->_table.'-id-'.$v['id'];
+                if(isset($list_arr[$key])){
+                    $v['title'] = $list_arr[$key]['title'];
+                    $v['url'] = $this->cms_content->comment_url($list_arr[$key]['cid'], $list_arr[$key]['id']);
+                }else{
+                    $v['title'] = lang('unknown');
+                    $v['url'] = '';
+                }
+
+                $data_arr[] = $v;   //排序需要索引从0开始
             }
+        }else{
+            $list_arr = $this->category->mget($keys);
 
-            $data_arr[] = $v;   //排序需要索引从0开始
+            foreach($cms_arr as &$v) {
+                $this->cms_content_comment->format($v, 'Y-m-d H:i', false);
+
+                $key = 'category-cid-'.$v['id'];
+                if(isset($list_arr[$key])){
+                    $v['title'] = $list_arr[$key]['name'];
+                    $v['url'] = $this->cms_content->comment_url($list_arr[$key]['cid'], $list_arr[$key]['cid']);
+                }else{
+                    $v['title'] = lang('unknown');
+                    $v['url'] = '';
+                }
+
+                $data_arr[] = $v;   //排序需要索引从0开始
+            }
         }
+
         unset($cms_arr);
         // hook admin_comment_control_get_list_data_arr_after.php
 
