@@ -93,13 +93,18 @@ class cms_content_comment extends model {
 	public function xdelete($table = 'article', $commentid = 0) {
 		// hook cms_content_comment_model_xdelete_before.php
 
-		$this->cms_content->table = 'cms_'.$table;
-
         $comments = $this->get($commentid);
         if(empty($comments)){
             return lang('data_no_exists');
         }
 
+        //单页评论，无内容关联
+        if($table == 'page'){
+            return $this->delete($commentid) ? '' : lang('delete_failed');
+        }
+
+        $this->cms_content->table = 'cms_'.$table;
+        
 		// 更新内容评论数
 		$data = $this->cms_content->read($comments['id']);
 		if($data && $data['comments'] > 0) {
