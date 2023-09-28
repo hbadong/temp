@@ -434,6 +434,17 @@ class parseurl_control extends control{
                             return true;
                         }
                     }
+					// hook parseurl_control_content_url_switch_7_mat_after.php
+
+                    // 比如article/id.html，只能一个文章模型（多模型的不行，没法区分id属于那个模型的），因此丢到最后
+                    if ( isset($mat['id']) && $this->integer_check($mat['id']) ){
+                        $u_arr = explode('/', $uri);
+                        if( substr($cfg['link_show'], 0, strlen($u_arr[0])) == $u_arr[0] ){
+                            $_GET['mid'] = 2;
+                            $_GET['id'] = $mat['id'];
+                            return true;
+                        }
+                    }
                 }
                 // hook parseurl_control_content_url_switch_7_after.php
                 break;
