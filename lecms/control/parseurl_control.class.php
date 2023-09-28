@@ -661,7 +661,10 @@ class parseurl_control extends control{
             return true;
         }
         //全部标签
-        if(substr($uri, 0, 8) == 'tag_all/'){
+        if(substr($uri, 0, 8) == 'tag_all/' || substr($uri, 0, 7) == 'tag_all'){
+            if(substr($uri, -1) != '/'){
+                http_location($cfg['weburl'].$uri.'/', '301');
+            }
             $_GET['control'] = 'tag';
             $_GET['action'] = 'all';
             $newurl = substr($uri, 8, -1);
