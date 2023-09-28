@@ -409,7 +409,9 @@ class parseurl_control extends control{
                         $_GET['id'] = $mat['id'];
                         return true;
                     }elseif( isset($mat['cate_alias']) && isset($mat['id']) ) { // {cate_alias} {id} 合组
-                        $_GET['cid'] = $cate_arr[$mat['cate_alias']];
+						$_GET['cid'] = isset($cate_arr[$mat['cate_alias']]) ? $cate_arr[$mat['cate_alias']] : 0;
+                        empty($_GET['cid']) && core::error404();
+						
                         $_GET['id'] = $mat['id'];
                         return true;
                     }elseif( isset($mat['password']) ) { // {password}
