@@ -4,20 +4,13 @@
 LECMS网站管理系统，PHP & MYSQL架构，基于xiunoPHP框架开发的千万级大数据网站内容管理系统。
 
 #### 软件架构
-软件架构说明
+PHP & MYSQL架构、基于xiunophp框架开发
 
+#### 特别感谢
 
-#### 安装教程
-
-1.  xxxx
-2.  xxxx
-3.  xxxx
-
-#### 使用说明
-
-1.  xxxx
-2.  xxxx
-3.  xxxx
+1.  xiunophp
+2.  layui
+3.  layuimini
 
 #### 参与贡献
 
