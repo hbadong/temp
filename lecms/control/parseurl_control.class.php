@@ -409,9 +409,9 @@ class parseurl_control extends control{
                         $_GET['id'] = $mat['id'];
                         return true;
                     }elseif( isset($mat['cate_alias']) && isset($mat['id']) ) { // {cate_alias} {id} 合组
-						$_GET['cid'] = isset($cate_arr[$mat['cate_alias']]) ? $cate_arr[$mat['cate_alias']] : 0;
+                        $_GET['cid'] = isset($cate_arr[$mat['cate_alias']]) ? $cate_arr[$mat['cate_alias']] : 0;
                         empty($_GET['cid']) && core::error404();
-						
+
                         $_GET['id'] = $mat['id'];
                         return true;
                     }elseif( isset($mat['password']) ) { // {password}
@@ -436,7 +436,7 @@ class parseurl_control extends control{
                             return true;
                         }
                     }
-					// hook parseurl_control_content_url_switch_7_mat_after.php
+                    // hook parseurl_control_content_url_switch_7_mat_after.php
 
                     // 比如article/id.html，只能一个文章模型（多模型的不行，没法区分id属于那个模型的），因此丢到最后
                     if ( isset($mat['id']) && $this->integer_check($mat['id']) ){
@@ -678,6 +678,14 @@ class parseurl_control extends control{
             if(substr($uri, -1) != '/'){
                 http_location($cfg['weburl'].$uri.'/', '301');
             }
+
+            $u_arr = explode('/', $uri);
+            if($u_arr[0] != 'tag_all'){
+                core::error404();
+            }else{
+                unset($u_arr);
+            }
+
             $_GET['control'] = 'tag';
             $_GET['action'] = 'all';
             $newurl = substr($uri, 8, -1);
