@@ -1,0 +1,47 @@
+LECMS
+	|--admin 后台管理文件目录，建议修改文件夹名，访问：域名/admin
+	|--install  程序安装文件目录，安装后建议删除该文件夹。
+	|--lecms  程序核心文件目录。
+		|--block 模板标签文件目录
+		|--config 程序数据库配置和插件配置文件目录
+		|--control 程序前台控制器文件目录
+		|--xiunophp 程序框架文件目录
+		|--model 程序数据库model文件目录
+		|--plugin 程序插件文件夹
+	|--log 程序日志文件目录
+	|--runcache 程序运行缓存文件目录
+	|--static 程序静态资源文件目录
+	|--upload 程序上传图片与附件文件目录。
+	|--view 程序前台模板文件目录。
+
+模板文件说明
+inc-header.htm	共用头部模板
+inc-footer.htm	共用底部模板
+index.htm		首页模板
+article_index.htm	文章频道页模板
+article_list.htm	文章列表页模板
+article_show.htm	文章内容页模板
+page_show.htm	单页分类模板
+search.htm	搜索结果页模板
+tag_list.htm	标签内容列表分页模板
+tag_top.htm	热门标签模板
+comment.htm	评论页模板（后台-评论管理-点击查看）
+tag_all.htm	全部标签分页模板
+404.htm		404错误页模板
+flags.htm		属性内容分页模板（程序3.0.1+，用的少）
+space.htm		用户信息和用户内容分页模板（程序3.0.1+，用的少）
+close_website.htm	关闭站点，提示模板（程序3.0.2+）
+
+用户中心（user文件夹）
+user/login.htm		登录页模板
+user/register.htm		注册页模板
+user/forget_password.htm	忘记密码模板
+user/reset_password.htm	重置密码模板
+user/my_index.htm		用户中心首页模板
+user/my_password.htm	修改密码模板
+user/my_profile.htm		修改用户信息模板
+user/my_contents.htm	用户已发布内容模板
+user/my_comments.htm	用户已发布评论模板
+user/inc-menu.htm		用户中心菜单模板
+user/user_all.htm		用户分页模板（程序3.0.1+，用的少）
+

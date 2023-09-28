@@ -1,0 +1,146 @@
+{inc:user/header.htm}
+<style>
+  .profile-avatar-container {
+    position:relative;
+    width:100px;
+  }
+  .profile-avatar-container .profile-user-img{
+    width:100px;
+    height:100px;
+  }
+  .profile-avatar-container .profile-avatar-text {
+    display:none;
+  }
+  .profile-avatar-container:hover .profile-avatar-text {
+    display:block;
+    position:absolute;
+    height:100px;
+    width:100px;
+    background:#444;
+    opacity: .6;
+    color: #fff;
+    top:0;
+    left:0;
+    line-height: 100px;
+    text-align: center;
+  }
+  .profile-avatar-container button{
+    position:absolute;
+    top:0;left:0;width:100px;height:100px;opacity: 0;
+  }
+  .layui-upload-file,input[type="file"]{display: none;}
+</style>
+  <main class="content">
+    <div id="content-container" class="container">
+      <div class="row">
+        {inc:user/menu.htm}
+        <!--右侧主体部分 start-->
+        <div class="col-md-9">
+          <div class="panel panel-default">
+            <div class="panel-body">
+              <h2 class="page-header">{lang:my_profile}</h2>
+              <div class="row">
+                <form id="profile-form" class="form-horizontal layui-form" action="index.php?my-profile-ajax-1.html" method="post">
+                  <div class="form-group">
+                    <label class="control-label col-xs-12 col-sm-2">{lang:avatar}</label>
+                    <div class="col-xs-12 col-sm-4">
+                      <div class="profile-avatar-container">
+                        <img class="profile-user-img img-responsive img-circle" id="avatar" src="{$_user[avatar]}?v=1.0" alt="{lang:avatar}">
+                        <div class="profile-avatar-text img-circle">{lang:edit}</div>
+                        <button type="button" id="faupload-avatar" class="faupload dz-clickable" data-mimetype="png,jpg,jpeg,gif" data-input-id="c-avatar" initialized="true"><i class="fa fa-upload dz-message"></i> {lang:upload_pic}</button>
+                      </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-6">{lang:avatar_tips}</div>
+                  </div>
+                  <div class="form-group">
+                    <label for="author" class="col-sm-2 control-label">{lang:author}</label>
+                    <div class="col-sm-10">
+                      <input class="form-control" id="author" type="text" name="author" maxlength="20" value="{$_user[author]}" placeholder="{lang:author}" autocomplete="off">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="email" class="col-sm-2 control-label">{lang:email}</label>
+                    <div class="col-sm-10">
+                      <input class="form-control" id="email" type="text" name="email" maxlength="40" value="{$_user[email]}" placeholder="{lang:email}" autocomplete="off">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="mobile" class="col-sm-2 control-label">{lang:mobile}</label>
+                    <div class="col-sm-10">
+                      <input class="form-control" id="mobile" type="text" name="mobile" maxlength="20" value="{$_user[mobile]}" placeholder="{lang:mobile}" autocomplete="off">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="homepage" class="col-sm-2 control-label">{lang:homepage}</label>
+                    <div class="col-sm-10">
+                      <input class="form-control" id="homepage" type="text" name="homepage" maxlength="255" value="{$_user[homepage]}" placeholder="{lang:homepage}" autocomplete="off">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="intro" class="col-sm-2 control-label">{lang:intro}</label>
+                    <div class="col-sm-10">
+                      <input class="form-control" id="intro" type="text" name="intro" maxlength="255" value="{$_user[intro]}" placeholder="{lang:intro}" autocomplete="off">
+                    </div>
+                  </div>
+                  {hook:user_my_profile_after.htm}
+                  <div class="form-group normal-footer">
+                    <label class="control-label col-xs-12 col-sm-2"></label>
+                    <div class="col-xs-12 col-sm-8">
+                      <button type="submit" class="btn btn-primary btn-embossed" lay-submit lay-filter="form">{lang:submit}</button>
+                      <button type="reset" class="btn btn-default btn-embossed">{lang:reset}</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--右侧主体部分 end-->
+      </div>
+    </div>
+  </main>
+{inc:user/footer.htm}
+<script type="text/javascript">
+  layui.use(['form','layer', 'upload'], function () {
+    var form = layui.form, layer = layui.layer, $ = layui.$, upload = layui.upload;
+
+    $("#my-profile").addClass("active");
+
+    //头像上传
+    upload.render({
+      elem: '#faupload-avatar'
+      ,url: 'index.php?my-upload_avatar'
+      ,field:'upfile'
+      ,accept: 'images'
+      ,acceptMime:'image/*'
+      ,done: function(res){
+        if(res.err == 1){
+          layer.msg(res.msg, {icon: 5});
+        }else{
+          $("#avatar").attr("src", "../"+res.data.src+'?r='+Math.random());
+          layer.msg('{lang:upload_successfully}', {icon: 1});
+        }
+      }
+      ,error: function(){
+        layer.msg('{lang:request_exception}',{icon: 5});
+      }
+    });
+
+    form.on('submit(form)', function (data) {
+      data = data.field;
+      $.post("index.php?my-profile-ajax-1",data,function(res){
+        if(res.status){
+          var icon = 1;
+        }else{
+          var icon = 5;
+        }
+        layer.msg(res.message, {icon: icon});
+        if(res.status) setTimeout(function(){ window.location.reload(); }, 1000);
+        return false;
+      },'json');
+      return false;
+    });
+  });
+</script>
+</body>
+</html>

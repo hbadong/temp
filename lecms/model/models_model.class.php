@@ -1,0 +1,276 @@
+<?php
+defined('ROOT_PATH') or exit;
+
+class models extends model {
+	private $data = array();		// 防止重复查询
+
+	function __construct() {
+		$this->table = 'models';	// 表名
+		$this->pri = array('mid');	// 主键
+		$this->maxid = 'mid';		// 自增字段
+	}
+
+	// 获取所有模型
+	public function get_models() {
+		if(isset($this->data['models'])) {
+			return $this->data['models'];
+		}
+		return $this->data['models'] = $this->find_fetch();
+	}
+
+	// 获取所有模型的名称
+	public function get_name() {
+		if(isset($this->data['name'])) {
+			return $this->data['name'];
+		}
+
+		$models_arr = $this->get_models();
+		$arr = array();
+		foreach ($models_arr as $v) {
+			$arr[$v['mid']] = $v['name'];
+		}
+		return $this->data['name'] = $arr;
+	}
+
+	// 获取所有模型的表名
+	public function get_table_arr() {
+		if(isset($this->data['table_arr'])) {
+			return $this->data['table_arr'];
+		}
+
+		$models_arr = $this->get_models();
+		//unset($models_arr[1]);
+		$arr = array();
+		foreach ($models_arr as $v) {
+			$arr[$v['mid']] = $v['tablename'];
+		}
+		return $this->data['table_arr'] = $arr;
+	}
+
+	// 根据 mid 获取模型的表名
+	public function get_table($mid) {
+		$data = $this->get($mid);
+		return isset($data['tablename']) ? $data['tablename'] : 'article';
+	}
+
+    //模型下拉框列表（不含单页）
+    public function get_models_html($mid = 2, $s = ''){
+        $models = $this->get_models();
+        $select = '<select name="mid" id="mid" '.$s.'>';
+
+        foreach ($models as $v){
+            if($v['mid'] > 1){
+                if( $_ENV['_config']['admin_lang'] == 'zh-cn' ){
+                    $modelname = $v['name'];
+                }else{
+                    $modelname = ucfirst($v['tablename']);
+                }
+                $select .= '<option value="'.$v['mid'].'"'.($v['mid'] == $mid ? ' selected="selected"' : '').'>'.$modelname.'</option>';
+            }
+        }
+        $select .= '</select>';
+        // hook models_model_get_models_html_after.php
+        return $select;
+    }
+
+	//添加模型
+    public function xadd($data = array()){
+        // hook models_model_xadd_before.php
+	    //数据检查
+	    foreach ($data as $k=>$v){
+	        if(empty($v)){
+	            return lang('all_no_empty');
+            }
+        }
+	    //合法性检查
+        if($data['index_tpl'] == $data['cate_tpl'] || $data['index_tpl'] == $data['show_tpl'] || $data['cate_tpl'] == $data['show_tpl'] ){
+            return lang('tpl_tips');
+        }
+
+        $mid = $this->create($data);
+        if(!$mid){
+            return lang('write_table_failed');
+        }
+        // hook models_model_xadd_create_after.php
+
+        //创建模型相关表
+        $table = $data['tablename'];
+        $tableprefix = $_ENV['_config']['db']['master']['tablepre'];	//表前缀
+        $table_cms = $tableprefix.'cms_'.$table;
+        $table_cms_attach = $tableprefix.'cms_'.$table.'_attach';
+        $table_cms_data = $tableprefix.'cms_'.$table.'_data';
+        $table_cms_flag = $tableprefix.'cms_'.$table.'_flag';
+        $table_cms_tag = $tableprefix.'cms_'.$table.'_tag';
+        $table_cms_tag_data = $tableprefix.'cms_'.$table.'_tag_data';
+        $table_cms_views = $tableprefix.'cms_'.$table.'_views';
+
+        $sql_table = "CREATE TABLE IF NOT EXISTS {$table_cms} (
+          id int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '内容ID',
+          cid int(10) unsigned NOT NULL DEFAULT '0' COMMENT '分类ID',
+          title varchar(80) NOT NULL DEFAULT '' COMMENT '标题',
+          alias varchar(50) NOT NULL DEFAULT '' COMMENT 'URL别名',
+          tags varchar(500) NOT NULL DEFAULT '' COMMENT '标签 (json数组)',
+          intro varchar(255) NOT NULL DEFAULT '' COMMENT '内容介绍',
+          pic varchar(255) NOT NULL DEFAULT '' COMMENT '图片地址',
+          uid int(10) unsigned NOT NULL DEFAULT '0' COMMENT '用户ID',
+          author varchar(20) NOT NULL DEFAULT '' COMMENT '作者(昵称)',
+          source varchar(100) NOT NULL DEFAULT '' COMMENT '来源',
+          dateline int(10) unsigned NOT NULL DEFAULT '0' COMMENT '发表时间',
+          lasttime int(10) unsigned NOT NULL DEFAULT '0' COMMENT '更新时间',
+          ip int(10) NOT NULL DEFAULT '0' COMMENT 'IP',
+          imagenum smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT '图片附件数',
+          filenum smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT '文件附件数',
+          iscomment tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '禁止评论',
+          comments int(10) unsigned NOT NULL DEFAULT '0' COMMENT '评论数',
+          flags varchar(20) NOT NULL DEFAULT '' COMMENT '所有属性 ,分割',
+          seo_title varchar(100) NOT NULL DEFAULT '' COMMENT 'SEO标题',
+          seo_keywords varchar(200) NOT NULL DEFAULT '' COMMENT 'SEO关键词',
+          seo_description varchar(255) NOT NULL DEFAULT '' COMMENT 'SEO描述',
+          jumpurl varchar(255) NOT NULL DEFAULT '' COMMENT '跳转URL',
+          PRIMARY KEY  (id),
+          KEY cid_id (cid,id),
+          KEY cid_dateline (cid,dateline)
+        ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;";
+        $this->db->query($sql_table);
+
+        $sql_table = "CREATE TABLE IF NOT EXISTS {$table_cms_attach} (
+          aid int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '附件ID',
+          cid int(10) unsigned NOT NULL DEFAULT '0' COMMENT '分类ID',
+          uid int(10) unsigned NOT NULL DEFAULT '0' COMMENT '用户ID',
+          id int(10) unsigned NOT NULL DEFAULT '0' COMMENT '内容ID',
+          filename char(80) NOT NULL DEFAULT '' COMMENT '文件原名',
+          filetype char(10) NOT NULL DEFAULT '' COMMENT '文件后缀',
+          filesize int(10) unsigned NOT NULL DEFAULT '0' COMMENT '文件大小',
+          filepath varchar(200) NOT NULL DEFAULT '' COMMENT '文件路径',
+          dateline int(10) unsigned NOT NULL DEFAULT '0' COMMENT '上传时间',
+          downloads int(10) unsigned NOT NULL DEFAULT '0' COMMENT '下载次数',
+          credits int(10) unsigned NOT NULL DEFAULT '0' COMMENT '下载需要积分',
+          golds int(10) unsigned NOT NULL DEFAULT '0' COMMENT '下载需要金币',
+          isimage tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否是图片',
+          PRIMARY KEY (aid),
+          KEY id (id, aid),
+          KEY uid (uid, aid)
+        ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci";
+        $this->db->query($sql_table);
+
+        $sql_table = "CREATE TABLE IF NOT EXISTS {$table_cms_data} (
+          id int(10) unsigned NOT NULL DEFAULT '0' COMMENT '内容ID',
+          content mediumtext NOT NULL COMMENT '内容',
+          PRIMARY KEY  (id)
+        ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci";
+        $this->db->query($sql_table);
+
+        $sql_table = "CREATE TABLE IF NOT EXISTS {$table_cms_flag} (
+          flag tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '属性标记',
+          cid int(10) unsigned NOT NULL DEFAULT '0' COMMENT '分类ID',
+          id int(10) unsigned NOT NULL DEFAULT '0' COMMENT '内容ID',
+          PRIMARY KEY  (flag,id),
+          KEY flag_cid (flag,cid,id),
+          KEY id (id)
+        ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci";
+        $this->db->query($sql_table);
+
+        $sql_table = "CREATE TABLE IF NOT EXISTS {$table_cms_tag} (
+          tagid int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '标签ID',
+          `name` varchar(80) NOT NULL DEFAULT '' COMMENT '标签名',
+          `count` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '标签内容数量',
+          content varchar(255) NOT NULL DEFAULT '' COMMENT '标签说明',
+          pic varchar(255) NOT NULL DEFAULT '' COMMENT '标签缩略图',
+          seo_title varchar(100) NOT NULL DEFAULT '' COMMENT 'SEO标题',
+          seo_keywords varchar(200) NOT NULL DEFAULT '' COMMENT 'SEO关键词',
+          seo_description varchar(255) NOT NULL DEFAULT '' COMMENT 'SEO描述',
+          orderby int(10) NOT NULL DEFAULT '0' COMMENT '排序值',
+          PRIMARY KEY  (tagid),
+          UNIQUE KEY tagname (`name`),
+          KEY content_count (`count`)
+        ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci";
+        $this->db->query($sql_table);
+
+        $sql_table = "CREATE TABLE IF NOT EXISTS {$table_cms_tag_data} (
+          tagid int(10) unsigned NOT NULL COMMENT '标签ID',
+          id int(10) unsigned NOT NULL DEFAULT '0' COMMENT '内容ID',
+          PRIMARY KEY  (tagid,id)
+        ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci";
+        $this->db->query($sql_table);
+
+        $sql_table = "CREATE TABLE IF NOT EXISTS {$table_cms_views} (
+          id int(10) unsigned NOT NULL DEFAULT '0' COMMENT '内容ID',
+          cid int(10) unsigned NOT NULL DEFAULT '0' COMMENT '分类ID',
+          views int(10) unsigned NOT NULL DEFAULT '0' COMMENT '查看次数',
+          PRIMARY KEY  (id),
+          KEY cid (cid,views),
+          KEY views (views)
+        ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci";
+        $this->db->query($sql_table);
+
+        // hook models_model_xadd_after.php
+
+        return '';
+    }
+
+    //删除模型
+    public function xdelete($mid = 0){
+        // hook models_model_xdelete_before.php
+        // 内容读取
+        $data = $this->read($mid);
+        if(empty($data)) return lang('data_no_exists');
+        if( $data['system'] ) return lang('system_model_no_delete');
+
+        $ret = $this->delete($mid);
+        if($ret){
+            // hook models_model_xdelete_success.php
+
+            $table = $data['tablename'];
+            $tableprefix = $_ENV['_config']['db']['master']['tablepre'];	//表前缀
+            $table_cms = $tableprefix.'cms_'.$table;
+            $table_cms_attach = $tableprefix.'cms_'.$table.'_attach';
+            $table_cms_data = $tableprefix.'cms_'.$table.'_data';
+            $table_cms_flag = $tableprefix.'cms_'.$table.'_flag';
+            $table_cms_tag = $tableprefix.'cms_'.$table.'_tag';
+            $table_cms_tag_data = $tableprefix.'cms_'.$table.'_tag_data';
+            $table_cms_views = $tableprefix.'cms_'.$table.'_views';
+
+            //更新用户内容数（如果上万的不同用户，这里效率就很低）
+            $sql = "SELECT uid,count(id) as contents FROM `".$table_cms."` group by uid";
+            $res = $this->db->fetch_all($sql);
+            foreach ($res as $v){
+                $user = $this->user->get($v['uid']);
+                $contents = $user['contents'] > $v['contents'] ? $user['contents'] - $v['contents'] : 0;
+                $user['contents'] = $contents;
+                $this->user->update($user);
+            }
+
+            //删除相关表
+            $sql = "DROP TABLE IF EXISTS ".$table_cms;
+            $this->db->query($sql);
+            $sql = "DROP TABLE IF EXISTS ".$table_cms_attach;
+            $this->db->query($sql);
+            $sql = "DROP TABLE IF EXISTS ".$table_cms_data;
+            $this->db->query($sql);
+            $sql = "DROP TABLE IF EXISTS ".$table_cms_flag;
+            $this->db->query($sql);
+            $sql = "DROP TABLE IF EXISTS ".$table_cms_tag;
+            $this->db->query($sql);
+            $sql = "DROP TABLE IF EXISTS ".$table_cms_tag_data;
+            $this->db->query($sql);
+            $sql = "DROP TABLE IF EXISTS ".$table_cms_views;
+            $this->db->query($sql);
+
+            //删除模型相关分类
+            $this->category->find_delete(array('mid'=>$mid));
+
+            //清除缓存
+            $this->runtime->truncate();
+            $this->db->truncate('framework_count');
+            $this->db->truncate('framework_maxid');
+
+            // hook models_model_xdelete_after.php
+
+            return '';
+        }else{
+            return lang('delete_failed');
+        }
+    }
+
+    // hook models_model_after.php
+}

@@ -1,0 +1,132 @@
+{inc:header.htm}
+<div id="divMain">
+	<section>
+		<div class="container th_margintop">
+			<div class="row">
+				<!--左侧start-->
+				<div class="col-md-9 col-xs-12">
+					<section>
+						<div class="thjingxuan">
+							<div class="thjingxuan_title categorylist"><i></i>
+								<a href="{$cfg[weburl]}" title="{$cfg[webname]}">首页</a>{loop:$cfg_var[place] $v}<span>/</span> <a href="{$v[url]}">{$v[name]}</a>{/loop}
+							</div>
+							{block:global_comment humandate="1" pagenum="10"}
+							<section class="thjingxuan_sec">
+								<h1 class="detail-title">评论：{$gdata[title]}</h1>
+								<div class="detail-zhaiyao">
+									<span style="color:#3297fc;">摘要：</span>{$gdata[intro]}[<a href="{$gdata[url]}" style="color:red">更多>></a>]
+								</div>
+							</section>
+							<div class="comment_list" id="ctf">
+								<p class="posttop" style="border-bottom: 1px solid #eaeaea;"><a name="comment" href="javascript:;"> 评论列表:（<font color="red">{$gdata[comments]}</font> 条评论）</a></p>
+								{loop:$gdata[list] $v}
+								<ul class="msg" id="comment_{$v[commentid]}">
+									<li class="msgname">
+										<img class="avatar" src="{$v[avatar]}" width="32">&nbsp;
+										<span class="commentname">{$v[author]}</span><br><small>&nbsp;发布于&nbsp;{$v[date]}</small>
+									</li>
+									<li class="msgarticle">{$v[content]}</li>
+								</ul>
+								{/loop}
+								{if:$gdata[pages]}
+								<div class="col-md-12 col-xs-12  th_padding">
+									<div class="list-title pagebar">
+										{$gdata[pages]}
+									</div>
+								</div>
+								{/if}
+							</div>
+
+							<!--发布评论start-->
+							<div id="divCommentPost" class="post">
+								<p class="posttop"><a name="comment" href="javascript:;"> 发表评论:</a></p>
+								<form id="ctf_form" action="{$cfg[webdir]}index.php?comment-post-ajax-1.html" method="post">
+									<input type="hidden" name="cid" value="{$gdata[cid]}" />
+									<input type="hidden" name="id" value="{$gdata[id]}" />
+									<p style="margin-top:10px"><input type="text" name="author" id="ctf_author" class="text" value="{$author}" placeholder="昵称" size="28" tabindex="1"></p>
+									{if:$cfg[open_comment_vcode]}
+									<p style="margin-top:10px;margin-left: 0;" class="row">
+										<span class="col-md-4 col-xs-6" style="padding-left: 0;">
+											<input name="vcode" id="ctf_vcode" type="text" class="text" required placeholder="图形验证码" autocomplete="off" />
+										</span>
+										<span class="col-md-4 col-xs-6">
+											<img id="captchaPic" src="{$cfg[webdir]}index.php?comment-vcode" onclick="this.src='{$cfg[webdir]}index.php?comment-vcode-r-'+Math.random();" alt="验证码" />
+										</span>
+									</p>
+									{/if}
+									<p style="margin-top:10px"><textarea name="content" id="ctf_content" maxlength="255" class="text" cols="50" rows="4" tabindex="5" placeholder="文明上网，理性发言" autocomplete="off"></textarea></p>
+									<p><input name="sumbit" type="submit" tabindex="6" value="提交" id="ctf_submit" class="button"></p>
+								</form>
+								<p class="postbottom"></p>
+							</div>
+							<!--发布评论end-->
+							{/block}
+						</div>
+					</section>
+				</div>
+				<!--左侧end-->
+				<div class="col-md-3 col-xs-12 wap_margintop">
+					<div>{inc:about.htm}</div>
+					<!--当前分类最新文章start-->
+					<div class="th_margintop">
+						{block:list limit="8" titlenum="24" dateformat="m-d"}
+						<section>
+							<div class="thleftcon">
+								<div class="thleftbt"><span>最新文章</span></div>
+								<ul class="th-5">
+									{php}$rank = 1;{/php}
+									{loop:$data[list] $v}
+									<li class="post_id_{$v[id]}"><span class="date">{$v[date]}</span><i>{$rank}</i><a href="{$v[url]}" title="{$v[title]}">{$v[subject]}</a></li>
+									{php}$rank++;{/php}
+									{/loop}
+								</ul>
+							</div>
+						</section>
+						{/block}
+					</div>
+					<!--当前分类最新文章end-->
+					<!--当前分类阅读排行榜start-->
+					<div class="th_margintop">
+						{block:list_top orderby="views" limit="8" titlenum="24"}
+						<section>
+							<div class="thleftcon">
+								<div class="thleftbt"><span>阅读排行</span></div>
+								<ul class="th-5">
+									{php}$rank = 1;{/php}
+									{loop:$data[list] $v}
+									<li class="post_id_{$v[id]}"><span class="date">{$v[views]}℃</span><i>{$rank}</i><a href="{$v[url]}" title="{$v[title]}">{$v[subject]}</a></li>
+									{php}$rank++;{/php}
+									{/loop}
+								</ul>
+							</div>
+						</section>
+						{/block}
+					</div>
+					<!--当前分类阅读排行榜end-->
+					<!--热门标签start-->
+					<div class="th_margintop">
+						<section>
+							<div class="thleftcon">
+								<div class="thleftbt"><span>热门标签</span></div>
+								<ul class="th-7">
+									{block:taglist mid="2" limit="30" orderby="count"}
+									{loop:$data[list] $v}
+									<li class="tag_id_{$v[tagid]}"><a title="{$v[name]}" href="{$v[url]}">{$v[name]}</a></li>
+									{/loop}
+									{/block}
+								</ul>
+							</div>
+						</section>
+					</div>
+					<!--热门标签end-->
+				</div>
+			</div>
+		</div>
+	</section>
+</div>
+
+{inc:footer.htm}
+<script type="text/javascript" src="{$cfg[webdir]}static/js/pxmu.min.js"></script>
+</body>
+</html>
+

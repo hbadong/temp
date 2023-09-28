@@ -1,0 +1,123 @@
+<div class="layui-row layui-col-space10">
+	<div class="layui-col-md9">
+		<div class="layui-form-item">
+			<div class="layui-inline">
+				<label class="layui-form-label required">{lang:category}</label>
+				<div class="layui-input-inline">
+					{$cidhtml}
+				</div>
+			</div>
+		</div>
+		{hook:admin_content_set_category_after.htm}
+		<div class="layui-form-item">
+			<label class="layui-form-label required">{lang:title}</label>
+			<div class="layui-input-block">
+				<input type="text" name="title" value="{$data[title]}" maxlength="80" autocomplete="off" placeholder="{lang:title}" class="layui-input" lay-verify="required" lay-reqtext="{lang:title_no_empty}" />
+			</div>
+		</div>
+		{hook:admin_content_set_title_after.htm}
+		<div class="layui-form-item">
+			<label class="layui-form-label">{lang:intro}</label>
+			<div class="layui-input-block">
+				<textarea name="intro" class="layui-textarea" autocomplete="off" placeholder="{lang:intro}" style="min-height: 50px;" maxlength="255">{$data[intro]}</textarea>
+			</div>
+		</div>
+		<div class="layui-form-item" style="margin-bottom: 0px;">
+			<label class="layui-form-label required">{lang:content}</label>
+			<div class="layui-input-block">
+				<textarea id="content" name="content" required class="layui-textarea" autocomplete="off" style="min-height: 50px;">{$data[content]}</textarea>
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label"></label>
+			<div class="layui-input-block">
+				<input name="isremote" type="checkbox" value="1" title="{lang:isremote}" lay-skin="primary">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">{lang:tag}</label>
+			<div class="layui-input-block">
+				<input name="tags" type="text" value="{$data[tags]}" maxlength="200" class="layui-input" placeholder="{lang:tag_tips}" />
+				{hook:admin_content_set_tags_input_after.htm}
+			</div>
+		</div>
+		{hook:admin_content_set_tags_after.htm}
+		<div class="layui-form-item">
+			<label class="layui-form-label">{lang:alias}</label>
+			<div class="layui-input-inline">
+				<input name="alias" type="text" value="{$data[alias]}" maxlength="50" class="layui-input" placeholder="{lang:alias}" />
+			</div>
+			<div class="layui-form-mid layui-word-aux">{lang:alias_tips}</div>
+		</div>
+		{hook:admin_content_set_left_after.htm}
+	</div>
+	<div class="layui-col-md3">
+		<div class="layui-form-item">
+			<label class="layui-form-label">{lang:thumb}</label>
+			<div class="layui-input-block">
+				<div class="layui-inline"><input id="pic" name="pic" type="text" value="{$data[pic]}" class="layui-input" placeholder="{lang:thumb}" /></div>
+				<div class="layui-inline">
+					<button type="button" class="layui-btn layui-btn-sm" id="pic_btn">
+						<i class="layui-icon">&#xe67c;</i>{lang:upload_pic}
+					</button>
+				</div>
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">{lang:flag}</label>
+			<div class="layui-input-block">
+				{$flaghtml}
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">{lang:author}</label>
+			<div class="layui-input-block">
+				<input name="author" type="text" value="{$data[author]}" maxlength="20" class="layui-input" placeholder="{lang:author}" />
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">{lang:source}</label>
+			<div class="layui-input-block">
+				<input name="source" type="text" value="{$data[source]}" maxlength="100" class="layui-input" placeholder="{lang:source}" />
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">{lang:views}</label>
+			<div class="layui-input-block">
+				<input name="views" type="number" value="{$data[views]}"  class="layui-input" placeholder="{lang:views}" />
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">{lang:seo_title}</label>
+			<div class="layui-input-block">
+				<input type="text" name="seo_title" value="{$data[seo_title]}" maxlength="100" autocomplete="off" placeholder="{lang:seo_title}" class="layui-input">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">{lang:seo_keywords}</label>
+			<div class="layui-input-block">
+				<input type="text" name="seo_keywords" value="{$data[seo_keywords]}" maxlength="200" autocomplete="off" placeholder="{lang:seo_keywords}" class="layui-input">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">{lang:seo_description}</label>
+			<div class="layui-input-block">
+				<textarea name="seo_description" class="layui-textarea" autocomplete="off" placeholder="{lang:seo_description}" style="min-height: 50px;" maxlength="255">{$data[seo_description]}</textarea>
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">{lang:jump_url}</label>
+			<div class="layui-input-block">
+				<input name="jumpurl" type="url" value="{$data[jumpurl]}" maxlength="255" class="layui-input" placeholder="{lang:jump_url}" />
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">{lang:comment}</label>
+			<div class="layui-input-block">
+				<input type="radio" name="iscomment" value="1" title="{lang:disable}" {if:!empty($data[iscomment])}checked{/if} />
+				<input type="radio" name="iscomment" value="0" title="{lang:enable}" {if:empty($data[iscomment])}checked{/if} />
+			</div>
+		</div>
+		{hook:admin_content_set_right_after.htm}
+	</div>
+</div>

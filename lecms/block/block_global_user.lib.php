@@ -1,0 +1,82 @@
+<?php
+defined('ROOT_PATH') || exit;
+
+/**
+ * 用户分页模块
+ * @param int groupid 用户组ID
+ * @param int pagenum 每页显示条数
+ * @param string dateformat 时间格式
+ * @param string orderby 排序方式
+ * @param int orderway 降序(-1),升序(1)
+ * @param int showgroup 是否读取用户组信息
+ * @param int pageoffset 分页显示偏移量
+ * @param int showmaxpage 最多显示多少页
+ * @param string page_function 分页函数，xiunophp/ext/paginator.class.php
+ * @return array
+ */
+function block_global_user($conf) {
+	global $run;
+
+	// hook block_global_user_before.php
+    $groupid = _int($conf, 'groupid', 0);
+	$pagenum = empty($conf['pagenum']) ? 20 : max(1, (int)$conf['pagenum']);
+	$dateformat = empty($conf['dateformat']) ? 'Y-m-d H:i:s' : $conf['dateformat'];
+	$orderby = isset($conf['orderby']) && in_array($conf['orderby'], array('uid', 'contents', 'logins', 'golds', 'credits')) ? $conf['orderby'] : 'uid';
+	$orderway = isset($conf['orderway']) && $conf['orderway'] == 1 ? 1 : -1;
+    $showgroup = _int($conf, 'showgroup', 0);
+    $pageoffset = _int($conf, 'pageoffset', 5);
+    $showmaxpage = _int($conf, 'showmaxpage', 0);
+    $page_function = empty($conf['page_function']) ? 'pages' : $conf['page_function'];
+    $extra = array('block_name'=>'block_global_user');
+    // hook block_global_user_conf_after.php
+
+    $where = array();
+	if($groupid){
+	    $where['groupid'] = $groupid;
+    }
+
+    // hook block_global_user_where_after.php
+
+    if($where){
+        $total = $run->user->find_count($where);
+    }else{
+        $total = $run->user->count();
+    }
+
+	// 分页相关
+	$maxpage = max(1, ceil($total/$pagenum));
+    if($showmaxpage && $maxpage > $showmaxpage){
+        $maxpage = $showmaxpage;
+    }
+	$page = min($maxpage, max(1, intval(R('page'))));
+	$pages = paginator::$page_function($page, $maxpage, $run->urls->user_url('all', 'user', true, $where), $pageoffset);
+
+    if($showgroup){
+        $allgroups = &$run->_cfg['group_name'];
+    }else{
+        $allgroups = array();
+    }
+
+    // hook block_global_user_list_arr_before.php
+
+	// 读取用户列表
+	$list_arr = $run->user->list_arr($where, $orderby, $orderway, ($page-1)*$pagenum, $pagenum, $total, $extra);
+
+    // hook block_global_user_list_arr_after.php
+
+    $xuhao = 1;
+	foreach($list_arr as &$v) {
+		$run->user->format($v, $dateformat);
+
+        if($showgroup && $allgroups){
+            $v['groupname'] = isset($allgroups[$v['groupid']]['groupname']) ? $allgroups[$v['groupid']]['groupname'] : '';
+        }
+        $v['xuhao'] = $xuhao;
+        $xuhao++;
+        // hook block_global_user_foreach_after.php
+	}
+
+	// hook block_global_user_after.php
+
+	return array('total'=> $total, 'pages'=> $pages, 'list'=> $list_arr);
+}

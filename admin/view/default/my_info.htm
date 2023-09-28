@@ -1,0 +1,57 @@
+{inc:header.htm}
+<div class="layui-card">
+	<div class="layui-card-header">{lang:edit_information}</div>
+	<div class="layui-card-body">
+		<form id="form" class="layui-form" action="index.php?my-info-ajax-1" method="post">
+			<div class="layui-form-item">
+				<label class="layui-form-label required">{lang:username}</label>
+				<div class="layui-input-inline">
+					{$input[username]}
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">{lang:email}</label>
+				<div class="layui-input-inline">
+					{$input[email]}
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">{lang:author}</label>
+				<div class="layui-input-inline">
+					{$input[author]}
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">{lang:homepage}</label>
+				<div class="layui-input-block">
+					{$input[homepage]}
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">{lang:intro}</label>
+				<div class="layui-input-block">
+					{$input[intro]}
+				</div>
+			</div>
+			{hook:admin_my_info_after.htm}
+			<div class="layui-form-item">
+				<div class="layui-input-block">
+					<button class="layui-btn" lay-submit lay-filter="form">{lang:submit}</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+<script type="text/javascript">
+	layui.use('form', function(){
+		var form = layui.form;
+
+		//监听提交
+		form.on('submit(form)', function(){
+			adminAjax.submit("#form");
+		});
+	});
+</script>
+</body>
+</html>

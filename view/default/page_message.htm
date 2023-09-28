@@ -1,0 +1,67 @@
+{inc:header.htm}
+
+<section>
+	<div class="container th_margintop">
+		<div class="row">
+			<div class="thjingxuan">
+				<div class="thjingxuan_title categorylist"><i></i>
+					<a href="{$cfg[weburl]}" title="{$cfg[webname]}">首页</a>{loop:$cfg_var[place] $v}<span>/</span> <a href="{$v[url]}">{$v[name]}</a>{/loop}
+				</div>
+				<section class="thjingxuan_sec">
+					<!--发布评论start-->
+					<div id="divCommentPost" class="post">
+						<p class="posttop"><a name="comment" href="javascript:;">留言板:</a></p>
+						<form action="{$cfg[webdir]}index.php?comment-post" method="post">
+							<input type="hidden" name="cid" value="{$cfg_var[cid]}" />
+							<input type="hidden" name="id" value="0" />
+							<input type="hidden" name="reply_commentid" value="0" />
+							{if:$_uid}
+							<input type="hidden" name="author" value="{$author}" />
+							{else}
+							<p style="margin-top:10px"><input type="text" name="author" id="ctf_author" class="text" value="{$author}" placeholder="昵称" size="28" tabindex="1"></p>
+							{/if}
+							{if:$cfg[open_comment_vcode]}
+							<p style="margin-top:10px;margin-left: 0;" class="row">
+								<span class="col-md-4 col-xs-6" style="padding-left: 0;">
+									<input name="vcode" id="ctf_vcode" type="text" class="text" required placeholder="图形验证码" autocomplete="off" />
+								</span>
+								<span class="col-md-4 col-xs-6">
+									<img id="captchaPic" src="{$cfg[webdir]}index.php?comment-vcode" onclick="this.src='{$cfg[webdir]}index.php?comment-vcode-r-'+Math.random();" alt="验证码" />
+								</span>
+							</p>
+							{/if}
+							<p style="margin-top:10px"><textarea name="content" id="ctf_content" maxlength="255" class="text" cols="50" rows="4" tabindex="5" placeholder="文明上网，理性发言" autocomplete="off"></textarea></p>
+							<p><input name="sumbit" type="submit" tabindex="6" value="提交" class="button"></p>
+						</form>
+						<p class="postbottom"></p>
+					</div>
+					<!--发布评论end-->
+					<!--评论列表start-->
+					{block:comment pagenum="20" firstnum="20"}
+					{if:!empty($data[list])}
+					<div class="comment_list" id="ctf">
+						<p class="posttop" style="border-bottom: 1px solid #eaeaea;"><a name="comment" href="javascript:;"> 评论列表:</a></p>
+						{loop:$data[list] $v}
+						<ul class="msg" id="comment_{$v[commentid]}">
+							<li class="msgname">
+								<img class="avatar" src="{$v[avatar]}" width="32">&nbsp;
+								<span class="commentname">{$v[author]}</span><br><small>&nbsp;发布于&nbsp;{$v[date]}</small><small><a class="reply_comment" href="javascript:;" onclick="reply_comment({$v[commentid]});">回复该评论</a></small>
+							</li>
+							{if:$v[reply_comment_content]}<li class="reply_msgarticle">回复：{$v[reply_comment_content]}</li>{/if}
+							<li class="msgarticle">{$v[content]}</li>
+						</ul>
+						{/loop}
+					</div>
+					{/if}
+					{/block}
+					<!--评论列表end-->
+				</section>
+			</div>
+		</div>
+	</div>
+</section>
+
+{inc:footer.htm}
+</body>
+</html>
+

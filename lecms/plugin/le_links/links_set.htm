@@ -1,0 +1,61 @@
+{inc:header.htm}
+
+<div class="layui-card">
+	<div class="layui-card-body">
+		<form id="form" class="layui-form" action="index.php?links-{$_GET['action']}-ajax-1" method="post">
+			<input name="id" type="hidden" value="{$data[id]}" />
+			<div class="layui-form-item">
+				<label class="layui-form-label required">{lang:links_name}</label>
+				<div class="layui-input-inline">
+					<input type="text" name="title" value="{$data[name]}" autocomplete="off" placeholder="{lang:links_name}" class="layui-input" lay-verify="required" lay-reqtext="{lang:links_name_no_empty}" />
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label required">{lang:links}</label>
+				<div class="layui-input-block">
+					<input type="text" name="url" value="{$data[url]}" autocomplete="off" placeholder="{lang:links}" class="layui-input" lay-verify="required" lay-reqtext="{lang:links_url_no_empty}" />
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">{lang:orderby}</label>
+				<div class="layui-input-inline">
+					<input type="number" name="orderby" value="{$data[orderby]}" autocomplete="off" placeholder="{lang:orderby}" class="layui-input" />
+				</div>
+			</div>
+
+			<div class="layui-form-item">
+				<div class="layui-input-block">
+					<button class="layui-btn" lay-submit lay-filter="form">{lang:submit}</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+<script type="text/javascript">
+	layui.use(['form','layer', 'miniTab'], function () {
+		var layer = layui.layer, form = layui.form, miniTab = layui.miniTab;
+
+		//监听提交
+		form.on('submit(form)', function () {
+			adminAjax.postform('#form',function (data) {
+				var json = toJson(data);
+				if( json.err == 0 ){
+					var icon = 1;
+				}else{
+					var icon = 5;
+				}
+				layer.msg(json.msg, {icon: icon});
+				if(json.err==0) {
+					setTimeout(function(){
+						miniTab.reloadIframe('index.php?links-index');
+						miniTab.deleteCurrentByIframe();
+					}, 1500);
+				}
+			});
+			return false;
+		});
+	});
+</script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+{inc:header.htm}
+<div class="layui-card">
+	<div class="layui-card-header">{lang:user_setting}</div>
+	<div class="layui-card-body">
+		<form id="form" class="layui-form" action="index.php?setting-user-ajax-1" method="post">
+			<div class="layui-form-item">
+				<label class="layui-form-label">{lang:open_user}</label>
+				<div class="layui-input-block">
+					{$input[open_user]}
+				</div>
+			</div>
+			<hr/>
+			<div class="layui-form-item">
+				<label class="layui-form-label">{lang:open_user_register}</label>
+				<div class="layui-input-block">
+					{$input[open_user_register]}
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">{lang:open_user_register_vcode}</label>
+				<div class="layui-input-block">
+					{$input[open_user_register_vcode]}
+				</div>
+			</div>
+			<hr/>
+			<div class="layui-form-item">
+				<label class="layui-form-label">{lang:open_user_login}</label>
+				<div class="layui-input-block">
+					{$input[open_user_login]}
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">{lang:open_user_login_vcode}</label>
+				<div class="layui-input-block">
+					{$input[open_user_login_vcode]}
+				</div>
+			</div>
+			<hr/>
+			<div class="layui-form-item">
+				<label class="layui-form-label">{lang:open_user_reset_password}</label>
+				<div class="layui-input-inline">
+					{$input[open_user_reset_password]}
+				</div>
+				<div class="layui-form-mid layui-word-aux">{lang:open_email_enabled}</div>
+			</div>
+			<hr/>
+			<div class="layui-form-item">
+				<label class="layui-form-label required">{lang:user_avatar_width}</label>
+				<div class="layui-input-inline">
+					{$input[user_avatar_width]}
+				</div>
+				<div class="layui-form-mid layui-word-aux">{lang:suggest} 200</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label required">{lang:user_avatar_height}</label>
+				<div class="layui-input-inline">
+					{$input[user_avatar_height]}
+				</div>
+				<div class="layui-form-mid layui-word-aux">{lang:suggest} 200</div>
+			</div>
+			{hook:admin_setting_user_after.htm}
+			<div class="layui-form-item">
+				<div class="layui-input-block">
+					<button class="layui-btn" lay-submit lay-filter="form">{lang:submit}</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+<script type="text/javascript">
+	layui.use('form', function(){
+		var form = layui.form;
+
+		//监听提交
+		form.on('submit(form)', function(){
+			adminAjax.submit("#form");
+		});
+	});
+</script>
+</body>
+</html>

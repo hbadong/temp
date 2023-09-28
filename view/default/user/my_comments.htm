@@ -1,0 +1,79 @@
+{inc:user/header.htm}
+<style>
+  .embed-responsive img {position: absolute;object-fit: cover;width: 100%;height: 100%;border: 0;}
+  .comment-content {padding: 15px;background: #efefef;color: #444;}
+  .panel-user h4 {font-weight: normal;font-size: 14px;}
+  .float-right{float: right;}
+  .pagination-sm > li:last-child > a, .pagination-sm > li:last-child > span{border-bottom-right-radius:3px;border-top-right-radius:3px;}
+  .pager li:first-child > a, .pager li:last-child > a, .pager li:first-child > span, .pager li:last-child > span{border-bottom-left-radius:3px;border-top-left-radius:3px;}
+</style>
+  <main class="content">
+    <div id="content-container" class="container">
+      <div class="row">
+        {inc:user/menu.htm}
+        <!--右侧主体部分 start-->
+        <div class="col-md-9">
+          <div class="panel panel-default">
+            <div class="panel-body">
+              <h2 class="page-header">{lang:my_comments}</h2>
+              {if:empty($comment_arr)}
+              <div class="alert alert-warning"><b>{lang:no_data}</b></div>
+              {else}
+              {loop:$comment_arr $v}
+              <div class="row">
+                {php}$cms = isset($cms_arr[$v['id']]) ? $cms_arr[$v['id']] : array();{/php}
+                <div class="col-md-3 text-center">
+                  <a href="{$cms[url]}" title="{$cms[title]}" target="_blank" class="img-thumb">
+                    <div class="embed-responsive embed-responsive-4by3 img-zoom">
+                      <img src="{$cms[pic]}" class="embed-responsive-item" alt="{$cms[title]}" />
+                    </div>
+                  </a>
+                </div>
+                <div class="col-md-9">
+                  <h4>
+                    <a href="{$cms[url]}" title="{$cms[title]}" target="_blank">{$cms[title]}</a>
+                  </h4>
+                  <p class="comment-content">{$v[content]}</p>
+                  <p class="text-muted">{lang:date}：{$v[date]}<button type="button" commentid="{$v[commentid]}" class="del btn btn-danger btn-xs float-right">{lang:delete}</button></p>
+                </div>
+              </div>
+              <hr/>
+              {/loop}
+              {/if}
+              <div class="pager">{$pages}</div>
+            </div>
+          </div>
+        </div>
+        <!--右侧主体部分 end-->
+      </div>
+    </div>
+  </main>
+{inc:user/footer.htm}
+<script type="text/javascript">
+  layui.use(['form'], function () {
+    var form = layui.form, layer = layui.layer, $ = layui.$;
+
+    $("#my-comments").addClass("active");
+
+    $(".del").click(function () {
+      var commentid = $(this).attr("commentid");
+      layer.confirm('{lang:delete_confirm}', {
+        btn: ['{lang:confirm}','{lang:cancel}'],
+        title:'{lang:tips}'
+      }, function () {
+        $.post("index.php?my-comments-act-del-ajax-1",{commentid: commentid},function(res){
+          if(res.status){
+            var icon = 1;
+          }else{
+            var icon = 5;
+          }
+          layer.msg(res.message, {icon: icon});
+          if(res.status) setTimeout(function(){ window.location.reload(); }, 1000);
+          return false;
+        },'json');
+      });
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<?php
+defined('ROOT_PATH') or exit;
+
+class models_control extends admin_control {
+	// 模型管理
+	public function index() {
+        // hook admin_models_control_index_before.php
+
+	    $models_filed_plugin = plugin_is_enable('models_filed') ? 1 : 0;
+	    $this->assign('models_filed',$models_filed_plugin);
+
+        // hook admin_models_control_index_after.php
+        $this->display();
+	}
+
+    //ajax获取数据
+    public function get_list(){
+        // hook admin_models_control_get_list_before.php
+
+        $data_arr = array();
+        $cms_arr = $this->models->find_fetch(array(), array('mid' => 1));
+        foreach ($cms_arr as $v){
+            $data_arr[] = $v;
+        }
+        unset($cms_arr);
+        // hook admin_models_control_get_list_data_arr_after.php
+
+        //组合数据 输出到页面
+        $arr = array(
+            'code' => 0,
+            'msg' => '',
+            'count' => count($data_arr),
+            'data' => $data_arr,
+        );
+        exit( json_encode($arr) );
+    }
+
+    //编辑表格字段
+    public function set(){
+        // hook admin_models_control_set_before.php
+        if( !empty($_POST) ){
+            $field = trim( R('field','P') );
+            $mid = intval( R('mid','P') );
+            $value = trim( R('value','P') );
+
+            if($mid == 1 && $field != 'cate_tpl'){
+                E(1, lang('page_model_edit_tpl'));
+            }
+
+            if($field == 'width' || $field == 'height'){
+                $value = (int)$value;
+                if( empty($value) ){
+                    E(1, lang('width_and_height_no_0'));
+                }
+            }
+
+            if(($field == 'index_tpl' || $field == 'cate_tpl' || $field == 'show_tpl') && strlen($value) > 80){
+                E(1, lang('many_characters', array('field'=>$field,'length'=>80)));
+            }
+
+            $models = $this->models->get($mid);
+            empty($models) && E(1, lang('data_no_exists'));
+
+            $models[$field] = $value;
+
+            if(!$this->models->update($models)) {
+                E(1, lang('edit_failed'));
+            }
+            // hook admin_models_control_set_after.php
+
+            E(0, lang('edit_field_successfully', array('field'=>$field)) );
+        }
+    }
+
+    //添加
+    public function add(){
+        if(empty($_POST)) {
+            // hook admin_models_control_add_before.php
+            $data = array('mid'=>0);
+            $this->assign('data', $data);
+
+            $this->display('models_set.htm');
+        }else{
+            // hook admin_models_control_add_post_before.php
+            $name = trim(R('name', 'P'));
+            $tablename = strtolower(trim(R('tablename', 'P')));
+            empty($name) && E(1, lang('modelname_no_empty'));
+            empty($tablename) && E(1, lang('modeltablename_no_empty'));
+
+            if( $this->models->find_fetch_key(array('tablename'=> $tablename)) ){
+                E(1, lang('modeltablename_is_exist'));
+            }elseif( !preg_match('/^[a-z]+$/', $tablename) ) {
+                E(1, lang('modeltablename_no_safe'));
+            }
+
+            $data = array(
+                'name' => $name,
+                'tablename' => $tablename,
+                'index_tpl' => $tablename.'_index.htm',
+                'cate_tpl' => $tablename.'_list.htm',
+                'show_tpl' => $tablename.'_show.htm',
+                'width' => intval(R('width', 'P')),
+                'height' => intval(R('height', 'P')),
+                'icon' => trim(R('icon', 'P')),
+            );
+            // hook admin_models_control_add_post_data_after.php
+
+            if($err = $this->models->xadd($data)) {
+                E(1, $err);
+            }
+            // hook admin_models_control_add_post_success.php
+            E(0, lang('add_successfully'));
+        }
+    }
+
+    //删除
+    public function del() {
+        // hook admin_models_control_del_before.php
+        $mid = (int) R('mid', 'P');
+        empty($mid) && E(1, lang('data_error'));
+
+        $err = $this->models->xdelete($mid);
+        if($err) {
+            E(1, $err);
+        }else{
+            // hook admin_models_control_del_success.php
+            E(0, lang('delete_successfully'));
+        }
+    }
+
+    // hook admin_models_control_after.php
+}

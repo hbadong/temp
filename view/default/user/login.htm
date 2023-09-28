@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>{$cfg[titles]}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="renderer" content="webkit">
+  <link rel="shortcut icon" type="image/x-icon" href= "{$cfg[webdir]}favicon.ico" />
+  <link rel="stylesheet" href="{$cfg[tpl]}user/css/frontend.min.css" media="all">
+  <link rel="stylesheet" href="{$cfg[tpl]}user/css/user.css" media="all">
+  <!-- HTML5 shim, for IE6-8 support of HTML5 elements. All other JS at the end of file. -->
+  <!--[if lt IE 9]>
+  <script src="{$cfg[tpl]}user/js/html5shiv.js"></script>
+  <script src="{$cfg[tpl]}user/js/respond.min.js"></script>
+  <![endif]-->
+  <script src="{$cfg[webdir]}static/js/jquery.js" charset="utf-8"></script>
+  <script src="{$cfg[tpl]}user/js/bootstrap.min.js"></script>
+</head>
+<body>
+<nav class="navbar navbar-white navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#header-navbar">
+        <span class="sr-only">{lang:toggle}</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="{$cfg[weburl]}">{$cfg[webname]}</a>
+    </div>
+    <div class="collapse navbar-collapse" id="header-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="{$cfg[weburl]}" title="{$cfg[webname]}">{lang:home}</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<main class="content">
+  <div id="content-container" class="container">
+    <div class="user-section login-section">
+      <div class="logon-tab clearfix">
+        <a class="active" title="{lang:login}" rel="nofollow">{lang:login}</a>{if:$cfg[open_user_register]}<a href="{$register_url}" title="{lang:register}" rel="nofollow">{lang:register}</a>{/if}
+      </div>
+      <div class="login-main">
+        <form id="login-form" class="form-horizontal layui-form" action="{$login_url}" method="post">
+          <input type="hidden" name="FORM_HASH" value="{$form_hash}" />
+          <div class="form-group">
+            <label for="username" class="col-sm-4 control-label">{lang:username}</label>
+            <div class="col-sm-8">
+              <input class="form-control" id="username" type="text" name="username" value="" placeholder="{lang:please_input_username}" autocomplete="off">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="password" class="col-sm-4 control-label">{lang:password}</label>
+            <div class="col-sm-8">
+              <input class="form-control" id="password" type="password" name="password" value="" placeholder="{lang:please_input_password}" autocomplete="off">
+            </div>
+          </div>
+
+          {if:$cfg[open_user_login_vcode]}
+          <div class="form-group">
+            <label for="vcode" class="col-sm-4 control-label">{lang:vcode}</label>
+            <div class="col-sm-4">
+              <input class="form-control" id="vcode" type="text" name="vcode" value="" placeholder="{lang:vcode}" autocomplete="off">
+            </div>
+            <div class="col-sm-4">
+              <img src="index.php?user-vcode-name-loginvcode" alt="{lang:vcode}" onclick="this.src='index.php?user-vcode-name-loginvcode-r-'+Math.random();" id="vcodeimg" style="width: 100%;" />
+            </div>
+          </div>
+          {/if}
+          {if:$cfg[open_user_reset_password]}
+          <div class="form-group">
+            <div class="controls">
+              <div class="checkbox inline">
+                <label></label>
+              </div>
+              <div class="pull-right"><a href="{$forget_pwd_url}" class="btn-forgot">{lang:forget_password}?</a></div>
+            </div>
+          </div>
+          {/if}
+          <div class="form-group">
+            <label class="col-sm-4 control-label"></label>
+            <div class="col-sm-8">
+            <button type="submit" class="btn btn-primary btn-lg btn-block" lay-submit lay-filter="form">{lang:submit}</button>
+            {if:$cfg[open_user_register]}<a href="{$register_url}" title="{lang:register}" rel="nofollow" class="btn btn-default btn-lg btn-block mt-3 no-border">{lang:register_tips}</a>{/if}
+            </div>
+          </div>
+          {hook:user_user_login_after.htm}
+        </form>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="footer" style="clear:both">
+  <p class="copyright">Copyright&nbsp;©&nbsp;{php}echo date('Y');{/php} {$cfg[webname]} All Rights Reserved.</p>
+</footer>
+<script src="{$cfg[webdir]}static/layui/lib/layui-v2.8.15/layui.js" charset="utf-8"></script>
+<script type="text/javascript">
+  layui.use(['form'], function () {
+    var form = layui.form, layer = layui.layer, $ = layui.$;
+    form.on('submit(form)', function (data) {
+      data = data.field;
+      if (data.username == '') {
+        layer.msg('{lang:please_input_username}', {icon: 5});
+        return false;
+      }else if (data.password == '') {
+        layer.msg('{lang:please_input_password}', {icon: 5});
+        return false;
+      }
+      $.post("index.php?user-login-ajax-1",data,function(res){
+        if(res.status){
+          var icon = 1;
+        }else{
+          var icon = 5;
+        }
+        layer.msg(res.message, {icon: icon});
+        if(res.status) setTimeout(function(){ location.href="{$_http_referer}"; }, 1000);
+        return false;
+      },'json');
+      return false;
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,129 @@
+
+
+
+	<div class="footer1">
+		<section>
+			<div class="container">
+				<div class="row">
+					<div class="col-md-4 col-xs-12 " style="border-right: 1px solid #3e3e3e;">
+						<dl class="footcon1">
+							<dt>关于我们</dt>
+							<dd>lecms主程序为免费提供使用，使用者不得将本系统应用于任何形式的非法用途，由此产生的一切法律风险，需由使用者自行承担，与本站和开发者无关。一旦使用lecms，表示您即承认您已阅读、理解并同意受此条款的约束，并遵守所有相应法律和法规。</dd>
+						</dl>
+					</div>
+
+					<div class="col-md-2 col-xs-12" style="border-right: 1px solid #3e3e3e;">
+						<dl class="footcon2">
+							<dt>快捷菜单</dt>
+							<dd>
+								<a href="{$search_url}" target="_blank">搜索内容</a>
+							</dd>
+							<dd>
+								<a href="https://www.lecms.cc" target="_blank">lecms教程</a>
+							</dd>
+							<dd>
+								<a href="https://www.lecms.cc" target="_blank">lecms模板</a>
+							</dd>
+							<dd>
+								<a href="https://www.lecms.cc" target="_blank">lecms动态</a>
+							</dd>
+						</dl>
+					</div>
+
+
+					<div class="col-md-4 col-xs-12" style="border-right: 1px solid #3e3e3e;">
+						<dl class="footcon1">
+							<dt>联系方式</dt>
+							<dd class="footlianx">
+								<i class="iconfont icon-app-phone1"></i>电话：<span>{$cfg[webtel]}</span>
+							</dd>
+							<dd class="footlianx">
+								<i class="iconfont icon-dizhi"></i>地址：广东省中山市
+							</dd>
+							<dd class="footlianx">
+								<i class="iconfont icon-email"></i>Email：{$cfg[webmail]}
+							</dd>
+						</dl>
+					</div>
+					<div class="col-md-2 col-xs-12">
+						{if:$cfg[open_user]}
+							{if:$_uid}
+							<dl class="footcon2">
+								<dt>用户中心</dt>
+								<dd>
+									<a href="{$my_url}" title="个人中心">个人中心</a>
+								</dd>
+							</dl>
+							{else}
+							<dl class="footcon2">
+								<dt>注册登录</dt>
+								<dd>
+									<a href="{$register_url}" title="注册帐号">注册帐号</a>
+								</dd>
+								<dd>
+									<a href="{$login_url}" title="登录帐号">登录帐号</a>
+								</dd>
+							</dl>
+							{/if}
+						{/if}
+					</div>
+				</div>
+			</div>
+		</section>
+	</div>
+	<div>
+
+		<div class="footer2">
+			<p>Copyright &#169; 2022 <a href="{$cfg[weburl]}">{$cfg[webname]}</a> Inc. 保留所有权利。 Powered by <a href="https://www.lecms.cc" target="_blank" title="LECMS">LECMS {$_ENV[_config][version]}</a></p>
+			<p>{php} echo '页面耗时'.runtime().'秒, 内存占用'.runmem().', 访问数据库'.$_ENV['_sqlnum'].'次'; {/php}</p>
+			<p>{$cfg[beian]}</p>
+		</div>
+
+
+		<div class="thgotop">
+			<ul>
+				<li id="guan" class="ditop">
+					<div class="yewan">
+						<i class="fa fa-circle" aria-hidden="true"></i>
+						<span class="">我要关灯</span>
+					</div>
+
+					<div class="baitian">
+						<i class="fa fa-circle-o" aria-hidden="true"></i>
+						<span class="">我要开灯</span>
+					</div>
+				</li>
+				<li class="ditop">
+					<i class="fa fa-address-book" aria-hidden="true"></i>
+					<span>客户电话</span>
+					<div class="ditopcon" style="bottom:-100px;">
+						<div class="ditop-qq-img">
+							<img class="th-img ditop-qq-height" src="{$cfg[tpl]}style/img/qq.png">
+						</div>
+						<div class="ditop-qq-btn">
+							{$cfg[webqq]}
+						</div>
+						<p class="ditop-time">工作时间：8:00-18:00</p>
+						<p class="ditop-top">客服电话</p>
+						<p class="ditop-tel">{$cfg[webtel]}</p>
+						<p class="ditop-top">电子邮件</p>
+						<p class="ditop-email">{$cfg[webmail]}</p>
+					</div>
+				</li>
+				<li class="ditop">
+					<i class="fa fa-weixin" aria-hidden="true"></i>
+					<span>官方微信</span>
+					<div class="ditopcon">
+						<p>扫码二维码</p>
+						<p>获取最新动态</p>
+						<div class="topthewm"><img class="th-img" src="{$cfg[tpl]}style/img/wx.png"></div>
+					</div>
+				</li>
+				<li id="go_top" class="ditop">
+					<i class="fa fa-arrow-up" aria-hidden="true"></i>
+					<span>返回顶部</span>
+				</li>
+			</ul>
+		</div>
+		{$cfg[tongji]}
+	</div>

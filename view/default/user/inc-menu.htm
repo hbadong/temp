@@ -1,0 +1,33 @@
+<style>
+    #logout{cursor: pointer;}
+</style>
+<div class="col-md-3">
+  <div class="sidebar-toggle"><i class="fa fa-bars"></i></div>
+  <div id="sidebar-nav" class="sidenav">
+    {loop:$_navs $v $k}
+    <ul class="list-group">
+      {if:!empty($v[href])}
+      <li id="{$k}" class="list-group-heading">
+        <a href="{$v[href]}" target="{$v[target]}">{$v[title]}</a>
+      </li>
+      {else}
+      <li id="{$k}" class="list-group-heading">{$v[title]}</li>
+      {/if}
+      {loop:$v[child] $v2}
+      <li id="{$v2[id]}" class="list-group-item">
+        {if:!empty($v2[href])}
+        <a href="{$v2[href]}" target="{$v2[target]}">{if:!empty($v2[icon])}<i class="{$v2[icon]}"></i> {/if}{$v2[title]}</a>
+        {else}
+        {if:!empty($v2[icon])}<i class="{$v2[icon]}"></i> {/if}{$v2[title]}
+        {/if}
+      </li>
+      {/loop}
+    </ul>
+    {/loop}
+  </div>
+</div>
+<script type="text/javascript">
+  $(document).on("click", ".sidebar-toggle", function () {
+    $("body").toggleClass("sidebar-open");
+  });
+</script>

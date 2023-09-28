@@ -1,0 +1,123 @@
+{inc:header.htm}
+<div class="layuimini-container">
+    <div class="layuimini-main">
+        <div class="layui-card">
+            <div class="layui-card-body layui-row">
+                <form class="layui-form" id="form" action="index.php?tag-{$_GET['action']}-ajax-1" method="post">
+                    <input name="tagid" type="hidden" value="{$data[tagid]}" />
+                    <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label required">{lang:model}</label>
+                            <div class="layui-input-inline">
+                                {$midhtml}
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label required">{lang:tagname}</label>
+                            <div class="layui-input-inline">
+                              <input type="text" name="name" placeholder="{lang:tagname}" value="{$data[name]}" class="layui-input"/>
+                            </div>
+                        </div>
+                        {if:$_GET['action'] == 'add'}
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">{lang:batch_add}</label>
+                            <div class="layui-input-block">
+                                <textarea name="batch_name" class="layui-textarea" autocomplete="off" placeholder="{lang:one_line_tag}" style="min-height: 100px;"></textarea>
+                            </div>
+                        </div>
+                        {/if}
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">{lang:content}</label>
+                            <div class="layui-input-block">
+                                <textarea name="content" class="layui-textarea" autocomplete="off" placeholder="{lang:content}" style="min-height: 50px;" maxlength="255">{$data[content]}</textarea>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">{lang:thumb}</label>
+                            <div class="layui-input-block">
+                                <div class="layui-inline"><input id="pic_val" name="pic" type="text" value="{$data[pic]}" class="layui-input" placeholder="{lang:thumb}" /></div>
+                                <div class="layui-inline">
+                                    <button type="button" class="layui-btn layui-btn-sm" id="pic">
+                                        <i class="layui-icon">&#xe67c;</i>{lang:upload_pic}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">{lang:seo_title}</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="seo_title" value="{$data[seo_title]}" autocomplete="off" placeholder="{lang:seo_title}" class="layui-input" maxlength="100">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">{lang:seo_keywords}</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="seo_keywords" value="{$data[seo_keywords]}" autocomplete="off" placeholder="{lang:seo_keywords}" class="layui-input" maxlength="200">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">{lang:seo_description}</label>
+                            <div class="layui-input-block">
+                                <textarea name="seo_description" class="layui-textarea" autocomplete="off" placeholder="{lang:seo_description}" style="min-height: 50px;" maxlength="255">{$data[seo_description]}</textarea>
+                            </div>
+                        </div>
+                        {hook:admin_tag_set_after.htm}
+                        <div class="layui-form-item">
+                            <div class="layui-input-block">
+                                <button class="layui-btn" lay-submit lay-filter="form">{lang:submit}</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+   </div>
+</div>  
+
+<script type="text/javascript">
+    layui.use(['form','layer', 'upload', 'miniTab'], function () {
+        var layer = layui.layer, upload = layui.upload, form = layui.form, miniTab = layui.miniTab;
+
+        //缩略图上传
+        upload.render({
+            elem: '#pic'
+            ,url: 'index.php?attach-upload_pic-table-tag'
+            ,field:'upfile'
+            ,accept: 'images'
+            ,acceptMime:'image/*'
+            ,done: function(res){
+                if(res.err == 1){
+                    layer.msg(res.msg, {icon: 5});
+                }else{
+                    $("#pic_val").val(res.data.src);
+                    layer.msg('{lang:upload_successfully}', {icon: 1});
+                }
+            }
+            ,error: function(){
+                layer.msg('{lang:request_exception}',{icon: 5});
+            }
+        });
+
+        //监听提交
+        form.on('submit(form)', function () {
+            adminAjax.postform("#form",function(data){
+                var json = toJson(data);
+                if( json.err == 0 ){
+                    var icon = 1;
+                }else{
+                    var icon = 5;
+                }
+                layer.msg(json.msg, {icon: icon});
+                if(json.err==0) {
+                    setTimeout(function(){
+                        miniTab.reloadIframe("index.php?tag-index");
+                        miniTab.deleteCurrentByIframe();
+                    }, 1500);
+                }
+            });
+            return false;
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+{inc:header.htm}
+<div class="layui-card">
+	<div class="layui-card-header">{lang:email_setting}</div>
+	<div class="layui-card-body">
+		<form id="form" class="layui-form" action="index.php?setting-email-ajax-1" method="post">
+			<div class="layui-form-item">
+				<label class="layui-form-label required">{lang:open_email}</label>
+				<div class="layui-input-block">
+					{$input[open_email]}
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label required">{lang:email_smtp}</label>
+				<div class="layui-input-inline">
+					{$input[email_smtp]}
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label required">{lang:email_port}</label>
+				<div class="layui-input-inline">
+					{$input[email_port]}
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label required">{lang:email_account}</label>
+				<div class="layui-input-inline">
+					{$input[email_account]}
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">{lang:email_account_name}</label>
+				<div class="layui-input-inline">
+					{$input[email_account_name]}
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label required">{lang:password}</label>
+				<div class="layui-input-inline">
+					{$input[email_password]}
+				</div>
+			</div>
+			{hook:admin_setting_email_after.htm}
+			<div class="layui-form-item">
+				<div class="layui-input-block">
+					<button class="layui-btn" lay-submit lay-filter="form">{lang:submit}</button>
+					<button class="layui-btn layui-btn-normal" id="test">{lang:test}</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+<script type="text/javascript">
+	layui.use('form', function(){
+		var form = layui.form;
+
+		//监听提交
+		form.on('submit(form)', function(){
+			adminAjax.submit("#form");
+		});
+
+		$("#test").click(function () {
+			layer.prompt({title: '{lang:receive_email_not_empty}', formType: 0}, function(email, index){
+				layer.close(index);
+				if(email === ''){
+					layer.msg('{lang:receive_email_not_empty}');
+				}else{
+					adminAjax.postd("index.php?setting-testemail-ajax-1", {"toemail":email});
+				}
+			});
+
+			return false;
+		});
+	});
+</script>
+</body>
+</html>

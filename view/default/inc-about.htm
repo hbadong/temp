@@ -1,0 +1,26 @@
+<section>
+	<div class="thleftcon" style="height: 335px;">
+		<div class="thleftcon-1">
+			<img class="th-img jsimg-height" src="{$cfg[tpl]}style/img/tx.jpg">
+			<img class="th-img jsimg-toux" src="{$cfg[tpl]}style/img/tx.png">
+		</div>
+		<div class="thjs_infor">
+			<h4>LECMS</h4>
+			<div class="clear"></div>
+		</div>
+		<div class="thleftcon-2">
+			<dl>
+				<dd>lecms主程序为免费提供使用，使用者不得将本系统应用于任何形式的非法用途，由此产生的一切法律风险，需由使用者自行承担，与本站和开发者无关。</dd>
+			</dl>
+		</div>
+		{block:data_total mid="2" showviews="1"}
+		<div class="aut_count">
+			<ul>
+				<li><span>文章</span><strong>{$data[content]}</strong></li>
+				<li><span>标签</span><strong>{$data[tag]}</strong></li>
+				<li><span>浏览量</span><strong>{$data[views]}</strong></li>
+			</ul>
+		</div>
+		{/block}
+	</div>
+</section>

@@ -1,0 +1,24 @@
+{inc:header.htm}
+
+<section>
+	<div class="container th_margintop">
+		<div class="row">
+			<div class="thjingxuan">
+				<div class="thjingxuan_title categorylist"><i></i>
+					<a href="{$cfg[weburl]}" title="{$cfg[webname]}">首页</a>{loop:$cfg_var[place] $v}<span>/</span> <a href="{$v[url]}">{$v[name]}</a>{/loop}
+				</div>
+				<section class="thjingxuan_sec">
+					{block:global_page}
+					<h1 class="detail-title">{$cfg_var[name]}</h1>
+					<div class="detail-con">{$gdata[content]}</div>
+					{/block}
+				</section>
+			</div>
+		</div>
+	</div>
+</section>
+
+{inc:footer.htm}
+</body>
+</html>
+

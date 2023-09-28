@@ -1,0 +1,17 @@
+{block:list_rand mid="2" limit="12" life="600"}
+<div class="thleftcon">
+	<div class="thleftbt"><span>猜你喜欢</span></div>
+	<ul class="th-6">
+		{loop:$data[list] $v}
+		<li class="post_id_{$v[id]}">
+			<div class="gundongimg">
+				<a href="{$v[url]}" title="{$v[title]}">
+					<img class="th-img zhuti-img-height" src="{$v[pic]}" alt="{$v[title]}">
+					<div class="zhuantiinfo">{$v[subject]}</div>
+				</a>
+			</div>
+		</li>
+		{/loop}
+	</ul>
+</div>
+{/block}

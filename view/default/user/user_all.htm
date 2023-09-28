@@ -1,0 +1,32 @@
+{inc:header.htm}
+
+<section>
+	<div class="container th_margintop">
+		<div class="row">
+			<div class="thjingxuan">
+				<div class="thjingxuan_title categorylist"><i></i>
+					<a href="{$cfg[weburl]}" title="{$cfg[webname]}">首页</a><span>/</span> <a>用户列表</a>
+				</div>
+				<section class="thjingxuan_sec">
+					{block:global_user pagenum="2"}
+					<ul class="th-tags row">
+						{loop:$gdata[list] $v}<li class="col-md-2 col-xs-6"><a href="{$v[user_url]}" title="{$v[author]}">{$v[author]}</a></li>{/loop}
+					</ul>
+					{if:$gdata[pages]}
+					<div class="col-md-12 col-xs-12  th_padding">
+						<div class="list-title pagebar">
+							{$gdata[pages]}
+						</div>
+					</div>
+					{/if}
+					{/block}
+				</section>
+			</div>
+		</div>
+	</div>
+</section>
+
+{inc:footer.htm}
+</body>
+</html>
+

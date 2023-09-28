@@ -1,0 +1,28 @@
+{inc:header.htm}
+<section>
+	<div class="container">
+		<div class="row">
+			{block:listeach limit="8" dateformat="Y-m-d" titlenum="34"}
+			{loop:$data $v}
+			<div class="col-md-4 col-xs-12  pc_margintop">
+				<section>
+					<div class="thleftcon">
+						<div class="thleftbt thwenzhang"><span>{$v[cate_name]}</span><div class="listMore"><a href="{$v[cate_url]}" title="{$v[cate_name]}">More +</a></div></div>
+						<ul class="th-5">
+							{php}$rank = 1;{/php}
+							{loop:$v[list] $lv}
+							<li><span class="date">{$lv[date]}</span><i>{$rank}</i><a href="{$lv[url]}" title="{$lv[title]}" target="_blank">{$lv[subject]}</a></li>
+							{php}$rank++;{/php}
+							{/loop}
+						</ul>
+					</div>
+				</section>
+			</div>
+			{/loop}
+			{/block}
+		</div>
+	</div>
+</section>
+{inc:footer.htm}
+</body>
+</html>

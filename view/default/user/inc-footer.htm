@@ -1,0 +1,23 @@
+<footer class="footer" style="clear:both">
+  <p class="copyright">Copyright&nbsp;©&nbsp;{php}echo date('Y');{/php} {$cfg[webname]} All Rights Reserved.</p>
+</footer>
+<script src="{$cfg[webdir]}static/layui/lib/layui-v2.8.15/layui.js" charset="utf-8"></script>
+<script type="text/javascript">
+  layui.use(['form'], function () {
+    var layer = layui.layer, $ = layui.$;
+    $("#logout").click(function () {
+      layer.confirm('确定退出登录？', function () {
+        $.post("index.php?my-logout-ajax-1",{do: 1},function(res){
+          if(res.status){
+            var icon = 1;
+          }else{
+            var icon = 5;
+          }
+          layer.msg(res.message, {icon: icon});
+          if(res.status) setTimeout(function(){ window.location = "{$cfg[weburl]}"; }, 1000);
+          return false;
+        },'json');
+      });
+    });
+  });
+</script>

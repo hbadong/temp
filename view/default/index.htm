@@ -1,0 +1,309 @@
+{inc:header.htm}
+<link rel="stylesheet"  href="{$cfg[tpl]}style/css/swiper.min.css" media="all" />
+<script src="{$cfg[tpl]}script/swiper.min.js" type="text/javascript"></script>
+<!--首页主体第一部分start-->
+<div class="container" style="margin-top:15px;">
+    <div class="row">
+        <!--幻灯片start-->
+        <div class="col-md-5 col-xs-12">
+            <section>
+                <div class="swiper-container thbanner">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide">
+                            <a href="https://www.lecms.cc" title="LECMS" target="_blank">
+                                <img class="th-img thbanner-img-height" src="{$cfg[tpl]}style/banner/b1.jpg" />
+                                <div class="thbn-title">
+                                    <span>LECMS 幻灯片一</span>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="swiper-slide">
+                            <a href="https://www.lecms.cc" title="LECMS" target="_blank">
+                                <img class="th-img thbanner-img-height" src="{$cfg[tpl]}style/banner/b2.jpg" />
+                                <div class="thbn-title">
+                                    <span>LECMS 幻灯片二</span>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="swiper-slide">
+                            <a href="https://www.lecms.cc" title="LECMS" target="_blank">
+                                <img class="th-img thbanner-img-height" src="{$cfg[tpl]}style/banner/b3.jpg" />
+                                <div class="thbn-title">
+                                    <span>LECMS 幻灯片三</span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="swiper-pagination"></div>
+                    <div class="swiper-button-next"></div>
+                    <div class="swiper-button-prev"></div>
+                </div>
+            </section>
+            <script type="text/javascript">
+                var swiper = new Swiper('.thbanner', {
+                    navigation: {
+                        nextEl: '.swiper-button-next',
+                        prevEl: '.swiper-button-prev',
+                    },
+                    loop: true,
+                    autoplay: {
+                        delay: 1500,
+                        stopOnLastSlide: false,//如果设置为true，当切换到最后一个slide时停止自动切换
+                        disableOnInteraction: true,//用户操作swiper之后，是否禁止autoplay
+                    },
+                    pagination: {//分页器
+                        el: '.swiper-pagination',
+                        clickable: true,//点击分页器的指示点分页器会控制Swiper切换
+                    },
+                });
+            </script>
+        </div>
+        <!--幻灯片end-->
+        <!--最新文章start-->
+        <div class="col-md-4 col-xs-12 wap_margintop">
+            {block:list cid="0" mid="2" limit="3" dateformat="Y-m-d" intronum="102"}
+            <section>
+                <div class="thhotnews">
+                    <div class="thhotnews_title">
+                        <div class="iconhot"><i class="iconfont  icon-hot"></i>最新文章</div>
+                    </div>
+                    <div class="thhotnews_con">
+                        {loop:$data[list] $v}
+                        <dl class="post_id_{$v[id]}">
+                            <dt><a href="{$v[url]}" title="{$v[title]}">{$v[subject]}</a></dt>
+                            <dd><i class="fa fa-quote-left" aria-hidden="true"></i>{$v[intro]}<i class="fa fa-quote-right" aria-hidden="true"></i></dd>
+                        </dl>
+                        {/loop}
+                    </div>
+                </div>
+            </section>
+            {/block}
+        </div>
+        <!--最新文章end-->
+        <!--站点信息start-->
+        <div class="col-md-3 col-xs-12 wap_margintop">
+            <section>
+                <div class="thleftcon" style="height: 335px;">
+                    <div class="thleftcon-1">
+                        <img class="th-img jsimg-height" src="{$cfg[tpl]}style/img/tx.jpg">
+                        <img class="th-img jsimg-toux" src="{$cfg[tpl]}style/img/tx.png">
+                    </div>
+                    <div class="thjs_infor">
+                        <h4>LECMS</h4>
+                        <div class="clear"></div>
+                    </div>
+                    <div class="thleftcon-2">
+                        <dl>
+                            <dd>lecms主程序为免费提供使用，使用者不得将本系统应用于任何形式的非法用途，由此产生的一切法律风险，需由使用者自行承担，与本站和开发者无关。</dd>
+                        </dl>
+                    </div>
+                    {block:data_total mid="2" showviews="1"}
+                    <div class="aut_count">
+                        <ul>
+                            <li><span>文章</span><strong>{$data[content]}</strong></li>
+                            <li><span>标签</span><strong>{$data[tag]}</strong></li>
+                            <li><span>浏览</span><strong>{$data[views]}</strong></li>
+                        </ul>
+                    </div>
+                    {/block}
+                </div>
+            </section>
+        </div>
+        <!--站点信息end-->
+    </div>
+</div>
+<!--首页主体第一部分end-->
+
+<!--首页主体第二部分start-->
+<div class="container th_margintop">
+    <div class="row">
+        <div class="col-md-9 col-xs-12">
+            <!--热点属性文章start-->
+            {block:list_flag flag="2" limit="6" dateformat="Y-m-d" showcate="1" intronum="74"}
+            <section>
+                <div class="thjingxuan">
+                    <div class="thjingxuan_title"><i></i>热点文章</div>
+                    <section class="thjingxuan_sec">
+                        {loop:$data[list] $v}
+                        <div class="col-md-4 col-xs-6 post_id_{$v[id]}">
+                            <div class="thliorder1">
+                                <div class="thliorder1_title">
+                                    <span><a href="{$v[cate_url]}" title="{$v[cate_name]}">{$v[cate_name]}</a></span>
+                                    <div class="thtime">{$v[date]}</div>
+                                </div>
+                                <div class="daodu"><a href="{$v[url]}" title="{$v[title]}">{$v[subject]}</a></div>
+                                <div class="daoducon">{$v[intro]}</div>
+                            </div>
+                        </div>
+                        {/loop}
+                    </section>
+                </div>
+            </section>
+            {/block}
+            <!--热点属性文章end-->
+        </div>
+        <div class="col-md-3 col-xs-12 wap_margintop">
+            <!--阅读排行榜start-->
+            {block:list_top orderby="views" limit="8" titlenum="24"}
+            <section>
+                <div class="thleftcon" style="height:363px;">
+                    <div class="thleftbt"><span>阅读排行</span></div>
+                    <ul class="th-5">
+                        {php}$rank = 1;{/php}
+                        {loop:$data[list] $v}
+                        <li class="post_id_{$v[id]}"><span class="date">{$v[views]}℃</span><i>{$rank}</i><a href="{$v[url]}" title="{$v[title]}">{$v[subject]}</a></li>
+                        {php}$rank++;{/php}
+                        {/loop}
+                    </ul>
+                </div>
+            </section>
+            {/block}
+            <!--阅读排行榜end-->
+        </div>
+    </div>
+</div>
+<!--首页主体第二部分end-->
+
+<!--首页主体第三部分start-->
+<div class="container th_margintop">
+    <div class="row">
+        <div class="col-md-9 col-xs-12">
+            <!--推荐属性文章start-->
+            {block:list_flag flag="1" limit="6" dateformat="Y-m-d" showviews="1" intronum="74"}
+            <section>
+                <div class="thjingxuan">
+                    <div class="thjingxuan_title"><i></i>推荐文章</div>
+                    <section class="thjingxuan_sec">
+                        {loop:$data[list] $v}
+                        <div class="col-md-4 col-xs-6 th_padding post_id_{$v[id]}">
+                            <div class="thliorder1">
+                                <div class="gundongimg">
+                                    <a href="{$v[url]}" title="{$v[title]}">
+                                        <img class="th-img gundong-img-height" src="{$v[pic]}" alt="{$v[title]}">
+                                    </a>
+                                </div>
+                                <div class="daodu">
+                                    <a href="{$v[url]}" title="{$v[title]}">{$v[subject]}</a>
+                                </div>
+                                <div class="daoducon">{$v[intro]}</div>
+                                <div class="thinfo">时间：{$v[date]}&nbsp;&nbsp;阅读：{$v[views]} ℃</div>
+                            </div>
+                        </div>
+                        {/loop}
+                    </section>
+                </div>
+            </section>
+            {/block}
+            <!--推荐属性文章end-->
+        </div>
+        <div class="col-md-3 col-xs-12 wap_margintop">
+            <!--随机文章start-->
+            {inc:rand.htm}
+            <!--随机文章end-->
+        </div>
+    </div>
+</div>
+<!--首页主体第三部分end-->
+
+<!--首页主体第四部分start 滚动图文-->
+<div class="container th_margintop wap_isnone">
+    <div class="row">
+        <div class="col-md-12 col-xs-12">
+            {block:list_flag flag="5" limit="10" titlenum="28"}
+            <section>
+                <div class="thleftcon">
+                    <div class="thleftbt">
+                        <span>幻灯属性文章</span>
+                        <!-- Add Arrows -->
+                        <div class="th-button-next" tabindex="0" role="button" aria-label="Next slide"><i class="iconfont  icon-jiantou_zuo"></i></div>
+                        <div class="th-button-prev" tabindex="0" role="button" aria-label="Previous slide"><i class="iconfont  icon-jiantou_you"></i></div>
+                    </div>
+                    <div class="swiper-container thslide2">
+                        <div class="swiper-wrapper">
+                            {loop:$data[list] $v}
+                            <div class="swiper-slide">
+                                <div class="thslidelist gundongimg ">
+                                    <a href="{$v[url]}" title="{$v[title]}" class="silde_a_border">
+                                        <img class="th-img thslide2-img-height" src="{$v[pic]}" alt="{$v[title]}">
+                                    </a>
+                                    <div class="thslidetitle"><a href="{$v[url]}" title="{$v[title]}">{$v[subject]}</a></div>
+                                </div>
+                            </div>
+                            {/loop}
+                        </div>
+                    </div>
+                </div>
+            </section>
+            {/block}
+        </div>
+        <script type="text/javascript" >
+            var swiper = new Swiper('.thslide2', {
+                slidesPerView: 5,
+                spaceBetween: 10,
+                loop: true,
+                autoplay: {
+                    delay: 1500,
+                    stopOnLastSlide: false,//如果设置为true，当切换到最后一个slide时停止自动切换
+                    disableOnInteraction: true,//用户操作swiper之后，是否禁止autoplay
+                },
+                navigation: {
+                    nextEl: '.th-button-next',
+                    prevEl: '.th-button-prev',
+                },
+            });
+        </script>
+    </div>
+</div>
+<!--首页主体第四部分end-->
+
+<!--首页主体第五部分start-->
+<div class="container th_margintop">
+    <div class="row">
+        {block:listeach cid="6" limit="10" dateformat="m-d" titlenum="38"}
+        {loop:$data $v}
+        <div class="col-md-4 col-xs-12">
+            <section>
+                <div class="thleftcon">
+                    <div class="thleftbt thwenzhang"><span>{$v[cate_name]}</span><div class="listMore"><a href="{$v[cate_url]}" title="{$v[cate_name]}">More +</a></div></div>
+                    <ul class="th-5">
+                        {php}$rank = 1;{/php}
+                        {loop:$v[list] $lv}
+                        <li><span class="date">{$lv[date]}</span><i>{$rank}</i><a href="{$lv[url]}" title="{$lv[title]}" target="_blank">{$lv[subject]}</a></li>
+                        {php}$rank++;{/php}
+                        {/loop}
+                    </ul>
+                </div>
+            </section>
+        </div>
+        {/loop}
+        {/block}
+    </div>
+</div>
+<!--首页主体第五部分end-->
+
+<!--友情链接start-->
+{block:links}
+{if:$data}
+<section>
+    <div class="container th_margintop">
+        <div class="row">
+            <!--line-->
+            <div class="col-md-12 col-xs-12">
+                <section>
+                    <div class="thleftcon">
+                        <div class="thleftbt"><span>{lang:links}</span></div>
+                        <ul class="th-8">
+                            {loop:$data $v}<li><a href="{$v[url]}" target="_blank">{$v[name]}</a></li>{/loop}
+                        </ul>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</section>
+{/if}
+{/block}
+<!--友情链接end-->
+{inc:footer.htm}
+</body>
+</html>

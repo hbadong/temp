@@ -1,0 +1,94 @@
+{inc:user/header.htm}
+<style>
+  .basicinfo {margin: 15px 0;}
+  .basicinfo .row > .col-xs-4 {padding-right: 0;}
+  .basicinfo .row > div {margin: 5px 0;}
+</style>
+
+<main class="content">
+  <div id="content-container" class="container">
+    <div class="row">
+      {inc:user/menu.htm}
+      <!--右侧主体部分 start-->
+      <div class="col-md-9">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <h2 class="page-header">
+              {lang:my_index}
+            </h2>
+            <div class="row user-baseinfo">
+
+              <div class="col-md-9 col-sm-9 col-xs-10">
+                <div class="ui-content">
+                  <h4>{$_user[username]}（{$_group[groupname]}）</h4>
+                  <p class="text-muted">{if:!empty($_user[intro])}{$_user[intro]}{else}{lang:user_no_intro}{/if}</p>
+                </div>
+              </div>
+
+              <div class="col-md-9 col-sm-9 col-xs-12">
+                <div class="ui-content">
+                  <div class="basicinfo">
+                    <div class="row">
+                      <div class="col-xs-4 col-md-2">{lang:author}</div>
+                      <div class="col-xs-8 col-md-10">
+                        {$_user[author]}
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xs-4 col-md-2">{lang:email}</div>
+                      <div class="col-xs-8 col-md-4">{if:!empty($_user[email])}{$_user[email]}{else}{lang:unknown}{/if}</div>
+                      <div class="col-xs-4 col-md-2">{lang:mobile}</div>
+                      <div class="col-xs-8 col-md-4">{if:!empty($_user[mobile])}{$_user[mobile]}{else}{lang:unknown}{/if}</div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xs-4 col-md-2">{lang:this_login}</div>
+                      <div class="col-xs-8 col-md-10">
+                        {$_user[logindate]}（{$_user[loginip]}）
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xs-4 col-md-2">{lang:last_login}</div>
+                      <div class="col-xs-8 col-md-10">
+                        {$_user[lastdate]}（{$_user[lastip]}）
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xs-4 col-md-2">{lang:reg_time}</div>
+                      <div class="col-xs-8 col-md-10">
+                        {$_user[regdate]}（{$_user[regip]}）
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xs-4 col-md-2">{lang:logins_count}</div>
+                      <div class="col-xs-8 col-md-4">{$_user[logins]}</div>
+                      <div class="col-xs-4 col-md-2">{lang:contents_count}</div>
+                      <div class="col-xs-8 col-md-4">{$_user[contents]}</div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xs-4 col-md-2">{lang:credits}</div>
+                      <div class="col-xs-8 col-md-4">{$_user[credits]}</div>
+                      <div class="col-xs-4 col-md-2">{lang:golds}</div>
+                      <div class="col-xs-8 col-md-4">{$_user[golds]}</div>
+                    </div>
+                    {hook:my_index_user_info_after.htm}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--右侧主体部分 end-->
+    </div>
+  </div>
+</main>
+
+{inc:user/footer.htm}
+<script type="text/javascript">
+  layui.use(['form'], function () {
+    var form = layui.form, layer = layui.layer, $ = layui.$;
+    $("#my-index").addClass("active");
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+	<meta name="generator" content="LECMS" />
+	<meta name="renderer" content="webkit">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>{$cfg[titles]}</title>
+	<meta name="keywords" content="{$cfg[seo_keywords]}" />
+	<meta name="description" content="{$cfg[seo_description]}" />
+	<link rel="shortcut icon" type="image/x-icon" href= "{$cfg[webdir]}favicon.ico" />
+	<link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" media="all">
+	<link rel="stylesheet" href="{$cfg[tpl]}style/style.css" type="text/css" media="all"/>
+	<script type="text/javascript" src="{$cfg[webdir]}static/js/jquery.js"></script>
+	<script type="text/javascript">
+		window._LE = {
+			uri: "{$cfg[weburl]}",
+			uid: "{$_uid}",
+			parseurl: "{$_parseurl}"
+		};
+	</script>
+	<script type="text/javascript" src="{$cfg[tpl]}script/main.js"></script>
+</head>
+<body>
+<header class="th_header">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-2 col-xs-12 wap_headerlogo">
+				<a href="{$cfg[weburl]}" title="{$cfg[webname]}">
+					<img src="{$cfg[tpl]}style/img/logo.png" alt="{$cfg[webname]}" style="width: 180px;"/>
+				</a>
+				<div class="wap_headerclick"><span class="iconfont icon-caidan1"></span><span class="iconfont icon-guanbi1"></span></div>
+			</div>
+			<div class="col-md-7 col-xs-12 wap_headernav wap_display">
+				<!--导航start-->
+				{block:navigate}
+				<ul class="th_nav">
+					<li {if:empty($cfg_var['topcid'])} class="act"{/if}><a href="{$cfg[weburl]}" title="{$cfg[webname]}">{lang:home}</a></li>
+					{loop:$data $v}
+					<li{if:$cfg_var['topcid'] == $v['cid']} class="act"{/if}>
+						<a href="{$v[url]}" target="{$v[target]}" title="{$v[name]}">{$v[name]}{if:isset($v[son])}<i class="iconfont icon-jiantou"></i>{/if}</a>
+						{if:isset($v[son])}
+						<ul>
+							{loop:$v[son] $v2}<li><a href="{$v2[url]}" target="{$v2[target]}" title="{$v2[name]}">{$v2[name]}</a></li>{/loop}
+						</ul>
+						{/if}
+					</li>
+					{/loop}
+				</ul>
+				{/block}
+				<!--导航end-->
+			</div>
+			<!--搜索框start mid=2表示搜索文章-->
+			<div class="col-md-3 col-xs-12 th_padding wap_headersearch wap_display">
+				<div class="searchpanel">
+					<form name="search" method="get" action="{$cfg[webdir]}index.php" id="search_form">
+						<input type="hidden" name="u" value="search-index" />
+						<input type="hidden" name="mid" value="2" />
+						<input type="text" name="keyword" value="{$keyword}" size="11" />
+						<input type="submit" name="submit" value="{lang:search}" />
+					</form>
+				</div>
+			</div>
+			<!--搜索框end-->
+		</div>
+	</div>
+</header>
+<p class="pheaderpad"></p>

@@ -1,0 +1,54 @@
+	{loop:$nav_arr $v $k}
+		<div class="list" _cid="{$v[cid]}" _rank="1" _key="{$k}">
+			<ul class="cf">
+				<li class="nav_l">
+					<div class="layui-inline">
+						<label class="layui-form-label">
+							<input type="checkbox" class="check_box"{if:isset($v['target']) && $v['target'] == '_blank'} checked="checked"{/if} title="{lang:target}">
+						</label>
+						<div class="layui-input-inline">
+							<input type="text" class="layui-input name" value="{$v[name]}">
+						</div>
+
+					</div>
+				</li>
+				<li class="nav_c">
+					<div class="layui-form-item">
+						<div class="layui-inline"><input type="text" class="layui-input cssclass" placeholder="CSS class" value="{$v[class]}"></div>
+						{if:$v[cid] == -99}<div class="layui-inline"><input type="text" class="layui-input url" value="{$v[url]}"></div>{/if}
+					</div>
+				</li>
+				<li class="nav_r layui-btn-group">
+					<a class="layui-btn layui-btn-sm layui-btn-danger del" onclick="nav_del(this)" href="javascript:;">{lang:delete}</a>
+					<a class="layui-btn layui-btn-sm" target="_blank" href="{$v[url]}">{lang:view}</a>
+				</li>
+			</ul>
+			<div class="nav_transport"></div>
+		</div>
+
+		{loop:$v[son] $v2 $k2}
+		<div class="list nav_rank_2" _cid="{$v2[cid]}" _rank="2" _key="{$k}-{$k2}">
+			<ul class="cf">
+				<li class="nav_l">
+					<label class="layui-form-label">
+						<input type="checkbox" class="check_box"{if:isset($v2['target']) && $v2['target'] == '_blank'} checked="checked"{/if} title="{lang:target}">
+					</label>
+					<div class="layui-input-inline">
+						<input type="text" class="layui-input name" value="{$v2[name]}">
+					</div>
+				</li>
+				<li class="nav_c">
+					<div class="layui-form-item">
+						<div class="layui-inline"><input type="text" class="layui-input cssclass" placeholder="CSS class" value="{$v2[class]}"></div>
+						{if:$v2[cid] == -99}<div class="layui-inline"><input type="text" class="layui-input url" value="{$v2[url]}"></div>{/if}
+					</div>
+				</li>
+				<li class="nav_r layui-btn-group">
+					<a class="layui-btn layui-btn-sm layui-btn-danger del" onclick="nav_del(this)" href="javascript:;">{lang:delete}</a>
+					<a class="layui-btn layui-btn-sm" target="_blank" href="{$v2[url]}" cid="{$v2[cid]}">{lang:view}</a>
+				</li>
+			</ul>
+			<div class="nav_transport"></div>
+		</div>
+		{/loop}
+	{/loop}
