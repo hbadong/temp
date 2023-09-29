@@ -17,7 +17,7 @@ function block_taglist($conf) {
 	// hook block_taglist_before.php
     $mid = isset($conf['mid']) ? intval($conf['mid']) : (isset($_GET['mid']) ? intval($_GET['mid']) : 2);
 	$table = isset($run->_cfg['table_arr'][$mid]) ? $run->_cfg['table_arr'][$mid] : 'article';
-	$orderby = isset($conf['orderby']) && in_array($conf['orderby'], array('tagid', 'count')) ? $conf['orderby'] : 'count';
+	$orderby = isset($conf['orderby']) && in_array($conf['orderby'], array('tagid', 'count', 'orderby')) ? $conf['orderby'] : 'count';
 	$orderway = isset($conf['orderway']) && $conf['orderway'] == 1 ? 1 : -1;
     $start = _int($conf, 'start', 0);
 	$limit = isset($conf['limit']) ? (int)$conf['limit'] : 10;

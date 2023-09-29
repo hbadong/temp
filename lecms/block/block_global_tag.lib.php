@@ -22,7 +22,7 @@ function block_global_tag($conf) {
         $mid = max(2, (int)R('mid', 'R'));
     }
 	$pagenum = empty($conf['pagenum']) ? 20 : max(1, (int)$conf['pagenum']);
-    $orderby = isset($conf['orderby']) && in_array($conf['orderby'], array('tagid', 'count')) ? $conf['orderby'] : 'count';
+    $orderby = isset($conf['orderby']) && in_array($conf['orderby'], array('tagid', 'count', 'orderby')) ? $conf['orderby'] : 'count';
 	$orderway = isset($conf['orderway']) && $conf['orderway'] == 1 ? 1 : -1;
     $pageoffset = _int($conf, 'pageoffset', 5);
     $showmaxpage = _int($conf, 'showmaxpage', 0);

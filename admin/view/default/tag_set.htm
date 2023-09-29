@@ -27,6 +27,12 @@
                         </div>
                         {/if}
                         <div class="layui-form-item">
+                            <label class="layui-form-label">{lang:orderby}</label>
+                            <div class="layui-input-inline">
+                                <input type="number" name="orderby" placeholder="{lang:orderby}" value="{$data[orderby]}" class="layui-input"/>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
                             <label class="layui-form-label">{lang:content}</label>
                             <div class="layui-input-block">
                                 <textarea name="content" class="layui-textarea" autocomplete="off" placeholder="{lang:content}" style="min-height: 50px;" maxlength="255">{$data[content]}</textarea>
