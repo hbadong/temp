@@ -14,6 +14,10 @@ class tag_control extends base_control{
 		// hook tag_control_index_before.php
 
 		$mid = (int)R('mid', 'G');
+		//动态链接文章标签URL默认省略了mid
+		if( empty($this->_parseurl) && !isset($_GET['mid'])){
+		    $mid = 2;
+        }
 		$table = isset($this->_cfg['table_arr'][$mid]) ? $this->_cfg['table_arr'][$mid] : '';
         ($table == '' || $table == 'page') AND core::error404();
         $this->cms_content_tag->table = 'cms_'.$table.'_tag';
