@@ -3,14 +3,17 @@
  * Author: dadadezhou <zhoudada97@foxmail.com>
  * Date: 2022-09-24
  * Time: 9:05
- * Description:前台404页面控制器，该页面不做其他任何判断
+ * Description:前台404页面控制器，不能继承base控制器
  */
 defined('ROOT_PATH') or exit;
 
-class error404_control extends base_control{
+class error404_control extends control{
+    public $_cfg = array();	// 全站参数
+    public $_var = array();	// 各个模块页参数
 
     //404页面
 	public function index() {
+        $this->_cfg = $this->runtime->xget();
 		// hook error404_control_index_before.php
 
 		header('HTTP/1.1 404 Not Found');
