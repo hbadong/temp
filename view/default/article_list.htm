@@ -15,16 +15,6 @@
 						{block:global_cate pagenum="10" dateformat="Y-m-d" showviews="1"}{/block}
 						<section class="thjingxuan_sec">
 							{loop:$gdata[list] $v}
-							{php}
-								$keywords = '一';
-								$lib_file = core::get_original_file('block_list_by_keywords.lib.php', BLOCK_PATH);
-								if(!is_file($lib_file)) return '';
-
-								include_once $lib_file;
-								$list_by_keywords_data = block_list_by_keywords(array('keywords'=>$keywords));
-							{/php}
-
-
 							<div class="col-md-12 col-xs-12 th_padding post_id_{$v[id]}">
 								<div class="thliorder1">
 									<div class="thnews-img">
