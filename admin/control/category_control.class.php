@@ -59,7 +59,7 @@ class category_control extends admin_control{
             $cid = intval( R('cid','P') );
             $value = trim( R('value','P') );
 
-            empty($value) && E(1, lang('filed_not_empty', array('field'=>$field)));
+            ($field != 'orderby' && empty($value) && E(1, lang('filed_not_empty', array('field'=>$field)));
 
             $categorys = $this->category->get($cid);
             empty($categorys) && E(1, lang('data_no_exists'));
