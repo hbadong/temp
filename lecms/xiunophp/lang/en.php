@@ -107,4 +107,5 @@ return array(
     'edit_field_failed'=>'Edit {field} failed',
     'add_field_successfully'=>'Add {field} successfully',
     'add_field_failed'=>'Add {field} failed',
+    'filed_not_empty'=>'{field} cannot be empty',
 );

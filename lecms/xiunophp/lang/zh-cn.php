@@ -107,4 +107,5 @@ return array(
     'edit_field_failed'=>'编辑 {field} 失败',
     'add_field_successfully'=>'添加 {field} 成功',
     'add_field_failed'=>'添加 {field} 失败',
+    'filed_not_empty'=>'{field}不能为空',
 );
