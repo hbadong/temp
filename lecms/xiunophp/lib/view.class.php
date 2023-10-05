@@ -174,7 +174,11 @@ class view{
 		$lib_str = preg_replace_callback('#\t*\/\/\s*hook\s+([\w\.]+)[\r\n]#', array('core', 'process_hook'), $lib_str);
 		if(!DEBUG) $lib_str = _strip_whitespace($lib_str);
 		$lib_str = core::clear_code($lib_str);
-		$this->head_arr['block_'.$func] = $lib_str;
+
+		//先判断函数是否已经存在，避免重复引入
+		if(!function_exists('block_'.$func)){
+            $this->head_arr['block_'.$func] = $lib_str;
+        }
 
 		$s = $this->rep_double($s);
 		$config = $this->rep_double($config);
