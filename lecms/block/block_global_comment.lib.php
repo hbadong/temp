@@ -44,9 +44,10 @@ function block_global_comment($conf) {
     // 分页相关
     $total = &$_show['comments'];
     $maxpage = max(1, ceil($total/$pagenum));
-    if($showmaxpage && $maxpage > $showmaxpage){
-        $maxpage = $showmaxpage;
-    }
+
+    //最大页数控制（超出进入404页面）
+    if( R('page', 'G') > $maxpage || ($showmaxpage && R('page', 'G') > $showmaxpage)){core::error404();}
+
     $page = min($maxpage, max(1, (int) R('page')));
     $_show['pages'] = paginator::$page_function($page, $maxpage, $run->cms_content->comment_url($run->_var['cid'], $id, TRUE), $pageoffset);
 

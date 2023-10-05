@@ -39,9 +39,10 @@ function block_global_taglist($conf) {
 	$tagid = $tags['tagid'];
 	$total = $tags['count'];
 	$maxpage = max(1, ceil($total/$pagenum));
-    if($showmaxpage && $maxpage > $showmaxpage){
-        $maxpage = $showmaxpage;
-    }
+
+    //最大页数控制（超出进入404页面）
+    if( R('page', 'G') > $maxpage || ($showmaxpage && R('page', 'G') > $showmaxpage)){core::error404();}
+
 	$page = min($maxpage, max(1, intval(R('page'))));
 	$pages = paginator::$page_function($page, $maxpage, $run->cms_content->tag_url($mid, $tags, TRUE), $pageoffset);
 

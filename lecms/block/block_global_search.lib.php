@@ -63,9 +63,10 @@ function block_global_search($conf) {
 	// 初始分页
 	$total = $run->cms_content->find_count($where);
 	$maxpage = max(1, ceil($total/$pagenum));
-    if($showmaxpage && $maxpage > $showmaxpage){
-        $maxpage = $showmaxpage;
-    }
+
+	//最大页数控制（超出进入404页面）
+    if( R('page', 'G') > $maxpage || ($showmaxpage && R('page', 'G') > $showmaxpage)){core::error404();}
+
 	$page = min($maxpage, max(1, intval(R('page'))));
 
     $search_url = $run->urls->search_url($mid, $keyword, true);
