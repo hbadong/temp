@@ -120,8 +120,10 @@ class content_control extends admin_control{
             }
 
             $v['flag_fmt'] = '';
-            foreach ($v['flag_arr'] as $flag){
-                $v['flag_fmt'] .= '<a class="layui-badge-rim" target="_blank" href="'.$flag['url'].'">'.$flag['name'].'</a>&nbsp;';
+            if(isset($v['flag_arr']) && $v['flag_arr']) {
+                foreach ($v['flag_arr'] as $flag) {
+                    $v['flag_fmt'] .= '<a class="layui-badge-rim" target="_blank" href="' . $flag['url'] . '">' . $flag['name'] . '</a>&nbsp;';
+                }
             }
 
             // hook admin_content_control_get_list_foreach.php

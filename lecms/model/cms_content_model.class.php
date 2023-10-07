@@ -63,7 +63,7 @@ class cms_content extends model {
 
         //标签
 		$v['tags'] = _json_decode($v['tags']);
-        $v['tag_arr'] = array();
+        $v['tag_arr'] = $v['flag_arr'] = array();
 		if($v['tags']) {
 			foreach($v['tags'] as $tagid=>$name) {
 			    $tag_tmp = array('tagid'=>$tagid, 'name'=>$name);
@@ -82,8 +82,6 @@ class cms_content extends model {
             foreach ($flags_arr as $flag){
                 isset($flag_arr[$flag]) AND $v['flag_arr'][$flag] = array('name'=>$flag_arr[$flag], 'url'=>$this->urls->flag_url($mid, $flag));
             }
-        }else{
-            $v['flag_arr'] = array();
         }
 
         //缩略图
