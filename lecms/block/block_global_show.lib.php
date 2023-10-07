@@ -61,6 +61,9 @@ function block_global_show($conf) {
         }else{
             $_show['pages'] = false;
         }
+    }else{
+        // hook block_global_show_data_error.php
+        $_show['pages'] = false;
     }
 
 	//获取浏览量

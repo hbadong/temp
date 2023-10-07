@@ -234,11 +234,13 @@ class content_control extends admin_control{
             $this->cms_content_views->table = 'cms_'.$this->_table.'_views';
             $data2 = $this->cms_content_data->get($id);
             $data3 = $this->cms_content_views->get($id);
+            $data2 === FALSE && $data2 = array();
+            $data3 === FALSE && $data3 = array();
 
             // hook admin_article_control_edit_data_before.php
 
             $data = array_merge($data, $data2, $data3);
-            $data['content'] = htmlspecialchars($data['content']);
+            $data['content'] = isset($data['content']) ? htmlspecialchars($data['content']) : '';
             $data['tags'] = implode(',', (array)_json_decode($data['tags']));
             $data['intro'] = str_replace('<br />', "\n", strip_tags($data['intro'], '<br>'));
 
