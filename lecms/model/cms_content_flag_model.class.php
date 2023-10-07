@@ -109,6 +109,60 @@ class cms_content_flag extends model {
         }
     }
 
+    //设置或者取消某个属性
+    public function set_flag($table = 'article', $cid = 0, $id = 0, $flag = 0, $exist = 0){
+        if(empty($id) || empty($cid) || empty($flag)){return false;}
+
+        // hook cms_content_flag_model_set_flag_before.php
+
+        $this->table = 'cms_'.$table.'_flag';
+        $this->cms_content->table = 'cms_'.$table;
+
+        $cms_content = $this->cms_content->get($id);
+        if( empty($cms_content) ){return false;}
+
+        if($exist){ //取消属性
+            $flags = $cms_content['flags'];
+            $flags_arr = explode(',', $flags);
+            if( empty($flags_arr) || !in_array($flag, $flags_arr) ){return false;}
+
+            $remove = array($flag);
+            $diff = array_diff($flags_arr, $remove);
+            if($diff){
+                $cms_content['flags'] = implode(',', $diff);
+            }else{
+                $cms_content['flags'] = '';
+            }
+
+            if($this->cms_content->update($cms_content)){
+                $this->delete($flag, $id);
+                return true;
+            }else{
+                return false;
+            }
+        }else{  //设置属性
+            $flags = $cms_content['flags'];
+            $flags_arr = explode(',', $flags);
+            if( $flags_arr && in_array($flag, $flags_arr) ){
+                return false;
+            }
+
+            if($flags_arr){
+                $flags_arr = array_merge($flags_arr, array($flag));
+                $cms_content['flags'] = implode(',', $flags_arr);
+            }else{
+                $cms_content['flags'] = $flag;
+            }
+
+            if($this->cms_content->update($cms_content)){
+                $this->set(array($flag, $id), array('cid'=>$cid));
+                return true;
+            }else{
+                return false;
+            }
+        }
+    }
+
     //设置属性（保留旧的）
     public function xflags($table = 'article', $id = 0, $cid = 0, $flags = array()){
         if(empty($id) || empty($cid)){return false;}
@@ -134,10 +188,11 @@ class cms_content_flag extends model {
         }else{
             $result = $cha = $flags;
         }
+        $cms_content['flags'] = implode(',', $result);
         // hook cms_content_flag_model_xflags_center.php
 
         //更新内容表
-        if( $this->cms_content->update(array('id'=>$id, 'flags'=>implode(',', $result))) ){
+        if( $this->cms_content->update($cms_content) ){
             // 写入内容属性标记表（如果有旧的，就只要写入差异的）
             foreach($cha as $flag) {
                 $this->set(array($flag, $id), array('cid'=>$cid));

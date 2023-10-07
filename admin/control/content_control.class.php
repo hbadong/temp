@@ -6,8 +6,7 @@ class content_control extends admin_control{
     public $_table = 'article';
     public $_name = '文章';
 
-    function __construct()
-    {
+    function __construct(){
         parent::__construct();
 
         $this->_mid = max(2, (int)R('mid','R'));
@@ -36,7 +35,6 @@ class content_control extends admin_control{
         $this->assign('mid',$this->_mid);
         $this->assign('table',$this->_table);
         $this->assign('name',$this->_name);
-
         // hook admin_content_control_construct_after.php
     }
 
@@ -59,12 +57,7 @@ class content_control extends admin_control{
         $this->assign('add_content', $add_name);
         $this->assign('edit_content', $edit_name);
 
-        //属性
-        $flaghtml = $this->cms_content->flag_html();
-        $this->assign('flaghtml', $flaghtml);
-
         // hook admin_content_control_index_after.php
-
         $this->display();
     }
 
@@ -104,6 +97,12 @@ class content_control extends admin_control{
 
         $allcategory = $this->category->get_category_db();
 
+        if($_ENV['_config']['admin_lang'] == 'zh-cn'){
+            $flag_arr = $this->cms_content->flag_arr;
+        }else{
+            $flag_arr = $this->cms_content->flag_arr_en;
+        }
+
         //数据列
         $data_arr = array();
         $cms_arr = $this->cms_content->list_arr($where, 'id', -1, ($page-1)*$pagenum, $pagenum, $total);
@@ -120,11 +119,33 @@ class content_control extends admin_control{
             }
 
             $v['flag_fmt'] = '';
-            if(isset($v['flag_arr']) && $v['flag_arr']) {
-                foreach ($v['flag_arr'] as $flag) {
-                    $v['flag_fmt'] .= '<a class="layui-badge-rim" target="_blank" href="' . $flag['url'] . '">' . $flag['name'] . '</a>&nbsp;';
+            $flag_html_arr = array();
+            if($v['flags']){
+                $has_flags = explode(',', $v['flags']);
+                foreach ($flag_arr as $f=>$fname){
+                    if( in_array($f, $has_flags) ){
+                        $badge_class = 'layui-badge layui-bg-blue';
+                        $has_flag = 1;
+                    }else{
+                        $badge_class = 'layui-badge layui-bg-gray';
+                        $has_flag = 0;
+                    }
+                    $js_param = "{$v['cid']},{$v['id']},$f,$has_flag";
+                    $flag_html_arr[] = '<a class="'.$badge_class.'" href="javascript:setflag('.$js_param.');">'.$fname.'</a>';
+                }
+            }else{
+                foreach ($flag_arr as $f=>$fname){
+                    $js_param = "{$v['cid']},{$v['id']},$f,0";
+                    $flag_html_arr[] = '<a class="layui-badge layui-bg-gray" href="javascript:setflag('.$js_param.');">'.$fname.'</a>';
                 }
             }
+            $v['flag_fmt'] = implode(' ', $flag_html_arr);
+
+//            if(isset($v['flag_arr']) && $v['flag_arr']) {
+//                foreach ($v['flag_arr'] as $flag) {
+//                    $v['flag_fmt'] .= '<a class="layui-badge-rim" target="_blank" href="' . $flag['url'] . '">' . $flag['name'] . '</a>&nbsp;';
+//                }
+//            }
 
             // hook admin_content_control_get_list_foreach.php
             $data_arr[] = $v;   //排序需要索引从0开始
@@ -318,10 +339,32 @@ class content_control extends admin_control{
         }
     }
 
-    //设置属性
+    //设置和取消某内容的某个属性
+    public function set_flag(){
+        if($_POST){
+            $cid = (int)R('cid', 'P');
+            $id = (int)R('id', 'P');
+            $flag = (int)R('flag', 'P');
+            $exist = (int)R('exist', 'P');
+            // hook admin_content_control_set_flag_before.php
+
+            $r = $this->cms_content_flag->set_flag($this->_table, $cid, $id, $flag, $exist);
+            if($r){
+                // hook admin_content_control_set_flag_after.php
+                E(0, lang('opt_successfully'));
+            }else{
+                E(1, lang('opt_failed'));
+            }
+        }else{
+            E(1, lang('data_error'));
+        }
+    }
+
+    //批量设置属性
     public function batch_flags(){
         if($_POST){
             $id_arr = R('id_arr', 'P');
+            // hook admin_content_control_batch_flags_before.php
             if(!empty($id_arr) && is_array($id_arr)) {
                 $flag_arr = R('flags', 'P');
                 if( !empty($flag_arr) && is_array($flag_arr) ){
@@ -341,6 +384,7 @@ class content_control extends admin_control{
     }
 
     public function get_category_html(){
+        // hook admin_content_control_get_category_html_before.php
         //分类下拉框
         $cidhtml = $this->category->get_cidhtml_by_mid($this->_mid, 0, lang('select_category'));
         $this->assign('cidhtml', $cidhtml);
@@ -351,6 +395,7 @@ class content_control extends admin_control{
     public function batch_move(){
         if($_POST){
             $id_arr = R('id_arr', 'P');
+            // hook admin_content_control_batch_move_before.php
             if(!empty($id_arr) && is_array($id_arr)) {
                 $cid = (int)R('cid', 'P');
                 if(empty($cid)){
