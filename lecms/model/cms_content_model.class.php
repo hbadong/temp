@@ -39,7 +39,7 @@ class cms_content extends model {
     }
 
 	// 格式化内容数组
-	public function format(&$v, $mid, $dateformat = 'Y-m-d H:i', $titlenum = 0, $intronum = 0, $field_format = 0) {
+	public function format(&$v, $mid, $dateformat = 'Y-m-d H:i', $titlenum = 0, $intronum = 0, $field_format = 0, $extra = array()) {
 		// hook cms_content_model_format_before.php
 
 		if(empty($v) || !is_array($v)) return FALSE;
@@ -71,10 +71,11 @@ class cms_content extends model {
 			}
 		}
 
-		//属性（前台调用，用前台语言包）
-        if($v['flags']){
+		//属性(基本用不上，因此加上参数开关)
+        if(isset($extra['flags']) && !empty($extra['flags']) && $v['flags']){
             $flags_arr = explode(',', $v['flags']);
-            if($_ENV['_config']['lang'] == 'zh-cn'){
+            $lang = APP_NAME == 'admin' ? $_ENV['_config']['admin_lang'] : $_ENV['_config']['lang'];
+            if($lang == 'zh-cn'){
                 $flag_arr = $this->flag_arr;
             }else{
                 $flag_arr = $this->flag_arr_en;
