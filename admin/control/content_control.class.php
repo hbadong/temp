@@ -95,8 +95,10 @@ class content_control extends admin_control{
         $maxpage = max(1, ceil($total/$pagenum));
         $page = min($maxpage, max(1, $page));
 
-        $allcategory = $this->category->get_category_db();
+        //对应模型所有分类
+        $allcategory = $this->category->get_category_db_mid($this->_mid);
 
+        //所有属性
         if($_ENV['_config']['admin_lang'] == 'zh-cn'){
             $flag_arr = $this->cms_content->flag_arr;
         }else{
@@ -111,13 +113,17 @@ class content_control extends admin_control{
 
             $v['category'] = isset($allcategory[$v['cid']]) ? $allcategory[$v['cid']]['name'] : lang('unknown');
 
+            //标签格式化显示
             $v['tags_fmt'] = '';
+            $tags_fmt_arr = array();
             if(isset($v['tag_arr']) && $v['tag_arr']){
                 foreach ($v['tag_arr'] as $tag){
-                    $v['tags_fmt'] .= '<a class="layui-badge-rim" target="_blank" href="'.$tag['url'].'">'.$tag['name'].'</a>&nbsp;';
+                    $tags_fmt_arr[] = '<a class="layui-badge-rim" target="_blank" href="'.$tag['url'].'">'.$tag['name'].'</a>';
                 }
+                $v['tags_fmt'] = implode(' ', $tags_fmt_arr);
             }
 
+            //属性格式化显示
             $v['flag_fmt'] = '';
             $flag_html_arr = array();
             if($v['flags']){
@@ -140,12 +146,6 @@ class content_control extends admin_control{
                 }
             }
             $v['flag_fmt'] = implode(' ', $flag_html_arr);
-
-//            if(isset($v['flag_arr']) && $v['flag_arr']) {
-//                foreach ($v['flag_arr'] as $flag) {
-//                    $v['flag_fmt'] .= '<a class="layui-badge-rim" target="_blank" href="' . $flag['url'] . '">' . $flag['name'] . '</a>&nbsp;';
-//                }
-//            }
 
             // hook admin_content_control_get_list_foreach.php
             $data_arr[] = $v;   //排序需要索引从0开始

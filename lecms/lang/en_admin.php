@@ -515,6 +515,7 @@ return array(
     'opt_confirm'=>'Confirm ?',
 
     'debug_tips'=>'Your Lecms has debug mode turned on, this mode of the site is at risk of attack and performance degradation. Please turn off the debug mode in time for the actual deployment of the site online!',
+    'url_rewrite_tips'=>'Enable URL pseudo-static, more friendly to search engines and users and better security',
     'plugin_disable'=>'All plugins have been disabled, Please modify the lecms/config/config.inc.php file plugin_disable=>0',
     'characters_too_long'=>'{field} cannot exceed {length} characters',
 

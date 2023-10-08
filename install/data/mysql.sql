@@ -57,6 +57,7 @@ CREATE TABLE pre_category (
   seo_description varchar(255) NOT NULL DEFAULT '' COMMENT 'SEO描述',
   contribute tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '允许投稿',
   PRIMARY KEY (cid),
+  KEY mid (mid),
   UNIQUE KEY alias (alias)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci COMMENT='分类表';
 

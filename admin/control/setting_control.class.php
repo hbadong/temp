@@ -642,10 +642,16 @@ class setting_control extends admin_control{
                 $default_admin_dir_tips = '';
             }
 
+            $url_rewrite_tips = '';
+            if(empty($_ENV['_config']['lecms_parseurl'])){
+                $url_rewrite_tips = lang('url_rewrite_tips');
+            }
+
             $this->assign('show_tips', $_show_tips);
             $this->assign('debug_tips', $debug_tips);
             $this->assign('install_tips', $install_tips);
             $this->assign('default_admin_dir_tips', $default_admin_dir_tips);
+            $this->assign('url_rewrite_tips', $url_rewrite_tips);
 
             // hook admin_setting_control_security_after.php
             $this->assign('input', $input);

@@ -515,6 +515,7 @@ return array(
     'opt_confirm'=>'确定执行？',
 
     'debug_tips'=>'您的Lecms打开了调试模式，此模式下网站有被黑的风险和性能的降低。实际部署在线上的网站请及时关闭调试模式！',
+    'url_rewrite_tips'=>'建议开启URL伪静态，对搜索引擎及用户更加友好，安全性也更好',
     'plugin_disable'=>'已禁止所有插件，请修改 lecms/config/config.inc.php 文件 plugin_disable=>0',
     'characters_too_long'=>'{field}不能超过{length}个字符',
 

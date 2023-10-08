@@ -126,6 +126,25 @@ class category extends model {
         // hook category_model_format_after.php
     }
 
+    // 根据模型ID从数据库获取分类
+    public function get_category_db_mid($mid = 2) {
+        if(isset($this->data['category_db_'.$mid])) {
+            return $this->data['category_db_'.$mid];
+        }
+
+        // hook category_model_get_category_db_mid_before.php
+
+        $arr = array();
+        $tmp = $this->find_fetch(array('mid'=>$mid), array('orderby'=>1, 'cid'=>1));
+        foreach($tmp as $v) {
+            $arr[$v['cid']] = $v;
+        }
+
+        // hook category_model_get_category_db_mid_after.php
+
+        return $this->data['category_db_'.$mid] = $arr;
+    }
+
 	// 从数据库获取分类
 	public function get_category_db() {
 		if(isset($this->data['category_db'])) {
