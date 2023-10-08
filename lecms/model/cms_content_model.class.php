@@ -5,7 +5,7 @@ class cms_content extends model {
     private $data = array();		// 防止重复查询
 
     public $flag_arr = array(
-        1=>'推荐',2=>'热点',3=>'头条',4=>'精选',5=>'幻灯'
+        1=>'荐',2=>'热',3=>'头',4=>'精',5=>'幻'
     );
     public $flag_arr_en = array(
         1=>'Recommend',2=>'Hot',3=>'Headline',4=>'Choice',5=>'Slide'
