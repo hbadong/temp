@@ -60,7 +60,7 @@ function block_list_by_uid($conf) {
         }
     }
 
-    $user = $run->user->read($uid);
+    $user = $run->user->get($uid);
     if( empty($user) ){
         return array('username'=>'', 'author'=>'', 'list'=>array());
     }

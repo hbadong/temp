@@ -336,7 +336,7 @@ class category extends model {
 	// 获取指定分类的 mid (如果 cid 为空，则读第一个分类的 mid)
 	public function get_mid_by_cid($cid) {
 		if($cid) {
-			$arr = $this->read($cid);
+			$arr = $this->get($cid);
 		}else{
 			$arr = $this->get_category();
 			if(empty($arr)) return 2;
@@ -382,7 +382,7 @@ class category extends model {
 	// 更新分类缓存合并数组
 	public function update_cache($cid) {
 		$k = 'cate_'.$cid;
-		$arr = $this->read($cid);
+		$arr = $this->get($cid);
 		if(empty($arr)) return FALSE;
 
 		$arr['place'] = $this->get_place($cid);	// 分类当前位置

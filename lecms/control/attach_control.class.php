@@ -63,7 +63,7 @@ class attach_control extends base_control{
         $table = $this->_cfg['table_arr'][$mid];
         $this->cms_content_attach->table = 'cms_'.$table.'_attach';
 
-        $attach = $this->cms_content_attach->read($aid);
+        $attach = $this->cms_content_attach->get($aid);
         // hook attach_control_download_pre_attach.php
 
         if( empty($attach) || !empty($attach['isimage']) ){

@@ -46,7 +46,7 @@ function block_list_by_id($conf) {
     }
 
     if($id){
-        $data = $run->cms_content->read($id);
+        $data = $run->cms_content->get($id);
         if( empty($data) ){
             return array();
         }

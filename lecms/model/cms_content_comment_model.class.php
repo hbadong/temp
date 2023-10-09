@@ -104,9 +104,9 @@ class cms_content_comment extends model {
         }
 
         $this->cms_content->table = 'cms_'.$table;
-        
+
 		// 更新内容评论数
-		$data = $this->cms_content->read($comments['id']);
+		$data = $this->cms_content->get($comments['id']);
 		if($data && $data['comments'] > 0) {
 			$data['comments']--;
 			if(!$this->cms_content->update($data)) return lang('write_table_failed');

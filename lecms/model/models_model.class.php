@@ -212,7 +212,7 @@ class models extends model {
     public function xdelete($mid = 0){
         // hook models_model_xdelete_before.php
         // 内容读取
-        $data = $this->read($mid);
+        $data = $this->get($mid);
         if(empty($data)) return lang('data_no_exists');
         if( $data['system'] ) return lang('system_model_no_delete');
 

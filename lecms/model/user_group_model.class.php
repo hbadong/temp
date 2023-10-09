@@ -95,7 +95,7 @@ class user_group extends model {
     // 内容关联删除
     public function xdelete($groupid) {
         // 内容读取
-        $data = $this->read($groupid);
+        $data = $this->get($groupid);
         if(empty($data)) return lang('data_no_exists');
         if( $data['system'] ) return lang('system_group_no_delete');
 

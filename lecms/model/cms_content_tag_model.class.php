@@ -153,7 +153,7 @@ class cms_content_tag extends model {
                 for($i = 0; $i < $maxpage; $i++){
                     $list_arr = $this->cms_content_tag_data->find_fetch(array('tagid'=>$tagid), array('tagid' => 1), $i*$pagenum, $pagenum);
                     foreach($list_arr as $v) {
-                        $data = $this->cms_content->read($v['id']);
+                        $data = $this->cms_content->get($v['id']);
                         if($data){
                             $row = _json_decode($data['tags']);
                             unset($row[$tagid]);
@@ -166,7 +166,7 @@ class cms_content_tag extends model {
             }else{
                 $list_arr = $this->cms_content_tag_data->find_fetch(array('tagid'=>$tagid));
                 foreach($list_arr as $v) {
-                    $data = $this->cms_content->read($v['id']);
+                    $data = $this->cms_content->get($v['id']);
                     if($data){
                         $row = _json_decode($data['tags']);
                         unset($row[$tagid]);

@@ -43,7 +43,7 @@ function block_global_show($conf) {
 	$_show['comment_url'] = $run->cms_content->comment_url($run->_var['cid'], $id);
 
     // hook block_global_show_data_before.php
-	$data = $run->cms_content_data->read($id);
+	$data = $run->cms_content_data->get($id);
     // hook block_global_show_data_after.php
 	if($data){
         if($field_format && plugin_is_enable('models_filed')){

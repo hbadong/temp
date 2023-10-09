@@ -228,7 +228,7 @@ class cms_content extends model {
         // hook cms_content_model_xadd_user_after.php
 
         //分类检查
-        $categorys = $this->category->read($cid);
+        $categorys = $this->category->get($cid);
         if(empty($categorys)){
             return array('err'=>1 ,'msg'=>lang('category_not_exists'));
         }
@@ -489,7 +489,7 @@ class cms_content extends model {
         // hook cms_content_model_xedit_user_after.php
 
         //分类检查
-        $categorys = $this->category->read($cid);
+        $categorys = $this->category->get($cid);
         if(empty($categorys)){
             return array('err'=>1 ,'msg'=>lang('category_not_exists'));
         }
@@ -706,7 +706,7 @@ class cms_content extends model {
         //改变分类了
         if($cid != $olddata['cid']){
             // 旧的分类内容数减1
-            $categorys_old = $this->category->read($olddata['cid']);
+            $categorys_old = $this->category->get($olddata['cid']);
             $categorys_old['count'] = max(0, $categorys_old['count']-1);
             $this->category->update($categorys_old);
 
@@ -759,7 +759,7 @@ class cms_content extends model {
 		$this->cms_content_views->table = 'cms_'.$table.'_views';
 
 		//内容读取
-		$data = $this->read($id);
+		$data = $this->get($id);
 		if(empty($data)) return lang('data_no_exists');
 
 		//删除附件表里面的附件
@@ -788,7 +788,7 @@ class cms_content extends model {
 			$tags_arr = _json_decode($data['tags']);
 			foreach($tags_arr as $tagid => $name) {
 				$this->cms_content_tag_data->delete($tagid, $id);
-				$tagdata = $this->cms_content_tag->read($tagid);
+				$tagdata = $this->cms_content_tag->get($tagid);
 				$tagdata['count']--;
 				if($tagdata['count'] > 0) {
                     $this->cms_content_tag->update($tagdata);
@@ -799,7 +799,7 @@ class cms_content extends model {
 		}
 
 		//更新分类表
-		$catedata = $this->category->read($cid);
+		$catedata = $this->category->get($cid);
 		if(empty($catedata)) return lang('category_not_exists');
 		if($catedata['count'] > 0) {
 			$catedata['count']--;
@@ -852,7 +852,7 @@ class cms_content extends model {
         $this->cms_content_views->table = 'cms_'.$table.'_views';
 
         //内容读取
-        $data = $this->read($id);
+        $data = $this->get($id);
         if(empty($data)) return lang('data_no_exists');
 
         $old_cate = $this->category->get($old_cid);

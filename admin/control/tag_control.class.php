@@ -251,7 +251,7 @@ class tag_control extends admin_control {
 
                 $list_arr = $this->cms_content_tag_data->find_fetch(array('tagid'=>$tagid));
                 foreach($list_arr as $v) {
-                    $data2 = $this->cms_content->read($v['id']);
+                    $data2 = $this->cms_content->get($v['id']);
                     if(empty($data2)){
                         $this->cms_content_tag_data->find_delete(array('tagid'=>$tagid, 'id'=>$v['id']));
                     }else{

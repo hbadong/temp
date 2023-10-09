@@ -52,7 +52,7 @@ function block_list_by_tagid($conf) {
     }
 
     if($tagid){
-        $tagdata = $run->cms_content_tag->read($tagid);
+        $tagdata = $run->cms_content_tag->get($tagid);
         if( empty($tagdata) ){
             return array('tag_name'=> 'No Title', 'tag_url'=> 'javascript:;', 'list'=> array());
         }
@@ -103,7 +103,7 @@ function block_list_by_tagid($conf) {
         $tagid_arr = explode(',', $tagids);
 
         foreach($tagid_arr as $tagid){
-            $tagdata = $run->cms_content_tag->read($tagid);
+            $tagdata = $run->cms_content_tag->get($tagid);
             if(empty($tagdata)){
                 continue;
             }

@@ -23,7 +23,7 @@ class comment_control extends base_control{
 
 		if($this->_var['mid'] == 1){
             // 读取单页分类内容
-            $cms_page = $this->cms_page->read($_GET['cid']);
+            $cms_page = $this->cms_page->get($_GET['cid']);
             if( empty($cms_page) ){
                 core::error404();
             }
@@ -49,7 +49,7 @@ class comment_control extends base_control{
             $this->cms_content->table = 'cms_'.$this->_var['table'];
 
             // 读取内容
-            $_show = $this->cms_content->read($_GET['id']);
+            $_show = $this->cms_content->get($_GET['id']);
             if(empty($_show['cid']) || $_show['cid'] != $_GET['cid']) core::error404();
 
             // hook comment_control_index_seo_before.php
@@ -136,7 +136,7 @@ class comment_control extends base_control{
                 $cms_data = array();
             } else {  //内容页
                 $this->cms_content->table = 'cms_' . $cates['table'];
-                $cms_data = $this->cms_content->read($id);
+                $cms_data = $this->cms_content->get($id);
                 if (empty($cms_data)) {
                     $this->message(0, lang('data_no_exists'));
                 }

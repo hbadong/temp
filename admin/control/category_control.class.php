@@ -205,7 +205,7 @@ class category_control extends admin_control{
             if($err = $category->check_base($post)) {
                 E(1, $err['msg'], $err['name']);
             }
-            $data = $category->read($post['cid']);
+            $data = $category->get($post['cid']);
 
             // 检查分类是否符合编辑条件
             if($err = $category->check_is_edit($post, $data)) {
@@ -306,7 +306,7 @@ class category_control extends admin_control{
 
         $cid = intval(R('cid', 'P'));
 
-        $data = $this->category->read($cid);
+        $data = $this->category->get($cid);
 
         // 检查是否符合删除条件
         if($err_msg = $this->category->check_is_del($data)) {

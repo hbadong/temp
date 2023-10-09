@@ -24,7 +24,7 @@ class show_control extends base_control{
 
             // 初始模型表名
             $this->cms_content->table = 'cms_'.$table;
-            $_show = $this->cms_content->read($_GET['id']);
+            $_show = $this->cms_content->get($_GET['id']);
             if( empty($_show) ) core::error404();
 
             $_GET['cid'] = $_show['cid'];
@@ -38,7 +38,7 @@ class show_control extends base_control{
             $this->cms_content->table = 'cms_'.$this->_var['table'];
 
             // 读取内容
-            $_show = $this->cms_content->read($_GET['id']);
+            $_show = $this->cms_content->get($_GET['id']);
             if(empty($_show['cid']) || $_show['cid'] != $_GET['cid']) core::error404();
         }
 

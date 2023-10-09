@@ -211,7 +211,7 @@ class cms_content_attach extends model {
 
 	// 删除单个附件
 	public function xdelete($aid) {
-		$data = $this->read($aid);
+		$data = $this->get($aid);
 
 		if( empty($data) ){
 		    return lang('data_no_exists');

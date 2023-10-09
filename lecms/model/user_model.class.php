@@ -275,7 +275,7 @@ class user extends model {
         }
 
         // 内容读取
-        $data = $this->read($uid);
+        $data = $this->get($uid);
         if(empty($data)) return lang('data_no_exists');
         if( $data['uid'] == 1 ) return lang('uid_1_dis_delete');
 
