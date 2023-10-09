@@ -17,8 +17,19 @@ class user extends model {
 	public function get_user_by_username($username) {
         // hook usre_model_get_user_by_username_before.php
 		$data = $this->find_fetch(array('username'=>$username), array(), 0, 1);
-		return $data ? current($data) : array();
+        $user = $data ? current($data) : array();
+        // hook usre_model_get_user_by_username_after.php
+		return $user;
 	}
+
+    // 根据用户ID获取用户数据，为什么不直接用 get ？ 方便后续通过钩子扩展
+    public function get_user_by_uid($uid = 0) {
+        // hook usre_model_get_user_by_uid_before.php
+        $user = $this->get($uid);
+
+        // hook usre_model_get_user_by_uid_after.php
+        return $user;
+    }
 
 	// 检查用户名是否合格
 	public function check_username(&$username) {
@@ -167,8 +178,8 @@ class user extends model {
                         $password = $arr[2];
                         $groupid  = $arr[3];
 
-                        $user = $this->get($uid);
-                        $user_group = $this->user_group->get($groupid);
+                        $user = $this->get_user_by_uid($uid);
+                        $user_group = $this->user_group->get_user_group_by_gid($groupid);
                         if(empty($user) || empty($user_group)) {
                             $r = array('err'=>1, 'msg'=>'failed');
                         }elseif($user['password'] != $password || $user['username'] != $username || $user['groupid'] != $groupid) {
@@ -191,9 +202,9 @@ class user extends model {
             if(empty($uid)){
                 $r = array('err'=>1, 'msg'=>'failed');
             }else{
-                $user = $this->get($uid);
+                $user = $this->get_user_by_uid($uid);
                 if($user){
-                    $user_group = $this->user_group->get($user['groupid']);
+                    $user_group = $this->user_group->get_user_group_by_gid($user['groupid']);
                     $r = array('err'=>0, 'msg'=>'successfully', 'user'=>$user, 'user_group'=>$user_group);
                 }else{
                     $_SESSION['uid'] = 0;

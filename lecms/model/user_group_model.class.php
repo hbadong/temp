@@ -12,8 +12,21 @@ class user_group extends model {
 
     // 根据用户组名获取用户组数据
     public function get_user_group_by_groupname($groupname = '') {
+        // hook usre_group_model_get_user_group_by_groupname_before.php
         $data = $this->find_fetch(array('groupname'=>$groupname), array(), 0, 1);
-        return $data ? current($data) : array();
+        $user_group = $data ? current($data) : array();
+
+        // hook usre_group_model_get_user_group_by_groupname_after.php
+        return $user_group;
+    }
+
+    // 根据用户组ID获取用户组数据，为什么不直接用 get ？ 方便后续通过钩子扩展
+    public function get_user_group_by_gid($gid = 0) {
+        // hook usre_group_model_get_user_group_by_gid_before.php
+        $user_group = $this->get($gid);
+
+        // hook usre_group_model_get_user_group_by_gid_after.php
+        return $user_group;
     }
 
     // 获取所有用户组
