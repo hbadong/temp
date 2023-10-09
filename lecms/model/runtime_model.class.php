@@ -145,7 +145,7 @@ class runtime extends model {
         }
 
         if( isset($cache_datas_arr['datas']) ){
-            $datas = unserialize($datas['datas']);
+            $datas = unserialize($cache_datas_arr['datas']);
         }else{
             $datas = array();
         }
