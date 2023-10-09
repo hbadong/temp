@@ -9,6 +9,7 @@ defined('ROOT_PATH') || exit;
  * @param string dateformat 时间格式
  * @param string orderby 排序方式
  * @param int orderway 降序(-1),升序(1)
+ * @param int showcate 是否显示分类信息
  * @param int showviews 是否读取内容浏览量信息
  * @param int pageoffset 分页显示偏移量
  * @param int showmaxpage 最多显示多少页
@@ -27,6 +28,7 @@ function block_global_cate($conf) {
 	$dateformat = empty($conf['dateformat']) ? 'Y-m-d H:i:s' : $conf['dateformat'];
 	$orderby = isset($conf['orderby']) && in_array($conf['orderby'], array('id', 'dateline', 'lasttime', 'comments')) ? $conf['orderby'] : 'id';
 	$orderway = isset($conf['orderway']) && $conf['orderway'] == 1 ? 1 : -1;
+    $showcate = _int($conf, 'showcate', 0);
     $showviews = _int($conf, 'showviews', 0);
     $pageoffset = _int($conf, 'pageoffset', 5);
     $showmaxpage = _int($conf, 'showmaxpage', 0);
@@ -51,6 +53,7 @@ function block_global_cate($conf) {
 		}
 	}else{
 		$where = array('cid' => $cid);
+        $cate_arr[$cid] = $run->_var;
 		$total = &$run->_var['count'];
 	}
     // hook block_global_cate_where_after.php
@@ -90,10 +93,12 @@ function block_global_cate($conf) {
     $xuhao = 1;
 	foreach($list_arr as &$v) {
 		$run->cms_content->format($v, $mid, $dateformat, $titlenum, $intronum, $field_format);
-		if(isset($cate_arr)) {
-			$v['cate_name'] = $cate_arr[$v['cid']]['name'];
-			$v['cate_url'] = $run->category->category_url($cate_arr[$v['cid']]);
-		}
+
+		//内容列表加上分类信息（列表页基本用不上，频道页可能会用）
+        if($showcate && isset($cate_arr[$v['cid']])){
+            $run->category->getCategoryInfoByList($v, $cate_arr[$v['cid']]);
+        }
+
         if($showviews && $views_list_arr){
             $v['views'] = isset($views_list_arr[$views_key.$v['id']]['views']) ? (int)$views_list_arr[$views_key.$v['id']]['views'] : 0;
         }
