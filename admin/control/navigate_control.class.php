@@ -183,6 +183,8 @@ class navigate_control extends admin_control {
 			$k1 = intval($k[0]);
 			$k2 = intval($k[1]);
 			if(isset($nav_arr[$k1]['son'][$k2])) unset($nav_arr[$k1]['son'][$k2]);
+
+			if( isset($nav_arr[$k1]['son']) && empty($nav_arr[$k1]['son']) ){unset($nav_arr[$k1]['son']);}
 		}
         // hook admin_navigate_control_del_after.php
 		$this->kv->set($field, $nav_arr);
