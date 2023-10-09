@@ -432,6 +432,7 @@ return array(
     'old_pwd_error'=>'旧密码错误',
     'new_pwd_inconsistent'=>'两次输入的新密码不一致',
     'uid_1_dis_delete'=>'初始管理员用户,不能删除',
+    'prohibit_delete_self'=>'不能删除自己哦',
     'groupname_exists_user'=>'该用户组下还有用户，不能删除',
 
     'cmsid'=>'内容ID',

@@ -267,8 +267,13 @@ class user extends model {
     }
 
     //关联删除（不删除内容）
-    public function xdelete($uid = 0){
+    public function xdelete($uid = 0, $login_uid = 0){
         // hook usre_model_xdelete_before.php
+
+        if($login_uid && $login_uid == $uid){
+            return lang('prohibit_delete_self');
+        }
+
         // 内容读取
         $data = $this->read($uid);
         if(empty($data)) return lang('data_no_exists');

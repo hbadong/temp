@@ -432,6 +432,7 @@ return array(
     'old_pwd_error'=>'Old password error',
     'new_pwd_inconsistent'=>'New passwords entered twice are inconsistent',
     'uid_1_dis_delete'=>'Initial administrator cannot be deleted',
+    'prohibit_delete_self'=>'Cannot delete oneself',
     'groupname_exists_user'=>'User group has users, cannot be deleted',
 
     'cmsid'=>'ID',
