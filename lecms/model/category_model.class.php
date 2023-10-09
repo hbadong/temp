@@ -451,13 +451,17 @@ class category extends model {
         $url = '';
         $cid = isset($cate['cid']) ? (int)$cate['cid'] : 0;
         $alias = isset($cate['alias']) ? $cate['alias'] : '';
+        //使用相对URL
+        if(isset($this->cfg['url_path']) && !empty($this->cfg['url_path'])){
+            $this->cfg['weburl'] = $this->cfg['webdir'];
+        }
         // hook category_model_category_url_before.php
 
         if(empty($cid) || empty($alias)){
             return '';
         }
-        $lecms_parseurl = empty($_ENV['_config']['lecms_parseurl']) ? 0 : 1;
 
+        $lecms_parseurl = empty($_ENV['_config']['lecms_parseurl']) ? 0 : 1;
         if(empty($lecms_parseurl)) {
             $url .= $this->cfg['weburl'].'index.php?cate--cid-'.$cid.($page ? '-page-{page}' : '');
         }else{

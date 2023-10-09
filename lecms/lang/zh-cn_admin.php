@@ -519,6 +519,9 @@ return array(
     'url_rewrite_tips'=>'建议开启URL伪静态，对搜索引擎及用户更加友好，安全性也更好',
     'plugin_disable'=>'已禁止所有插件，请修改 lecms/config/config.inc.php 文件 plugin_disable=>0',
     'characters_too_long'=>'{field}不能超过{length}个字符',
+    'url_path'=>'URL模式',
+    'url_relative_path'=>'相对URL',
+    'url_absolute_path'=>'绝对URL',
 
     // hook lang_zh_cn_admin.php
 );

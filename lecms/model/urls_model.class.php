@@ -24,6 +24,10 @@ class urls extends model {
 
     // 首页分页链接格式化
     public function index_url($mid = 2, $extra = array()) {
+        //使用相对URL
+        if(isset($this->cfg['url_path']) && !empty($this->cfg['url_path'])){
+            $this->cfg['weburl'] = $this->cfg['webdir'];
+        }
         // hook urls_model_index_url_before.php
 
         if(empty($_ENV['_config']['lecms_parseurl'])) {
@@ -40,6 +44,10 @@ class urls extends model {
 
     // 搜索结果页链接格式化
     public function search_url($mid = 2, $keyword = '', $page = FALSE, $extra = array()) {
+        //使用相对URL
+        if(isset($this->cfg['url_path']) && !empty($this->cfg['url_path'])){
+            $this->cfg['weburl'] = $this->cfg['webdir'];
+        }
         // hook urls_model_search_url_before.php
 
         if(empty($_ENV['_config']['lecms_parseurl'])) {
@@ -58,6 +66,10 @@ class urls extends model {
 
     // 搜索页面链接格式化
     public function so_url($extra = array()) {
+        //使用相对URL
+        if(isset($this->cfg['url_path']) && !empty($this->cfg['url_path'])){
+            $this->cfg['weburl'] = $this->cfg['webdir'];
+        }
         // hook urls_model_so_url_before.php
 
         if(empty($_ENV['_config']['lecms_parseurl'])) {
@@ -70,6 +82,10 @@ class urls extends model {
 
     //用户模块相关URL，只涉及 user-xxx 或者 my-xxx
     public function user_url($action = 'index', $control = 'user', $page = false, $extra = array()){
+        //使用相对URL
+        if(isset($this->cfg['url_path']) && !empty($this->cfg['url_path'])){
+            $this->cfg['weburl'] = $this->cfg['webdir'];
+        }
         $allow_control = array('user', 'my');
         // hook urls_model_user_url_before.php
 
@@ -98,6 +114,10 @@ class urls extends model {
 
     //热门标签URL
     public function hot_tag_url($extra = array()){
+        //使用相对URL
+        if(isset($this->cfg['url_path']) && !empty($this->cfg['url_path'])){
+            $this->cfg['weburl'] = $this->cfg['webdir'];
+        }
         // hook urls_model_hot_tag_url_before.php
 
         if(empty($_ENV['_config']['lecms_parseurl'])) {
@@ -110,6 +130,10 @@ class urls extends model {
 
     // 全部标签URL
     public function tag_all_url($mid = 2, $page = FALSE, $extra = array()) {
+        //使用相对URL
+        if(isset($this->cfg['url_path']) && !empty($this->cfg['url_path'])){
+            $this->cfg['weburl'] = $this->cfg['webdir'];
+        }
         // hook urls_model_tag_all_url_before.php
 
         $s = '';
@@ -131,6 +155,10 @@ class urls extends model {
 
     // 属性内容链接格式化
     public function flag_url($mid = 2, $flag = 1, $page = FALSE, $extra = array()) {
+        //使用相对URL
+        if(isset($this->cfg['url_path']) && !empty($this->cfg['url_path'])){
+            $this->cfg['weburl'] = $this->cfg['webdir'];
+        }
         // hook urls_model_flag_url_before.php
 
         if(empty($_ENV['_config']['lecms_parseurl'])) {
@@ -144,6 +172,10 @@ class urls extends model {
 
     // 用户个人主页链接格式化
     public function space_url($uid = 0, $page = FALSE, $extra = array()) {
+        //使用相对URL
+        if(isset($this->cfg['url_path']) && !empty($this->cfg['url_path'])){
+            $this->cfg['weburl'] = $this->cfg['webdir'];
+        }
         // hook urls_model_space_url_before.php
 
         if(empty($_ENV['_config']['lecms_parseurl'])) {
@@ -157,6 +189,10 @@ class urls extends model {
 
     //用户头像，存储方式 upload/avatar/用户文件夹/用户ID.png 或者 数据表avatar存储了路径，注意 可能会有浏览器缓存 到时没法实时显示最新头像
     public function user_avatar($uid = 0, $avatar_file = '', $extra = array()){
+        //使用相对URL
+        if(isset($this->cfg['url_path']) && !empty($this->cfg['url_path'])){
+            $this->cfg['weburl'] = $this->cfg['webdir'];
+        }
         // hook urls_model_user_avatar_before.php
         if($uid){
             if($avatar_file){
@@ -181,6 +217,10 @@ class urls extends model {
 
     // 附件下载，用的少，不做伪静态
     public function attach_url($mid = 0, $aid = 0, $extra = array()) {
+        //使用相对URL
+        if(isset($this->cfg['url_path']) && !empty($this->cfg['url_path'])){
+            $this->cfg['weburl'] = $this->cfg['webdir'];
+        }
         // hook urls_model_attach_url_before.php
 
         return $this->cfg['weburl'].'index.php?attach--mid-'.$mid.'-id-'.$aid.$_ENV['_config']['url_suffix'];

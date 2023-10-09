@@ -59,7 +59,13 @@ class cms_content extends model {
 
         $v['url'] = $this->content_url($v, $mid);
         //$v['absolute_url'] = HTTP.$this->cfg['webdomain'].$v['url'];	//绝对URL地址（完整）
-        $v['absolute_url'] = $v['url'];	//绝对URL地址（完整）兼容旧模板的该变量
+
+        //绝对URL地址
+        if(isset($this->cfg['url_path']) && !empty($this->cfg['url_path'])){    //使用相对URL
+            $v['absolute_url'] = HTTP.$this->cfg['webdomain'].$v['url'];
+        }else{
+            $v['absolute_url'] = $v['url'];
+        }
 
         //标签
 		$v['tags'] = _json_decode($v['tags']);
@@ -88,12 +94,12 @@ class cms_content extends model {
         //缩略图
         if( empty($v['pic']) ){
             $v['haspic'] = 0;
-            $v['pic'] = $v['pic_thumb'] = $this->cfg['weburl'].'static/img/nopic.gif';
+            $v['pic'] = $v['pic_thumb'] = $this->cfg['webdir'].'static/img/nopic.gif';
         }else{
             $v['haspic'] = 1;
             if( substr($v['pic'], 0, 2) != '//' && substr($v['pic'], 0, 4) != 'http' ){ //不是外链图片
-                $v['pic_thumb'] = $this->cfg['weburl'].image::thumb_name($v['pic']);
-                $v['pic'] = $this->cfg['weburl'].$v['pic'];
+                $v['pic_thumb'] = $this->cfg['webdir'].image::thumb_name($v['pic']);
+                $v['pic'] = $this->cfg['webdir'].$v['pic'];
             }else{
                 $v['pic_thumb'] = $v['pic'];
             }
@@ -911,8 +917,15 @@ class cms_content extends model {
         $link_tag_type = isset($this->cfg['link_tag_type']) ? (int)$this->cfg['link_tag_type'] : 0;
         $name = isset($tags['name']) ? $tags['name'] : '';
         $tagid = isset($tags['tagid']) ? (int)$tags['tagid'] : 0;
-
+        //使用相对URL
+        if(isset($this->cfg['url_path']) && !empty($this->cfg['url_path'])){
+            $this->cfg['weburl'] = $this->cfg['webdir'];
+        }
         // hook cms_content_model_tag_url_before.php
+
+        if(empty($name) || empty($tagid)){
+            return '';
+        }
 
         $name = $this->cms_content_tag->_tagformat($name, 0);
 
@@ -951,6 +964,10 @@ class cms_content extends model {
 
 	// 评论链接格式化
 	public function comment_url($cid = 0, $id = 0, $page = FALSE) {
+        //使用相对URL
+        if(isset($this->cfg['url_path']) && !empty($this->cfg['url_path'])){
+            $this->cfg['weburl'] = $this->cfg['webdir'];
+        }
 		// hook cms_content_model_comment_url_before.php
 
 		if(empty($_ENV['_config']['lecms_parseurl'])) {
@@ -972,6 +989,10 @@ class cms_content extends model {
         $alias = isset($content['alias']) ? $content['alias'] : '';
         empty($alias) && $alias = $cid.'_'.$id;
         $dateline = isset($content['dateline']) ? (int)$content['dateline'] : 0;
+        //使用相对URL
+        if(isset($this->cfg['url_path']) && !empty($this->cfg['url_path'])){
+            $this->cfg['weburl'] = $this->cfg['webdir'];
+        }
         // hook cms_content_model_content_url_before.php
 
         if(empty($id) || empty($cid)){
@@ -1037,6 +1058,10 @@ class cms_content extends model {
 
     //用户模块相关URL，只涉及 user-xxx 或者 my-xxx（为了兼容旧版本的插件使用该函数， 新的开发请使用 urls_model里面的该函数）
     public function user_url($action = 'index', $control = 'user', $page = false, $extra = array()){
+        //使用相对URL
+        if(isset($this->cfg['url_path']) && !empty($this->cfg['url_path'])){
+            $this->cfg['weburl'] = $this->cfg['webdir'];
+        }
         $allow_control = array('user', 'my');
         // hook cms_content_model_user_url_before.php
 

@@ -204,6 +204,7 @@ if($do == 'lang') {
         'admin_vcode' => 0, //后台登录验证码
         'admin_safe_entrance' => 0, //后台安全入口
         'admin_safe_auth' => random(6, 2),    //后台安全密钥
+        'url_path'=>0,                      //0表示绝对URL，1表示相对URL
     );
 
     //写数据库操作

@@ -744,6 +744,9 @@ class setting_control extends admin_control{
             $arr = array('0'=>lang('left_menu'),'1'=>lang('left_and_top_menu'));
             $input['admin_layout'] = form::layui_loop('radio', 'admin_layout', $arr, $cfg['admin_layout']);
 
+            $arr = array('0'=>lang('url_absolute_path'),'1'=>lang('url_relative_path'));
+            $input['url_path'] = form::layui_loop('radio', 'url_path', $arr, $cfg['url_path']);
+
             // hook admin_setting_control_other_after.php
 
             $this->assign('input', $input);
@@ -756,6 +759,7 @@ class setting_control extends admin_control{
             $this->kv->xset('close_views', (int)R('close_views', 'P'), 'cfg');
             $this->kv->xset('auto_pic', (int)R('auto_pic', 'P'), 'cfg');
             $this->kv->xset('admin_layout', (int)R('admin_layout', 'P'), 'cfg');
+            $this->kv->xset('url_path', (int)R('url_path', 'P'), 'cfg');
 
             $debug = (int)R('debug','P');
             $debug_admin = (int)R('debug_admin','P');

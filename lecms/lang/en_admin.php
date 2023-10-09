@@ -519,6 +519,9 @@ return array(
     'url_rewrite_tips'=>'Enable URL pseudo-static, more friendly to search engines and users and better security',
     'plugin_disable'=>'All plugins have been disabled, Please modify the lecms/config/config.inc.php file plugin_disable=>0',
     'characters_too_long'=>'{field} cannot exceed {length} characters',
+    'url_path'=>'URL',
+    'url_relative_path'=>'Relative URL',
+    'url_absolute_path'=>'Absolute URL',
 
     // hook lang_en_admin.php
 );
