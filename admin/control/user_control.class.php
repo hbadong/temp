@@ -146,10 +146,10 @@ class user_control extends admin_control{
             $data = $user->get_user_by_username($username);
             if($data){
                 E(1, lang('username_is_exists'));
-            }elseif( $email && $this->user->find_fetch_key(array('email'=>$email)) ){ //判断重复
-                E(1, lang('email_is_exists'));
             }elseif($email && check::check_email($email) == false){
                 E(1, lang('email_format_error'));
+            }elseif( $email && $this->user->find_fetch_key(array('email'=>$email)) ){ //判断重复
+                E(1, lang('email_is_exists'));
             }
 
             $salt = random(16, 3);
@@ -289,12 +289,12 @@ class user_control extends admin_control{
         $uid = (int) R('uid');
         empty($uid) && E(1, lang('data_error'));
 
-        $_user = $this->user->get($uid);
+        $_user = $this->user->get_user_by_uid($uid);
         empty($_user) && E(1, lang('data_error'));
 
         $this->user->format($_user);
 
-        $group = $this->user_group->get($_user['groupid']);
+        $group = $this->user_group->get_user_group_by_gid($_user['groupid']);
         $_user['groupname'] = $group['groupname'];
 
         // hook admin_user_control_info_after.php
