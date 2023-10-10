@@ -3,7 +3,7 @@
  * Author: dadadezhou <zhoudada97@foxmail.com>
  * Date: 2022-12-14
  * Time: 12:22
- * Description:前台英文语言包
+ * Description:前台英文语言包（注意， 不能在数组值的后面加 //注释 这种格式 ， 只能用 /星号 注释 星号/ 这种）
  */
 return array(
     'home'=>'Home',
