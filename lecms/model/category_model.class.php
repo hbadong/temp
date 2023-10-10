@@ -357,7 +357,7 @@ class category extends model {
 			array_unshift($p, array(
 				'cid'=> $v['cid'],
 				'name'=> $v['name'],
-				'url'=> $this->category_url($v)
+				'url'=> $this->category_url($v, 0, array('url_path'=>1))
 			));
 			$cid = $v['upid'];
 		}
@@ -452,7 +452,7 @@ class category extends model {
         $cid = isset($cate['cid']) ? (int)$cate['cid'] : 0;
         $alias = isset($cate['alias']) ? $cate['alias'] : '';
         //使用相对URL
-        if(isset($this->cfg['url_path']) && !empty($this->cfg['url_path'])){
+        if( (isset($this->cfg['url_path']) && !empty($this->cfg['url_path'])) || isset($extra['url_path']) && !empty($extra['url_path']) ){
             $this->cfg['weburl'] = $this->cfg['webdir'];
         }
         // hook category_model_category_url_before.php
