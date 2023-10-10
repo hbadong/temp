@@ -453,6 +453,7 @@ class category extends model {
         $alias = isset($cate['alias']) ? $cate['alias'] : '';
         //使用相对URL
         if( (isset($this->cfg['url_path']) && !empty($this->cfg['url_path'])) || isset($extra['url_path']) && !empty($extra['url_path']) ){
+            unset($extra['url_path']);//要去掉这个参数，不然会到下面的附加参数里面
             $this->cfg['weburl'] = $this->cfg['webdir'];
         }
         // hook category_model_category_url_before.php
