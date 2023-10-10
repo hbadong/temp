@@ -7,5 +7,5 @@
  */
 defined('FRAMEWORK_PATH') || exit('Access Denied.');
 
-// hook misc.func.php
+// hook misc_func.php
 ?>
