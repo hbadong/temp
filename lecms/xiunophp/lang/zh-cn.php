@@ -108,4 +108,6 @@ return array(
     'add_field_successfully'=>'添加 {field} 成功',
     'add_field_failed'=>'添加 {field} 失败',
     'filed_not_empty'=>'{field}不能为空',
+
+    // hook xiunophp_lang_zh_cn.php
 );

@@ -108,4 +108,6 @@ return array(
     'add_field_successfully'=>'Add {field} successfully',
     'add_field_failed'=>'Add {field} failed',
     'filed_not_empty'=>'{field} cannot be empty',
+
+    // hook xiunophp_lang_en.php
 );

@@ -192,15 +192,19 @@ class core{
 		$obj->index();
 	}
 
-	// 加载自定义函数文件并解析钩子
+	// 加载自定义函数文件并解析钩子（只需要解析hook即可）
     public static function init_misc(){
         $misc_filename = 'misc.func.php';
         $misc_file_cache = RUNTIME_PATH.$misc_filename;
 
         if(DEBUG || !is_file($misc_file_cache)) {
             $miscfile = self::get_original_file($misc_filename, FRAMEWORK_PATH.'lib/');
-            if($miscfile){
-                self::process_all($miscfile, $misc_file_cache, "写入 misc.func.php 编译文件失败");
+            if($miscfile) {
+                $s = file_get_contents($miscfile);
+                $s = preg_replace_callback('#\t*\/\/\s*hook\s+([\w\.]+)[\r\n]#', array('core', 'process_hook'), $s);    // 处理 hook
+                if (!FW($misc_file_cache, $s)) {
+                    throw new Exception("写入 misc.func.php 编译文件失败");
+                }
             }
         }
 
@@ -208,33 +212,38 @@ class core{
     }
 
     /**
-     * 获取语言包
+     * 获取语言包（只需要解析hook即可）
      */
     public static function init_lang(){
         !isset($lang) AND $lang = array();
         $_SERVER['lang'] = array();
 
-        if( defined('F_APP_NAME') ){
-            //后台语言包
+        if( defined('F_APP_NAME') ){    //后台语言包
             if( isset($_ENV['_config']['admin_lang']) ){
                 $admin_lang = $_ENV['_config']['admin_lang'];
             }else{
                 $admin_lang = 'zh-cn';
             }
 
+            //xiunophp框架里面的语言包
             if( is_file(FRAMEWORK_PATH.'lang/'.$admin_lang.'.php') ){
                 $langname = $admin_lang.'.php';
                 $objfile = RUNTIME_PATH.'core_lang/'.$langname;
                 if(DEBUG || !is_file($objfile)) {
                     $langfile = self::get_original_file($langname, FRAMEWORK_PATH.'lang/');
                     if($langfile){
-                        self::process_all($langfile, $objfile, "写入 core_lang 编译文件 $langname 失败");
+                        $s = file_get_contents($langfile);
+                        $s = preg_replace_callback('#\t*\/\/\s*hook\s+([\w\.]+)[\r\n]#', array('core', 'process_hook'), $s);    // 处理 hook
+                        if (!FW($objfile, $s)) {
+                            throw new Exception("写入 core_lang 编译文件 $langname 失败");
+                        }
                     }
                 }
                 $lang = include $objfile;
                 is_array($lang) && $_SERVER['lang'] = array_merge($_SERVER['lang'], $lang);
             }
 
+            //lecms里面的语言包
             if( is_file(LANG_PATH.$admin_lang.'_admin.php') ){
                 $langname = $_ENV['_config']['admin_lang'].'_admin.php';
                 $objfile = RUNTIME_PATH.'lang/'.$langname;
@@ -242,14 +251,17 @@ class core{
                 if(DEBUG || !is_file($objfile)) {
                     $langfile = self::get_original_file($langname, LANG_PATH);
                     if($langfile){
-                        self::process_all($langfile, $objfile, "写入 lang 编译文件 $langname 失败");
+                        $s = file_get_contents($langfile);
+                        $s = preg_replace_callback('#\t*\/\/\s*hook\s+([\w\.]+)[\r\n]#', array('core', 'process_hook'), $s);    // 处理 hook
+                        if (!FW($objfile, $s)) {
+                            throw new Exception("写入 lang 编译文件 $langname 失败");
+                        }
                     }
                 }
                 $lang = include $objfile;
                 is_array($lang) && $_SERVER['lang'] = array_merge($_SERVER['lang'], $lang);
             }
         }else{
-            //前台语言包
             if( isset($_ENV['_config']['lang']) ){
                 $home_lang = $_ENV['_config']['lang'];
             }else{
@@ -261,26 +273,36 @@ class core{
                 $home_lang = R('lang','C');
             }
 
+            //xiunophp框架里面的语言包
             if( is_file(FRAMEWORK_PATH.'lang/'.$home_lang.'.php') ){
                 $langname = $home_lang.'.php';
                 $objfile = RUNTIME_PATH.'core_lang/'.$langname;
                 if(DEBUG || !is_file($objfile)) {
                     $langfile = self::get_original_file($langname, FRAMEWORK_PATH.'lang/');
                     if($langfile){
-                        self::process_all($langfile, $objfile, "写入 core_lang 编译文件 $langname 失败");
+                        $s = file_get_contents($langfile);
+                        $s = preg_replace_callback('#\t*\/\/\s*hook\s+([\w\.]+)[\r\n]#', array('core', 'process_hook'), $s);    // 处理 hook
+                        if (!FW($objfile, $s)) {
+                            throw new Exception("写入 core_lang 编译文件 $langname 失败");
+                        }
                     }
                 }
                 $lang = include $objfile;
                 is_array($lang) && $_SERVER['lang'] = array_merge($_SERVER['lang'], $lang);
             }
 
+            //lecms里面的语言包
             if( is_file(LANG_PATH.$home_lang.'.php') ){
                 $langname = $home_lang.'.php';
                 $objfile = RUNTIME_PATH.'lang/'.$langname;
                 if(DEBUG || !is_file($objfile)) {
                     $langfile = self::get_original_file($langname, LANG_PATH);
                     if($langfile){
-                        self::process_all($langfile, $objfile, "写入 lang 编译文件 $langname 失败");
+                        $s = file_get_contents($langfile);
+                        $s = preg_replace_callback('#\t*\/\/\s*hook\s+([\w\.]+)[\r\n]#', array('core', 'process_hook'), $s);    // 处理 hook
+                        if (!FW($objfile, $s)) {
+                            throw new Exception("写入 lang 编译文件 $langname 失败");
+                        }
                     }
                 }
                 $lang = include $objfile;
