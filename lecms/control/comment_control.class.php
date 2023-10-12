@@ -196,6 +196,7 @@ class comment_control extends base_control{
 		$cid = (int)R('cid');
 		$id = (int)R('id');
 		$commentid = (int)R('commentid');
+        $floor = max(1, (int)R('floor'));
 
 		$orderway = isset($_GET['orderway']) && $_GET['orderway'] == 1 ? 1 : -1;
 		$pagenum = empty($_GET['pagenum']) ? 20 : max(1, (int)$_GET['pagenum']);
@@ -216,14 +217,16 @@ class comment_control extends base_control{
 		$ret['list_arr'] = $this->cms_content_comment->find_fetch($where, array('commentid' => $orderway), 0, $pagenum);
 		foreach($ret['list_arr'] as &$v) {
 			$this->cms_content_comment->format($v, $dateformat, $humandate);
+            $v['floor'] = $floor++;
 		}
 
 		$end_arr = end($ret['list_arr']);
 		$commentid = $end_arr['commentid'];
 		$orderway = max(0, $orderway);
 		$dateformat = base64_encode($dateformat);
-		$ret['next_url'] = $this->_cfg['weburl']."index.php?comment-json-cid-$cid-id-$id-commentid-$commentid-orderway-$orderway-pagenum-$pagenum-dateformat-".encrypt($dateformat)."-humandate-$humandate-ajax-1";
+		$ret['next_url'] = $this->_cfg['weburl']."index.php?comment-json-cid-$cid-id-$id-commentid-$commentid-orderway-$orderway-pagenum-$pagenum-dateformat-".encrypt($dateformat)."-humandate-$humandate-floor-{$floor}-ajax-1";
 		$ret['isnext'] = count($ret['list_arr']) < $pagenum ? 0 : 1;
+        $ret['comment_url'] = $this->cms_content->comment_url($cid, $id);
 
 		echo json_encode($ret);
 		exit;
