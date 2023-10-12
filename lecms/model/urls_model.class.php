@@ -177,6 +177,7 @@ class urls extends model {
             $this->cfg['weburl'] = $this->cfg['webdir'];
         }
         // hook urls_model_space_url_before.php
+		if(empty($uid)){return '';}
 
         if(empty($_ENV['_config']['lecms_parseurl'])) {
             $s = $page ? '-page-{page}' : '';
