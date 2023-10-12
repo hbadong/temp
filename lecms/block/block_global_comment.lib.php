@@ -60,11 +60,13 @@ function block_global_comment($conf) {
 
     $xuhao = 1;
     $reply_key = array();
+    $floor = ($page - 1)* $pagenum + 1;
 	foreach($_show['list'] as &$v) {
 		$run->cms_content_comment->format($v, $dateformat, $humandate);
         $v['reply_comment_content'] = '';
         if($v['reply_commentid']) $reply_key[$v['commentid']] = $v['reply_commentid'];
 
+        $v['floor'] = $floor++;
         $v['xuhao'] = $xuhao;
         $xuhao++;
         // hook block_global_comment_foreach_after.php
