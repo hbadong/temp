@@ -65,11 +65,12 @@
 
 	layui.use(['form','layer', 'table', 'miniTab'], function () {
 		var layer = layui.layer, form = layui.form, table = layui.table, miniTab = layui.miniTab;
+		var currPage = 1;
 
 		// 数据列
 		table.render({
 			elem: '#data-table',
-			url: 'index.php?content-get_list-mid-'+mid+'-',
+			url: 'index.php?content-get_list-mid-'+mid,
 			height: 'full-145',
 			toolbar: '#toolbar',
 			defaultToolbar: ['filter', 'exports', 'print'],
@@ -88,8 +89,20 @@
 			]],
 			limits: [10, 15, 20, 25, 50, 100],
 			limit: 15,
-			page: true
+			page: true,
+			done: function(res, curr, count){
+				currPage = curr;
+			}
 		});
+
+		//定位到上一次编辑内容所在的页数（只有默认的列表定位，没有搜索结果页的定位）
+		var currPage_cookie = parseInt($.cookie("currPage"));
+		if(currPage_cookie > 1){
+			$.cookie("currPage", 0, {expires:1});
+			table.reload('data-table', {
+				page: {curr: currPage_cookie}
+			});
+		}
 
 		// 监听搜索操作
 		form.on('submit(data-search-btn)', function (data) {
@@ -222,7 +235,7 @@
 
 			if (obj.event === 'edit') {
 				miniTab.openNewTabByIframe({
-					href:'index.php?content-edit-mid-'+mid+'-id-'+data.id+'-cid-'+data.cid,
+					href:'index.php?content-edit-mid-'+mid+'-id-'+data.id+'-cid-'+data.cid+'-currpage-'+currPage,
 					title:"{$edit_content}",
 				});
 			} else if (obj.event === 'view') {

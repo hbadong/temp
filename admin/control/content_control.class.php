@@ -277,6 +277,10 @@ class content_control extends admin_control{
             $edit_cid_id = '-mid-'.$this->_mid.'-cid-'.$data['cid'].'-id-'.$data['id'];
             $this->assign('edit_cid_id', $edit_cid_id);
 
+            //当前内容在列表的第几页？用于编辑后定位到对应的列表页
+            $currPage = max(1, (int)R('currpage', 'G'));
+            $this->assign('currPage', $currPage);
+
             // hook admin_content_control_edit_after.php
 
             $this->display('content_set.htm');

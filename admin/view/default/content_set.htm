@@ -43,6 +43,12 @@
 			}
 		});
 
+		//当前内容所在列表页数，不在第一页就写入cookie，用于编辑后定位到对应的列表页
+		var currPage = "{$currPage}";
+		if(parseInt(currPage) > 1){
+			$.cookie("currPage", parseInt(currPage), {expires:3600});
+		}
+
 		//监听提交
 		form.on('submit(form)', function () {
 			if (window.hasOwnProperty('editor')) {
