@@ -90,6 +90,12 @@ class tag_control extends base_control{
 		$GLOBALS['table'] = &$table;
         $tpl = 'tag_list.htm';
 
+        //不同模型 可以对应自己的标签内容列表页模板
+        $mid = max(2, (int)R('mid'));
+        if($mid > 2 && file_exists(VIEW_PATH.$_ENV['_theme']."/tag_list_{$mid}.htm")){
+            $tpl = "tag_list_{$mid}.htm";
+        }
+
 		// hook tag_control_index_after.php
 
 		$_ENV['_theme'] = &$this->_cfg['theme'];
@@ -136,6 +142,12 @@ class tag_control extends base_control{
 
         $GLOBALS['run'] = &$this;
         $tpl = 'tag_all.htm';
+
+        //不同模型 可以对应自己的标签列表页模板
+        $mid = max(2, (int)R('mid'));
+        if($mid > 2 && file_exists(VIEW_PATH.$_ENV['_theme']."/tag_all_{$mid}.htm")){
+            $tpl = "tag_all_{$mid}.htm";
+        }
 
         // hook tag_control_all_after.php
 

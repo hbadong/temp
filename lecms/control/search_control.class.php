@@ -39,6 +39,12 @@ class search_control extends base_control{
 		$GLOBALS['keyword'] = &$keyword;
         $tpl = 'search.htm';
 
+        //不同模型 可以对应自己的搜索结果页模板
+        $mid = max(2, (int)R('mid'));
+        if($mid > 2 && file_exists(VIEW_PATH.$_ENV['_theme']."/search_{$mid}.htm")){
+            $tpl = "search_{$mid}.htm";
+        }
+
 		// hook search_control_index_after.php
 
 		$_ENV['_theme'] = &$this->_cfg['theme'];
