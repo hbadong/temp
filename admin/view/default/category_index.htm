@@ -1,7 +1,4 @@
 {inc:header.htm}
-<style>
-	.layui-table{margin: 0;}
-</style>
 <div class="layuimini-container">
 	<div class="layuimini-main">
 		<script type="text/html" id="toolbar">
@@ -43,7 +40,7 @@ layui.use(['form','layer','table', 'treetable', 'miniTab'], function () {
 		treePidName: 'upid',
 		elem: '#data-table',
 		url: 'index.php?category-get_list-',
-		height: 'full-100',
+		height: 'full',
 		toolbar: '#toolbar',
 		defaultToolbar: ['filter', 'exports', 'print'],
 		page: false,

@@ -5,12 +5,6 @@ class category_control extends admin_control{
     // 分类管理
     public function index() {
         // hook admin_category_control_index_before.php
-        $_ENV['_category_class'] = &$this->category;
-        $_cfg = $this->runtime->xget();
-        $this->assign('_cfg', $_cfg);
-
-        $category_arr = $this->category->get_category();
-        $this->assign('category_arr', $category_arr);
 
         // hook admin_category_control_index_after.php
 
