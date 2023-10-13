@@ -14,6 +14,7 @@ class base_control extends control{
     public $_user = array(); // 用户信息
     public $_uid = 0; // 用户ID
     public $_group = array(); // 用户组
+    public $_user_avatar = '';  //用户头像
 
     public $_login_url = '';    //登录链接
     public $_register_url = ''; //注册链接
@@ -64,6 +65,12 @@ class base_control extends control{
             // hook base_control_get_user_after.php
         }
 
+        if( isset($this->_user['avatar']) ){
+            $this->_user_avatar = $this->_user['avatar'];
+        }else{
+            $this->_user_avatar = $this->_cfg['webdir'].'static/img/avatar.png';
+        }
+
         $this->_search_url = $this->urls->so_url();
         $this->_current_url = $this->_current_url();
 
@@ -79,6 +86,7 @@ class base_control extends control{
         $this->assign('_uid',$this->_uid);
         $this->assign('_user',$this->_user);
         $this->assign('_group',$this->_group);
+        $this->assign('_user_avatar',$this->_user_avatar);
         $this->assign('form_hash', $form_hash);
 
         $this->assign('login_url', $this->_login_url);
