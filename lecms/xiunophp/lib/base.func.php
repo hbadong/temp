@@ -920,6 +920,15 @@ function decrypt($str = '') {
 }
 //加密解密函数 end
 
+//判断启用主题下的模板是否存在
+function view_tpl_exists($tpl = ''){
+    if(file_exists(VIEW_PATH.$_ENV['_theme'].'/'.$tpl)){
+        return $tpl;
+    }else{
+        return false;
+    }
+}
+
 // txt 转换到 html
 function xn_txt_to_html($s) {
     $s = htmlspecialchars($s);

@@ -61,10 +61,16 @@ class user_control extends base_control {
         $this->assign('cfg_var', $this->_var);
 
         $GLOBALS['run'] = &$this;
+        $_ENV['_theme'] = &$this->_cfg['theme'];
+        $tpl = 'user/user_all.htm';
+
+        //优先使用主题下面的TPL，方便兼容当前主题css
+        if(view_tpl_exists('user_all.htm')){
+            $tpl = "user_all.htm";
+        }
 
         // hook user_control_all_after.php
-        $_ENV['_theme'] = &$this->_cfg['theme'];
-        $this->display('user/user_all.htm');
+        $this->display($tpl);
     }
 
     // 用户登录
@@ -79,11 +85,17 @@ class user_control extends base_control {
             $this->assign('cfg', $this->_cfg);
             $this->assign('cfg_var', $this->_var);
 
-            // hook user_control_login_after.php
-
             $GLOBALS['run'] = &$this;
             $_ENV['_theme'] = &$this->_cfg['theme'];
-            $this->display('user/login.htm');
+            $tpl = 'user/login.htm';
+
+            //优先使用主题下面的TPL，方便兼容当前主题css
+            if(view_tpl_exists('login.htm')){
+                $tpl = "login.htm";
+            }
+
+            // hook user_control_login_after.php
+            $this->display($tpl);
         }elseif(form_submit()) {
             // hook user_control_login_post_before.php
 
@@ -164,11 +176,17 @@ class user_control extends base_control {
             $this->assign('cfg', $this->_cfg);
             $this->assign('cfg_var', $this->_var);
 
-            // hook user_control_register_after.php
-
             $GLOBALS['run'] = &$this;
             $_ENV['_theme'] = &$this->_cfg['theme'];
-            $this->display('user/register.htm');
+            $tpl = 'user/register.htm';
+
+            //优先使用主题下面的TPL，方便兼容当前主题css
+            if(view_tpl_exists('register.htm')){
+                $tpl = "register.htm";
+            }
+
+            // hook user_control_register_after.php
+            $this->display($tpl);
         }elseif(form_submit()) {
             // hook user_control_register_post_before.php
 
@@ -254,11 +272,17 @@ class user_control extends base_control {
             $this->assign('cfg', $this->_cfg);
             $this->assign('cfg_var', $this->_var);
 
-            // hook user_control_forget_after.php
-
             $GLOBALS['run'] = &$this;
             $_ENV['_theme'] = &$this->_cfg['theme'];
-            $this->display('user/forget_password.htm');
+            $tpl = 'user/forget_password.htm';
+
+            //优先使用主题下面的TPL，方便兼容当前主题css
+            if(view_tpl_exists('forget_password.htm')){
+                $tpl = "forget_password.htm";
+            }
+
+            // hook user_control_forget_after.php
+            $this->display($tpl);
         }elseif(form_submit()) {
             $username = R('username', 'P');
             $email = R('email', 'P');
@@ -345,11 +369,17 @@ class user_control extends base_control {
             $this->assign('cfg', $this->_cfg);
             $this->assign('cfg_var', $this->_var);
 
-            // hook user_user_control_resetpwd_after.php
-
             $GLOBALS['run'] = &$this;
             $_ENV['_theme'] = &$this->_cfg['theme'];
-            $this->display('user/reset_password.htm');
+            $tpl = 'user/reset_password.htm';
+
+            //优先使用主题下面的TPL，方便兼容当前主题css
+            if(view_tpl_exists('reset_password.htm')){
+                $tpl = "reset_password.htm";
+            }
+
+            // hook user_user_control_resetpwd_after.php
+            $this->display($tpl);
         }elseif(form_submit()) {
             $user = &$this->user;
             $username = R('username', 'P');

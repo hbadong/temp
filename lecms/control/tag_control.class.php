@@ -88,17 +88,16 @@ class tag_control extends base_control{
 		$GLOBALS['tags'] = &$tags;
 		$GLOBALS['mid'] = &$mid;
 		$GLOBALS['table'] = &$table;
+        $_ENV['_theme'] = &$this->_cfg['theme'];
         $tpl = 'tag_list.htm';
 
         //不同模型 可以对应自己的标签内容列表页模板
         $mid = max(2, (int)R('mid'));
-        if($mid > 2 && file_exists(VIEW_PATH.$_ENV['_theme']."/tag_list_{$mid}.htm")){
+        if($mid > 2 && view_tpl_exists("tag_list_{$mid}.htm")){
             $tpl = "tag_list_{$mid}.htm";
         }
 
 		// hook tag_control_index_after.php
-
-		$_ENV['_theme'] = &$this->_cfg['theme'];
 		$this->display($tpl);
 	}
 
@@ -115,11 +114,10 @@ class tag_control extends base_control{
 		$this->assign('cfg_var', $this->_var);
 
 		$GLOBALS['run'] = &$this;
+        $_ENV['_theme'] = &$this->_cfg['theme'];
         $tpl = 'tag_top.htm';
 
 		// hook tag_control_top_after.php
-
-		$_ENV['_theme'] = &$this->_cfg['theme'];
 		$this->display($tpl);
 	}
 
@@ -141,17 +139,16 @@ class tag_control extends base_control{
         $this->assign('cfg_var', $this->_var);
 
         $GLOBALS['run'] = &$this;
+        $_ENV['_theme'] = &$this->_cfg['theme'];
         $tpl = 'tag_all.htm';
 
         //不同模型 可以对应自己的标签列表页模板
         $mid = max(2, (int)R('mid'));
-        if($mid > 2 && file_exists(VIEW_PATH.$_ENV['_theme']."/tag_all_{$mid}.htm")){
+        if($mid > 2 && view_tpl_exists("tag_all_{$mid}.htm")){
             $tpl = "tag_all_{$mid}.htm";
         }
 
         // hook tag_control_all_after.php
-
-        $_ENV['_theme'] = &$this->_cfg['theme'];
         $this->display($tpl);
     }
 

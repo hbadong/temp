@@ -37,21 +37,20 @@ class search_control extends base_control{
 
 		$GLOBALS['run'] = &$this;
 		$GLOBALS['keyword'] = &$keyword;
+        $_ENV['_theme'] = &$this->_cfg['theme'];
         $tpl = 'search.htm';
 
         //不同模型 可以对应自己的搜索结果页模板
         $mid = max(2, (int)R('mid'));
-        if($mid > 2 && file_exists(VIEW_PATH.$_ENV['_theme']."/search_{$mid}.htm")){
+        if($mid > 2 && view_tpl_exists("search_{$mid}.htm")){
             $tpl = "search_{$mid}.htm";
         }
 
 		// hook search_control_index_after.php
-
-		$_ENV['_theme'] = &$this->_cfg['theme'];
 		$this->display($tpl);
 	}
 
-	//搜索页面（保留待用）
+	//搜索页面
     public function so(){
         $this->_cfg['titles'] = lang('search');
         $this->_var['topcid'] = -1;
@@ -70,11 +69,10 @@ class search_control extends base_control{
 
         $GLOBALS['run'] = &$this;
         $GLOBALS['keyword'] = &$keyword;
+        $_ENV['_theme'] = &$this->_cfg['theme'];
         $tpl = 'so.htm';
 
         // hook search_control_so_after.php
-
-        $_ENV['_theme'] = &$this->_cfg['theme'];
         $this->display($tpl);
     }
 
