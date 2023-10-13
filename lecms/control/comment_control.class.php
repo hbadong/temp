@@ -135,6 +135,8 @@ class comment_control extends base_control{
                 $id = $cid;
                 $cms_data = array();
             } else {  //内容页
+				if (empty($id)) $this->message(0, lang('data_error'));
+				
                 $this->cms_content->table = 'cms_' . $cates['table'];
                 $cms_data = $this->cms_content->get($id);
                 if (empty($cms_data)) {
