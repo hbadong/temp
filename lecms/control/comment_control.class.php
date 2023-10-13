@@ -220,12 +220,18 @@ class comment_control extends base_control{
             $v['floor'] = $floor++;
 		}
 
-		$end_arr = end($ret['list_arr']);
-		$commentid = $end_arr['commentid'];
-		$orderway = max(0, $orderway);
-		$dateformat = base64_encode($dateformat);
-		$ret['next_url'] = $this->_cfg['weburl']."index.php?comment-json-cid-$cid-id-$id-commentid-$commentid-orderway-$orderway-pagenum-$pagenum-dateformat-".encrypt($dateformat)."-humandate-$humandate-floor-{$floor}-ajax-1";
-		$ret['isnext'] = count($ret['list_arr']) < $pagenum ? 0 : 1;
+		if($ret['list_arr']){
+            $end_arr = end($ret['list_arr']);
+            $commentid = $end_arr['commentid'];
+            $orderway = max(0, $orderway);
+            $dateformat = base64_encode($dateformat);
+            $ret['next_url'] = $this->_cfg['weburl']."index.php?comment-json-cid-$cid-id-$id-commentid-$commentid-orderway-$orderway-pagenum-$pagenum-dateformat-".encrypt($dateformat)."-humandate-$humandate-floor-{$floor}-ajax-1";
+            $ret['isnext'] = count($ret['list_arr']) < $pagenum ? 0 : 1;
+        }else{
+            $ret['list_arr'] = array();
+            $ret['next_url'] = '';
+            $ret['isnext'] = 0;
+        }
         $ret['comment_url'] = $this->cms_content->comment_url($cid, $id);
 
 		echo json_encode($ret);
