@@ -27,6 +27,9 @@ class cms_content_comment extends model {
         $v['user_url'] = $this->urls->space_url($v['uid']);
         $v['avatar'] = $this->urls->user_avatar($v['uid']);
 
+        $v['reply_comment'] = array();
+        $v['reply_comment_content'] = '';    //兼容旧版本的~~~
+
 		// hook cms_content_comment_model_format_after.php
 	}
 

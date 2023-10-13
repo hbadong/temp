@@ -45,7 +45,7 @@ function block_comment($conf) {
     $xuhao = $floor = 1;
 	foreach($list_arr as &$v) {
 		$run->cms_content_comment->format($v, $dateformat, $humandate);
-        $v['reply_comment_content'] = '';
+
         if($v['reply_commentid']) $reply_key[$v['commentid']] = $v['reply_commentid'];
 
         $v['floor'] = $floor++;
@@ -58,7 +58,12 @@ function block_comment($conf) {
         $reply_list_arr = $run->cms_content_comment->mget($reply_key);
         foreach ($reply_key as $commentid=>$reply_commentid){
             if( isset($list_arr['cms_comment-commentid-'.$commentid]) && isset($reply_list_arr['cms_comment-commentid-'.$reply_commentid]) ){
-                $list_arr['cms_comment-commentid-'.$commentid]['reply_comment_content'] = $reply_list_arr['cms_comment-commentid-'.$reply_commentid]['content'];
+                //格式化回复的评论信息
+                $reply_comment = $reply_list_arr['cms_comment-commentid-'.$reply_commentid];
+                $run->cms_content_comment->format($reply_comment, $dateformat, $humandate);
+
+                $list_arr['cms_comment-commentid-'.$commentid]['reply_comment'] = $reply_comment;
+                $list_arr['cms_comment-commentid-'.$commentid]['reply_comment_content'] = $reply_comment['content'];    //兼容旧版本的~~~
             }
         }
     }
