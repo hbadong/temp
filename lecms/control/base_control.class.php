@@ -15,6 +15,7 @@ class base_control extends control{
     public $_uid = 0; // 用户ID
     public $_group = array(); // 用户组
     public $_user_avatar = '';  //用户头像
+    public $_author = '';   //用户昵称
 
     public $_login_url = '';    //登录链接
     public $_register_url = ''; //注册链接
@@ -33,7 +34,7 @@ class base_control extends control{
         // hook base_control_construct_before.php
 
         $form_hash = '';
-        $author = (isset($this->_cfg['comment_default_author']) && !empty($this->_cfg['comment_default_author'])) ? $this->_cfg['comment_default_author'] : lang('visitor');
+        $this->_author = (isset($this->_cfg['comment_default_author']) && !empty($this->_cfg['comment_default_author'])) ? $this->_cfg['comment_default_author'] : lang('visitor');
 
         //开启了用户功能，获取登录用户信息
         if( isset($this->_cfg['open_user']) && !empty($this->_cfg['open_user']) ){
@@ -48,9 +49,9 @@ class base_control extends control{
                 $this->_group = $r['user_group'];
 
                 if( !empty($this->_user['author']) ){
-                    $author = $this->_user['author'];
+                    $this->_author = $this->_user['author'];
                 }else{
-                    $author = $this->_user['username'];
+                    $this->_author = $this->_user['username'];
                 }
                 // hook base_control_get_user_success.php
             }else{
@@ -82,7 +83,8 @@ class base_control extends control{
         $this->_action = isset($_GET['action']) ? strtolower($_GET['action']) : '';
 
         $GLOBALS['_user'] = &$this->_user;
-        $this->assign('author',$author);
+        $this->assign('author',$this->_author); //兼容旧的版本
+        $this->assign('_author',$this->_author);
         $this->assign('_uid',$this->_uid);
         $this->assign('_user',$this->_user);
         $this->assign('_group',$this->_group);

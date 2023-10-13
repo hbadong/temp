@@ -107,8 +107,10 @@ class comment_control extends base_control{
             $ip = ip2long(ip());
 
             if (empty($cid)) $this->message(0, lang('data_error'));
-            empty($author) && $this->message(0, lang('comment_author_no_empty'));
+            empty($author) && $author = $this->_author;
             _strlen($author) > 20 && $this->message(0, lang('comment_author_than_20'));
+
+
             empty($content) && $this->message(0, lang('comment_content_no_empty'));
             _strlen($content) > 255 && $this->message(0, lang('comment_content_than_255'));
 
@@ -135,8 +137,8 @@ class comment_control extends base_control{
                 $id = $cid;
                 $cms_data = array();
             } else {  //内容页
-				if (empty($id)) $this->message(0, lang('data_error'));
-				
+                if (empty($id)) $this->message(0, lang('data_error'));
+
                 $this->cms_content->table = 'cms_' . $cates['table'];
                 $cms_data = $this->cms_content->get($id);
                 if (empty($cms_data)) {
