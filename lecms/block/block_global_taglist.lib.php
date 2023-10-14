@@ -43,6 +43,11 @@ function block_global_taglist($conf) {
     //最大页数控制（超出进入404页面）
     if( R('page', 'G') > $maxpage || ($showmaxpage && R('page', 'G') > $showmaxpage)){core::error404();}
 
+    //只显示最大指定页数
+    if($showmaxpage && $maxpage > $showmaxpage){
+        $maxpage = $showmaxpage;
+    }
+
 	$page = min($maxpage, max(1, intval(R('page'))));
 	$pages = paginator::$page_function($page, $maxpage, $run->cms_content->tag_url($mid, $tags, TRUE), $pageoffset);
 

@@ -48,6 +48,11 @@ function block_global_comment($conf) {
     //最大页数控制（超出进入404页面）
     if( R('page', 'G') > $maxpage || ($showmaxpage && R('page', 'G') > $showmaxpage)){core::error404();}
 
+    //只显示最大指定页数
+    if($showmaxpage && $maxpage > $showmaxpage){
+        $maxpage = $showmaxpage;
+    }
+
     $page = min($maxpage, max(1, (int) R('page')));
     $_show['pages'] = paginator::$page_function($page, $maxpage, $run->cms_content->comment_url($run->_var['cid'], $id, TRUE), $pageoffset);
 
