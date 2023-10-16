@@ -14,6 +14,8 @@ function block_content_total_by_date($conf) {
 	// hook block_content_total_by_date_before.php
 
     $mid = _int($conf, 'mid', 2);
+    $type = isset($conf['type']) ? $conf['type'] : 'all';
+    $life = _int($conf, 'life', 0);
     // hook block_content_total_by_date_conf_after.php
 
     $table_arr = &$run->_cfg['table_arr'];
@@ -23,13 +25,10 @@ function block_content_total_by_date($conf) {
         return  0;
     }
 
-    $type = isset($conf['type']) ? $conf['type'] : 'all';
-    $life = _int($conf, 'life', 0);
-
     //优先从缓存表读取。加前缀，避免不同的block，相同的conf，导致缓存数据错乱
     $cache_key = $life ? md5('content_total_by_date'.serialize($conf)) : '';
     if($cache_key){
-        $data = $run->runtime->get($cache_key);
+        $data = $run->runtime->get_block_cache_data($cache_key);
         if($data){
             return (int)$data;
         }
@@ -80,7 +79,7 @@ function block_content_total_by_date($conf) {
     }
 
     if($cache_key){
-        $run->runtime->set($cache_key, $total, $life);
+        $run->runtime->set_block_cache_data($cache_key, $total, $life);
     }
 
 	// hook block_content_total_by_date_after.php

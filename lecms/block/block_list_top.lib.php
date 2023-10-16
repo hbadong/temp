@@ -38,9 +38,9 @@ function block_list_top($conf) {
     //优先从缓存表读取。加前缀，避免不同的block，相同的conf，导致缓存数据错乱
     $cache_key = $life ? md5('list_top'.serialize($conf)) : '';
     if($cache_key){
-        $list_arr = $run->runtime->get($cache_key);
+        $list_arr = $run->runtime->get_block_cache_data($cache_key);
         if($list_arr){
-            return array('list'=> $list_arr);
+            return $list_arr;
         }
     }
 
@@ -145,12 +145,14 @@ function block_list_top($conf) {
 		}
 	}
 
+    $ret = array('list'=> $list_arr);
+
 	//写入缓存表
     if($cache_key){
-        $run->runtime->set($cache_key, $list_arr, $life);
+        $run->runtime->set_block_cache_data($cache_key, $ret, $life);
     }
 
 	// hook block_list_top_after.php
 
-	return array('list'=> $list_arr);
+	return $ret;
 }

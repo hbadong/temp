@@ -15,6 +15,7 @@ defined('ROOT_PATH') || exit;
  * @param int showcate 是否读取分类信息
  * @param int showviews 是否读取内容浏览量信息
  * @param int field_format 是否格式化主表自定义字段内容（主要是单选框、多选框、下拉框）
+ * @param int life 缓存时间
  * @return array
  */
 function block_list_flag($conf) {
@@ -34,8 +35,18 @@ function block_list_flag($conf) {
     $showcate = _int($conf, 'showcate', 0);
     $showviews = _int($conf, 'showviews', 0);
     $field_format = _int($conf, 'field_format', 0);
+    $life = _int($conf, 'life', 0);
     $extra = array('block_name'=>'block_list_flag');
     // hook block_list_flag_conf_after.php
+
+    //优先从缓存表读取。加前缀，避免不同的block，相同的conf，导致缓存数据错乱
+    $cache_key = $life ? md5('list_flag'.serialize($conf)) : '';
+    if($cache_key){
+        $list_arr = $run->runtime->get_block_cache_data($cache_key);
+        if($list_arr){
+            return $list_arr;
+        }
+    }
 
     if($flag == 0){
         return array('list'=> array());
@@ -109,7 +120,12 @@ function block_list_flag($conf) {
         // hook block_list_flag_foreach_after.php
 	}
 
+    $ret = array('list'=> $list_arr);
+    if($cache_key){
+        $run->runtime->set_block_cache_data($cache_key, $ret, $life);
+    }
+
 	// hook block_list_flag_after.php
 
-	return array('list'=> $list_arr);
+	return $ret;
 }

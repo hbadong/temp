@@ -41,16 +41,17 @@ function block_list_by_keywords($conf) {
     $extra = array('block_name'=>'block_list_by_keywords');
     // hook block_list_by_keywords_conf_after.php
 
-    if($keywords == ''){
-        return array();
+    //优先从缓存表读取。加前缀，避免不同的block，相同的conf，导致缓存数据错乱
+    $cache_key = $life ? md5('list_by_keywords'.serialize($conf)) : '';
+    if($cache_key){
+        $list_arr = $run->runtime->get_block_cache_data($cache_key);
+        if($list_arr){
+            return $list_arr;
+        }
     }
 
-    if($life){
-        $cache_key = md5(json_encode($conf));
-        $list_arr = $run->runtime->get($cache_key);
-        if($list_arr) return $list_arr;
-    }else{
-        $cache_key = '';
+    if($keywords == ''){
+        return array();
     }
 
     if($cid){
@@ -119,13 +120,13 @@ function block_list_by_keywords($conf) {
         // hook block_list_by_keywords_foreach_after.php
     }
 
-    $return_data = array('cate_name'=> $cate_name, 'cate_url'=> $cate_url, 'list'=> $list_arr);
+    $ret = array('cate_name'=> $cate_name, 'cate_url'=> $cate_url, 'list'=> $list_arr);
 
-    if($life && $cache_key){
-        $run->runtime->set($cache_key, $return_data, $life);
+    if($cache_key){
+        $run->runtime->set_block_data_cache($cache_key, $ret, $life);
     }
 
     // hook block_list_by_keywords_after.php
 
-    return $return_data;
+    return $ret;
 }

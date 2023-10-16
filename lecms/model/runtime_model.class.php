@@ -112,7 +112,37 @@ class runtime extends model {
 	//删除
     public function xdelete($k = ''){
         strlen($k) > 32 AND $k = md5($k);
-        return $this->delete($k);
+        $r = $this->delete($k);
+        if($r){
+            // hook runtime_model_xdelete_after.php
+            return $r;
+        }else{
+            return false;
+        }
+    }
+
+    //block设置数据表缓存
+    public function set_block_data_cache($k = '', $v, $life = 60){
+        // hook runtime_model_set_block_data_cache_before.php
+        $r = $this->set($k, $v, $life);
+        if($r){
+            // hook runtime_model_set_block_data_cache_after.php
+            return $r;
+        }else{
+            return false;
+        }
+    }
+
+    //block获取数据表缓存
+    public function get_block_data_cache($k = ''){
+        // hook runtime_model_get_block_data_cache_before.php
+	    $r = $this->get($k);
+	    if($r){
+            // hook runtime_model_get_block_data_cache_after.php
+	        return $r;
+        }else{
+	        return false;
+        }
     }
 
     //设置文件缓存

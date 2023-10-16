@@ -35,7 +35,7 @@ function block_data_total($conf) {
     //优先从缓存表读取。加前缀，避免不同的block，相同的conf，导致缓存数据错乱
     $cache_key = $life ? md5('data_total'.serialize($conf)) : '';
     if($cache_key){
-        $data = $run->runtime->get($cache_key);
+        $data = $run->runtime->get_block_cache_data($cache_key);
         if($data){
             return $data;
         }
@@ -104,7 +104,7 @@ function block_data_total($conf) {
     }
 
     if($cache_key){
-        $run->runtime->set($cache_key, $total, $life);
+        $run->runtime->set_block_cache_data($cache_key, $total, $life);
     }
 
 	// hook block_data_total_after.php

@@ -17,6 +17,7 @@ defined('ROOT_PATH') || exit;
  * @param string nocids 排除的分类cid串 多个用英文逗号隔开
  * @param int flag 读取指定属性的列表
  * @param int showcate 是否显示分类信息（当分类层级超过2级时，内容列表要显示所属分类时使用。一般的2级分类结构，不需要这个参数）
+ * @param int life 缓存时间
  * @return array
  */
 function block_listeach($conf) {
@@ -37,7 +38,18 @@ function block_listeach($conf) {
     $nocids = empty($conf['nocids']) ? '' : $conf['nocids'];
     $flag = _int($conf, 'flag', 0);
     $showcate = _int($conf, 'showcate', 0);
+    $life = _int($conf, 'life', 0);
+    $extra = array('block_name'=>'block_listeach');
     // hook block_listeach_conf_after.php
+
+    //优先从缓存表读取。加前缀，避免不同的block，相同的conf，导致缓存数据错乱
+    $cache_key = $life ? md5('listeach'.serialize($conf)) : '';
+    if($cache_key){
+        $list_arr = $run->runtime->get_block_cache_data($cache_key);
+        if($list_arr){
+            return $list_arr;
+        }
+    }
 
 	if($cid == 0) {
 		$cid_arr = $run->category->get_cids_by_mid($mid);
@@ -108,7 +120,7 @@ function block_listeach($conf) {
 		    $where['flags'] = array('FIND_IN_SET'=>$flag);
         }
 
-		$ret[$_cid]['list'] = $run->cms_content->find_fetch($where, array($orderby => $orderway), $start, $limit);
+		$ret[$_cid]['list'] = $run->cms_content->list_arr($where, $orderby, $orderway, $start, $limit, $limit, $extra);
 
         if($showviews && $ret[$_cid]['list']){
             $keys = array();
@@ -140,6 +152,10 @@ function block_listeach($conf) {
 		}
         // hook block_listeach_foreach_after.php
 	}
+
+    if($cache_key){
+        $run->runtime->set_block_cache_data($cache_key, $ret, $life);
+    }
 
 	// hook block_listeach_after.php
 

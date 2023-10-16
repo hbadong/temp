@@ -14,6 +14,15 @@ function block_sql($conf) {
     $life = _int($conf, 'life', 0);
     // hook block_sql_conf_after.php
 
+    //优先从缓存表读取。加前缀，避免不同的block，相同的conf，导致缓存数据错乱
+    $cache_key = $life ? md5('sql'.serialize($conf)) : '';
+    if($cache_key){
+        $list_arr = $run->runtime->get_block_cache_data($cache_key);
+        if($list_arr){
+            return $list_arr;
+        }
+    }
+
     if(empty($sql)) return array();
 
     if( strpos($sql, '@#') ) {    //使用表前缀
@@ -21,22 +30,15 @@ function block_sql($conf) {
         $sql = str_replace('@#', $table_prefix, $sql);
     }
 
-    //优先从缓存表读取。加前缀，避免不同的block，相同的conf，导致缓存数据错乱
-    $cache_key = $life ? md5('sql_'.$sql) : '';
-    if($cache_key){
-        $list_arr = $run->runtime->get($cache_key);
-        if($list_arr){
-            return array('list'=> $list_arr);
-        }
-    }
-
     $list_arr = $run->db->fetch_all($sql);
 
+    $ret = array('list'=> $list_arr);
+
     if($cache_key){
-        $run->runtime->set($cache_key, $list_arr, $life);
+        $run->runtime->set_block_data_cache($cache_key, $ret, $life);
     }
 
     // hook block_sql_after.php
 
-    return array('list'=> $list_arr);
+    return $ret;
 }
