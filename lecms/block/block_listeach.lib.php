@@ -18,6 +18,7 @@ defined('ROOT_PATH') || exit;
  * @param int flag 读取指定属性的列表
  * @param int showcate 是否显示分类信息（当分类层级超过2级时，内容列表要显示所属分类时使用。一般的2级分类结构，不需要这个参数）
  * @param int life 缓存时间
+ * @param int son 获取子级的子级分类（三级分类 才用的上）
  * @return array
  */
 function block_listeach($conf) {
@@ -39,13 +40,14 @@ function block_listeach($conf) {
     $flag = _int($conf, 'flag', 0);
     $showcate = _int($conf, 'showcate', 0);
     $life = _int($conf, 'life', 0);
+    $son = _int($conf, 'son', 0);
     $extra = array('block_name'=>'block_listeach');
     // hook block_listeach_conf_after.php
 
     //优先从缓存表读取。加前缀，避免不同的block，相同的conf，导致缓存数据错乱
     $cache_key = $life ? md5('listeach'.serialize($conf)) : '';
     if($cache_key){
-        $list_arr = $run->runtime->get_block_cache_data($cache_key);
+        $list_arr = $run->runtime->get_block_data_cache($cache_key);
         if($list_arr){
             return $list_arr;
         }
@@ -108,6 +110,17 @@ function block_listeach($conf) {
 
 		if(!$cids) continue;
 
+		if($son){
+            $ret[$_cid]['son'] = array();
+		    foreach ($cids as $cid_tmp){
+                $cate_tmp = $run->category->get_cache($cid_tmp);
+                if($cate_tmp){
+                    $run->category->format($cate_tmp);
+                    $ret[$_cid]['son'][$cid_tmp] = $cate_tmp;
+                }
+            }
+        }
+
 		// 读取分类列表
 		if(is_array($cids)) {
 			$where = array('cid' => array("IN" => $cids)); // 影响数据库性能，不推荐这样建分类
@@ -154,7 +167,7 @@ function block_listeach($conf) {
 	}
 
     if($cache_key){
-        $run->runtime->set_block_cache_data($cache_key, $ret, $life);
+        $run->runtime->set_block_data_cache($cache_key, $ret, $life);
     }
 
 	// hook block_listeach_after.php
