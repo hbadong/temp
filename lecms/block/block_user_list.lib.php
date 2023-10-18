@@ -9,6 +9,7 @@ defined('ROOT_PATH') || exit;
  * @param int start 开始位置
  * @param int limit 显示几条
  * @param int showgroup 是否读取用户组信息
+ * @param int life 缓存时间
  * @return array
  */
 function block_user_list($conf) {
@@ -21,8 +22,18 @@ function block_user_list($conf) {
 	$start = _int($conf, 'start', 0);
 	$limit = _int($conf, 'limit', 10);
     $showgroup = _int($conf, 'showgroup', 0);
+    $life = _int($conf, 'life', 0);
     $extra = array('block_name'=>'block_user_list');
     // hook block_user_list_conf_after.php
+
+    //优先从缓存表读取。加前缀，避免不同的block，相同的conf，导致缓存数据错乱
+    $cache_key = $life ? md5('user_list'.serialize($conf)) : '';
+    if($cache_key){
+        $cache_data = $run->runtime->get_block_data_cache($cache_key);
+        if($cache_data){
+            return $cache_data;
+        }
+    }
 
     $where['groupid'] = $groupid;
     // hook block_user_list_where_after.php
@@ -50,7 +61,13 @@ function block_user_list($conf) {
         // hook block_user_list_foreach_after.php
 	}
 
+    $ret = array('list'=> $list_arr);
+
+    if($cache_key){
+        $run->runtime->set_block_data_cache($cache_key, $ret, $life);
+    }
+
 	// hook block_user_list_after.php
 
-	return array('list'=> $list_arr);
+	return $ret;
 }

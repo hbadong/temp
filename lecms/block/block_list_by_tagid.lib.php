@@ -14,6 +14,7 @@ defined('ROOT_PATH') || exit;
  * @param int limit 总共显示几条内容列表
  * @param int showcate 是否显示分类信息
  * @param int showviews 是否内容浏览量信息
+ * @param int life 缓存时间
  * @return array
  */
 function block_list_by_tagid($conf) {
@@ -32,7 +33,18 @@ function block_list_by_tagid($conf) {
 	$limit = _int($conf, 'limit', 10);
     $showcate = _int($conf, 'showcate', 0);
     $showviews = _int($conf, 'showviews', 0);
+    $life = _int($conf, 'life', 0);
+    $extra = array('block_name'=>'block_list_by_tagid');
     // hook block_list_by_tagid_conf_after.php
+
+    //优先从缓存表读取。加前缀，避免不同的block，相同的conf，导致缓存数据错乱
+    $cache_key = $life ? md5('list_by_tagid'.serialize($conf)) : '';
+    if($cache_key){
+        $list_arr = $run->runtime->get_block_data_cache($cache_key);
+        if($list_arr){
+            return $list_arr;
+        }
+    }
 
     $table_arr = &$run->_cfg['table_arr'];
     $table = isset($table_arr[$mid]) ? $table_arr[$mid] : 'article';
@@ -95,9 +107,15 @@ function block_list_by_tagid($conf) {
             // hook block_list_by_tagid_foreach_after.php
         }
 
+        $ret = array('tag_name'=> $tag_name, 'tag_url'=> $tag_url, 'list'=> $list_arr);
+
+        if($cache_key){
+            $run->runtime->set_block_data_cache($cache_key, $ret, $life);
+        }
+
         // hook block_list_by_tagid_after.php
 
-        return array('tag_name'=> $tag_name, 'tag_url'=> $tag_url, 'list'=> $list_arr);
+        return $ret;
     }elseif ($tagids){
         $ret = array();
         $tagid_arr = explode(',', $tagids);
@@ -147,6 +165,10 @@ function block_list_by_tagid($conf) {
                 }
                 $ret[$tagid]['list'] = $list_arr;
             }
+        }
+
+        if($cache_key){
+            $run->runtime->set_block_data_cache($cache_key, $ret, $life);
         }
 
         // hook block_list_by_tagid_after.php

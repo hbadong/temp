@@ -12,6 +12,7 @@ defined('ROOT_PATH') || exit;
  * @param int showviews 是否显示内容浏览量信息
  * @param int field_format 是否格式化主表自定义字段内容（主要是单选框、多选框、下拉框、图集等）
  * @param int cid 读取数据是否要分类CID参数
+ * @param int life 缓存时间
  * @return array
  */
 function block_list_prev_next($conf) {
@@ -27,8 +28,18 @@ function block_list_prev_next($conf) {
     $showviews = _int($conf, 'showviews', 0);
     $field_format = _int($conf, 'field_format', 0);
     $prev_next_cid = isset($conf['cid']) ? (int)$conf['cid'] : intval($_GET['cid']);
+    $life = _int($conf, 'life', 0);
     $extra = array('block_name'=>'block_list_prev_next');
     // hook block_list_prev_next_conf_after.php
+
+    //优先从缓存表读取。加前缀，避免不同的block，相同的conf，导致缓存数据错乱
+    $cache_key = $life ? md5('list_prev_next'.serialize($conf)) : '';
+    if($cache_key){
+        $cache_data = $run->runtime->get_block_data_cache($cache_key);
+        if($cache_data){
+            return $cache_data;
+        }
+    }
 
     // 排除单页模型
     $mid = &$run->_var['mid'];
@@ -96,7 +107,13 @@ function block_list_prev_next($conf) {
         // hook block_list_prev_next_foreach_after.php
 	}
 
+    $ret = array('list'=> $list_arr);
+
+    if($cache_key){
+        $run->runtime->set_block_data_cache($cache_key, $ret, $life);
+    }
+
 	// hook block_list_prev_next_after.php
 
-	return array('list'=> $list_arr);
+	return $ret;
 }

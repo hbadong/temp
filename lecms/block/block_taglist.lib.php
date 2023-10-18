@@ -9,6 +9,7 @@ defined('ROOT_PATH') || exit;
  * @param int start 开始位置
  * @param int limit 显示几条标签
  * @param int cms_limit 读取标签相关的几条最新内容
+ * @param int life 缓存时间
  * @return array
  */
 function block_taglist($conf) {
@@ -22,8 +23,18 @@ function block_taglist($conf) {
     $start = _int($conf, 'start', 0);
 	$limit = isset($conf['limit']) ? (int)$conf['limit'] : 10;
     $cms_limit = _int($conf, 'cms_limit', 0);
+    $life = _int($conf, 'life', 0);
     $extra = array('block_name'=>'block_taglist');
     // hook block_taglist_conf_after.php
+
+    //优先从缓存表读取。加前缀，避免不同的block，相同的conf，导致缓存数据错乱
+    $cache_key = $life ? md5('taglist'.serialize($conf)) : '';
+    if($cache_key){
+        $cache_data = $run->runtime->get_block_data_cache($cache_key);
+        if($cache_data){
+            return $cache_data;
+        }
+    }
 
 	$run->cms_content_tag->table = 'cms_'.$table.'_tag';
 
@@ -32,8 +43,11 @@ function block_taglist($conf) {
         $run->cms_content_tag_data->table = 'cms_'.$table.'_tag_data';
     }
 
+	$where = array();
+    // hook block_taglist_where_after.php
+
     //标签列表
-    $list_arr = $run->cms_content_tag->list_arr(array(), $orderby, $orderway, $start, $limit, $limit, $extra);
+    $list_arr = $run->cms_content_tag->list_arr($where, $orderby, $orderway, $start, $limit, $limit, $extra);
     $xuhao = 1;
 	foreach($list_arr as &$v) {
 		$v['url'] = $run->cms_content->tag_url($mid, $v);
@@ -65,7 +79,13 @@ function block_taglist($conf) {
         // hook block_taglist_foreach_after.php
 	}
 
+    $ret = array('list'=> $list_arr);
+
+    if($cache_key){
+        $run->runtime->set_block_data_cache($cache_key, $ret, $life);
+    }
+
 	// hook block_taglist_after.php
 
-	return array('list'=>$list_arr);
+	return $ret;
 }

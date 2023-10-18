@@ -8,6 +8,7 @@ defined('ROOT_PATH') || exit;
  * @param string dateformat 时间格式
  * @param int humandate 人性化时间显示 默认开启 (开启: 1 关闭: 0)
  * @param int orderway 降序(-1),升序(1)
+ * @param int life 缓存时间
  * @return array
  */
 function block_comment($conf) {
@@ -20,8 +21,18 @@ function block_comment($conf) {
 	$dateformat = empty($conf['dateformat']) ? 'Y-m-d H:i:s' : $conf['dateformat'];
 	$humandate = isset($conf['humandate']) ? ($conf['humandate'] == 1 ? 1 : 0) : 1;
 	$orderway = isset($conf['orderway']) && $conf['orderway'] == 1 ? 1 : -1;
+    $life = _int($conf, 'life', 0);
     $extra = array('block_name'=>'block_comment');
     // hook block_comment_conf_after.php
+
+    //优先从缓存表读取。加前缀，避免不同的block，相同的conf，导致缓存数据错乱
+    $cache_key = $life ? md5('comment'.serialize($conf)) : '';
+    if($cache_key){
+        $cache_data = $run->runtime->get_block_data_cache($cache_key);
+        if($cache_data){
+            return $cache_data;
+        }
+    }
 
 	$cid = &$run->_var['cid'];
     $mid = &$run->_var['mid'];
@@ -76,7 +87,13 @@ function block_comment($conf) {
 	$isnext = count($list_arr) < $firstnum ? 0 : 1;
     $comment_url = $run->cms_content->comment_url($cid, $id);
 
+    $ret = array('list' => $list_arr, 'next_url' => $next_url, 'isnext' => $isnext, 'comment_url' => $comment_url);
+
+    if($cache_key){
+        $run->runtime->set_block_data_cache($cache_key, $ret, $life);
+    }
+
 	// hook block_comment_after.php
 
-	return array('list' => $list_arr, 'next_url' => $next_url, 'isnext' => $isnext, 'comment_url' => $comment_url);
+	return $ret;
 }

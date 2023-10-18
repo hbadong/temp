@@ -9,6 +9,7 @@ defined('ROOT_PATH') || exit;
  * @param int field_format 是否格式化主表自定义字段内容（主要是单选框、多选框、下拉框、图集等）
  * @param int pageoffset 内容分页显示偏移量
  * @param string page_function 分页函数，xiunophp/ext/paginator.class.php
+ * @param int life 缓存时间
  * @return array
  */
 function block_global_show($conf) {
@@ -22,8 +23,18 @@ function block_global_show($conf) {
     $field_format = _int($conf, 'field_format', 0);
     $pageoffset = _int($conf, 'pageoffset', 5);
     $page_function = empty($conf['page_function']) ? 'pages' : $conf['page_function'];
+    $life = _int($conf, 'life', 0);
     $extra = array('block_name'=>'block_global_show');
     // hook block_global_show_conf_after.php
+
+    //优先从缓存表读取。加前缀，避免不同的block，相同的conf，导致缓存数据错乱
+    $cache_key = $life ? md5('global_show'.serialize($conf)) : '';
+    if($cache_key){
+        $cache_data = $run->runtime->get_block_data_cache($cache_key);
+        if($cache_data){
+            return $cache_data;
+        }
+    }
 
 	// 排除单页模型
 	$mid = &$run->_var['mid'];
@@ -123,6 +134,11 @@ function block_global_show($conf) {
         }
 	}else{
         $_show['prev'] = $_show['next'] = array();
+    }
+
+    // hook block_global_show_cache_before.php
+    if($cache_key){
+        $run->runtime->set_block_data_cache($cache_key, $_show, $life);
     }
 
 	// hook block_global_show_after.php

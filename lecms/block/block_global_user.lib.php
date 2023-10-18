@@ -12,6 +12,7 @@ defined('ROOT_PATH') || exit;
  * @param int pageoffset 分页显示偏移量
  * @param int showmaxpage 最多显示多少页
  * @param string page_function 分页函数，xiunophp/ext/paginator.class.php
+ * @param int life 缓存时间
  * @return array
  */
 function block_global_user($conf) {
@@ -27,8 +28,18 @@ function block_global_user($conf) {
     $pageoffset = _int($conf, 'pageoffset', 5);
     $showmaxpage = _int($conf, 'showmaxpage', 0);
     $page_function = empty($conf['page_function']) ? 'pages' : $conf['page_function'];
+    $life = _int($conf, 'life', 0);
     $extra = array('block_name'=>'block_global_user');
     // hook block_global_user_conf_after.php
+
+    //优先从缓存表读取。加前缀，避免不同的block，相同的conf，导致缓存数据错乱
+    $cache_key = $life ? md5('global_user'.serialize($conf)) : '';
+    if($cache_key){
+        $cache_data = $run->runtime->get_block_data_cache($cache_key);
+        if($cache_data){
+            return $cache_data;
+        }
+    }
 
     $where = array();
 	if($groupid){
@@ -82,7 +93,13 @@ function block_global_user($conf) {
         // hook block_global_user_foreach_after.php
 	}
 
+    $ret = array('total'=> $total, 'pages'=> $pages, 'list'=> $list_arr);
+
+    if($cache_key){
+        $run->runtime->set_block_data_cache($cache_key, $ret, $life);
+    }
+
 	// hook block_global_user_after.php
 
-	return array('total'=> $total, 'pages'=> $pages, 'list'=> $list_arr);
+	return $ret;
 }

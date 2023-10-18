@@ -15,6 +15,7 @@ defined('ROOT_PATH') || exit;
  * @param int showcate 是否显示分类信息
  * @param int showviews 是否内容浏览量信息
  * @param int field_format 是否格式化主表自定义字段内容（主要是单选框、多选框、下拉框、图集等）
+ * @param int life 缓存时间
  * @return array
  */
 function block_list_by_uid($conf) {
@@ -34,8 +35,18 @@ function block_list_by_uid($conf) {
     $showcate = _int($conf, 'showcate', 0);
     $showviews = _int($conf, 'showviews', 0);
     $field_format = _int($conf, 'field_format', 0);
+    $life = _int($conf, 'life', 0);
     $extra = array('block_name'=>'block_list_by_uid');
     // hook block_list_by_uid_conf_after.php
+
+    //优先从缓存表读取。加前缀，避免不同的block，相同的conf，导致缓存数据错乱
+    $cache_key = $life ? md5('list_by_uid'.serialize($conf)) : '';
+    if($cache_key){
+        $list_arr = $run->runtime->get_block_data_cache($cache_key);
+        if($list_arr){
+            return $list_arr;
+        }
+    }
 
     $table_arr = &$run->_cfg['table_arr'];
     $table = isset($table_arr[$mid]) ? $table_arr[$mid] : 'article';
@@ -101,7 +112,13 @@ function block_list_by_uid($conf) {
         // hook block_list_by_uid_foreach_after.php
     }
 
+    $ret = array('username'=>$user['username'], 'author'=>$author, 'list'=>$list_arr);
+
+    if($cache_key){
+        $run->runtime->set_block_data_cache($cache_key, $ret, $life);
+    }
+
     // hook block_list_by_uid_after.php
 
-    return array('username'=>$user['username'], 'author'=>$author, 'list'=>$list_arr);
+    return $ret;
 }

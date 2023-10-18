@@ -14,6 +14,7 @@ defined('ROOT_PATH') || exit;
  * @param int showmaxpage 最多显示多少页
  * @param int field_format 是否格式化主表自定义字段内容（主要是单选框、多选框、下拉框）
  * @param string page_function 分页函数，xiunophp/ext/paginator.class.php
+ * @param int life 缓存时间
  * @return array
  */
 function block_global_taglist($conf) {
@@ -32,8 +33,22 @@ function block_global_taglist($conf) {
     $showmaxpage = _int($conf, 'showmaxpage', 0);
     $field_format = _int($conf, 'field_format', 0);
     $page_function = empty($conf['page_function']) ? 'pages' : $conf['page_function'];
+    $life = _int($conf, 'life', 0);
     $extra = array('block_name'=>'block_global_taglist');
     // hook block_global_taglist_conf_after.php
+
+    //优先从缓存表读取。加前缀，避免不同的block，相同的conf，导致缓存数据错乱
+    $cache_key = $life ? md5('global_taglist'.serialize($conf)) : '';
+    if($cache_key){
+        $cache_data = $run->runtime->get_block_data_cache($cache_key);
+        if($cache_data){
+            return $cache_data;
+        }
+    }
+
+    if(empty($tags)){
+        return false;
+    }
 
 	// 初始分页
 	$tagid = $tags['tagid'];
@@ -93,7 +108,13 @@ function block_global_taglist($conf) {
         // hook block_global_taglist_foreach_after.php
 	}
 
+    $ret = array('total'=> $total, 'pages'=> $pages, 'list'=> $list_arr);
+
+    if($cache_key){
+        $run->runtime->set_block_data_cache($cache_key, $ret, $life);
+    }
+
 	// hook block_global_taglist_after.php
 
-	return array('total'=> $total, 'pages'=> $pages, 'list'=>$list_arr);
+	return $ret;
 }
