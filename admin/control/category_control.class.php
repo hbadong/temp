@@ -311,8 +311,14 @@ class category_control extends admin_control{
             E(1, lang('delete_failed'));
         }
 
-        if($data['mid'] == 1 && !$this->cms_page->delete($cid)) {
-            E(1, lang('delete_failed'));
+        //单页模型分类删除~
+        if($data['mid'] == 1){
+            //删除单页内容
+            $this->cms_page->delete($cid);
+
+            //删除模型内容的评论
+            $this->cms_content_comment->find_delete(array('mid'=>$mid));
+            $this->cms_content_comment_sort->find_delete(array('mid'=>$mid));
         }
 
         // 删除导航中的分类
