@@ -20,9 +20,9 @@ function block_taglist_rand($conf) {
     //优先从缓存表读取。加前缀，避免不同的block，相同的conf，导致缓存数据错乱
     $cache_key = $life ? md5('taglist_rand'.serialize($conf)) : '';
     if($cache_key){
-        $list_arr = $run->runtime->get_block_data_cache($cache_key);
-        if($list_arr){
-            return $list_arr;
+        $cache_data = $run->runtime->get_block_data_cache($cache_key);
+        if($cache_data){
+            return $cache_data;
         }
     }
 
@@ -34,11 +34,13 @@ function block_taglist_rand($conf) {
     $run->cms_content_tag->table = 'cms_'.$table.'_tag';
     $total = $run->cms_content_tag->count();
 
-    if($total > $limit*5){//最低5倍，如果太少，可能陷入死循环，导致网站崩溃
+    $beishu = $limit > 10 ? 10 : 5;
+    if($total > $limit*$beishu){//最低倍数，如果太少，可能陷入死循环，导致网站崩溃
         $keys = array();
         $i = 0;
         while ($i<$limit){
-            $sql = "SELECT tagid FROM {$table_full} WHERE tagid >= ((SELECT MAX(tagid) FROM {$table_full})-(SELECT MIN(tagid) FROM {$table_full})) * RAND() + (SELECT MIN(tagid) FROM {$table_full}) LIMIT 1";
+            //$sql = "SELECT tagid FROM {$table_full} WHERE tagid >= ((SELECT MAX(tagid) FROM {$table_full})-(SELECT MIN(tagid) FROM {$table_full})) * RAND() + (SELECT MIN(tagid) FROM {$table_full}) LIMIT 1";//这个sql一直在小范围循环
+            $sql = "SELECT t1.tagid FROM {$table_full} AS t1 JOIN (SELECT ROUND(RAND() * (SELECT MAX(tagid) FROM {$table_full})) AS tagid) AS t2 WHERE t1.tagid >= t2.tagid LIMIT 1";  //这里不能是limit 多条，多条的话是连续的tagid
             $arr = $run->db->fetch_first($sql);
             if($arr && !in_array($arr['tagid'], $keys)){
                 $keys[] = $arr['tagid'];
@@ -48,9 +50,14 @@ function block_taglist_rand($conf) {
         // 读取内容列表
         $list_arr = $run->cms_content_tag->mget($keys);
     }else{
-        $list_arr = $run->cms_content_tag->find_fetch(array(), array('tagid' => -1), 0, $limit);
-        shuffle($list_arr);
-        $list_arr = array_slice($list_arr, 0, $limit);
+        $keys = array();
+        $sql = "SELECT tagid FROM {$table_full} ORDER BY RAND() LIMIT {$limit}";
+        $arr = $run->db->fetch_all($sql);
+        foreach ($arr as $v){
+            $keys[] = $v['tagid'];
+        }
+        // 读取内容列表
+        $list_arr = $run->cms_content_tag->mget($keys);
     }
 
     $xuhao = 1;

@@ -33,9 +33,9 @@ function block_list_rand($conf) {
     //优先从缓存表读取。加前缀，避免不同的block，相同的conf，导致缓存数据错乱
     $cache_key = $life ? md5('list_rand'.serialize($conf)) : '';
     if($cache_key){
-        $list_arr = $run->runtime->get_block_data_cache($cache_key);
-        if($list_arr){
-            return $list_arr;
+        $cache_data = $run->runtime->get_block_data_cache($cache_key);
+        if($cache_data){
+            return $cache_data;
         }
     }
 
@@ -51,11 +51,13 @@ function block_list_rand($conf) {
     $run->cms_content->table = 'cms_'.$table;
     $total = $run->cms_content->count();
 
-    if($total > $limit*5){//最低5倍，如果太少，可能陷入死循环，导致网站崩溃
+    $beishu = $limit > 10 ? 10 : 5;
+    if($total > $limit*$beishu){//最低倍数，如果太少，可能陷入死循环，导致网站崩溃
         $keys = array();
         $i = 0;
         while ($i<$limit){
-            $sql = "SELECT id FROM {$table_full} WHERE id >= ((SELECT MAX(id) FROM {$table_full})-(SELECT MIN(id) FROM {$table_full})) * RAND() + (SELECT MIN(id) FROM {$table_full}) LIMIT 1";
+            //$sql = "SELECT id FROM {$table_full} WHERE id >= ((SELECT MAX(id) FROM {$table_full})-(SELECT MIN(id) FROM {$table_full})) * RAND() + (SELECT MIN(id) FROM {$table_full}) LIMIT 1";//这个sql一直在小范围循环
+            $sql = "SELECT t1.id FROM {$table_full} AS t1 JOIN (SELECT ROUND(RAND() * (SELECT MAX(id) FROM {$table_full})) AS id) AS t2 WHERE t1.id >= t2.id LIMIT 1";  //这里不能是limit 多条，多条的话是连续的id
             $arr = $run->db->fetch_first($sql);
             if($arr && !in_array($arr['id'], $keys)){
                 $keys[] = $arr['id'];
@@ -66,9 +68,13 @@ function block_list_rand($conf) {
         $list_arr = $run->cms_content->mget($keys);
     }else{
         $keys = array();
-        $list_arr = $run->cms_content->find_fetch(array(), array('id' => -1), 0, $limit);
-        shuffle($list_arr);
-        $list_arr = array_slice($list_arr, 0, $limit);
+        $sql = "SELECT id FROM {$table_full} ORDER BY RAND() LIMIT {$limit}";
+        $arr = $run->db->fetch_all($sql);
+        foreach ($arr as $v){
+            $keys[] = $v['id'];
+        }
+        // 读取内容列表
+        $list_arr = $run->cms_content->mget($keys);
     }
 
     if($showcate){
