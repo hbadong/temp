@@ -67,7 +67,7 @@ class comment_control extends admin_control {
             $where['uid'] = $uid;
         }
         if( $keyword ){
-            $where['name'] = array('LIKE'=>$keyword);
+            $where['content'] = array('LIKE'=>$keyword);
         }
         // hook admin_comment_control_get_list_where_after.php
 

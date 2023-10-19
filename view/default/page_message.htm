@@ -45,7 +45,7 @@
 						<ul class="msg" id="comment_{$v[commentid]}">
 							<li class="msgname">
 								<img class="avatar" src="{$v[avatar]}" width="32">&nbsp;
-								<span class="commentname">{$v[author]}</span><br><small>&nbsp;发布于&nbsp;{$v[date]}</small><small><a class="reply_comment" href="javascript:;" onclick="reply_comment({$v[commentid]});">回复该评论</a></small>
+								<span class="commentname">{$v[author]}</span><br><small>&nbsp;发布于&nbsp;{$v[date]}</small>
 							</li>
 							{if:$v[reply_comment_content]}<li class="reply_msgarticle">回复：{$v[reply_comment_content]}</li>{/if}
 							<li class="msgarticle">{$v[content]}</li>
