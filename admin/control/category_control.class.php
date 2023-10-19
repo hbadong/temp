@@ -317,8 +317,8 @@ class category_control extends admin_control{
             $this->cms_page->delete($cid);
 
             //删除模型内容的评论
-            $this->cms_content_comment->find_delete(array('mid'=>$mid));
-            $this->cms_content_comment_sort->find_delete(array('mid'=>$mid));
+            $this->cms_content_comment->find_delete(array('mid'=>1,'id'=>$cid));
+            $this->cms_content_comment_sort->find_delete(array('mid'=>1,'id'=>$cid));
         }
 
         // 删除导航中的分类
