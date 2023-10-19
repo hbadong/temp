@@ -208,17 +208,27 @@ class models extends model {
         return '';
     }
 
-    //删除模型
-    public function xdelete($mid = 0){
+    //删除或清空模型
+    public function xdelete($mid = 0, $del_table = 1){
         // hook models_model_xdelete_before.php
         // 内容读取
         $data = $this->get($mid);
         if(empty($data)) return lang('data_no_exists');
-        if( $data['system'] ) return lang('system_model_no_delete');
+        if( $data['system'] && $del_table ) return lang('system_model_no_delete');
 
-        $ret = $this->delete($mid);
+        if($del_table){
+            $ret = $this->delete($mid);
+        }else{
+            $ret = true;
+        }
+
         if($ret){
             // hook models_model_xdelete_success.php
+
+            //单页
+            if($mid < 2){
+                return '';
+            }
 
             $table = $data['tablename'];
             $tableprefix = $_ENV['_config']['db']['master']['tablepre'];	//表前缀
@@ -230,34 +240,64 @@ class models extends model {
             $table_cms_tag_data = $tableprefix.'cms_'.$table.'_tag_data';
             $table_cms_views = $tableprefix.'cms_'.$table.'_views';
 
-            //更新用户内容数（如果上万的不同用户，这里效率就很低）
-            $sql = "SELECT uid,count(id) as contents FROM `".$table_cms."` group by uid";
-            $res = $this->db->fetch_all($sql);
-            foreach ($res as $v){
-                $user = $this->user->get($v['uid']);
-                $contents = $user['contents'] > $v['contents'] ? $user['contents'] - $v['contents'] : 0;
-                $user['contents'] = $contents;
-                $this->user->update($user);
+            if($del_table){
+                //删除相关表
+                $sql = "DROP TABLE IF EXISTS ".$table_cms;
+                $this->db->query($sql);
+                $sql = "DROP TABLE IF EXISTS ".$table_cms_attach;
+                $this->db->query($sql);
+                $sql = "DROP TABLE IF EXISTS ".$table_cms_data;
+                $this->db->query($sql);
+                $sql = "DROP TABLE IF EXISTS ".$table_cms_flag;
+                $this->db->query($sql);
+                $sql = "DROP TABLE IF EXISTS ".$table_cms_tag;
+                $this->db->query($sql);
+                $sql = "DROP TABLE IF EXISTS ".$table_cms_tag_data;
+                $this->db->query($sql);
+                $sql = "DROP TABLE IF EXISTS ".$table_cms_views;
+                $this->db->query($sql);
+
+                //删除模型相关分类
+                $this->category->find_delete(array('mid'=>$mid));
+            }else{
+                $this->cms_content->table = 'cms_'.$table;
+                $this->cms_content_data->table = 'cms_'.$table.'_data';
+                $this->cms_content_attach->table = 'cms_'.$table.'_attach';
+                $this->cms_content_flag->table = 'cms_'.$table.'_flag';
+                $this->cms_content_tag->table = 'cms_'.$table.'_tag';
+                $this->cms_content_tag_data->table = 'cms_'.$table.'_tag_data';
+                $this->cms_content_views->table = 'cms_'.$table.'_views';
+
+                $this->cms_content->truncate();
+                $this->cms_content_data->truncate();
+                $this->cms_content_attach->truncate();
+                $this->cms_content_flag->truncate();
+                $this->cms_content_tag->truncate();
+                $this->cms_content_tag_data->truncate();
+                $this->cms_content_views->truncate();
+
+                //清空模型相关分类内容数量
+                $this->category->find_update(array('mid'=>$mid), array('count'=>0));
             }
 
-            //删除相关表
-            $sql = "DROP TABLE IF EXISTS ".$table_cms;
-            $this->db->query($sql);
-            $sql = "DROP TABLE IF EXISTS ".$table_cms_attach;
-            $this->db->query($sql);
-            $sql = "DROP TABLE IF EXISTS ".$table_cms_data;
-            $this->db->query($sql);
-            $sql = "DROP TABLE IF EXISTS ".$table_cms_flag;
-            $this->db->query($sql);
-            $sql = "DROP TABLE IF EXISTS ".$table_cms_tag;
-            $this->db->query($sql);
-            $sql = "DROP TABLE IF EXISTS ".$table_cms_tag_data;
-            $this->db->query($sql);
-            $sql = "DROP TABLE IF EXISTS ".$table_cms_views;
-            $this->db->query($sql);
+            //删除模型内容的评论
+            $this->cms_content_comment->find_delete(array('mid'=>$mid));
+            $this->cms_content_comment_sort->find_delete(array('mid'=>$mid));
 
-            //删除模型相关分类
-            $this->category->find_delete(array('mid'=>$mid));
+            // 重新统计用户的内容数量
+            $pagenum = 500;
+            $user_total = $this->user->count();
+
+            //所有内容模型的表名
+            $table_arr = $this->get_table_arr();
+
+            $maxpage = max(1, ceil($user_total/$pagenum));
+            for($i = 1; $i <= $maxpage; $i++){
+                $user_arr = $this->user->list_arr(array(), 'uid', 1, ($i-1)*$pagenum, $pagenum, $user_total);
+                foreach ($user_arr as $user){
+                    $this->user->update_user_contents($user, $table_arr);
+                }
+            }
 
             //清除缓存
             $this->runtime->truncate();
