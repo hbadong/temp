@@ -3,11 +3,10 @@ defined('ROOT_PATH') || exit;
 
 /**
  * 用户信息模块
- * @param int pagenum 每页显示条数
- * @param int firstnum 首次显示条数 (有利于SEO)
+ * @param int uid 用户UID
+ * @param int showgroup 是否读取用户组信息
  * @param string dateformat 时间格式
- * @param int humandate 人性化时间显示 默认开启 (开启: 1 关闭: 0)
- * @param int orderway 降序(-1),升序(1)
+ * @param int life 缓存时间
  * @return array
  */
 function block_user_info($conf) {
@@ -15,7 +14,19 @@ function block_user_info($conf) {
 
 	// hook block_user_info_before.php
     $uid = _int($conf, 'uid', 0);
+    $showgroup = _int($conf, 'showgroup', 0);
+    $dateformat = empty($conf['dateformat']) ? 'Y-m-d H:i:s' : $conf['dateformat'];
+    $life = _int($conf, 'life', 0);
     // hook block_user_info_conf_after.php
+
+    //优先从缓存表读取。加前缀，避免不同的block，相同的conf，导致缓存数据错乱
+    $cache_key = $life ? md5('user_info'.serialize($conf)) : '';
+    if($cache_key){
+        $list_arr = $run->runtime->get_block_data_cache($cache_key);
+        if($list_arr){
+            return $list_arr;
+        }
+    }
 
     if( empty($uid) ){
         global $_show;
@@ -25,14 +36,18 @@ function block_user_info($conf) {
         }
     }
 
-	$user = $run->user->get($uid);
+	$user = $run->user->get_user_by_uid($uid);
     if( empty($user) ){
         return array();
     }
 
     empty($user['author']) && $user['author'] = $user['username'];
 
-    $run->user->format($user);
+    $run->user->format($user, $dateformat, $showgroup);
+
+    if($cache_key){
+        $run->runtime->set_block_data_cache($cache_key, $user, $life);
+    }
 
 	// hook block_user_info_after.php
 

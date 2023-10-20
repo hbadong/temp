@@ -5,6 +5,7 @@ defined('ROOT_PATH') || exit;
  * 获取分类信息
  * @param string cids 多个分类ID 英文逗号隔开，优先级别最高
  * @param int cid 分类ID 如果不填：自动识别
+ * @param int life 缓存时间
  * @return array
  */
 function block_category_info($conf) {
@@ -14,9 +15,19 @@ function block_category_info($conf) {
 
     $cids = isset($conf['cids']) ? trim($conf['cids']) : '';
 	$cid = isset($conf['cid']) ? intval($conf['cid']) : _int($_GET, 'cid');
+    $life = _int($conf, 'life', 0);
     // hook block_category_info_conf_after.php
 
 	if( empty($cids) && empty($cid) ) return array();
+
+    //优先从缓存表读取。加前缀，避免不同的block，相同的conf，导致缓存数据错乱
+    $cache_key = $life ? md5('category_info'.serialize($conf)) : '';
+    if($cache_key){
+        $cache_data = $run->runtime->get_block_data_cache($cache_key);
+        if($cache_data){
+            return $cache_data;
+        }
+    }
 
 	if($cids){
         $list_arr = array();
@@ -36,9 +47,14 @@ function block_category_info($conf) {
             }
         }
 
+        $ret = array('list'=> $list_arr);
+        if($cache_key){
+            $run->runtime->set_block_data_cache($cache_key, $ret, $life);
+        }
+
         // hook block_category_info_cid_after.php
 
-        return array('list'=> $list_arr);
+        return $ret;
     }else{
         $cate = $run->category->get_cache($cid);
         if( empty($cate) ) return array();
@@ -47,6 +63,10 @@ function block_category_info($conf) {
         if($cate['mid'] == 1){
             $page = $run->cms_page->get($cid);
             $cate['content'] = $page['content'];
+        }
+
+        if($cache_key){
+            $run->runtime->set_block_data_cache($cache_key, $cate, $life);
         }
 
         // hook block_category_info_cid_after.php

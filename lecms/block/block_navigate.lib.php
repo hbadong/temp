@@ -6,6 +6,7 @@ defined('ROOT_PATH') || exit;
  * @param int mobile 移动端导航
  * @param int showcate 是否显示分类信息
  * @param string nocids 排除的分类cid串 多个用英文逗号隔开
+ * @param int life 缓存时间
  * @return array
  */
 function block_navigate($conf) {
@@ -15,7 +16,17 @@ function block_navigate($conf) {
     $mobile = isset($conf['mobile']) ? intval($conf['mobile']) : 0;
     $showcate = _int($conf, 'showcate', 0);
     $nocids = empty($conf['nocids']) ? '' : $conf['nocids'];
+    $life = _int($conf, 'life', 0);
 	// hook block_navigate_conf_after.php
+
+    //优先从缓存表读取。加前缀，避免不同的block，相同的conf，导致缓存数据错乱
+    $cache_key = $life ? md5('navigate'.serialize($conf)) : '';
+    if($cache_key){
+        $cache_data = $run->runtime->get_block_data_cache($cache_key);
+        if($cache_data){
+            return $cache_data;
+        }
+    }
 
     if($mobile){
         $field = 'navigate_mobile';
@@ -69,6 +80,10 @@ function block_navigate($conf) {
 		}
         // hook block_navigate_foreach_after.php
 	}
+
+    if($cache_key){
+        $run->runtime->set_block_data_cache($cache_key, $nav_arr, $life);
+    }
 
 	// hook block_navigate_after.php
 

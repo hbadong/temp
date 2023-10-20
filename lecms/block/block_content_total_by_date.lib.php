@@ -28,9 +28,9 @@ function block_content_total_by_date($conf) {
     //优先从缓存表读取。加前缀，避免不同的block，相同的conf，导致缓存数据错乱
     $cache_key = $life ? md5('content_total_by_date'.serialize($conf)) : '';
     if($cache_key){
-        $data = $run->runtime->get_block_data_cache($cache_key);
-        if($data){
-            return (int)$data;
+        $cache_data = $run->runtime->get_block_data_cache($cache_key);
+        if($cache_data){
+            return (int)$cache_data;
         }
     }
 

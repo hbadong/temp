@@ -52,7 +52,7 @@ function block_list_rand($conf) {
     $total = $run->cms_content->count();
 
     $beishu = $limit > 10 ? 10 : 5;
-    if($total > $limit*$beishu){//最低倍数，如果太少，可能陷入死循环，导致网站崩溃
+    if($total > 1000 && $total > $limit*$beishu){//最低倍数，如果太少，可能陷入死循环，导致网站崩溃
         $keys = array();
         $i = 0;
         while ($i<$limit){
