@@ -149,7 +149,7 @@ body {
 
 /*插件*/
 #plugin{padding-top:0}
-.plu_cont{height:52px;line-height:16px;overflow:hidden;font-size: 13px;}
+.plu_cont{height:52px;line-height:14px;overflow:hidden;font-size: 12px;}
 .plu_b{font-weight:bold}
 .plu_i{color:#555}
 .plu_bottom{margin-top:4px;}
