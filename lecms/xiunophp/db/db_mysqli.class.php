@@ -409,14 +409,33 @@ class db_mysqli implements db_interface {
      * 根据条件批量更新数据
      * @param string $table	表名
      * @param array $where	条件
+     * @param array $data 更新项
+     * @param array $order 排序
+     * @param int $limit	更新几条
      * @param array $lowprority	是否开启不锁定表
      * @return int	返回影响的记录行数
      */
-    public function find_update($table, $where, $data, $lowprority = FALSE) {
+    public function find_update($table, $where, $data, $order = array(), $limit = 0, $lowprority = FALSE) {
         $where = $this->arr2where($where);
         $data = $this->arr2sql($data);
         $lpy = $lowprority ? 'LOW_PRIORITY' : '';
-        $this->query("UPDATE $lpy {$this->tablepre}$table SET $data $where", $this->wlink);
+
+        $s = '';
+        //排序
+        if($order) {
+            $s .= ' ORDER BY ';
+            $comma = '';
+            foreach($order as $k=>$v) {
+                $s .= $comma."$k ".($v == 1 ? ' ASC ' : ' DESC ');
+                $comma = ',';
+            }
+        }
+        //条数
+        if($limit){
+            $s .= " LIMIT {$limit}";
+        }
+
+        $this->query("UPDATE $lpy {$this->tablepre}$table SET $data $where $s", $this->wlink);
         return mysqli_affected_rows($this->wlink);
     }
 

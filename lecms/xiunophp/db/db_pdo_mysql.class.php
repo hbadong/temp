@@ -392,14 +392,33 @@ class db_pdo_mysql implements db_interface {
 	 * 根据条件批量更新数据
 	 * @param string $table	表名
 	 * @param array $where	条件
+     * @param array $data 更新项
+     * @param array $order 排序
+     * @param int $limit	更新几条
 	 * @param array $lowprority	是否开启不锁定表
 	 * @return int	返回影响的记录行数
 	 */
-	public function find_update($table, $where, $data, $lowprority = FALSE) {
+	public function find_update($table, $where, $data, $order = array(), $limit = 0, $lowprority = FALSE) {
 		$where = $this->arr2where($where);
 		$data = $this->arr2sql($data);
 		$lpy = $lowprority ? 'LOW_PRIORITY' : '';
-		return $this->exec("UPDATE $lpy {$this->tablepre}$table SET $data $where", $this->wlink);
+
+        $s = '';
+        //排序
+        if($order) {
+            $s .= ' ORDER BY ';
+            $comma = '';
+            foreach($order as $k=>$v) {
+                $s .= $comma."$k ".($v == 1 ? ' ASC ' : ' DESC ');
+                $comma = ',';
+            }
+        }
+        //条数
+		if($limit){
+            $s .= " LIMIT {$limit}";
+        }
+
+		return $this->exec("UPDATE $lpy {$this->tablepre}$table SET $data $where $s", $this->wlink);
 	}
 
 	/**
@@ -549,7 +568,7 @@ class db_pdo_mysql implements db_interface {
 			);
 			$link = new PDO("mysql:host=$host;port=$port;dbname=$name;charset=$charset", $user, $pass, $attr);
 		} catch (Exception $e) {
-			throw new Exception('连接数据库服务器失败:'.$e->getMessage());
+			throw new Exception('连接数据库服务器失败:'.mb_convert_encoding($e->getMessage(),'UTF-8','GBK'));
 		}
 		if($charset){
 			$link->query('SET NAMES '.$charset.', sql_mode=""');

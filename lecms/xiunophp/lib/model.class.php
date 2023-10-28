@@ -316,10 +316,13 @@ class model{
 	/**
 	 * 根据条件批量更新数据 (不建议用来更新大量数据，太暴力了)
 	 * @param array $where	条件
+     * @param array $data 更新项
+     * @param array $order 排序
+     * @param int $limit	更新几条
 	 * @param array $lowprority	是否开启不锁定表
 	 * @return int	返回影响的记录行数
 	 */
-	public function find_update($where, $data, $lowprority = FALSE) {
+	public function find_update($where, $data, $order = array(), $limit = 0, $lowprority = FALSE) {
 		$this->unique = array();
 		if($this->cache_conf['enable']) {
 			$n = $this->find_count($where);
@@ -332,7 +335,7 @@ class model{
 				}
 			}
 		}
-		return $this->db->find_update($this->table, $where, $data, $lowprority);
+		return $this->db->find_update($this->table, $where, $data, $order, $limit, $lowprority);
 	}
 
 	/**
