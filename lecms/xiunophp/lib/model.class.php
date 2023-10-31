@@ -344,7 +344,7 @@ class model{
 	 * @param array $lowprority	是否开启不锁定表
 	 * @return int	返回影响的记录行数
 	 */
-	public function find_delete($where, $lowprority = FALSE) {
+	public function find_delete($where, $order = array(), $limit = 0, $lowprority = FALSE) {
 		$this->unique = array();
 		if($this->cache_conf['enable']) {
 			$n = $this->find_count($where);
@@ -357,7 +357,7 @@ class model{
 				}
 			}
 		}
-		$num = $this->db->find_delete($this->table, $where, $lowprority);
+		$num = $this->db->find_delete($this->table, $where, $order, $limit, $lowprority);
 
 		if(!empty($this->maxid) && $num > 0) {
 			$this->count('-'.$num);

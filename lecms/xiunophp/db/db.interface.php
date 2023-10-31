@@ -13,7 +13,7 @@ interface db_interface {
 	public function find_fetch($table, $pri, $where = array(), $order = array(), $start = 0, $limit = 0);
 	public function find_fetch_key($table, $pri, $where = array(), $order = array(), $start = 0, $limit = 0);
 	public function find_update($table, $where, $data, $order = array(), $limit = 0, $lowprority = FALSE);
-	public function find_delete($table, $where, $lowprority = FALSE);
+	public function find_delete($table, $where, $order = array(), $limit = 0, $lowprority = FALSE);
 	public function find_maxid($key);
 	public function find_count($table, $where = array());
 

@@ -443,13 +443,31 @@ class db_mysqli implements db_interface {
      * 根据条件批量删除数据
      * @param string $table	表名
      * @param array $where	条件
+     * @param array $order 排序
+     * @param int $limit	删除几条
      * @param array $lowprority	是否开启不锁定表
      * @return int	返回影响的记录行数
      */
-    public function find_delete($table, $where, $lowprority = FALSE) {
+    public function find_delete($table, $where, $order = array(), $limit = 0, $lowprority = FALSE) {
         $where = $this->arr2where($where);
         $lpy = $lowprority ? 'LOW_PRIORITY' : '';
-        $this->query("DELETE $lpy FROM {$this->tablepre}$table $where", $this->wlink);
+
+        $s = '';
+        //排序
+        if($order) {
+            $s .= ' ORDER BY ';
+            $comma = '';
+            foreach($order as $k=>$v) {
+                $s .= $comma."$k ".($v == 1 ? ' ASC ' : ' DESC ');
+                $comma = ',';
+            }
+        }
+        //条数
+        if($limit){
+            $s .= " LIMIT {$limit}";
+        }
+
+        $this->query("DELETE $lpy FROM {$this->tablepre}$table $where $s", $this->wlink);
         return mysqli_affected_rows($this->wlink);
     }
 
