@@ -12,7 +12,7 @@ function block_taglist_rand($conf) {
 	global $run;
 
 	// hook block_taglist_rand_before.php
-	$mid = _int($conf, 'mid', 2);
+    $mid = isset($conf['mid']) ? max(2, intval($conf['mid'])) : (isset($_GET['mid']) ? max(2, intval($_GET['mid'])) : 2);
 	$limit = _int($conf, 'limit', 10);
     $life = _int($conf, 'life', 0);
     // hook block_taglist_rand_conf_after.php

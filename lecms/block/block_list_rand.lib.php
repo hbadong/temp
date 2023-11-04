@@ -19,7 +19,7 @@ function block_list_rand($conf) {
 
 	// hook block_list_rand_before.php
 
-	$mid = _int($conf, 'mid', 2);
+    $mid = isset($conf['mid']) ? max(2, intval($conf['mid'])) : (isset($_GET['mid']) ? max(2, intval($_GET['mid'])) : 2);
 	$dateformat = empty($conf['dateformat']) ? 'Y-m-d H:i' : $conf['dateformat'];
 	$titlenum = _int($conf, 'titlenum');
 	$intronum = _int($conf, 'intronum');
