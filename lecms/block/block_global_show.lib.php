@@ -51,7 +51,8 @@ function block_global_show($conf) {
 
 	// 合并大数据字段
 	$id = &$_show['id'];
-	$_show['comment_url'] = $run->cms_content->comment_url($run->_var['cid'], $id);
+	$_show['comment_url'] = $run->cms_content->comment_url($run->_var['cid'], $id); //评论URL
+    $_show['views_url'] = $run->_cfg['webdir'].'index.php?views--cid-'.$run->_var['cid'].'-id-'.$id;  //异步获取和更新浏览量URL
 
     // hook block_global_show_data_before.php
 	$data = $run->cms_content_data->get($id);

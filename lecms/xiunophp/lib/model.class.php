@@ -21,6 +21,7 @@ cache + db + model:
  	$this->find_fetch(); // 支持二级缓存
  	$this->find_fetch_key(); // 支持二级缓存
  	$this->find_update();
+    $this->update_views();
  	$this->find_delete();
  	$this->find_maxid();
  	$this->find_count();
@@ -338,6 +339,18 @@ class model{
 		return $this->db->find_update($this->table, $where, $data, $order, $limit, $lowprority);
 	}
 
+    /**
+     * 更新一条数据的浏览量
+     * @param array $key	键名数组
+     * @param int  $n	浏览量 默认为 + 1
+     * @param string $field	浏览量字段
+     * @return bool
+     */
+    public function update_views($key, $n = 1, $field = 'views') {
+        $key = $this->arr2key($key);
+        return $this->cache_db_update_views($key, $n, $field);
+    }
+
 	/**
 	 * 根据条件批量删除数据 (不建议用来删除大量数据，太暴力了)
 	 * @param array $where	条件
@@ -520,6 +533,18 @@ class model{
 		$this->cache_conf['enable'] && $this->cache->update($key, $data, $life);
 		return $this->db->update($key, $data);
 	}
+
+    /**
+     * cache+db 更新一条数据的浏览量
+     * @param string $key	键名
+     * @param int $n		次数
+     * @param string $field	浏览量字段
+     * @return boot
+     */
+    public function cache_db_update_views($key, $n = 1, $field = 'views') {
+        $this->cache_conf['enable'] && $this->cache->delete($key);
+        return $this->db->update_views($key, $n, $field);
+    }
 
 	/**
 	 * cache+db 删除一条数据

@@ -421,6 +421,20 @@ class db_pdo_mysql implements db_interface {
 		return $this->exec("UPDATE $lpy {$this->tablepre}$table SET $data $where $s", $this->wlink);
 	}
 
+    /**
+     * 更新一条数据的浏览量
+     * @param string $key	键名
+     * @param int $n		次数
+     * @param string $field	浏览量字段
+     * @return bool
+     */
+    public function update_views($key, $n = 1, $field = 'views'){
+        list($table, $keyarr, $keystr) = $this->key2arr($key);
+
+        $s = "{$field}={$field}+{$n}";
+        return $this->query("UPDATE LOW_PRIORITY {$this->tablepre}$table SET $s WHERE $keystr LIMIT 1", $this->wlink);
+    }
+
 	/**
 	 * 根据条件批量删除数据
 	 * @param string $table	表名
