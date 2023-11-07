@@ -84,7 +84,7 @@ function block_global_show($conf) {
     if($views_data){
         if( empty($run->_cfg['close_views']) ){
             $_show['views'] = $views_data['views']+1;
-            $run->cms_content_views->set($id, array('views'=>$_show['views'],'cid'=>$_show['cid']));
+            $run->cms_content_views->update_views($id);
         }else{
             $_show['views'] = $views_data['views'];
         }
