@@ -15,7 +15,7 @@ $_ENV['_config'] = array(
 	'cookie_path' => '/',
 	'cookie_domain' => '',
 
-	// 数据库配置，type 为默认的数据库类型，可以支持多种数据库: mysql|mysqli|pdo_mysql|pdo_sqlite|postgresql|mongodb
+	// 数据库配置，type 为默认的数据库类型: mysql|mysqli|pdo_mysql
 	'db' => array(
 		'type' => 'mysql',
 		// 主数据库

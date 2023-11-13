@@ -22,8 +22,15 @@ class parseurl_control extends control{
                 $cfg = $this->runtime->xget();
                 $this->data['cfg'] = $cfg;
             }
+			
             $uri = $_GET['rewrite'];
             unset($_GET['rewrite']);
+			
+			//访问 域名/index.php?rewrite=xx ， 直接 301 重定向到 域名/xx
+            $request_uri = isset($_SERVER['REQUEST_URI']) ? strtolower($_SERVER['REQUEST_URI']) : '';
+            if( $request_uri && strpos($request_uri, '?rewrite=') !== false ){
+                http_location($cfg['weburl'].$uri, '301');
+            }
 
             // 多个 // 的301到一个 / 的？ 用伪静态规则去实现
 //            $request_uri = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';

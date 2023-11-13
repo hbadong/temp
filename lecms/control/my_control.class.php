@@ -54,7 +54,7 @@ class my_control extends base_control {
 
         $this->_navs['my'] = array(
             'title' => lang('my_center'),
-            'icon' => '',
+            'icon' => 'fa fa-user-circle',
             'href' => '',
             'target' => '_self',
             'child' =>array(
@@ -68,7 +68,7 @@ class my_control extends base_control {
 
         $this->_navs['content'] = array(
             'title' => lang('contents_mng'),
-            'icon' => '',
+            'icon' => 'fa fa-list-alt',
             'href' => '',
             'target' => '_self',
             'child' =>array(
@@ -81,7 +81,7 @@ class my_control extends base_control {
 
         $this->_navs['logout'] = array(
             'title' => lang('logout'),
-            'icon' => '',
+            'icon' => 'fa fa-sign-out',
             'href' => $this->urls->user_url('logout','my'),
             'target' => '_self',
             'child' => array(),

@@ -28,6 +28,14 @@ defined('RUNTIME_PATH') || define('RUNTIME_PATH', ROOT_PATH.'runcache/');
 defined('RUNTIME_MODEL') || define('RUNTIME_MODEL', RUNTIME_PATH.APP_NAME.'_model/');
 defined('RUNTIME_CONTROL') || define('RUNTIME_CONTROL', RUNTIME_PATH.APP_NAME.'_control/');
 
+// 定义当前请求的系统常量
+define('NOW_TIME',      $_SERVER['REQUEST_TIME']);
+define('REQUEST_METHOD',$_SERVER['REQUEST_METHOD']);
+define('IS_GET',        REQUEST_METHOD =='GET' ? true : false);
+define('IS_POST',       REQUEST_METHOD =='POST' ? true : false);
+define('IS_PUT',        REQUEST_METHOD =='PUT' ? true : false);
+define('IS_DELETE',     REQUEST_METHOD =='DELETE' ? true : false);
+
 //系统配置文件
 include CONFIG_PATH.'config.inc.php';
 //加载自定义路由配置文件
@@ -80,6 +88,8 @@ if(DEBUG) {
 	include $runfile;
 }
 
+define('IS_AJAX',       ((isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') || !empty(R('ajax', 'R'))) ? true : false);
+
 //传输协议 http:// 还是 https:// ？
 defined('HTTP') || define('HTTP', http());
 
@@ -89,9 +99,7 @@ session_start();
 //启动
 core::init_start();
 
-//输出调试信息，排除 ajax参数
-$ajax = (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower(trim($_SERVER['HTTP_X_REQUESTED_WITH'])) == 'xmlhttprequest') || R('ajax', 'R');
-$_ENV['_ajax'] = $ajax;
-if(DEBUG > 1 && !$ajax) {
+//输出调试信息，排除 ajax
+if(DEBUG > 1 && !IS_AJAX) {
 	debug::debug_info();
 }
