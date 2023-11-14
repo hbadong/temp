@@ -57,6 +57,7 @@ class show_control extends base_control{
 
         //格式化分类信息
         $this->category->format($this->_var);
+		$_GET['mid'] = $this->_var['mid'];
 
         //内容标签json转字符串
         if($_show['tags']){
