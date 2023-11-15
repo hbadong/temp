@@ -58,6 +58,7 @@ class show_control extends base_control{
         //格式化分类信息
         $this->category->format($this->_var);
 		$_GET['mid'] = $this->_var['mid'];
+		$_GET['cid'] = $this->_var['cid'];  //重置GET cid参数（可以适配内容URL各种无cid参数的情况，防止内容页无GET cid参数）
 
         //内容标签json转字符串
         if($_show['tags']){
