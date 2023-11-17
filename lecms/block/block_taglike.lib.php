@@ -71,13 +71,18 @@ function block_taglike($conf) {
 
 	// 读取内容ID
 	$run->cms_content_tag_data->table = 'cms_'.$table.'_tag_data';
-	$tag_arr = $run->cms_content_tag_data->find_fetch(array('tagid'=>$tagid), array('id'=>$orderway), $start, $limit);
+	$tag_arr = $run->cms_content_tag_data->find_fetch(array('tagid'=>$tagid), array('id'=>$orderway), $start, $limit+1);
 	$keys = array();
 	foreach($tag_arr as $lv) {
-		$keys[] = $lv['id'];
+	    //排除内容本身
+	    if($lv['id'] != $_show['id']){
+            $keys[] = $lv['id'];
+        }
 	}
     if( empty($keys) ){
         return array('tag_name'=>$tag_name, 'tag_url'=>$tag_url, 'list'=> array());
+    }elseif (count($keys) > $limit){
+        $keys = array_slice($keys, 0, $limit);
     }
 
     if($showcate){
