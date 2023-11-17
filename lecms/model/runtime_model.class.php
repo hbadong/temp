@@ -122,7 +122,7 @@ class runtime extends model {
     }
 
     //block设置数据表缓存
-    public function set_block_data_cache($k = '', $v, $life = 60){
+    public function set_block_data_cache($k, $v, $life = 60){
         // hook runtime_model_set_block_data_cache_before.php
         $r = $this->set($k, $v, $life);
         if($r){
