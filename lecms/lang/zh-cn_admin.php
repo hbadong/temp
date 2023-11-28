@@ -233,7 +233,7 @@ return array(
     'url_option_0'=>'动态',
     'url_option_1'=>'伪静态',
     'your_server'=>'您的服务器：',
-    'nginx_info'=>'请修改 nginx.conf，在 location / { } 节点间加入上述规则。',
+    'nginx_info'=>'请修改 nginx.conf，在 location / { } 节点间加入上述规则。宝塔面板(网站-设置-伪静态，粘贴即可)',
     'htaccess_is_exists'=>'已检测到 .htaccess 文件，如果您不想使用伪静态，请点击“删除.htaccess”按钮删除 .htaccess 文件',
     'htaccess_no_exists'=>'未检测到 .htaccess 文件，您可点击“创建.htaccess”按钮，也可手工在网站根目录创建 .htaccess 文件并把上面内容复制进去',
     'webconfig_is_exists'=>'已检测到 web.config 文件，如果您不想使用伪静态，请点击“删除web.config”按钮删除 web.config 文件',

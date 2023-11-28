@@ -263,7 +263,7 @@ class cms_content extends model {
             'dateline' => isset($post['dateline']) ? $post['dateline'] : $_ENV['_time'],
             'lasttime' => isset($post['lasttime']) ? $post['lasttime'] : $_ENV['_time'],
             'ip' => isset($post['ip']) ? $post['ip'] : ip2long($_ENV['_ip']),
-			'imagenum' => 0,
+            'imagenum' => 0,
             'filenum' => 0,
             'iscomment' => isset($post['iscomment']) ? (int)$post['iscomment'] : 0,
             'comments' => 0,
@@ -324,6 +324,7 @@ class cms_content extends model {
         $tagdatas = $tags = array();
         if($tagstr){
             $tags_arr = explode(',', $tagstr);
+            $tags_arr = array_unique($tags_arr);    //去重
             $this->cms_content_tag->table = 'cms_'.$table.'_tag';
             for($i = 0; isset($tags_arr[$i]) && $i < 8; $i++) { //只保留8个标签
                 $name = $this->cms_content_tag->_tagformat($tags_arr[$i]);
@@ -528,7 +529,7 @@ class cms_content extends model {
             'source' => isset($post['source']) ? trim($post['source']) : '',
             'lasttime' => isset($post['lasttime']) ? $post['lasttime'] : $_ENV['_time'],
             'ip' => isset($post['ip']) ? $post['ip'] : ip2long($_ENV['_ip']),
-			'imagenum' => $olddata['imagenum'],
+            'imagenum' => $olddata['imagenum'],
             'filenum' => $olddata['filenum'],
             'iscomment' => isset($post['iscomment']) ? (int)$post['iscomment'] : 0,
             'comments' => (int)$olddata['comments'],
@@ -595,7 +596,12 @@ class cms_content extends model {
         }
 
         // 比较标签变化
-        $tags_new = explode(',', $tagstr);
+        if($tagstr){
+            $tags_new = explode(',', $tagstr);
+            $tags_new = array_unique($tags_new);    //去重
+        }else{
+            $tags_new = array();
+        }
         $tags_old = (array)_json_decode($olddata['tags']);
         $tags_arr = $tags = array();
         foreach($tags_new as $tagname) {
