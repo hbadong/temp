@@ -11,8 +11,8 @@ class cache_memcache implements cache_interface{
 	}
 
 	public function __get($var) {
-        if(!isset($this->conf['memcached'])){
-            throw new Exception('Can not fount memcached config. Please check config.inc.php');
+        if(!isset($this->conf['memcache'])){
+            throw new Exception('Can not fount memcache config. Please check config.inc.php');
         }
 		$c = $this->conf['memcache'];
 		if($var == 'memcache') {
@@ -33,7 +33,7 @@ class cache_memcache implements cache_interface{
 				}
 				return $this->memcache;
 			}else{
-				throw new Exception('Can not connect to Memcached host.');
+				throw new Exception('Can not connect to Memcache host.');
 			}
 		}
 	}
