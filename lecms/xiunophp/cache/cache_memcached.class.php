@@ -11,6 +11,9 @@ class cache_memcached implements cache_interface{
 	}
 
 	public function __get($var) {
+		if(!isset($this->conf['memcached'])){
+			throw new Exception('Can not fount memcached config. Please check config.inc.php');
+		}
 		$c = $this->conf['memcached'];
 		if($var == 'memcached') {
 			// 判断 Memcached 扩展是否安装

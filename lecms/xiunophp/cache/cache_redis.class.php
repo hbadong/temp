@@ -11,6 +11,9 @@ class cache_redis implements cache_interface{
 	}
 
 	public function __get($var) {
+		if(!isset($this->conf['redis'])){
+			throw new Exception('Can not fount redis config. Please check config.inc.php');
+		}
 		$c = $this->conf['redis'];
 		if($var == 'redis') {
 			if(extension_loaded('Redis')) {
