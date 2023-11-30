@@ -4,6 +4,7 @@ defined('ROOT_PATH') || exit;
 /**
  * 内容随机列表模块
  * @param int mid 模型ID
+ * @param int cid 分类ID（不参与数据读取，只有在使用life时，可以使一样的conf参数，传递的cid不一样，获取结果集不一样）
  * @param string dateformat 时间格式
  * @param int titlenum 标题长度
  * @param int intronum 简介长度
@@ -28,6 +29,10 @@ function block_list_rand($conf) {
     $showcate = _int($conf, 'showcate', 0);
     $showviews = _int($conf, 'showviews', 0);
     $field_format = _int($conf, 'field_format', 0);
+
+    if(!isset($conf['cid']) && isset($_GET['cid'])){
+        $conf['cid'] = intval($_GET['cid']);
+    }
     // hook block_list_rand_conf_after.php
 
     //优先从缓存表读取。加前缀，避免不同的block，相同的conf，导致缓存数据错乱
