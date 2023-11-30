@@ -23,7 +23,7 @@ function block_taglist($conf) {
     $start = _int($conf, 'start', 0);
 	$limit = isset($conf['limit']) ? (int)$conf['limit'] : 10;
     $cms_limit = _int($conf, 'cms_limit', 0);
-    $life = _int($conf, 'life', 0);
+    $life = isset($conf['life']) ? (int)$conf['life'] : (isset($run->_cfg['life']) ? (int)$run->_cfg['life'] : 0);
     $extra = array('block_name'=>'block_taglist');
     // hook block_taglist_conf_after.php
 

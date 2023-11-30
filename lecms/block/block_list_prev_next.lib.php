@@ -28,7 +28,7 @@ function block_list_prev_next($conf) {
     $showviews = _int($conf, 'showviews', 0);
     $field_format = _int($conf, 'field_format', 0);
     $prev_next_cid = isset($conf['cid']) ? (int)$conf['cid'] : intval($_GET['cid']);
-    $life = _int($conf, 'life', 0);
+    $life = isset($conf['life']) ? (int)$conf['life'] : (isset($run->_cfg['life']) ? (int)$run->_cfg['life'] : 0);
     $extra = array('block_name'=>'block_list_prev_next');
     // hook block_list_prev_next_conf_after.php
 

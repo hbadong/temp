@@ -39,7 +39,7 @@ function block_global_blog($conf) {
     $showmaxpage = _int($conf, 'showmaxpage', 0);
     $field_format = _int($conf, 'field_format', 0);
     $page_function = empty($conf['page_function']) ? 'pages' : $conf['page_function'];
-    $life = _int($conf, 'life', 0);
+    $life = isset($conf['life']) ? (int)$conf['life'] : (isset($run->_cfg['life']) ? (int)$run->_cfg['life'] : 0);
     $extra = array('block_name'=>'block_global_blog');
     // hook block_global_blog_conf_after.php
 
@@ -97,7 +97,7 @@ function block_global_blog($conf) {
         $run->cms_content_views->table = 'cms_'.$table.'_views';
         $keys = array();
         foreach($list_arr as $v) {
-            $keys[] = $v['id'];
+            isset($v['id']) AND $keys[] = $v['id'];
         }
         $views_list_arr = $run->cms_content_views->mget($keys);
         $views_key = 'cms_'.$table.'_views-id-';

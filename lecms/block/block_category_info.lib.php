@@ -15,7 +15,7 @@ function block_category_info($conf) {
 
     $cids = isset($conf['cids']) ? trim($conf['cids']) : '';
 	$cid = isset($conf['cid']) ? intval($conf['cid']) : _int($_GET, 'cid');
-    $life = _int($conf, 'life', 0);
+    $life = isset($conf['life']) ? (int)$conf['life'] : (isset($run->_cfg['life']) ? (int)$run->_cfg['life'] : 0);
     // hook block_category_info_conf_after.php
 
 	if( empty($cids) && empty($cid) ) return array();

@@ -28,7 +28,7 @@ function block_global_tag($conf) {
     $pageoffset = _int($conf, 'pageoffset', 5);
     $showmaxpage = _int($conf, 'showmaxpage', 0);
     $page_function = empty($conf['page_function']) ? 'pages' : $conf['page_function'];
-    $life = _int($conf, 'life', 0);
+    $life = isset($conf['life']) ? (int)$conf['life'] : (isset($run->_cfg['life']) ? (int)$run->_cfg['life'] : 0);
     $extra = array('block_name'=>'block_global_tag');
     // hook block_global_tag_conf_after.php
 

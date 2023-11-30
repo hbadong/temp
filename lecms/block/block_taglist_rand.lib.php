@@ -14,7 +14,7 @@ function block_taglist_rand($conf) {
 	// hook block_taglist_rand_before.php
     $mid = isset($conf['mid']) ? max(2, intval($conf['mid'])) : (isset($_GET['mid']) ? max(2, intval($_GET['mid'])) : 2);
 	$limit = _int($conf, 'limit', 10);
-    $life = _int($conf, 'life', 0);
+    $life = isset($conf['life']) ? (int)$conf['life'] : (isset($run->_cfg['life']) ? (int)$run->_cfg['life'] : 0);
     // hook block_taglist_rand_conf_after.php
 
     //优先从缓存表读取。加前缀，避免不同的block，相同的conf，导致缓存数据错乱

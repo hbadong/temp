@@ -11,7 +11,7 @@ function block_sql($conf) {
     global $run;
     // hook block_sql_before.php
     $sql = empty($conf['sql']) ? '' : $conf['sql'];
-    $life = _int($conf, 'life', 0);
+    $life = isset($conf['life']) ? (int)$conf['life'] : (isset($run->_cfg['life']) ? (int)$run->_cfg['life'] : 0);
     // hook block_sql_conf_after.php
 
     //优先从缓存表读取。加前缀，避免不同的block，相同的conf，导致缓存数据错乱

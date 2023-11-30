@@ -36,7 +36,7 @@ function block_comment_list($conf) {
 	$start = _int($conf, 'start');
 	$limit = _int($conf, 'limit', 10);
     $showcms = _int($conf, 'showcms', 0);
-    $life = _int($conf, 'life', 0);
+    $life = isset($conf['life']) ? (int)$conf['life'] : (isset($run->_cfg['life']) ? (int)$run->_cfg['life'] : 0);
     $extra = array('block_name'=>'block_comment_list');
     // hook block_comment_list_conf_after.php
 

@@ -30,7 +30,7 @@ function block_list_top($conf) {
 	$orderway = isset($conf['orderway']) && $conf['orderway'] == 1 ? 1 : -1;
 	$start = _int($conf, 'start');
 	$limit = _int($conf, 'limit', 10);
-	$life = _int($conf, 'life', 0);
+    $life = isset($conf['life']) ? (int)$conf['life'] : (isset($run->_cfg['life']) ? (int)$run->_cfg['life'] : 0);
     $showcate = _int($conf, 'showcate', 0);
     $field_format = _int($conf, 'field_format', 0);
     // hook block_list_top_conf_after.php

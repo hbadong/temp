@@ -33,7 +33,7 @@ function block_lists($conf) {
 	$limit = _int($conf, 'limit', 10);
     $showviews = _int($conf, 'showviews', 0);
     $field_format = _int($conf, 'field_format', 0);
-    $life = _int($conf, 'life', 0);
+    $life = isset($conf['life']) ? (int)$conf['life'] : (isset($run->_cfg['life']) ? (int)$run->_cfg['life'] : 0);
     $extra = array('block_name'=>'block_lists');
     // hook block_lists_conf_after.php
 

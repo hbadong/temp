@@ -17,7 +17,7 @@ function block_data_total($conf) {
     $mid = _int($conf, 'mid', 2);
     $source = empty($conf['source']) ? '' : $conf['source'];
     $showviews = _int($conf, 'showviews', 0);
-    $life = _int($conf, 'life', 0);
+    $life = isset($conf['life']) ? (int)$conf['life'] : (isset($run->_cfg['life']) ? (int)$run->_cfg['life'] : 0);
     // hook block_data_total_conf_after.php
 
     $allow_source = array('content','comment','tag','views','category');

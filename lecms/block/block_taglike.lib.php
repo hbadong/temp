@@ -14,6 +14,7 @@ defined('ROOT_PATH') || exit;
  * @param int showviews 是否读取内容浏览量信息
  * @param int field_format 是否格式化主表自定义字段内容（主要是单选框、多选框、下拉框）
  * @param int mid 模型ID， 一般不需要， 只有在跨模型调用数据时，才需要。
+ * @param int life 缓存时间
  * @return array
  */
 function block_taglike($conf) {
@@ -34,7 +35,17 @@ function block_taglike($conf) {
     $showcate = _int($conf, 'showcate', 0);
     $showviews = _int($conf, 'showviews', 0);
     $field_format = _int($conf, 'field_format', 0);
+    $life = isset($conf['life']) ? (int)$conf['life'] : (isset($run->_cfg['life']) ? (int)$run->_cfg['life'] : 0);
     // hook block_taglike_conf_after.php
+
+    //优先从缓存表读取。加前缀，避免不同的block，相同的conf，导致缓存数据错乱
+    $cache_key = $life ? md5('taglike'.serialize($conf)) : '';
+    if($cache_key){
+        $cache_data = $run->runtime->get_block_data_cache($cache_key);
+        if($cache_data){
+            return $cache_data;
+        }
+    }
 
 	$mid = &$run->_var['mid'];
 	$table = &$run->_var['table'];
@@ -120,7 +131,13 @@ function block_taglike($conf) {
         // hook block_taglike_foreach_after.php
 	}
 
+    $ret = array('tag_name'=>$tag_name, 'tag_url'=>$tag_url, 'list'=> $list_arr);
+
+    if($cache_key){
+        $run->runtime->set_block_data_cache($cache_key, $ret, $life);
+    }
+
 	// hook block_taglike_after.php
 
-	return array('tag_name'=>$tag_name, 'tag_url'=>$tag_url, 'list'=> $list_arr);
+	return $ret;
 }

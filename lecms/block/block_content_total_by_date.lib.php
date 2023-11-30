@@ -15,7 +15,7 @@ function block_content_total_by_date($conf) {
 
     $mid = _int($conf, 'mid', 2);
     $type = isset($conf['type']) ? $conf['type'] : 'all';
-    $life = _int($conf, 'life', 0);
+    $life = isset($conf['life']) ? (int)$conf['life'] : (isset($run->_cfg['life']) ? (int)$run->_cfg['life'] : 0);
     // hook block_content_total_by_date_conf_after.php
 
     $table_arr = &$run->_cfg['table_arr'];

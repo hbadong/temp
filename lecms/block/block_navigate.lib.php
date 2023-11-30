@@ -16,7 +16,7 @@ function block_navigate($conf) {
     $mobile = isset($conf['mobile']) ? intval($conf['mobile']) : 0;
     $showcate = _int($conf, 'showcate', 0);
     $nocids = empty($conf['nocids']) ? '' : $conf['nocids'];
-    $life = _int($conf, 'life', 0);
+    $life = isset($conf['life']) ? (int)$conf['life'] : (isset($run->_cfg['life']) ? (int)$run->_cfg['life'] : 0);
 	// hook block_navigate_conf_after.php
 
     //优先从缓存表读取。加前缀，避免不同的block，相同的conf，导致缓存数据错乱

@@ -39,7 +39,7 @@ function block_listeach($conf) {
     $nocids = empty($conf['nocids']) ? '' : $conf['nocids'];
     $flag = _int($conf, 'flag', 0);
     $showcate = _int($conf, 'showcate', 0);
-    $life = _int($conf, 'life', 0);
+    $life = isset($conf['life']) ? (int)$conf['life'] : (isset($run->_cfg['life']) ? (int)$run->_cfg['life'] : 0);
     $son = _int($conf, 'son', 0);
     $extra = array('block_name'=>'block_listeach');
     // hook block_listeach_conf_after.php

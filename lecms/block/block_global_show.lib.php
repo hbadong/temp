@@ -23,7 +23,7 @@ function block_global_show($conf) {
     $field_format = _int($conf, 'field_format', 0);
     $pageoffset = _int($conf, 'pageoffset', 5);
     $page_function = empty($conf['page_function']) ? 'pages' : $conf['page_function'];
-    $life = _int($conf, 'life', 0);
+    $life = isset($conf['life']) ? (int)$conf['life'] : (isset($run->_cfg['life']) ? (int)$run->_cfg['life'] : 0);
     $extra = array('block_name'=>'block_global_show');
     // hook block_global_show_conf_after.php
 

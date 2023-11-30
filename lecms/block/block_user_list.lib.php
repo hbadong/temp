@@ -22,7 +22,7 @@ function block_user_list($conf) {
 	$start = _int($conf, 'start', 0);
 	$limit = _int($conf, 'limit', 10);
     $showgroup = _int($conf, 'showgroup', 0);
-    $life = _int($conf, 'life', 0);
+    $life = isset($conf['life']) ? (int)$conf['life'] : (isset($run->_cfg['life']) ? (int)$run->_cfg['life'] : 0);
     $extra = array('block_name'=>'block_user_list');
     // hook block_user_list_conf_after.php
 

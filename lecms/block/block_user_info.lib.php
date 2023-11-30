@@ -16,7 +16,7 @@ function block_user_info($conf) {
     $uid = _int($conf, 'uid', 0);
     $showgroup = _int($conf, 'showgroup', 0);
     $dateformat = empty($conf['dateformat']) ? 'Y-m-d H:i:s' : $conf['dateformat'];
-    $life = _int($conf, 'life', 0);
+    $life = isset($conf['life']) ? (int)$conf['life'] : (isset($run->_cfg['life']) ? (int)$run->_cfg['life'] : 0);
     // hook block_user_info_conf_after.php
 
     //优先从缓存表读取。加前缀，避免不同的block，相同的conf，导致缓存数据错乱

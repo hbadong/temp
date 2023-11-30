@@ -33,7 +33,7 @@ function block_global_flags($conf) {
     $showmaxpage = _int($conf, 'showmaxpage', 0);
     $field_format = _int($conf, 'field_format', 0);
     $page_function = empty($conf['page_function']) ? 'pages' : $conf['page_function'];
-    $life = _int($conf, 'life', 0);
+    $life = isset($conf['life']) ? (int)$conf['life'] : (isset($run->_cfg['life']) ? (int)$run->_cfg['life'] : 0);
     $extra = array('block_name'=>'block_global_flags');
     // hook block_global_flags_conf_after.php
 

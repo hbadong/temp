@@ -31,16 +31,16 @@ function block_list_by_tagname($conf) {
 	$limit = _int($conf, 'limit', 10);
     $showcate = _int($conf, 'showcate', 0);
     $showviews = _int($conf, 'showviews', 0);
-    $life = _int($conf, 'life', 0);
+    $life = isset($conf['life']) ? (int)$conf['life'] : (isset($run->_cfg['life']) ? (int)$run->_cfg['life'] : 0);
     $extra = array('block_name'=>'block_list_by_tagname');
     // hook block_list_by_tagname_conf_after.php
 
     //优先从缓存表读取。加前缀，避免不同的block，相同的conf，导致缓存数据错乱
     $cache_key = $life ? md5('list_by_tagname'.serialize($conf)) : '';
     if($cache_key){
-        $list_arr = $run->runtime->get_block_data_cache($cache_key);
-        if($list_arr){
-            return $list_arr;
+        $cache_data = $run->runtime->get_block_data_cache($cache_key);
+        if($cache_data){
+            return $cache_data;
         }
     }
 

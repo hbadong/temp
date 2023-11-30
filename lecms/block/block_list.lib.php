@@ -37,7 +37,7 @@ function block_list($conf) {
     $showcate = _int($conf, 'showcate', 0);
     $showviews = _int($conf, 'showviews', 0);
     $field_format = _int($conf, 'field_format', 0);
-    $life = _int($conf, 'life', 0);
+    $life = isset($conf['life']) ? (int)$conf['life'] : (isset($run->_cfg['life']) ? (int)$run->_cfg['life'] : 0);
     $extra = array('block_name'=>'block_list');
     // hook block_list_conf_after.php
 
