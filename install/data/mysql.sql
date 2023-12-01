@@ -22,6 +22,7 @@ CREATE TABLE pre_user (
   golds int(10) unsigned NOT NULL DEFAULT '0' COMMENT '金币',
   mobile varchar(20) NOT NULL DEFAULT '' COMMENT '手机号',
   avatar varchar(255) NOT NULL DEFAULT '' COMMENT '头像',
+  vip_times int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'VIP到期时间',
   PRIMARY KEY (uid),
   UNIQUE KEY username(username),
   KEY email(email)
