@@ -170,21 +170,27 @@ class user extends model {
                     $r = array('err'=>1, 'msg'=>'failed');
                 }else{
                     $arr = explode("\t", $cookieauth);
-                    if(count($arr) < 4) {
+                    if(count($arr) < 3) {
                         $r = array('err'=>1, 'msg'=>'failed');
                     }else{
                         $uid      = (int)$arr[0];
                         $username = $arr[1];
                         $password = $arr[2];
-                        $groupid  = $arr[3];
 
                         $user = $this->get_user_by_uid($uid);
-                        $user_group = $this->user_group->get_user_group_by_gid($groupid);
-                        if(empty($user) || empty($user_group)) {
+                        if(empty($user)) {
                             $r = array('err'=>1, 'msg'=>'failed');
-                        }elseif($user['password'] != $password || $user['username'] != $username || $user['groupid'] != $groupid) {
+                        }elseif($user['password'] != $password || $user['username'] != $username) {
                             $r = array('err'=>1, 'msg'=>'failed');
                         }else{
+                            //VIP用户是否过期，过期的重置会员组，vip_times不归0，方便后续追踪
+                            if($user['groupid'] == 12 && isset($user['vip_times']) && (int)$user['vip_times'] < $_ENV['_time']){
+                                $user['groupid'] = 11;
+                                $this->update($user);
+                            }
+                            $user_group = $this->user_group->get_user_group_by_gid($user['groupid']);
+
+                            // hook user_model_user_token_check_cookie_success.php
                             $r = array('err'=>0, 'msg'=>'successfully', 'user'=>$user, 'user_group'=>$user_group);
                         }
                     }
@@ -204,7 +210,15 @@ class user extends model {
             }else{
                 $user = $this->get_user_by_uid($uid);
                 if($user){
+                    //VIP用户是否过期，过期的重置会员组，vip_times不归0，方便后续追踪
+                    if($user['groupid'] == 12 && isset($user['vip_times']) && (int)$user['vip_times'] < $_ENV['_time']){
+                        $user['groupid'] = 11;
+                        $this->update($user);
+                    }
+
                     $user_group = $this->user_group->get_user_group_by_gid($user['groupid']);
+                    // hook user_model_user_token_check_session_success.php
+
                     $r = array('err'=>0, 'msg'=>'successfully', 'user'=>$user, 'user_group'=>$user_group);
                 }else{
                     $_SESSION['uid'] = 0;
@@ -221,7 +235,7 @@ class user extends model {
     public function user_token_login($isadmin = 1, $user = array()){
         // hook user_model_user_token_login_before.php
         if($this->_login_method == 'cookie'){
-            $cookieauth = str_auth("$user[uid]\t$user[username]\t$user[password]\t$user[groupid]", 'ENCODE');
+            $cookieauth = str_auth("$user[uid]\t$user[username]\t$user[password]", 'ENCODE');
 
             if($isadmin){
                 $cookiename = 'admauth';
