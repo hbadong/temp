@@ -836,7 +836,7 @@ class parseurl_control extends control{
             array_shift($uarr);
             foreach ($uarr as $v){
                 $varr = explode('=', $v);
-                $_GET[$varr[0]] = isset($varr[1]) ? $varr[1] : '';
+                $_GET[$varr[0]] = isset($varr[1]) ? urldecode($varr[1]) : '';
             }
         }
         unset($uarr);
