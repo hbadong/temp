@@ -627,7 +627,9 @@ class cms_content extends model {
                 if($tagdata) {
                     $tagdata = current($tagdata);
                 }else{
-                    $tagid = $this->cms_content_tag->create(array('name'=>$name, 'count'=>0, 'content'=>''));
+					$tag_post = array('name'=>$name, 'count'=>0, 'content'=>'');
+                    // hook cms_content_model_xedit_tag_post_after.php
+                    $tagid = $this->cms_content_tag->create($tag_post);
                     if(!$tagid){
                         return array('err'=>1 ,'msg'=>lang('write_tag_table_failed'));
                     }
@@ -730,7 +732,9 @@ class cms_content extends model {
             $categorys['count']++;
             $this->category->update($categorys);
 
-            $this->category->delete_cache();
+            //删除两个分类缓存数据
+            $this->category->delete_cache_one($cid);
+            $this->category->delete_cache_one($olddata['cid']);
 
             if($alias_old == $alias){   //这里只处理别名未变动情况下的cid更新，别名有变动的话 会在上面的三种情况下更新数据
                 if(!$this->only_alias->set($alias, array('mid' => $mid, 'cid' => $cid, 'id' => $id))) {
