@@ -227,7 +227,16 @@
 			var value = obj.value //得到修改后的值
 					,data = obj.data //得到所在行所有键值
 					,field = obj.field; //得到字段
-			adminAjax.postd("index.php?content-set-ajax-1", {"mid":mid, "id":data.id, "field":field, "value":value});
+			adminAjax.postd("index.php?content-set-ajax-1", {"mid":mid, "id":data.id, "field":field, "value":value},function(json){
+				var res = toJson(json);
+				if(res.err){
+					layer.msg(res.msg, {icon: 5});
+				}else{
+					layer.msg(res.msg, {icon: 1, time: 1000},function () {
+						layui.table.reload('data-table', {page:{curr:$(".layui-laypage-em").next().html()}});
+					});
+				}
+			});
 		});
 		//监听每一行的操作
 		table.on('tool(data-table-filter)', function (obj) {
