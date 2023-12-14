@@ -288,7 +288,7 @@ class setting_control extends admin_control{
             $input['link_space_pre'] = form::get_text('link_space_pre', $cfg['link_space_pre'], '', 'required="required" lay-verify="required"');
             $input['link_space_end'] = form::get_text('link_space_end', $cfg['link_space_end'], '', 'required="required" lay-verify="required"');
 
-            $arr = array('0'=>lang('tag_name'), '1'=>lang('tag_id'), 2=>lang('content_url_option_3'));
+            $arr = array('0'=>lang('tag_name'), '1'=>lang('tag_id'), 2=>lang('content_url_option_3'), 3=>'HashID');
             $input['link_tag_type'] = form::layui_loop('radio', 'link_tag_type', $arr, $cfg['link_tag_type']);
 
             // hook admin_setting_control_link_after.php

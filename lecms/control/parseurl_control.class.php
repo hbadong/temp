@@ -22,11 +22,11 @@ class parseurl_control extends control{
                 $cfg = $this->runtime->xget();
                 $this->data['cfg'] = $cfg;
             }
-			
+
             $uri = $_GET['rewrite'];
             unset($_GET['rewrite']);
-			
-			//访问 域名/index.php?rewrite=xx ， 直接 301 重定向到 域名/xx
+
+            //访问 域名/index.php?rewrite=xx ， 直接 301 重定向到 域名/xx
             $request_uri = isset($_SERVER['REQUEST_URI']) ? strtolower($_SERVER['REQUEST_URI']) : '';
             if( $request_uri && strpos($request_uri, '?rewrite=') !== false ){
                 http_location($cfg['weburl'].$uri, '301');
@@ -457,16 +457,17 @@ class parseurl_control extends control{
                 }
                 // hook parseurl_control_content_url_switch_7_after.php
                 break;
-			case 8: //HashIDS
-			// hook parseurl_control_content_url_switch_8_before.php
-			$newurl = hashids_decrypt($newurl);//解密得到 cid id 数组
-			if(is_array($newurl) && isset($newurl[1])){
-				$_GET['cid'] = $newurl[0];
-				$_GET['id'] = $newurl[1];
-				return true;
-			}
-			// hook parseurl_control_content_url_switch_8_after.php
-			break;
+
+            case 8: //HashIDS
+                // hook parseurl_control_content_url_switch_8_before.php
+                $newurl = hashids_decrypt($newurl);//解密得到 cid id 数组
+                if(is_array($newurl) && isset($newurl[1])){
+                    $_GET['cid'] = $newurl[0];
+                    $_GET['id'] = $newurl[1];
+                    return true;
+                }
+                // hook parseurl_control_content_url_switch_8_after.php
+                break;
             // hook parseurl_control_content_url_switch_end.php
         }
 
@@ -540,11 +541,21 @@ class parseurl_control extends control{
                         preg_match("/^(\d+)\_(\d+)$/i", $newurl, $mat);
                         if( isset($mat[2]) ){
                             if( !$this->mid_check($mat[1], $cfg) ){core::error404();}
-                            $_GET['mid'] = $mat[1];
+                            $_GET['mid'] = (int)$mat[1];
                             $_GET['tagid'] = (int)$mat[2];
                             return true;
                         }
                         // hook parseurl_control_tag_url_switch_2_after.php
+                        break;
+                    case 3:
+                        // hook parseurl_control_tag_url_switch_3_before.php
+                        $newurl = hashids_decrypt($u_arr[0]);//解密得到 mid tagid 数组
+                        if(is_array($newurl) && isset($newurl[1])){
+                            $_GET['mid'] = (int)$newurl[0];
+                            $_GET['tagid'] = (int)$newurl[1];
+                            return true;
+                        }
+                        // hook parseurl_control_tag_url_switch_3_after.php
                         break;
                     // hook parseurl_control_tag_url_switch_end.php
                 }

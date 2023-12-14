@@ -325,7 +325,7 @@ class cms_content extends model {
         if($tagstr){
             $tags_arr = explode(',', $tagstr);
             $tags_arr = array_unique($tags_arr);    //去重
-			$tags_arr = array_filter($tags_arr);    //去掉空
+            $tags_arr = array_filter($tags_arr);    //去掉空
             $this->cms_content_tag->table = 'cms_'.$table.'_tag';
             for($i = 0; isset($tags_arr[$i]) && $i < 8; $i++) { //只保留8个标签
                 $name = $this->cms_content_tag->_tagformat($tags_arr[$i]);
@@ -600,7 +600,7 @@ class cms_content extends model {
         if($tagstr){
             $tags_new = explode(',', $tagstr);
             $tags_new = array_unique($tags_new);    //去重
-			$tags_new = array_filter($tags_new);    //去掉空
+            $tags_new = array_filter($tags_new);    //去掉空
         }else{
             $tags_new = array();
         }
@@ -629,7 +629,7 @@ class cms_content extends model {
                 if($tagdata) {
                     $tagdata = current($tagdata);
                 }else{
-					$tag_post = array('name'=>$name, 'count'=>0, 'content'=>'');
+                    $tag_post = array('name'=>$name, 'count'=>0, 'content'=>'');
                     // hook cms_content_model_xedit_tag_post_after.php
                     $tagid = $this->cms_content_tag->create($tag_post);
                     if(!$tagid){
@@ -958,6 +958,10 @@ class cms_content extends model {
                     $encrypt = encrypt($mid.'_'.$tagid);
                     return $this->cfg['weburl'].'index.php?tag--encrypt-'.$encrypt.$s.$_ENV['_config']['url_suffix'];
                     break;
+                case 3:
+                    $encrypt = hashids_encrypt($mid,$tagid);
+                    return $this->cfg['weburl'].'index.php?tag--encrypt-'.$encrypt.$s.$_ENV['_config']['url_suffix'];
+                    break;
             }
 		}else{
             // hook cms_content_model_tag_url_lecms_parseurl_before.php
@@ -971,6 +975,10 @@ class cms_content extends model {
                     break;
                 case 2:
                     $encrypt = encrypt($mid.'_'.$tagid);
+                    return $this->cfg['weburl'] . $this->cfg['link_tag_pre'] . $encrypt.$s.$this->cfg['link_tag_end'];
+                    break;
+                case 3:
+                    $encrypt = hashids_encrypt($mid,$tagid);
                     return $this->cfg['weburl'] . $this->cfg['link_tag_pre'] . $encrypt.$s.$this->cfg['link_tag_end'];
                     break;
             }
@@ -1034,7 +1042,7 @@ class cms_content extends model {
                 case 4: //加密型
                     $url .= $this->cfg['weburl'].encrypt($cid.'_'.$id).$link_show_end;
                     break;
-				case 8: //HashId，放前面 提高命中率
+                case 8: //HashId，放前面 提高命中率
                     $url .= $this->cfg['weburl'].hashids_encrypt($cid,$id).$link_show_end;
                     break;
                 case 5: //模型ID_数字型

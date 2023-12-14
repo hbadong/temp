@@ -14,7 +14,7 @@ class tag_control extends base_control{
 		// hook tag_control_index_before.php
 
 		$mid = (int)R('mid', 'G');
-		//动态链接文章标签URL默认省略了mid
+		//动态链接文章标签URL默认省略了mid（加密和hashid除外）
 		if( empty($this->_parseurl) && !isset($_GET['mid'])){
 		    $mid = 2;
         }
@@ -37,11 +37,21 @@ class tag_control extends base_control{
             $tags = $this->cms_content_tag->find_fetch(array('name'=>$name), array(), 0, 1);
             !empty($tags) && $tags = current($tags);
         }elseif ($encrypt){
-            $mid_tagid = decrypt($encrypt);//解密得到 mid_tagid
-            preg_match('#(\d+)\_(\d+)#', $mid_tagid, $mat);
-            if(isset($mat[1]) && isset($mat[2]) && $mat[1] == $mid){
-                $tagid = (int)$mat[2];
-                $tags = $this->cms_content_tag->get($tagid);
+            if($this->_cfg['link_tag_type'] == 2){
+                $mid_tagid = decrypt($encrypt);//解密得到 mid_tagid
+                preg_match('#(\d+)\_(\d+)#', $mid_tagid, $mat);
+                if(isset($mat[2])){
+                    $_GET['mid'] = (int)$mat[1];
+                    $_GET['tagid'] = (int)$mat[2];
+                    $tags = $this->cms_content_tag->get($_GET['tagid']);
+                }
+            }elseif($this->_cfg['link_tag_type'] == 3){
+                $mid_tagid_arr = hashids_decrypt($encrypt);
+                if(is_array($mid_tagid_arr) && isset($mid_tagid_arr[1])){
+                    $_GET['mid'] = (int)$mid_tagid_arr[0];
+                    $_GET['tagid'] = (int)$mid_tagid_arr[1];
+                    $tags = $this->cms_content_tag->get($_GET['tagid']);
+                }
             }
         }
         // hook tag_control_index_tags_after.php

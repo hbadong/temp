@@ -919,7 +919,7 @@ function decrypt($str = '') {
     return $reslutstr;
 }
 
-//HashID 内容URL 加密解密
+//HashID 内容和标签URL 加密解密 ， 标签是 mid , tagid
 function hashids_encrypt($cid = 0, $id = 0){
     $hashids = Hashids::instance(C('auth_key'));
     return $hashids->encode($cid, $id);
