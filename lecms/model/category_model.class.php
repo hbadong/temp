@@ -280,7 +280,7 @@ class category extends model {
 		if(empty($category_arr)) {
 			$s .= '<option value="0">'.lang('none').'</option>';
 		}else{
-			$s .= '<option value="0">'.$tips.'</option>';
+			$s .= '<option value="0"'.(empty($cid) ? ' selected="selected"': '').'>'.$tips.'</option>';
 			foreach($category_arr as $mid => $arr) {
 				if($_mid && $mid != $_mid) continue;
 

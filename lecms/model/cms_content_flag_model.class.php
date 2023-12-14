@@ -64,7 +64,7 @@ class cms_content_flag extends model {
         if(empty($tmp)) {
             $s .= '<option value="0">'.lang('no_data').'</option>';
         }else{
-            $s .= '<option value="0">'.$tips.'</option>';
+            $s .= '<option value="0"'.(empty($flag) ? ' selected="selected"': '').'>'.$tips.'</option>';
             foreach($tmp as $k=>$v) {
                 $s .= '<option value="'.$k.'"'.($k == $flag ? ' selected="selected"' : '').'>'.$v.'</option>';
             }

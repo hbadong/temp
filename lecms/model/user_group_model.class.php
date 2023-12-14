@@ -81,7 +81,7 @@ class user_group extends model {
         if(empty($tmp)) {
             $s .= '<option value="0">'.lang('no_data').'</option>';
         }else{
-            $s .= '<option value="0">'.$tips.'</option>';
+            $s .= '<option value="0"'.(empty($groupid) ? ' selected="selected"': '').'>'.$tips.'</option>';
             foreach($tmp as $v) {
                 $s .= '<option value="'.$v['groupid'].'"'.($v['groupid'] == $groupid ? ' selected="selected"' : '').'>'.$v['groupname'].'</option>';
             }
