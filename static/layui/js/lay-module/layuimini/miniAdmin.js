@@ -279,10 +279,10 @@ layui.define(["jquery", "miniMenu", "element","miniTab", "miniTheme"], function 
             });
 
             /**
-             * 刷新
+             * 刷新（浏览器忽略缓存重新加载）
              */
             $('body').on('click', '[data-refresh]', function () {
-                $(".layui-tab-item.layui-show").find("iframe")[0].contentWindow.location.reload();
+                $(".layui-tab-item.layui-show").find("iframe")[0].contentWindow.location.reload(true);
                 miniAdmin.success('刷新成功');
             });
 
