@@ -918,6 +918,17 @@ function decrypt($str = '') {
     }
     return $reslutstr;
 }
+
+//HashID 内容URL 加密解密
+function hashids_encrypt($cid = 0, $id = 0){
+    $hashids = Hashids::instance(C('auth_key'));
+    return $hashids->encode($cid, $id);
+}
+
+function hashids_decrypt($str = ''){
+    $hashids = Hashids::instance(C('auth_key'));
+    return $hashids->decode($str);
+}
 //加密解密函数 end
 
 //判断启用主题下的模板是否存在

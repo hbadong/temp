@@ -331,6 +331,9 @@ class setting_control extends admin_control{
             }elseif(substr($link_show, 0, 20) == '{cate_alias}/{alias}' && strpos($link_show, '{', 20) === FALSE) {
                 $link_show_type = 6;
                 $link_show_end = (string)substr($link_show, 20);
+            }elseif(substr($link_show, 0, 9) == '{hashids}' && strpos($link_show, '{', 9) === FALSE) {
+                $link_show_type = 8;
+                $link_show_end = (string)substr($link_show, 9);
             }else{
                 $link_show_type = 7;
                 $link_show_end = '';

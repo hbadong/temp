@@ -457,6 +457,16 @@ class parseurl_control extends control{
                 }
                 // hook parseurl_control_content_url_switch_7_after.php
                 break;
+			case 8: //HashIDS
+			// hook parseurl_control_content_url_switch_8_before.php
+			$newurl = hashids_decrypt($newurl);//解密得到 cid id 数组
+			if(is_array($newurl) && isset($newurl[1])){
+				$_GET['cid'] = $newurl[0];
+				$_GET['id'] = $newurl[1];
+				return true;
+			}
+			// hook parseurl_control_content_url_switch_8_after.php
+			break;
             // hook parseurl_control_content_url_switch_end.php
         }
 

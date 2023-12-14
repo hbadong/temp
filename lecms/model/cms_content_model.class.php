@@ -1034,6 +1034,9 @@ class cms_content extends model {
                 case 4: //加密型
                     $url .= $this->cfg['weburl'].encrypt($cid.'_'.$id).$link_show_end;
                     break;
+				case 8: //HashId，放前面 提高命中率
+                    $url .= $this->cfg['weburl'].hashids_encrypt($cid,$id).$link_show_end;
+                    break;
                 case 5: //模型ID_数字型
                     if($mid > 2){
                         $url .= $this->cfg['weburl'].$mid.'_'.$id.$link_show_end;
