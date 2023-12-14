@@ -316,6 +316,10 @@ class Hashids implements HashGenerator {
                 $ret = array();
             }
         }
+		
+		if(empty($ret)){
+            return '';
+        }
 
         if( !isset($ret[1]) ){  //加密单个，修改为直接返回单个解密字符串
             return $ret[0];
