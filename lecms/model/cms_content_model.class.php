@@ -325,6 +325,7 @@ class cms_content extends model {
         if($tagstr){
             $tags_arr = explode(',', $tagstr);
             $tags_arr = array_unique($tags_arr);    //去重
+			$tags_arr = array_filter($tags_arr);    //去掉空
             $this->cms_content_tag->table = 'cms_'.$table.'_tag';
             for($i = 0; isset($tags_arr[$i]) && $i < 8; $i++) { //只保留8个标签
                 $name = $this->cms_content_tag->_tagformat($tags_arr[$i]);
@@ -599,6 +600,7 @@ class cms_content extends model {
         if($tagstr){
             $tags_new = explode(',', $tagstr);
             $tags_new = array_unique($tags_new);    //去重
+			$tags_new = array_filter($tags_new);    //去掉空
         }else{
             $tags_new = array();
         }

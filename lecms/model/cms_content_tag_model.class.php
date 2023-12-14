@@ -13,6 +13,9 @@ class cms_content_tag extends model {
 	//标签处理
 	public function _tagformat($tagname = '', $add = 1){
         // hook cms_content_tag_model_tagformat_before.php
+		if(empty($tagname)){
+            return '';
+        }
 	    if($add){
             $tagname = safe_str($tagname);
             $tagname = str_replace('-', ' ', $tagname);//横线转空格
