@@ -7,10 +7,13 @@
 				<div class="col-md-9 col-xs-12">
 					<section>
 						<div class="thjingxuan">
+							<!--面包屑导航start-->
 							<div class="thjingxuan_title categorylist"><i></i>
 								<a href="{$cfg[weburl]}" title="{$cfg[webname]}">首页</a>{loop:$cfg_var[place] $v}<span>/</span> <a href="{$v[url]}">{$v[name]}</a>{/loop}
 							</div>
-							{block:global_comment humandate="1" pagenum="10"}
+							<!--面包屑导航end-->
+
+							{block:global_comment humandate="1" pagenum="10"}{/block}
 							<section class="thjingxuan_sec">
 								<h1 class="detail-title">评论：{$gdata[title]}</h1>
 								<div class="detail-zhaiyao">
@@ -29,7 +32,7 @@
 								</ul>
 								{/loop}
 								{if:$gdata[pages]}
-								<div class="col-md-12 col-xs-12  th_padding">
+								<div class="col-md-12 col-xs-12 th_padding">
 									<div class="list-title pagebar">
 										{$gdata[pages]}
 									</div>
@@ -60,31 +63,29 @@
 								<p class="postbottom"></p>
 							</div>
 							<!--发布评论end-->
-							{/block}
+
 						</div>
 					</section>
 				</div>
 				<!--左侧end-->
 				<div class="col-md-3 col-xs-12 wap_margintop">
 					<div>{inc:about.htm}</div>
-					<!--当前分类最新文章start-->
+					<!--当前分类最新内容start-->
 					<div class="th_margintop">
 						{block:list limit="8" titlenum="24" dateformat="m-d"}
 						<section>
 							<div class="thleftcon">
-								<div class="thleftbt"><span>最新文章</span></div>
+								<div class="thleftbt"><span>最新内容</span></div>
 								<ul class="th-5">
-									{php}$rank = 1;{/php}
 									{loop:$data[list] $v}
-									<li class="post_id_{$v[id]}"><span class="date">{$v[date]}</span><i>{$rank}</i><a href="{$v[url]}" title="{$v[title]}">{$v[subject]}</a></li>
-									{php}$rank++;{/php}
+									<li class="post_id_{$v[id]}"><span class="date">{$v[date]}</span><i>{$v[xuhao]}</i><a href="{$v[url]}" title="{$v[title]}">{$v[subject]}</a></li>
 									{/loop}
 								</ul>
 							</div>
 						</section>
 						{/block}
 					</div>
-					<!--当前分类最新文章end-->
+					<!--当前分类最新内容end-->
 					<!--当前分类阅读排行榜start-->
 					<div class="th_margintop">
 						{block:list_top orderby="views" limit="8" titlenum="24"}
@@ -92,10 +93,8 @@
 							<div class="thleftcon">
 								<div class="thleftbt"><span>阅读排行</span></div>
 								<ul class="th-5">
-									{php}$rank = 1;{/php}
 									{loop:$data[list] $v}
-									<li class="post_id_{$v[id]}"><span class="date">{$v[views]}℃</span><i>{$rank}</i><a href="{$v[url]}" title="{$v[title]}">{$v[subject]}</a></li>
-									{php}$rank++;{/php}
+									<li class="post_id_{$v[id]}"><span class="date">{$v[views]}℃</span><i>{$v[xuhao]}</i><a href="{$v[url]}" title="{$v[title]}">{$v[subject]}</a></li>
 									{/loop}
 								</ul>
 							</div>
@@ -109,7 +108,7 @@
 							<div class="thleftcon">
 								<div class="thleftbt"><span>热门标签</span></div>
 								<ul class="th-7">
-									{block:taglist mid="2" limit="30" orderby="count"}
+									{block:taglist limit="30" orderby="count"}
 									{loop:$data[list] $v}
 									<li class="tag_id_{$v[tagid]}"><a title="{$v[name]}" href="{$v[url]}">{$v[name]}</a></li>
 									{/loop}

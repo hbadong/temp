@@ -2,14 +2,17 @@
 <section>
 	<div class="container th_margintop">
 		<div class="row">
-			<!--左侧标签文章列表start-->
+			<!--左侧标签内容列表start-->
 			<div class="col-md-9 col-xs-12">
 				<div>
 					<div class="thjingxuan">
+						<!--面包屑导航start-->
 						<div class="thjingxuan_title categorylist"><i></i>
 							<a href="{$cfg[weburl]}" title="{$cfg[webname]}">首页</a><span>/</span> <a href="{$tags[url]}" title="{$tags[name]}">{$tags[name]}</a>
 						</div>
-						{block:global_taglist pagenum="10" dateformat="Y-m-d" showviews="1"}
+						<!--面包屑导航end-->
+
+						{block:global_taglist pagenum="10" dateformat="Y-m-d" showviews="1"}{/block}
 						<section class="thjingxuan_sec">
 							{loop:$gdata[list] $v}
 							<div class="col-md-12 col-xs-12 th_padding post_id_{$v[id]}">
@@ -38,43 +41,42 @@
 							</div>
 							{/if}
 						</section>
-						{/block}
 					</div>
 				</div>
 			</div>
-			<!--左侧标签文章列表end-->
+			<!--左侧标签内容列表end-->
 			<div class="col-md-3 col-xs-12 wap_margintop">
 				<div>{inc:about.htm}</div>
-				<!--当前分类阅读排行榜start-->
+				<!--阅读排行榜start-->
 				<div class="th_margintop">
 					{block:list_top orderby="views" limit="8" titlenum="24"}
 					<section>
 						<div class="thleftcon">
 							<div class="thleftbt"><span>阅读排行</span></div>
 							<ul class="th-5">
-								{php}$rank = 1;{/php}
 								{loop:$data[list] $v}
-								<li class="post_id_{$v[id]}"><span class="date">{$v[views]}℃</span><i>{$rank}</i><a href="{$v[url]}" title="{$v[title]}">{$v[subject]}</a></li>
-								{php}$rank++;{/php}
+								<li class="post_id_{$v[id]}"><span class="date">{$v[views]}℃</span><i>{$v[xuhao]}</i><a href="{$v[url]}" title="{$v[title]}">{$v[subject]}</a></li>
 								{/loop}
 							</ul>
 						</div>
 					</section>
 					{/block}
 				</div>
-				<!--当前分类阅读排行榜end-->
+				<!--阅读排行榜end-->
+
 				<!--随机文章start-->
 				<div class="th_margintop">
 					<section>{inc:rand.htm}</section>
 				</div>
 				<!--随机文章end-->
+
 				<!--热门标签start-->
 				<div class="th_margintop">
 					<section>
 						<div class="thleftcon">
 							<div class="thleftbt"><span>热门标签</span></div>
 							<ul class="th-7">
-								{block:taglist mid="2" limit="18" orderby="count"}
+								{block:taglist limit="18" orderby="count"}
 								{loop:$data[list] $v}
 								<li class="tag_id_{$v[tagid]}"><a title="{$v[name]}" href="{$v[url]}">{$v[name]}</a></li>
 								{/loop}
@@ -84,6 +86,7 @@
 					</section>
 				</div>
 				<!--热门标签end-->
+
 			</div>
 		</div>
 	</div>

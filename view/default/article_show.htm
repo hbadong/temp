@@ -1,79 +1,4 @@
-<!doctype html>
-<html lang="zh-Hans">
-<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
-	<meta name="generator" content="LECMS" />
-	<meta name="renderer" content="webkit">
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-	<title>{$cfg[titles]}</title>
-	{if:$gdata[seo_keywords]}
-	<meta name="keywords" content="{$gdata[seo_keywords]}" />
-	{elseif:$gdata[tags]}
-	<meta name="keywords" content="{php}echo implode(',',$gdata['tags']);{/php}" />
-	{else}
-	<meta name="keywords" content="{$cfg[seo_keywords]}" />
-	{/if}
-	<meta name="description" content="{$cfg[seo_description]}" />
-	<link rel="shortcut icon" type="image/x-icon" href= "{$cfg[webdir]}favicon.ico" />
-	<link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" media="all">
-	<link rel="stylesheet" href="{$cfg[tpl]}style/style.css" type="text/css" media="all"/>
-	<script type="text/javascript" src="{$cfg[webdir]}static/js/jquery.js"></script>
-	<script type="text/javascript">
-		window._LE = {
-			uri: "{$cfg[weburl]}",
-			uid: "{$_uid}",
-			parseurl: "{$_parseurl}"
-		};
-	</script>
-	<script type="text/javascript" src="{$cfg[tpl]}script/main.js"></script>
-</head>
-<body>
-<header class="th_header">
-	<div class="container">
-		<div class="row">
-			<div class="col-md-2 col-xs-12 wap_headerlogo">
-				<a href="{$cfg[weburl]}" title="{$cfg[webname]}">
-					<img src="{$cfg[tpl]}style/img/logo.png" alt="{$cfg[webname]}" style="width: 180px;"/>
-				</a>
-				<div class="wap_headerclick"><span class="iconfont icon-caidan1"></span><span class="iconfont icon-guanbi1"></span></div>
-			</div>
-			<div class="col-md-7 col-xs-12 wap_headernav wap_display">
-				<!--导航start-->
-				{block:navigate}
-				<ul class="th_nav">
-					<li {if:empty($cfg_var['topcid'])} class="act"{/if}><a href="{$cfg[weburl]}" title="{$cfg[webname]}">{lang:home}</a></li>
-					{loop:$data $v}
-					<li{if:$cfg_var['topcid'] == $v['cid']} class="act"{/if}>
-					<a href="{$v[url]}" target="{$v[target]}" title="{$v[name]}">{$v[name]}{if:isset($v[son])}<i class="iconfont icon-jiantou"></i>{/if}</a>
-					{if:isset($v[son])}
-					<ul>
-						{loop:$v[son] $v2}<li><a href="{$v2[url]}" target="{$v2[target]}" title="{$v2[name]}">{$v2[name]}</a></li>{/loop}
-					</ul>
-					{/if}
-					</li>
-					{/loop}
-				</ul>
-				{/block}
-				<!--导航end-->
-			</div>
-			<!--搜索框start mid=2表示搜索文章-->
-			<div class="col-md-3 col-xs-12 th_padding wap_headersearch wap_display">
-				<div class="searchpanel">
-					<form name="search" method="get" action="{$cfg[webdir]}index.php" id="search_form">
-						<input type="hidden" name="u" value="search-index" />
-						<input type="hidden" name="mid" value="2" />
-						<input type="text" name="keyword" value="{$keyword}" size="11" />
-						<input type="submit" name="submit" value="{lang:search}" />
-					</form>
-				</div>
-			</div>
-			<!--搜索框end-->
-		</div>
-	</div>
-</header>
-<p class="pheaderpad"></p>
-
+{inc:header.htm}
 
 <div id="divMain">
 	<section>
@@ -87,7 +12,7 @@
 								<a href="{$cfg[weburl]}" title="{$cfg[webname]}">首页</a>{loop:$cfg_var[place] $v}<span>/</span> <a href="{$v[url]}">{$v[name]}</a>{/loop}
 							</div>
 							<section class="thjingxuan_sec">
-								{block:global_show show_prev_next="1" dateformat="Y-m-d"}
+								{block:global_show show_prev_next="1" dateformat="Y-m-d"}{/block}
 								<h1 class="detail-title">{$gdata[title]}</h1>
 								<div class="detail-icon">
 									<p class="meta">
@@ -101,34 +26,26 @@
 								</div>
 								<div class="detail-con">
 									{$gdata[content]}
-									{if:$gdata[pages]}
-									<div class="col-md-12 col-xs-12  th_padding">
-										<div class="list-title pagebar">
-											{$gdata[pages]}
-										</div>
-									</div>
-									{/if}
 								</div>
-								{hook:tour_consult.htm}
 								<div class="umCopyright">
 									<p>
 										版权声明：xxxxxxxxx；
 									</p>
 									<p>原文链接：<a href="{$gdata[absolute_url]}" title="{$gdata[title]}" style="color:#999">{$gdata[absolute_url]}</a></p>
 								</div>
+
 								{if:isset($gdata[prev][url]) || isset($gdata[next][url])}
 								<div class="detail-arr">
 									<div class="detail-arr-left">上一篇：{if:isset($gdata[prev][url])}<a href="{$gdata[prev][url]}" title="{$gdata[prev][title]}">{$gdata[prev][title]}</a>{else}没有了{/if}</div>
 									<div class="detail-arr-right">下一篇：{if:isset($gdata[next][url])}<a href="{$gdata[next][url]}" title="{$gdata[next][title]}">{$gdata[next][title]}</a>{else}没有了{/if}</div>
 								</div>
 								{/if}
-								{if:isset($gdata['tag_arr'])}
+
+								{if:$gdata[tag_arr]}
 								<div class="detail-tags">
 									<i class="fa fa-tags"></i>标签：{loop:$gdata[tag_arr] $v}<a class="th_hover_a1" href="{$v[url]}" title="{$v[name]}">{$v[name]}</a>{/loop}
 								</div>
 								{/if}
-
-								{/block}
 
 								{block:taglike type="1" limit="5" dateformat="Y-m-d"}
 								{if:$data[list]}
@@ -241,10 +158,8 @@
 							<div class="thleftcon">
 								<div class="thleftbt"><span>最新文章</span></div>
 								<ul class="th-5">
-									{php}$rank = 1;{/php}
 									{loop:$data[list] $v}
-									<li class="post_id_{$v[id]}"><span class="date">{$v[date]}</span><i>{$rank}</i><a href="{$v[url]}" title="{$v[title]}">{$v[subject]}</a></li>
-									{php}$rank++;{/php}
+									<li class="post_id_{$v[id]}"><span class="date">{$v[date]}</span><i>{$v[xuhao]}</i><a href="{$v[url]}" title="{$v[title]}">{$v[subject]}</a></li>
 									{/loop}
 								</ul>
 							</div>
@@ -259,10 +174,8 @@
 							<div class="thleftcon">
 								<div class="thleftbt"><span>阅读排行</span></div>
 								<ul class="th-5">
-									{php}$rank = 1;{/php}
 									{loop:$data[list] $v}
-									<li class="post_id_{$v[id]}"><span class="date">{$v[views]}℃</span><i>{$rank}</i><a href="{$v[url]}" title="{$v[title]}">{$v[subject]}</a></li>
-									{php}$rank++;{/php}
+									<li class="post_id_{$v[id]}"><span class="date">{$v[views]}℃</span><i>{$v[xuhao]}</i><a href="{$v[url]}" title="{$v[title]}">{$v[subject]}</a></li>
 									{/loop}
 								</ul>
 							</div>

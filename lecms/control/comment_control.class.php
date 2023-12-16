@@ -20,6 +20,8 @@ class comment_control extends base_control{
 		if(empty($this->_var)){
             core::error404();
         }
+		//模型ID给到GET，方便block里面自动获取
+        $_GET['mid'] = (int)$this->_var['mid'];
 
 		if($this->_var['mid'] == 1){
             // 读取单页分类内容

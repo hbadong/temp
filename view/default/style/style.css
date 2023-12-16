@@ -1249,8 +1249,6 @@ pre {
 
 .thjingxuan_title {
   line-height: 30px;
-  /* padding-bottom: 10px;
-  border-bottom: 1px solid #f0f0f0; */
   font-size: 20px;
   color: #202020;
 }
@@ -1265,6 +1263,8 @@ pre {
   margin-right: 10px;
   background: #3297fc;
 }
+.thjingxuan .th_hover_a1{margin-right: 5px;}
+.thjingxuan .th_hover_a1:last-child{margin-right: 0px;}
 
 .thliorder1 {
   padding-bottom: 15px;
@@ -5093,3 +5093,18 @@ a.reply_comment{margin-left: 5px;}
   padding: 0.5rem 1rem !important;
 }
 .iremark{display: block;}
+
+.z-cate-trub {
+  background-color: #fff;
+  border: 1px solid #eee;
+  border-radius: 2px;
+  padding: 0px 15px;
+  vertical-align: middle;
+  height: 50px;
+  line-height: 50px;
+}
+.z-cate-trub a {
+  transition: 0.5s ease-out;
+  margin-right: 15px;
+}
+.z-cate-trub a:last-child{margin-right: 0px;}

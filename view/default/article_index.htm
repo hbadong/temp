@@ -1,18 +1,26 @@
 {inc:header.htm}
 <section>
 	<div class="container">
+		<!--当前频道子分类start-->
+		{block:category type="child"}
+		<div class="row pc_margintop">
+			<div class="col-md-12">
+				<div class="z-cate-trub">子分类：{loop:$data $v}<a href="{$v[url]}" title="{$v[name]}">{$v[name]}</a>{/loop}</div>
+			</div>
+		</div>
+		{/block}
+		<!--当前频道子分类end-->
+
 		<div class="row">
 			{block:listeach limit="8" dateformat="Y-m-d" titlenum="34"}
 			{loop:$data $v}
-			<div class="col-md-4 col-xs-12  pc_margintop">
+			<div class="col-md-4 col-xs-12 pc_margintop">
 				<section>
 					<div class="thleftcon">
 						<div class="thleftbt thwenzhang"><span>{$v[cate_name]}</span><div class="listMore"><a href="{$v[cate_url]}" title="{$v[cate_name]}">More +</a></div></div>
 						<ul class="th-5">
-							{php}$rank = 1;{/php}
 							{loop:$v[list] $lv}
-							<li><span class="date">{$lv[date]}</span><i>{$rank}</i><a href="{$lv[url]}" title="{$lv[title]}" target="_blank">{$lv[subject]}</a></li>
-							{php}$rank++;{/php}
+							<li><span class="date">{$lv[date]}</span><i>{$lv[xuhao]}</i><a href="{$lv[url]}" title="{$lv[title]}" target="_blank">{$lv[subject]}</a></li>
 							{/loop}
 						</ul>
 					</div>

@@ -44,6 +44,11 @@ class flags_control extends base_control{
         $GLOBALS['flag'] = &$flag;
         $tpl = 'flags.htm';
 
+        //不同模型 可以对应自己的属性内容页模板
+        if($mid > 2 && view_tpl_exists("flags_{$mid}.htm")){
+            $tpl = "flags_{$mid}.htm";
+        }
+
         // hook flags_control_index_after.php
         $_ENV['_theme'] = &$this->_cfg['theme'];
         $this->display($tpl);

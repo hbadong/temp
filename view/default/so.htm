@@ -3,7 +3,6 @@
 	.sopanel {
 		margin-top: 15px;
 	}
-
 	.sopanel .s_set{
 		font-size: 12px;
 		width: 8% !important;
@@ -28,7 +27,6 @@
 		border-radius: 5px;
 		transition: all .35s ease 0s;
 	}
-
 	.sopanel input[name='submit'] {
 		border-radius: 2px;
 		transition: all .35s ease 0s;
@@ -43,20 +41,16 @@
 		transition: all .35s ease 0s;
 		color: #6a7a86;
 	}
-
 	.sopanel input[name='submit']:hover {
 		background-color: #3297fc;
 		color: #fff;
 	}
-
 	.sopanel input[name='keyword']:focus {
 		border: 1px solid #3297fc;
 	}
-
 	.sopanel input[name='submit']:focus {
 		border: 1px solid #cde9fd;
 	}
-
 </style>
 <section>
 	<div class="container th_margintop">
@@ -70,9 +64,9 @@
 						<form name="search" method="get" action="{$cfg[webdir]}index.php" id="search_form">
 							<input type="hidden" name="u" value="search-index" />
 							<select name="mid" class="s_set">
-							{loop:$cfg[mod_name] $v $k}<option value="{$k}"{if:isset($_GET['mid']) && $_GET['mid']==$k} selected="selected"{/if}>{$v}</option>{/loop}
+							{loop:$cfg[mod_name] $v $k}<option value="{$k}">{$v}</option>{/loop}
 							</select>
-							<input type="text" name="keyword" value="{$keyword}"  />
+							<input type="text" name="keyword" required value="{$keyword}" />
 							<input type="submit" name="submit" value="{lang:search}" />
 						</form>
 					</div>

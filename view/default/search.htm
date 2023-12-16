@@ -7,9 +7,9 @@
 				<div>
 					<div class="thjingxuan">
 						<div class="thjingxuan_title categorylist"><i></i>
-							<a href="{$cfg[weburl]}" title="{$cfg[webname]}">首页</a>{loop:$cfg_var[place] $v}<span>/</span> <a href="{$v[url]}">{$v[name]}</a>{/loop}
+							<a href="{$cfg[weburl]}" title="{$cfg[webname]}">首页</a><span>/</span> <a>{$keyword}</a>
 						</div>
-						{block:global_search pagenum="10" dateformat="Y-m-d" showviews="1"}
+						{block:global_search pagenum="10" dateformat="Y-m-d" showviews="1"}{/block}
 						<section class="thjingxuan_sec">
 							{loop:$gdata[list] $v}
 							<div class="col-md-12 col-xs-12 th_padding post_id_{$v[id]}">
@@ -31,45 +31,43 @@
 							</div>
 							{/loop}
 							{if:$gdata[pages]}
-							<div class="col-md-12 col-xs-12  th_padding">
+							<div class="col-md-12 col-xs-12 th_padding">
 								<div class="list-title pagebar">
 									{$gdata[pages]}
 								</div>
 							</div>
 							{/if}
 						</section>
-						{/block}
 					</div>
 				</div>
 			</div>
 			<!--左侧搜索内容列表end-->
 			<div class="col-md-3 col-xs-12 wap_margintop">
 				<div>{inc:about.htm}</div>
-				<!--最新文章start-->
+				<!--最新内容start-->
 				<div class="th_margintop">
 					{block:list cid="0" limit="8" titlenum="30"}
 					<section>
 						<div class="thleftcon">
-							<div class="thleftbt"><span>最新文章</span></div>
+							<div class="thleftbt"><span>最新内容</span></div>
 							<ul class="th-5">
-								{php}$rank = 1;{/php}
 								{loop:$data[list] $v}
-								<li class="post_id_{$v[id]}"><i>{$rank}</i><a href="{$v[url]}" title="{$v[title]}">{$v[subject]}</a></li>
-								{php}$rank++;{/php}
+								<li class="post_id_{$v[id]}"><i>{$v[xuhao]}</i><a href="{$v[url]}" title="{$v[title]}">{$v[subject]}</a></li>
 								{/loop}
 							</ul>
 						</div>
 					</section>
 					{/block}
 				</div>
-				<!--最新文章end-->
+				<!--最新内容end-->
+
 				<!--热门标签start-->
 				<div class="th_margintop">
 					<section>
 						<div class="thleftcon">
 							<div class="thleftbt"><span>热门标签</span></div>
 							<ul class="th-7">
-								{block:taglist mid="2" limit="18" orderby="count"}
+								{block:taglist limit="18" orderby="count"}
 								{loop:$data[list] $v}
 								<li class="tag_id_{$v[tagid]}"><a title="{$v[name]}" href="{$v[url]}">{$v[name]}</a></li>
 								{/loop}

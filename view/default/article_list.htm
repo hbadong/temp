@@ -1,16 +1,26 @@
 {inc:header.htm}
 <section>
 	<div class="container th_margintop">
+		<!--当前分类同级分类start-->
+		{block:category type="sibling"}
 		<div class="row">
+			<div class="col-md-12">
+				<div class="z-cate-trub">同级分类：{loop:$data $v}<a href="{$v[url]}" title="{$v[name]}" {if:$_GET[cid] == $v[cid]}style="font-weight:bold;"{/if}>{$v[name]}</a>{/loop}</div>
+			</div>
+		</div>
+		{/block}
+		<!--当前分类同级分类end-->
+
+		<div class="row pc_margintop">
 			<!--左侧文章列表start-->
 			<div class="col-md-9 col-xs-12">
 				<div>
-
-
 					<div class="thjingxuan">
+						<!--面包屑导航start-->
 						<div class="thjingxuan_title categorylist"><i></i>
 							<a href="{$cfg[weburl]}" title="{$cfg[webname]}">首页</a>{loop:$cfg_var[place] $v}<span>/</span> <a href="{$v[url]}">{$v[name]}</a>{/loop}
 						</div>
+						<!--面包屑导航end-->
 
 						{block:global_cate pagenum="10" dateformat="Y-m-d" showviews="1"}{/block}
 						<section class="thjingxuan_sec">
@@ -27,21 +37,20 @@
 										</div>
 										<div class="newsummary">{$v[intro]}</div>
 										<div class="thinfo">
-											时间：{$v[date]}&nbsp;&nbsp;|&nbsp;&nbsp;阅读：{$v[views]}&nbsp;&nbsp;|&nbsp;&nbsp;作者：<a href="{$v[user_url]}" target="_blank" title="{$v[author]}">{$v[author]}</a>
+											时间：{$v[date]}&nbsp;&nbsp;|&nbsp;&nbsp;阅读：{$v[views]}&nbsp;&nbsp;{if:$v[tag_arr]}|&nbsp;&nbsp;标签：{loop:$v[tag_arr] $lv}<a class="th_hover_a1" href="{$lv[url]}" title="{$lv[name]}">{$lv[name]}</a>{/loop}{/if}
 										</div>
 									</div>
 								</div>
 							</div>
 							{/loop}
 							{if:$gdata[pages]}
-							<div class="col-md-12 col-xs-12  th_padding">
+							<div class="col-md-12 col-xs-12 th_padding">
 								<div class="list-title pagebar">
 									{$gdata[pages]}
 								</div>
 							</div>
 							{/if}
 						</section>
-
 					</div>
 				</div>
 			</div>
@@ -55,10 +64,8 @@
 						<div class="thleftcon">
 							<div class="thleftbt"><span>阅读排行</span></div>
 							<ul class="th-5">
-								{php}$rank = 1;{/php}
 								{loop:$data[list] $v}
-								<li class="post_id_{$v[id]}"><span class="date">{$v[views]}℃</span><i>{$rank}</i><a href="{$v[url]}" title="{$v[title]}">{$v[subject]}</a></li>
-								{php}$rank++;{/php}
+								<li class="post_id_{$v[id]}"><span class="date">{$v[views]}℃</span><i>{$v[xuhao]}</i><a href="{$v[url]}" title="{$v[title]}">{$v[subject]}</a></li>
 								{/loop}
 							</ul>
 						</div>

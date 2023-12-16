@@ -65,7 +65,7 @@
             <section>
                 <div class="thhotnews">
                     <div class="thhotnews_title">
-                        <div class="iconhot"><i class="iconfont  icon-hot"></i>最新文章</div>
+                        <div class="iconhot"><i class="iconfont icon-hot"></i>最新文章</div>
                     </div>
                     <div class="thhotnews_con">
                         {loop:$data[list] $v}
@@ -149,10 +149,8 @@
                 <div class="thleftcon" style="height:363px;">
                     <div class="thleftbt"><span>阅读排行</span></div>
                     <ul class="th-5">
-                        {php}$rank = 1;{/php}
                         {loop:$data[list] $v}
-                        <li class="post_id_{$v[id]}"><span class="date">{$v[views]}℃</span><i>{$rank}</i><a href="{$v[url]}" title="{$v[title]}">{$v[subject]}</a></li>
-                        {php}$rank++;{/php}
+                        <li class="post_id_{$v[id]}"><span class="date">{$v[views]}℃</span><i>{$v[xuhao]}</i><a href="{$v[url]}" title="{$v[title]}">{$v[subject]}</a></li>
                         {/loop}
                     </ul>
                 </div>
@@ -257,19 +255,17 @@
 <!--首页主体第四部分end-->
 
 <!--首页主体第五部分start-->
-<div class="container th_margintop">
+<div class="container">
     <div class="row">
-        {block:listeach cid="6" limit="10" dateformat="m-d" titlenum="38"}
+        {block:listeach cid="2" limit="10" dateformat="m-d" titlenum="38"}
         {loop:$data $v}
-        <div class="col-md-4 col-xs-12">
+        <div class="col-md-4 col-xs-12 pc_margintop">
             <section>
                 <div class="thleftcon">
                     <div class="thleftbt thwenzhang"><span>{$v[cate_name]}</span><div class="listMore"><a href="{$v[cate_url]}" title="{$v[cate_name]}">More +</a></div></div>
                     <ul class="th-5">
-                        {php}$rank = 1;{/php}
                         {loop:$v[list] $lv}
-                        <li><span class="date">{$lv[date]}</span><i>{$rank}</i><a href="{$lv[url]}" title="{$lv[title]}" target="_blank">{$lv[subject]}</a></li>
-                        {php}$rank++;{/php}
+                        <li><span class="date">{$lv[date]}</span><i>{$lv[xuhao]}</i><a href="{$lv[url]}" title="{$lv[title]}" target="_blank">{$lv[subject]}</a></li>
                         {/loop}
                     </ul>
                 </div>
@@ -291,7 +287,7 @@
             <div class="col-md-12 col-xs-12">
                 <section>
                     <div class="thleftcon">
-                        <div class="thleftbt"><span>{lang:links}</span></div>
+                        <div class="thleftbt"><span>友情链接</span></div>
                         <ul class="th-8">
                             {loop:$data $v}<li><a href="{$v[url]}" target="_blank">{$v[name]}</a></li>{/loop}
                         </ul>
