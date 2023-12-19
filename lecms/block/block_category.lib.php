@@ -7,6 +7,7 @@ defined('ROOT_PATH') || exit;
  * @param string type 显示类型   同级(sibling)、子级(child)、父级(parent)、顶级(top)
  * @param int mid 模型ID (默认自动识别)
  * @param string nocids 排除的分类cid串 多个用英文逗号隔开
+ * @param int limit 显示几条
  * @param int life 缓存时间
  * @return array
  */
@@ -19,6 +20,7 @@ function block_category($conf) {
 	$mid = isset($conf['mid']) ? intval($conf['mid']) : (isset($run->_var['mid']) ? $run->_var['mid'] : 2);
 	$type = isset($conf['type']) && in_array($conf['type'], array('sibling', 'child', 'parent', 'top')) ? $conf['type'] : 'sibling';
     $nocids = empty($conf['nocids']) ? '' : $conf['nocids'];
+    $limit = _int($conf, 'limit', 0);
     $life = isset($conf['life']) ? (int)$conf['life'] : (isset($run->_cfg['life']) ? (int)$run->_cfg['life'] : 0);
     // hook block_category_conf_after.php
 
@@ -67,6 +69,8 @@ function block_category($conf) {
         $run->category->format($v);
         // hook block_category_foreach_after.php
 	}
+
+	if($limit && $cate_arr){$cate_arr = array_slice($cate_arr, 0, $limit);}
 
     if($cache_key){
         $run->runtime->set_block_data_cache($cache_key, $cate_arr, $life);
