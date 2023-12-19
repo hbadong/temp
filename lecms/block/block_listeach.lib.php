@@ -19,6 +19,7 @@ defined('ROOT_PATH') || exit;
  * @param int showcate 是否显示分类信息（当分类层级超过2级时，内容列表要显示所属分类时使用。一般的2级分类结构，不需要这个参数）
  * @param int life 缓存时间
  * @param int son 获取子级的子级分类（三级分类 才用的上）
+ * @param int cate_limit 获取几个子级分类？ 默认为全部
  * @return array
  */
 function block_listeach($conf) {
@@ -41,6 +42,7 @@ function block_listeach($conf) {
     $showcate = _int($conf, 'showcate', 0);
     $life = isset($conf['life']) ? (int)$conf['life'] : (isset($run->_cfg['life']) ? (int)$run->_cfg['life'] : 0);
     $son = _int($conf, 'son', 0);
+    $cate_limit = _int($conf, 'cate_limit', 0);
     $extra = array('block_name'=>'block_listeach');
     // hook block_listeach_conf_after.php
 
@@ -94,6 +96,7 @@ function block_listeach($conf) {
 
 	// 读取内容列表
 	$ret = array();
+    $i = 1;
 	foreach($cid_arr as $_cid => $cids) {
 	    if($nocids_arr && in_array($_cid, $nocids_arr)){
 	        continue;
@@ -163,6 +166,11 @@ function block_listeach($conf) {
             $xuhao++;
             // hook block_listeach_list_foreach_after.php
 		}
+
+		if($cate_limit && $i == $cate_limit){break;}
+
+		$i++;
+
         // hook block_listeach_foreach_after.php
 	}
 
