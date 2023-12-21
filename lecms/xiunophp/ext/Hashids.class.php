@@ -1,6 +1,6 @@
 <?php
 /**
- * Author: dadadezhou <379559090@qq.com>
+ * Author: dadadezhou <zhoudada97@foxmail.com>
  * Date: 2023-12-14
  * Time: 15:07
  * Description: Hashids 协议实现，以实现：生成简短、唯一、大小写敏感并无序的hash值,自然数字的Hash值，可以设置不同的盐，具有保密性，可配置的hash长度，递增的输入产生的输出无法预测
@@ -316,8 +316,8 @@ class Hashids implements HashGenerator {
                 $ret = array();
             }
         }
-		
-		if(empty($ret)){
+
+        if(empty($ret)){
             return '';
         }
 

@@ -768,11 +768,15 @@ function sql_split($sql, $tablepre) {
 }
 
 //自动生成摘要和摘要处理
-function auto_intro($intro, $content, $len = 255) {
+function auto_intro($intro = '', $content = '', $len = 255) {
+    $s_arr = array('&nbsp;', '&amp;', '&quot;', '&#039;', '&ldquo;', '&rdquo;', '&mdash;', '&lt;', '&gt;', '&middot;', '&hellip;');
+    $r_arr = array(' ', '&', '"', "'", '“', '”', '—', '<', '>', '·', '…');
     if(empty($intro)) {
+        $content = str_replace($s_arr, $r_arr, $content);
         $intro = preg_replace('/\s{2,}/', ' ', strip_tags($content));
         return trim(utf8::cutstr_cn($intro, $len, ''));
     }else{
+        $intro = str_replace($s_arr, $r_arr, $intro);
         return str_replace(array("\r\n", "\r", "\n"), '<br />', strip_tags($intro));
     }
 }
@@ -918,7 +922,6 @@ function decrypt($str = '') {
     }
     return $reslutstr;
 }
-
 //HashID 内容和标签URL 加密解密 ， 标签是 mid , tagid
 function hashids_encrypt($cid = 0, $id = 0){
     $hashids = Hashids::instance(C('auth_key'));
@@ -929,6 +932,7 @@ function hashids_decrypt($str = ''){
     $hashids = Hashids::instance(C('auth_key'));
     return $hashids->decode($str);
 }
+
 //加密解密函数 end
 
 //判断启用主题下的模板是否存在
@@ -1029,4 +1033,246 @@ function xn_urldecode($s) {
     $s = str_replace('_', '%', $s);
     $s = urldecode($s);
     return $s;
+}
+
+/**
+ * 获取内容中的图片地址
+ * @param string $content 内容
+ * @param boolean $return_img_str 是否返回图片字符串
+ * @return array
+ */
+function match_img($content = '', $return_img_str = false){
+    $pattern = "/<[img|IMG].*?src=[\'|\"](.*?(?:[\.gif|\.jpg|\.png|\.jpeg|\.bmp|\.webp]))[\'|\"].*?[\/]?>/";
+    preg_match_all($pattern, $content, $match);
+
+    if(isset($match[1]) && !empty($match[1])){
+        $imgurl = $match[1];
+    }else{
+        $imgurl = array();
+    }
+
+    if($return_img_str){
+        if(isset($match[0]) && !empty($match[0])){
+            $imgs = $match[0];
+        }else{
+            $imgs = array();
+        }
+    }else{
+        $imgs = array();
+    }
+
+    if($return_img_str){
+        return array('imgurl'=>$imgurl, 'imgs'=>$imgs);
+    }else{
+        return $imgurl;
+    }
+}
+
+/**
+ * 获取远程图片并把它保存到本地, 确定您有把文件写入本地服务器的权限
+ * @param string $content 内容
+ * @param string $path 存储相对路径
+ * @param string $targeturl 可选参数，对方网站的网址，防止对方网站的图片使用"/upload/1.jpg"这种相对图片地址
+ * @return string $content 处理后的内容
+ */
+function grab_remote_img($content = '', $path = '', $targeturl = ''){
+    set_time_limit(0);
+    $img_array = match_img($content);
+    if(!$img_array){
+        return $content;
+    }
+
+    empty($path) AND $path = date('Ymd');
+    $uploadpath = 'upload/'.$path;
+
+    $updir = ROOT_PATH.$uploadpath; //文件存储绝对路径
+    $weburl = http_url_path();
+    $urlpath = $weburl.$uploadpath; //文件存储网址
+
+    if(!is_dir($updir) && !mkdir($updir, 0755, true)) {
+        return $content;
+    }
+
+    foreach($img_array as $value){
+        $val = $value;
+        //匹配到的是相对图片地址，就需要补充完整
+        if(strpos($value, 'http') === false){
+            if(!$targeturl) continue;
+            $value = $targeturl.$value;
+        }
+
+        if(strpos($value, '?')){
+            $value = explode('?', $value);
+            $value = $value[0];
+        }
+
+        if(substr($value, 0, 4) != 'http'){
+            continue;
+        }elseif (stripos($value, $weburl) !== FALSE){   //排除站内
+            continue;
+        }
+
+        //简单的获取扩展名
+        $ext = strtolower(trim(substr(strrchr($value, '.'), 1, 10)));
+        if(!in_array(strtolower($ext), array('png', 'jpg', 'jpeg', 'gif', 'webp', 'bmp', 'ico'))){
+            continue;
+        }
+
+        $imgname = date('YmdHis').rand(100, 999).'.'.$ext;
+        $filename = $updir.'/'.$imgname;
+        $imgurl = $urlpath.'/'.$imgname;
+
+        ob_start();
+        @readfile($value);
+        $data = ob_get_contents();
+        ob_end_clean();
+        $data && file_put_contents($filename, $data);
+
+        if(is_file($filename)){
+            $content = str_replace($val, $imgurl, $content);
+        }
+    }
+    return $content;
+}
+
+/**
+ * 发送HTTP状态
+ * @param integer $code 状态码
+ * @return void
+ */
+function send_http_status($code){
+    static $_status = array(
+        // Informational 1xx
+        100 => 'Continue',
+        101 => 'Switching Protocols',
+        // Success 2xx
+        200 => 'OK',
+        201 => 'Created',
+        202 => 'Accepted',
+        203 => 'Non-Authoritative Information',
+        204 => 'No Content',
+        205 => 'Reset Content',
+        206 => 'Partial Content',
+        // Redirection 3xx
+        300 => 'Multiple Choices',
+        301 => 'Moved Permanently',
+        302 => 'Moved Temporarily ',  // 1.1
+        303 => 'See Other',
+        304 => 'Not Modified',
+        305 => 'Use Proxy',
+        // 306 is deprecated but reserved
+        307 => 'Temporary Redirect',
+        // Client Error 4xx
+        400 => 'Bad Request',
+        401 => 'Unauthorized',
+        402 => 'Payment Required',
+        403 => 'Forbidden',
+        404 => 'Not Found',
+        405 => 'Method Not Allowed',
+        406 => 'Not Acceptable',
+        407 => 'Proxy Authentication Required',
+        408 => 'Request Timeout',
+        409 => 'Conflict',
+        410 => 'Gone',
+        411 => 'Length Required',
+        412 => 'Precondition Failed',
+        413 => 'Request Entity Too Large',
+        414 => 'Request-URI Too Long',
+        415 => 'Unsupported Media Type',
+        416 => 'Requested Range Not Satisfiable',
+        417 => 'Expectation Failed',
+        // Server Error 5xx
+        500 => 'Internal Server Error',
+        501 => 'Not Implemented',
+        502 => 'Bad Gateway',
+        503 => 'Service Unavailable',
+        504 => 'Gateway Timeout',
+        505 => 'HTTP Version Not Supported',
+        509 => 'Bandwidth Limit Exceeded',
+        550 => 'Can not connect to MySQL server'
+    );
+    if(isset($_status[$code])) {
+        header('HTTP/1.1 '.$code.' '.$_status[$code]);
+        // 确保FastCGI模式下正常
+        header('Status:'.$code.' '.$_status[$code]);
+    }
+}
+
+// 不区分大小写的in_array实现
+function in_array_case($value = '', $array = array()){
+    return in_array(strtolower($value), array_map('strtolower', $array));
+}
+
+/**
+ * 根据PHP各种类型变量生成唯一标识号
+ * @param mixed $mix 变量
+ * @return string
+ */
+function to_guid_string($mix) {
+    if (is_object($mix)) {
+        return spl_object_hash($mix);
+    } elseif (is_resource($mix)) {
+        $mix = get_resource_type($mix) . strval($mix);
+    } else {
+        $mix = serialize($mix);
+    }
+    return md5($mix);
+}
+
+/**
+ * URL重定向
+ * @param string $url 重定向的URL地址
+ * @param integer $time 重定向的等待时间（秒）
+ * @param string $msg 重定向前的提示信息
+ * @return void
+ */
+function redirect($url, $time = 0, $msg = '') {
+    //多行URL地址支持
+    $url        = str_replace(array("\n", "\r"), '', $url);
+    if (empty($msg))
+        $msg    = "系统将在{$time}秒之后自动跳转到{$url}！";
+    if (!headers_sent()) {
+        if (0 === $time) {
+            header('Location: ' . $url);
+        } else {
+            header("refresh:{$time};url={$url}");
+            echo($msg);
+        }
+        exit();
+    } else {
+        $str    = "<meta http-equiv='Refresh' content='{$time};URL={$url}'>";
+        if ($time != 0)
+            $str .= $msg;
+        exit($str);
+    }
+}
+
+// 自动转换字符集 支持数组转换
+function auto_charset($fContents, $from = 'gbk', $to = 'utf-8') {
+    $from = strtoupper($from) == 'UTF8' ? 'utf-8' : $from;
+    $to = strtoupper($to) == 'UTF8' ? 'utf-8' : $to;
+    if (strtoupper($from) === strtoupper($to) || empty($fContents) || (is_scalar($fContents) && !is_string($fContents))) {
+        //如果编码相同或者非字符串标量则不转换
+        return $fContents;
+    }
+    if (is_string($fContents)) {
+        if (function_exists('mb_convert_encoding')) {
+            return mb_convert_encoding($fContents, $to, $from);
+        } elseif (function_exists('iconv')) {
+            return iconv($from, $to, $fContents);
+        } else {
+            return $fContents;
+        }
+    } elseif (is_array($fContents)) {
+        foreach ($fContents as $key => $val) {
+            $_key = auto_charset($key, $from, $to);
+            $fContents[$_key] = auto_charset($val, $from, $to);
+            if ($key != $_key)
+                unset($fContents[$key]);
+        }
+        return $fContents;
+    }
+    else {
+        return $fContents;
+    }
 }

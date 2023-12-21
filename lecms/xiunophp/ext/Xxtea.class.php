@@ -107,7 +107,7 @@ class Xxtea {
 	
 	//加密
 	public static function encrypt($txt, $key = '') {
-        empty($key) && $key = 'le'.'cms';
+        empty($key) && $key = C('auth_key');
 		$s = urlencode(base64_encode(self::xxtea_encrypt($txt, $key)));
 		$s = str_replace('%2F', '%252F', $s);	// fix nginx %2F 导致 rewrite 失效的问题
 		return $s;
@@ -115,7 +115,7 @@ class Xxtea {
 	
 	//解密
     public static function decrypt($txt, $key = '') {
-        empty($key) && $key = 'le'.'cms';
+        empty($key) && $key = C('auth_key');
 		$txt = str_replace('%252F', '%2F', $txt);	// fix nginx %2F 导致 rewrite 失效的问题
 		return self::xxtea_decrypt(base64_decode(urldecode($txt)), $key);
 	}
