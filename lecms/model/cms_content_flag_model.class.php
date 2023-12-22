@@ -155,7 +155,7 @@ class cms_content_flag extends model {
             }
 
             if($this->cms_content->update($cms_content)){
-                $this->set(array($flag, $id), array('cid'=>$cid));
+                $this->set(array($flag, $id), array('flag'=>$flag,'cid'=>$cid,'id'=>$id));
                 return true;
             }else{
                 return false;

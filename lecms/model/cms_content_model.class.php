@@ -415,11 +415,11 @@ class cms_content extends model {
             }
         }
 
-        // 写入内容属性标记表
+        // 写入内容属性标记表,set里面的data要完整，避免在开启缓存的时候写入数据不完整，导致读取不到完整数据
         if($flags){
             $this->cms_content_flag->table = 'cms_'.$table.'_flag';
             foreach($flags as $flag) {
-                $this->cms_content_flag->set(array($flag, $id), array('cid'=>$cid));
+                $this->cms_content_flag->set(array($flag, $id), array('flag'=>$flag,'cid'=>$cid,'id'=>$id));
             }
         }
 
