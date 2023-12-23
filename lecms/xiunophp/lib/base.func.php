@@ -681,33 +681,6 @@ function user_http_referer($no = array(), $weburl = ''){
     return $referer;
 }
 
-/**
- * 前台根据cookie获取用户信息
- * 在control中 obj = $this
- */
-function get_user($obj){
-    $userauth = R($_ENV['_config']['cookie_pre'].'userauth', 'R');
-    if($userauth){
-        $userauth = str_auth($userauth);
-        $arr = explode("\t", $userauth);
-        if(count($arr) == 4){
-            $uid      = $arr[0];
-            $username = $arr[1];
-            $password = $arr[2];
-            $groupid  = $arr[3];
-
-            $_user = $obj->user->get($uid);
-
-            if($_user['password'] == $password && $_user['username'] == $username && $_user['groupid'] == $groupid) {
-                return $_user;
-            }else{
-                return array();
-            }
-        }
-    }
-    return array();
-}
-
 // 获取 http://xxx.com/path/
 function http_url_path() {
     $port = R('SERVER_PORT','S');
@@ -790,7 +763,7 @@ function _file_get_contents($url, $timeout=10, $referer='', $post_data=''){
         curl_setopt ($ch, CURLOPT_TIMEOUT, $timeout);
         curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt ($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
-        curl_setopt ($ch, CURLOPT_REFERER, $referer);
+        $referer AND curl_setopt ($ch, CURLOPT_REFERER, $referer);
         curl_setopt ($ch, CURLOPT_FOLLOWLOCATION, 1);
         //post
         if($post_data){
