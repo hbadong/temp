@@ -211,20 +211,20 @@ class cms_content extends model {
         $uid = isset($user['uid']) ? (int)$user['uid'] : (isset($post['uid']) ? (int)$post['uid'] : 1);
         $title = isset($post['title']) ? trim(strip_tags($post['title'])) : '';
         $contentstr = isset($post['content']) ? trim($post['content']) : '';
-
-        // 如果摘要为空，自动生成摘要
         $intro = isset($post['intro']) ? trim($post['intro']) : '';
-        $intro = auto_intro($intro, $contentstr);
-
         $tagstr = isset($post['tags']) ? trim($post['tags'], ", \t\n\r\0\x0B") : '';
         $flags = isset($post['flag']) ? (is_array($post['flag']) ? $post['flag'] : explode(',',$post['flag'])) : array();
         $author =isset($post['author']) ? trim($post['author']) : '';
         $alias = isset($post['alias']) ? strtolower(trim($post['alias'])) : '';
+        $auto_pic = isset($this->cfg['auto_pic']) ? (int)$this->cfg['auto_pic'] : 0;    //自动提取缩略图
+
         if($alias && preg_match("/^\d+_\d+$/u",$alias)){    // 数字_数字 会和没有别名的 别名型URL冲突，导致404页面
             return array('err'=>1 ,'msg'=>lang('alias_error_number_and_number'));
         }
-        $auto_pic = isset($this->cfg['auto_pic']) ? (int)$this->cfg['auto_pic'] : 0;    //自动提取缩略图
+
         // hook cms_content_model_xadd_info_after.php
+
+        $intro = auto_intro($intro, $contentstr);
 
         empty($user) AND $user = $this->user->get($uid);
         if( empty($user) ){
@@ -476,21 +476,20 @@ class cms_content extends model {
         $uid = isset($user['uid']) ? (int)$user['uid'] : 1;
         $title = isset($post['title']) ? trim(strip_tags($post['title'])) : '';
         $contentstr = isset($post['content']) ? trim($post['content']) : '';
-
-        // 如果摘要为空，自动生成摘要
         $intro = isset($post['intro']) ? trim($post['intro']) : '';
-        $intro = auto_intro($intro, $contentstr);
-
         $tagstr = isset($post['tags']) ? trim($post['tags'], ", \t\n\r\0\x0B") : '';
         $flags = isset($post['flag']) ? (array)$post['flag'] : array();
         $author =isset($post['author']) ? trim($post['author']) : '';
         $alias = isset($post['alias']) ? strtolower(trim($post['alias'])) : '';
+        $auto_pic = isset($this->cfg['auto_pic']) ? (int)$this->cfg['auto_pic'] : 0;    //自动提取缩略图
         if($alias && preg_match("/^\d+_\d+$/u",$alias)){    // 数字_数字 会和没有别名的 别名型URL冲突，导致404页面
             return array('err'=>1 ,'msg'=>lang('alias_error_number_and_number'));
         }
-        $auto_pic = isset($this->cfg['auto_pic']) ? (int)$this->cfg['auto_pic'] : 0;    //自动提取缩略图
+
         // hook cms_content_model_xedit_info_after.php
 
+        $intro = auto_intro($intro, $contentstr);
+        
         empty($user) AND $user = $this->user->get($uid);
         if( empty($user) ){
             return array('err'=>1 ,'msg'=>lang('user_not_exists'));
