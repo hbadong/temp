@@ -34,6 +34,8 @@ return array(
     'register'=>'注册',
     'setting'=>'设置',
     'clear'=>'清空',
+    'refresh'=>'刷新',
+    'full_screen'=>'全屏',
     'close_website'=>'关闭网站',
     'close_search'=>'关闭搜索',
     'close_views'=>'关闭浏览量',

@@ -34,6 +34,8 @@ return array(
     'register'=>'Register',
     'setting'=>'Setting',
     'clear'=>'Clear',
+    'refresh'=>'Refresh',
+    'full_screen'=>'Full screen',
     'close_website'=>'Close website',
     'close_search'=>'Close Search',
     'close_views'=>'Close Views',
