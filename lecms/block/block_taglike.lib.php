@@ -62,7 +62,7 @@ function block_taglike($conf) {
         }
     }
     $tag_name = $_show['tags'][$tagid];
-    $tag_url = $run->cms_content->tag_url($mid, $_show['tags']);
+    $tag_url = $run->cms_content->tag_url($mid, array('tagid'=>$tagid, 'name'=>$tag_name));
 
     //跨模型调用相同标签的数据？根据标签名找到指定模型的标签ID
     if(isset($conf['mid']) && $conf['mid'] > 1 && $mid != $conf['mid'] && isset($run->_cfg['table_arr'][$conf['mid']])){

@@ -73,6 +73,15 @@ class models extends model {
         return $select;
     }
 
+    // 根据表名获取模型数据
+    public function get_models_by_tablename($tablename) {
+        // hook models_model_get_models_by_tablename_before.php
+        $data = $this->find_fetch(array('tablename'=>$tablename), array(), 0, 1);
+        $models = $data ? current($data) : array();
+        // hook models_model_get_models_by_tablename_after.php
+        return $models;
+    }
+
 	//添加模型
     public function xadd($data = array()){
         // hook models_model_xadd_before.php
@@ -87,6 +96,14 @@ class models extends model {
             return lang('tpl_tips');
         }
 
+        $table = isset($data['tablename']) ? trim($data['tablename']) : '';
+        if(empty($table)){
+            return lang('modeltablename_no_empty');
+        }
+        if($this->get_models_by_tablename($table)){
+            return lang('modeltablename_is_exist');
+        }
+
         $mid = $this->create($data);
         if(!$mid){
             return lang('write_table_failed');
@@ -94,7 +111,6 @@ class models extends model {
         // hook models_model_xadd_create_after.php
 
         //创建模型相关表
-        $table = $data['tablename'];
         $tableprefix = $_ENV['_config']['db']['master']['tablepre'];	//表前缀
         $table_cms = $tableprefix.'cms_'.$table;
         $table_cms_attach = $tableprefix.'cms_'.$table.'_attach';
@@ -117,7 +133,7 @@ class models extends model {
           source varchar(100) NOT NULL DEFAULT '' COMMENT '来源',
           dateline int(10) unsigned NOT NULL DEFAULT '0' COMMENT '发表时间',
           lasttime int(10) unsigned NOT NULL DEFAULT '0' COMMENT '更新时间',
-          ip int(10) NOT NULL DEFAULT '0' COMMENT 'IP',
+          ip int(11) unsigned NOT NULL DEFAULT '0' COMMENT 'IP',
           imagenum smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT '图片附件数',
           filenum smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT '文件附件数',
           iscomment tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '禁止评论',
@@ -179,7 +195,7 @@ class models extends model {
           seo_title varchar(100) NOT NULL DEFAULT '' COMMENT 'SEO标题',
           seo_keywords varchar(200) NOT NULL DEFAULT '' COMMENT 'SEO关键词',
           seo_description varchar(255) NOT NULL DEFAULT '' COMMENT 'SEO描述',
-          orderby int(10) NOT NULL DEFAULT '0' COMMENT '排序值',
+          orderby int(10) unsigned NOT NULL DEFAULT '0' COMMENT '排序值',
           PRIMARY KEY  (tagid),
           UNIQUE KEY tagname (`name`),
           KEY content_count (`count`)
