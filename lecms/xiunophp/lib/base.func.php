@@ -676,6 +676,8 @@ function user_http_referer($no = array(), $weburl = ''){
 
     if( $referer == './' && !empty($weburl) ){
         $referer = $weburl;
+    }elseif( stripos($referer, $weburl) === FALSE ){    //排除站外来路，一般用于第三方登录
+        $referer = $weburl;
     }
 
     return $referer;

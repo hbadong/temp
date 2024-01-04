@@ -11,9 +11,9 @@
 	<div class="layui-card-body">
 		<div class="layui-tab layui-tab-brief" lay-filter="plugin">
 			<ul class="layui-tab-title">
-				<li class="layui-this" lay_id="enabled">{lang:enabled_plugin}</li>
-				<li lay_id="no_enabled">{lang:no_enabled_plugin}</li>
-				<li lay_id="no_install">{lang:no_install_plugin}</li>
+				<li class="layui-this" lay-id="enabled">{lang:enabled_plugin}</li>
+				<li lay-id="no_enabled">{lang:no_enabled_plugin}</li>
+				<li lay-id="no_install">{lang:no_install_plugin}</li>
 			</ul>
 			<div class="layui-tab-content">
 				<div class="layui-tab-item layui-show">
@@ -151,66 +151,23 @@ layui.use(['form','layer', 'miniTab', 'element'], function () {
 	var layer = layui.layer, form = layui.form,miniTab = layui.miniTab, element = layui.element;
 	miniTab.listen();
 
+	var hashName = 'tabid';
+	var layid = location.hash.replace(new RegExp('^#'+ hashName + '='), '');
+	element.tabChange('plugin', layid);
+	// 切换事件
+	element.on('tab(plugin)', function(obj){
+		location.hash = hashName +'='+ this.getAttribute('lay-id');
+	});
+
 	var plugin_disable = "{$plugin_disable}";
 	if(plugin_disable == "1"){
 		layer.open({title: "{lang:tips}", content: '<div style="padding: 11px;">{lang:plugin_disable}</div>',closeBtn: 0, type: 1});
 	}
-});
 
-//停用
-$(".disabled").click(function(){
-	var dir = $(this).parent().attr("plugin");
-	adminAjax.postd("index.php?plugin-disabled-ajax-1", {"dir" : dir},function (json) {
-		var res = toJson(json);
-		if( res.err ){
-			layer.msg(res.msg, {icon: 5});
-		}else{
-			layer.msg(res.msg, {icon: 1, time: 1000},function () {
-				window.location.reload(true);
-			});
-		}
-	});
-});
-
-//启用
-$(".enable").click(function(){
-	var dir = $(this).parent().attr("plugin");
-	enable(dir);
-});
-
-function enable(dir) {
-	adminAjax.postd("index.php?plugin-enable-ajax-1", {"dir" : dir},function (json) {
-		var res = toJson(json);
-		if( res.err ){
-			layer.msg(res.msg, {icon: 5});
-		}else{
-			layer.msg(res.msg, {icon: 1, time: 1000},function () {
-				window.location.reload(true);
-			});
-		}
-	});
-}
-
-//安装
-$(".install").click(function(){
-	var dir = $(this).parent().attr("plugin");
-	adminAjax.postd("index.php?plugin-install-ajax-1", {"dir" : dir},function (json) {
-		var res = toJson(json);
-		if( res.err ){
-			layer.msg(res.msg, {icon: 5});
-		}else{
-			layer.msg(res.msg, {icon: 1, time: 1000},function () {
-				window.location.reload(true);
-			});
-		}
-	});
-});
-
-//删除
-$(".del").click(function(){
-	var dir = $(this).parent().attr("plugin");
-	adminAjax.confirm("{lang:delete_confirm} “<font color='red'>"+dir+"</font>”", function(){
-		adminAjax.postd("index.php?plugin-delete-ajax-1", {"dir" : dir},function (json) {
+	//停用
+	$(".disabled").click(function(){
+		var dir = $(this).parent().attr("plugin");
+		adminAjax.postd("index.php?plugin-disabled-ajax-1", {"dir" : dir},function (json) {
 			var res = toJson(json);
 			if( res.err ){
 				layer.msg(res.msg, {icon: 5});
@@ -221,6 +178,54 @@ $(".del").click(function(){
 			}
 		});
 	});
+
+	//启用
+	$(".enable").click(function(){
+		var dir = $(this).parent().attr("plugin");
+		adminAjax.postd("index.php?plugin-enable-ajax-1", {"dir" : dir},function (json) {
+			var res = toJson(json);
+			if( res.err ){
+				layer.msg(res.msg, {icon: 5});
+			}else{
+				layer.msg(res.msg, {icon: 1, time: 1000},function () {
+					window.location.reload(true);
+				});
+			}
+		});
+	});
+
+	//安装
+	$(".install").click(function(){
+		var dir = $(this).parent().attr("plugin");
+		adminAjax.postd("index.php?plugin-install-ajax-1", {"dir" : dir},function (json) {
+			var res = toJson(json);
+			if( res.err ){
+				layer.msg(res.msg, {icon: 5});
+			}else{
+				layer.msg(res.msg, {icon: 1, time: 1000},function () {
+					window.location.reload(true);
+				});
+			}
+		});
+	});
+
+	//删除
+	$(".del").click(function(){
+		var dir = $(this).parent().attr("plugin");
+		adminAjax.confirm("{lang:delete_confirm} “<font color='red'>"+dir+"</font>”", function(){
+			adminAjax.postd("index.php?plugin-delete-ajax-1", {"dir" : dir},function (json) {
+				var res = toJson(json);
+				if( res.err ){
+					layer.msg(res.msg, {icon: 5});
+				}else{
+					layer.msg(res.msg, {icon: 1, time: 1000},function () {
+						window.location.reload(true);
+					});
+				}
+			});
+		});
+	});
+
 });
 </script>
 </body>
