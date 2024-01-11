@@ -11,12 +11,13 @@ class category_control extends admin_control{
         $this->display();
     }
 
-    //获取分类
+    //获取分类（排除单页）
     public function get_list(){
+        $where = array('mid'=>array('>'=>1));
         // hook admin_category_control_get_list_before.php
         $models = $this->models->get_models();
 
-        $tmp = $this->category->find_fetch(array(), array('orderby'=>1));
+        $tmp = $this->category->find_fetch($where, array('orderby'=>1));
         $category_arr = array();
         foreach ($tmp as &$v){
             if( $v['upid'] == 0 ){  //顶级的父ID 必须为 -1
@@ -34,7 +35,7 @@ class category_control extends admin_control{
             $v['url'] = $this->category->category_url($v);
             $category_arr[] = $v;
         }
-        $total = $this->category->count();
+        $total = $this->category->find_count($where);
         // hook admin_category_control_get_list_after.php
         $arr = array(
             'code' => 0,
@@ -57,6 +58,9 @@ class category_control extends admin_control{
 
             $categorys = $this->category->get($cid);
             empty($categorys) && E(1, lang('data_no_exists'));
+
+            //单页分类
+            $categorys['mid'] == 1 && E(1, lang('data_error'));
 
             if($field == 'alias'){  //修改别名 需要判断
                 $value = strtolower($value);
@@ -87,7 +91,13 @@ class category_control extends admin_control{
             // hook admin_category_control_add_before.php
             $mod_name = array();
             $models = $this->models->get_models();
-            foreach ($models as $v){
+            foreach ($models as $k=>$v){
+                //排除单页
+                if($v['mid'] == 1){
+                    unset($models[$k]);
+                    continue;
+                }
+
                 if( $_ENV['_config']['admin_lang'] == 'zh-cn' ){
                     $mod_name[$v['mid']] = $v['name'];
                 }else{
@@ -137,13 +147,6 @@ class category_control extends admin_control{
             if(!$maxid) {
                 E(1, lang('add_failed'));
             }
-            // 单页时
-            if($post['mid'] == 1) {
-                $pagedata = array('content' => R('page_content', 'P'));
-                if(!$this->cms_page->set($maxid, $pagedata)) {
-                    E(1, lang('add_failed'));
-                }
-            }
 
             //子分类允许投稿时，父分类也设置成允许投稿
             if($post['contribute'] && $post['upid']){
@@ -165,20 +168,30 @@ class category_control extends admin_control{
             $cid = (int)R('cid','G');
             $data = $this->category->get($cid);
             if(empty($data)){
+                $this->message(0, lang('data_no_exists'));
+            }elseif ($data['mid'] == 1){
                 $this->message(0, lang('data_error'));
             }
 
-            $mod_name = $this->models->get_name();
+            $mod_name = array();
+            $models = $this->models->get_models();
+            foreach ($models as $k=>$v){
+                //排除单页
+                if($v['mid'] == 1){
+                    unset($models[$k]);
+                    continue;
+                }
+
+                if( $_ENV['_config']['admin_lang'] == 'zh-cn' ){
+                    $mod_name[$v['mid']] = $v['name'];
+                }else{
+                    $mod_name[$v['mid']] = ucfirst($v['tablename']);
+                }
+            }
             $this->assign('mod_name', $mod_name);
 
-            $models = json_encode($this->models->get_models());
-            $this->assign('models', $models);
-
-            // 读取单页内容
-            if($data['mid'] == 1) {
-                $data2 = $this->cms_page->get($cid);
-                if($data2) $data['page_content'] = $data2['content'];
-            }
+            $models_json = json_encode($models);
+            $this->assign('models', $models_json);
 
             // 为频道时，检测是否有下级分类
             if($data['type'] == 1 && $this->category->find_fetch_key(array('upid' => $data['cid']), array(), 0, 1)) {
@@ -199,14 +212,19 @@ class category_control extends admin_control{
             if($err = $category->check_base($post)) {
                 E(1, $err['msg'], $err['name']);
             }
+
             $data = $category->get($post['cid']);
+            if(empty($data)){
+                E(1, lang('data_no_exists'));
+            }elseif ($data['mid'] == 1){
+                E(1, lang('data_error'));
+            }
 
             // 检查分类是否符合编辑条件
             if($err = $category->check_is_edit($post, $data)) {
                 E(1, $err['msg'], $err['name']);
             }
 
-            // 别名被修改过才检查是否被使用
             if($post['alias'] != $data['alias']) {
                 $err = $category->check_alias($post['alias']);
                 if($err) {
@@ -214,47 +232,12 @@ class category_control extends admin_control{
                 }
 
                 // 修改导航中的分类的别名
-                $navigate = $this->kv->xget('navigate');
-                foreach($navigate as $k=>$v) {
-                    if($v['cid'] == $post['cid']) $navigate[$k]['alias'] = $post['alias'];
-                    if(isset($v['son'])) {
-                        foreach($v['son'] as $k2=>$v2) {
-                            if($v2['cid'] == $post['cid']) $navigate[$k]['son'][$k2]['alias'] = $post['alias'];
-                        }
-                    }
-                }
-                $this->kv->set('navigate', $navigate);
-
-                // 修改移动端导航中的分类的别名
-                $navigate_mobile = $this->kv->xget('navigate_mobile');
-                foreach($navigate_mobile as $k=>$v) {
-                    if($v['cid'] == $post['cid']) $navigate_mobile[$k]['alias'] = $post['alias'];
-                    if(isset($v['son'])) {
-                        foreach($v['son'] as $k2=>$v2) {
-                            if($v2['cid'] == $post['cid']) $navigate_mobile[$k]['son'][$k2]['alias'] = $post['alias'];
-                        }
-                    }
-                }
-                $this->kv->set('navigate_mobile', $navigate_mobile);
+                $category->update_navigate_alias($post);
             }
 
-            // 这里赋值，是为了开启缓存后，编辑时更新缓存
             $post['count'] = $data['count'];
             if(!$category->update($post)) {
                 E(1, lang('edit_failed'));
-            }
-
-            // 删除以前的单页数据
-            if($data['mid'] == 1 && $post['mid'] > 1) {
-                $this->cms_page->delete($post['cid']);
-            }
-
-            // 单页时
-            if($post['mid'] == 1) {
-                $pagedata = array('content' => R('page_content', 'P'));
-                if(!$this->cms_page->set($post['cid'], $pagedata)) {
-                    E(1, lang('edit_failed'));
-                }
             }
 
             //子分类允许投稿时，父分类也设置成允许投稿
@@ -270,6 +253,7 @@ class category_control extends admin_control{
         }
     }
 
+    //获取POST数据
     private function get_post(){
         $mid = intval(R('mid', 'P'));
         $post = array(
@@ -300,57 +284,14 @@ class category_control extends admin_control{
 
         $cid = intval(R('cid', 'P'));
 
-        $data = $this->category->get($cid);
-
-        // 检查是否符合删除条件
-        if($err_msg = $this->category->check_is_del($data)) {
-            E(1, $err_msg);
-        }
-
-        if(!$this->category->delete($cid)) {
-            E(1, lang('delete_failed'));
-        }
-
-        //单页模型分类删除~
-        if($data['mid'] == 1){
-            //删除单页内容
-            $this->cms_page->delete($cid);
-
-            //删除模型内容的评论
-            $this->cms_content_comment->find_delete(array('mid'=>1,'id'=>$cid));
-            $this->cms_content_comment_sort->find_delete(array('mid'=>1,'id'=>$cid));
-        }
-
-        // 删除导航中的分类
-        $navigate = $this->kv->xget('navigate');
-        foreach($navigate as $k=>$v) {
-            if($v['cid'] == $cid) unset($navigate[$k]);
-            if(isset($v['son'])) {
-                foreach($v['son'] as $k2=>$v2) {
-                    if($v2['cid'] == $cid) unset($navigate[$k]['son'][$k2]);
-                }
-            }
-        }
-        $this->kv->set('navigate', $navigate);
-
-        // 删除移动端导航中的分类
-        $navigate_mobile = $this->kv->xget('navigate_mobile');
-        foreach($navigate_mobile as $k=>$v) {
-            if($v['cid'] == $cid) unset($navigate_mobile[$k]);
-            if(isset($v['son'])) {
-                foreach($v['son'] as $k2=>$v2) {
-                    if($v2['cid'] == $cid) unset($navigate_mobile[$k]['son'][$k2]);
-                }
-            }
-        }
-        $this->kv->set('navigate_mobile', $navigate_mobile);
+        $r = $this->category->xdelete($cid);
 
         // 删除缓存
-        $this->runtime->truncate();
+        empty($r['err']) && $this->runtime->truncate();
 
         // hook admin_category_control_del_after.php
 
-        E(0, lang('delete_successfully'));
+        E($r['err'], $r['msg']);
     }
 
     // 读取上级分类
@@ -366,7 +307,13 @@ class category_control extends admin_control{
             // hook admin_category_control_batch_add_before.php
             $mod_name = array();
             $models = $this->models->get_models();
-            foreach ($models as $v){
+            foreach ($models as $k=>$v){
+                //排除单页
+                if($v['mid'] == 1){
+                    unset($models[$k]);
+                    continue;
+                }
+
                 if( $_ENV['_config']['admin_lang'] == 'zh-cn' ){
                     $mod_name[$v['mid']] = $v['name'];
                 }else{
@@ -408,14 +355,13 @@ class category_control extends admin_control{
             $cate_tpl = trim(R('cate_tpl', 'P'));
             $show_tpl = trim(R('show_tpl', 'P'));
 
-            $page_content = trim(R('page_content', 'P'));
             $categorys = trim(R('categorys', 'P'));
 
             // hook admin_category_control_batch_add_post_after.php
 
             empty($mid) AND E(1, lang('select_cate_model'));
             empty($cate_tpl) AND E(1, lang('cate_tpl_no_empty'));
-            ($mid > 1 && empty($show_tpl)) AND E(1, lang('show_tpl_no_empty'));
+            empty($show_tpl) AND E(1, lang('show_tpl_no_empty'));
 
             empty($categorys) AND E(1, lang('category_no_empty'));
 
@@ -453,13 +399,6 @@ class category_control extends admin_control{
                 );
                 $maxid = $category->create($post);
                 if( $maxid ) {
-                    if($mid == 1){
-                        $pagedata = array('content' => $page_content);
-                        if(!$this->cms_page->set($maxid, $pagedata)) {
-                            $category->delete($maxid);
-                            $fail++;
-                        }
-                    }
                     $succ++;
                 }else{
                     $fail++;

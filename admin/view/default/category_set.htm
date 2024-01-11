@@ -77,12 +77,6 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="layui-form-item" id="i_page_content" style="display:none">
-                            <label class="layui-form-label">{lang:page_content}</label>
-                            <div class="layui-input-block">
-                                <textarea id="page_content" name="page_content" class="layui-textarea">{$data[page_content]}</textarea>
-                            </div>
-                        </div>
                     </div>
                 </fieldset>
 
@@ -142,51 +136,12 @@
     </div>
 </div>
 <script type="text/javascript">
-    // 默认无编辑器
-    window.editor_init = function(){
-        // 编辑器API
-        window.editor_api = {
-            // 单页内容
-            page_content : {
-                obj : $('#page_content'),
-                get : function() {
-                    return this.obj.val();
-                },
-                set : function(s) {
-                    return this.obj.val(s);
-                },
-                focus : function() {
-                    return this.obj.focus();
-                }
-            }
-        }
-    }
     var models = {$models};
 
     // 设置表单内的值
     function setFormVal(mid, type) {
 
-        if(mid == 1) {
-            $("#i_type").hide();
-            $("#i_page_content").show();
-            $("#i_show_tpl").hide();
-            $("#i_upid>.layui-form-label").html("{lang:select_upid}");
-
-            // 单页时把类型设置为 0，禁止投稿
-            $("input[name='type']").val(0);
-            $("#i_contribute").hide();
-            $("input[name='contribute']").val(0);
-
-            $("#i_cate_tpl>.layui-form-label").html("{lang:page_tpl}");
-            editor_init();
-        }else{
-            $("#i_type").show();
-            $("#i_page_content").hide();
-            $("#i_show_tpl").show();
-            $("#i_upid>.layui-form-label").html("{lang:select_upid}");
-            $("#i_cate_tpl>.layui-form-label").html(type == 1 ? "{lang:channel_tpl}" : "{lang:cate_tpl}");
-            $("#i_contribute").show();
-        }
+        $("#i_cate_tpl>.layui-form-label").html(type == 1 ? "{lang:channel_tpl}" : "{lang:cate_tpl}");
 
         // 默认模板设置
         var edit_mid = "{$data[mid]}";
@@ -197,11 +152,7 @@
         }else{
             var k = "models-mid-"+mid;
 
-            if(mid == 1){
-                $("#cate_tpl").val(models[k]["cate_tpl"]);
-            }else{
-                $("#cate_tpl").val(type == 1 ? models[k]["index_tpl"] : models[k]["cate_tpl"]);
-            }
+            $("#cate_tpl").val(type == 1 ? models[k]["index_tpl"] : models[k]["cate_tpl"]);
             $("#show_tpl").val(models[k]["show_tpl"]);
         }
     }
@@ -235,10 +186,6 @@
         }
         setFormVal(mid,type);
 
-        if(mid == 1){
-            editor_init();
-        }
-
         //缩略图上传
         upload.render({
         	elem: '#pic' //绑定元素
@@ -264,7 +211,7 @@
         var count = "{$data[count]}";
         var son_cate = "{$data[son_cate]}";
 
-        if(count > 0 || son_cate > 0 || mid == 1) {
+        if(count > 0 || son_cate > 0) {
             $("input[name='mid']").each(function() {
                 if($(this).val() != "{$data[mid]}") {
                     $(this).attr("disabled", "disabled");
@@ -277,7 +224,7 @@
             });
         }else{
             form.on('radio(mid)', function(data) {
-                var type = data.value == 1 ? 0 : $('input[name="type"]:checked').val();
+                var type = $('input[name="type"]:checked').val();
                 //设置表单的值
                 setFormVal(data.value, type);
                 // 加载所属频道

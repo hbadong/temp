@@ -162,8 +162,9 @@ class admin_control extends control {
             'target' => '_self',
             'child' =>array(
                 array('title' => lang('cate_manage'), 'href' => 'index.php?category-index', 'icon' => 'fa fa-window-restore', 'target' => '_self'),
+                array('title' => lang('page_manage'), 'href' => 'index.php?cms_page-index', 'icon' => 'fa fa-window-maximize', 'target' => '_self'),
                 array('title' => lang('navigate_manage'), 'href' => 'index.php?navigate-index', 'icon' => 'fa fa-list', 'target' => '_self'),
-                array('title' => lang('mobil_navigate_manage'), 'href' => 'index.php?navigate-index-mobile-1', 'icon' => 'fa fa-list', 'target' => '_self'),
+                //array('title' => lang('mobil_navigate_manage'), 'href' => 'index.php?navigate-index-mobile-1', 'icon' => 'fa fa-list', 'target' => '_self'),
             ),
         );
 

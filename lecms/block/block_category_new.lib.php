@@ -41,6 +41,7 @@ function block_category_new($conf) {
             return false;
         }else{
             $category = $cate_arr[$cid];
+            $mid = $category['mid'];
             $run->category->format($category);
         }
     }else{

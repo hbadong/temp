@@ -83,6 +83,74 @@ class category extends model {
 		return empty($msg) ? FALSE : array('name' => $name, 'msg' => $msg);
 	}
 
+	//删除分类
+	public function xdelete($cid = 0){
+        // hook category_model_xdelete_before.php
+        $data = $this->get($cid);
+        if(empty($data)){
+            return array('err'=>1, 'msg'=>lang('data_no_exists'));
+        }
+
+        // 检查是否符合删除条件
+        if($err_msg = $this->check_is_del($data)) {
+            return array('err'=>1, 'msg'=>$err_msg);
+        }
+
+        if(!$this->delete($cid)) {
+            return array('err'=>1, 'msg'=>lang('delete_failed'));
+        }
+
+        //单页模型分类删除~
+        if($data['mid'] == 1){
+            //删除单页内容
+            $this->cms_page->delete($cid);
+
+            //删除模型内容的评论
+            $this->cms_content_comment->find_delete(array('mid'=>1,'id'=>$cid));
+            $this->cms_content_comment_sort->find_delete(array('mid'=>1,'id'=>$cid));
+        }
+
+        // 删除导航中的分类
+        $nav_key_arr = array('navigate', 'navigate_mobile');
+        foreach ($nav_key_arr as $nav_key){
+            $navigate = $this->kv->xget($nav_key);
+            foreach($navigate as $k=>$v) {
+                if($v['cid'] == $cid) unset($navigate[$k]);
+                if(isset($v['son'])) {
+                    foreach($v['son'] as $k2=>$v2) {
+                        if($v2['cid'] == $cid) unset($navigate[$k]['son'][$k2]);
+                    }
+                }
+            }
+            $this->kv->set($nav_key, $navigate);
+        }
+
+        // hook category_model_xdelete_after.php
+        return array('err'=>0, 'msg'=>lang('delete_successfully'));
+    }
+
+    //更新导航菜单中的分类alias
+    public function update_navigate_alias($category = array()){
+        $nav_key_arr = array('navigate', 'navigate_mobile');
+        // hook category_model_update_navigate_alias_before.php
+
+        foreach ($nav_key_arr as $nav_key){
+            $navigate = $this->kv->xget($nav_key);
+            foreach($navigate as $k=>$v) {
+                if($v['cid'] == $category['cid']) $navigate[$k]['alias'] = $category['alias'];
+                if(isset($v['son'])) {
+                    foreach($v['son'] as $k2=>$v2) {
+                        if($v2['cid'] == $category['cid']) $navigate[$k]['son'][$k2]['alias'] = $category['alias'];
+                    }
+                }
+            }
+            $this->kv->set($nav_key, $navigate);
+        }
+
+        // hook category_model_update_navigate_alias_after.php
+        return TRUE;
+    }
+
 	// 检查是否符合删除条件
 	public function check_is_del($data) {
         // hook category_model_check_is_del_before.php
