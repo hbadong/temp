@@ -16,7 +16,7 @@ class cms_page_control extends admin_control{
         $where = array('mid'=>1);
         // hook admin_cms_page_control_get_list_before.php
 
-        $tmp = $this->category->find_fetch($where, array('orderby'=>1));
+        $tmp = $this->category->find_fetch($where, array('orderby'=>1,'cid'=>1));
         $category_arr = array();
         foreach ($tmp as &$v){
             if( $v['upid'] == 0 ){  //顶级的父ID 必须为 -1

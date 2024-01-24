@@ -17,7 +17,7 @@ class category_control extends admin_control{
         // hook admin_category_control_get_list_before.php
         $models = $this->models->get_models();
 
-        $tmp = $this->category->find_fetch($where, array('orderby'=>1));
+        $tmp = $this->category->find_fetch($where, array('orderby'=>1,'cid'=>1));
         $category_arr = array();
         foreach ($tmp as &$v){
             if( $v['upid'] == 0 ){  //顶级的父ID 必须为 -1
