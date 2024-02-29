@@ -90,7 +90,7 @@ class paginator{
         if($maxpage < 2) return '';
         $pnum = $offset*2;
         $ismore = $maxpage > $pnum;
-        $s = '<nav aria-label="Page navigation example"><ul class="pagination pagination-sm">';
+        $s = '<nav aria-label="Page navigation"><ul class="pagination justify-content-center flex-wrap">';
         $ua = explode('{page}', $url);
         if($page > 1) $s .= '<li class="page-item"><a class="page-link" href="'.$ua[0].($page-1).$ua[1].'">'.$lang[0].'</a></li>';
         if($ismore) {

@@ -53,6 +53,8 @@ class admin_control extends control {
             }
             exit('<html><body><script>top.location="'.$login_url.'"</script></body></html>');
         }
+		
+		$GLOBALS['run'] = &$this;
 
         // hook admin_admin_control_construct_after.php
     }

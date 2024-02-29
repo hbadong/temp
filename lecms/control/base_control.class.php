@@ -102,6 +102,8 @@ class base_control extends control{
         $this->assign('_parseurl', $this->_parseurl);
         $this->assign('_control', $this->_control);
         $this->assign('_action', $this->_action);
+		
+		$this->assign_value('url_suffix', $_ENV['_config']['url_suffix']);
 
         //站点关闭
         $this->close_website();

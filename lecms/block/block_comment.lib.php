@@ -20,7 +20,7 @@ function block_comment($conf) {
 	$firstnum = empty($conf['firstnum']) ? $pagenum : max(1, (int)$conf['firstnum']);
 	$dateformat = empty($conf['dateformat']) ? 'Y-m-d H:i:s' : $conf['dateformat'];
 	$humandate = isset($conf['humandate']) ? ($conf['humandate'] == 1 ? 1 : 0) : 1;
-	$orderway = isset($conf['orderway']) && $conf['orderway'] == 1 ? 1 : -1;
+	$orderway = isset($conf['orderway']) && $conf['orderway'] == -1 ? -1 : 1;
     $life = isset($conf['life']) ? (int)$conf['life'] : (isset($run->_cfg['life']) ? (int)$run->_cfg['life'] : 0);
     $extra = array('block_name'=>'block_comment');
     // hook block_comment_conf_after.php

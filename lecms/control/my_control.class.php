@@ -55,7 +55,7 @@ class my_control extends base_control {
         $this->_navs['my'] = array(
             'title' => lang('my_center'),
             'icon' => 'fa fa-user-circle',
-            'href' => '',
+            'href' => $this->urls->user_url('index','my'),
             'target' => '_self',
             'child' =>array(
                 array('id'=>'my-index', 'title' => lang('my_index'), 'href' => $this->urls->user_url('index','my'), 'icon' => 'fa fa-user-circle fa-fw', 'target' => '_self', 'class' => ''),
@@ -69,7 +69,7 @@ class my_control extends base_control {
         $this->_navs['content'] = array(
             'title' => lang('contents_mng'),
             'icon' => 'fa fa-list-alt',
-            'href' => '',
+            'href' => $this->urls->user_url('contents','my'),
             'target' => '_self',
             'child' =>array(
                 array('id'=>'my-contents', 'title' => lang('my_contents'), 'href' => $this->urls->user_url('contents','my'), 'icon' => 'fa fa-newspaper-o fa-fw', 'target' => '_self', 'class' => ''),
@@ -130,7 +130,6 @@ class my_control extends base_control {
                 'mobile'=>htmlspecialchars(trim(R('mobile', 'P'))),
                 'homepage'=>htmlspecialchars(trim(R('homepage', 'P'))),
                 'intro'=>htmlspecialchars(trim(R('intro', 'P'))),
-                'author'=>htmlspecialchars(trim(R('author', 'P'))),
             );
             // hook my_control_profile_post_after.php
             if( $this->user->update($post) ){
