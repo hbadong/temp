@@ -256,9 +256,24 @@
 			}
 		});
 
+		function link_show_redonly(title){
+			if (title.includes("灵活型") || title.includes("Custom")) {
+				$("input[name='link_show']").removeAttr("readonly");
+			}else{
+				$("input[name='link_show']").attr("readonly", "readonly");
+			}
+		}
+
 		form.on('radio(selection)', function (data) {
 			var value = data.value;   //  当前选中的value值
 			$("input[name='link_show']").val(value);
+			var title = data.elem.title;
+			link_show_redonly(title);
+		});
+
+		$(document).ready(function(){
+			var title = $('input[name="selection"]:checked').attr("title");
+			link_show_redonly(title);
 		});
 
 		// 提交表单
@@ -310,7 +325,6 @@
 	function del_rewrite(del) {
 		adminAjax.postd("index.php?setting-link-del-"+del+"-ajax-1", {});
 	}
-
 </script>
 </body>
 </html>
