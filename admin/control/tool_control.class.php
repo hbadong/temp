@@ -123,6 +123,10 @@ class tool_control extends admin_control{
 
         //清除文件缓存文件夹
         _rmdir(RUNTIME_PATH.'filecache');
+		
+		//清除自定义函数库文件缓存
+        $_misc = RUNTIME_PATH.'misc.func.php';
+        is_file($_misc) && unlink($_misc);
 
         // hook admin_tool_control_un_filecache_after.php
         return TRUE;
