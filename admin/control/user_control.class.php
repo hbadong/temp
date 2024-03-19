@@ -10,7 +10,23 @@ class user_control extends admin_control{
         $groupidhtml = $this->user_group->get_groupidhtml($groupid, lang('all_user_group'));
         $this->assign('groupidhtml', $groupidhtml);
 
+        //表格显示列表
+        $cols = "{type: 'checkbox', width: 50, fixed: 'left'},";
+        $cols .= "{field: 'uid', width: 80, title: 'uid', sort: true, align: 'center'},";
+        $cols .= "{field: 'username', title: '".lang('username')."'},";
+        $cols .= "{field: 'email', title: '".lang('email')."'},";
+        $cols .= "{field: 'groupname', width: 120, title: '".lang('user_group')."', align: 'center'},";
+        $cols .= "{field: 'regdate', width: 145, title: '".lang('reg_time')."', align: 'center'},";
+        $cols .= "{field: 'lastdate', width: 145, title: '".lang('last_login')."', align: 'center'},";
+        $cols .= "{field: 'logindate', width: 145, title: '".lang('this_login')."', align: 'center'},";
+        $cols .= "{field: 'logins', width: 115, title: '".lang('logins_count')."', align: 'center'},";
+        $cols .= "{field: 'contents', width: 100, title: '".lang('contents_count')."', align: 'center'},";
+        $cols .= "{field: 'golds', width: 70, title: '".lang('golds')."', align: 'center', edit: 'text'},";
+        // hook admin_user_control_index_cols_after.php
+        $cols .= "{title: '".lang('opt')."', width: 170, toolbar: '#currentTableBar', align: 'center'}";
+
         // hook admin_user_control_index_after.php
+        $this->assign('cols', $cols);
         $this->display();
     }
 

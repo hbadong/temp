@@ -76,20 +76,7 @@
             toolbar: '#toolbar',
             defaultToolbar: ['filter', 'exports', 'print'],
             cellMinWidth: 50,
-            cols: [[
-                {type: "checkbox", width: 50, fixed: 'left'},
-                {field: 'uid', width: 80, title: 'uid', sort: true, align: 'center'},
-                {field: 'username', title: '{lang:username}'},
-                {field: 'email', title: '{lang:email}'},
-                {field: 'groupname', width: 120, title: '{lang:user_group}', align: 'center'},
-                {field: 'regdate', width: 145, title: '{lang:reg_time}', align: 'center'},
-                {field: 'lastdate', width: 145, title: '{lang:last_login}', align: 'center'},
-                {field: 'logindate', width: 145, title: '{lang:this_login}', align: 'center'},
-                {field: 'logins', width: 115, title: '{lang:logins_count}', align: 'center'},
-                {field: 'contents', width: 100, title: '{lang:contents_count}', align: 'center'},
-                {field: 'golds', width: 70, title: '{lang:golds}', align: 'center', edit: 'text'},
-                {title: '{lang:opt}', width: 170, toolbar: '#currentTableBar', align: "center"}
-            ]],
+            cols: [[{$cols}]],
             limits: [10, 15, 20, 25, 50, 100],
             limit: 15,
             page: true

@@ -57,7 +57,20 @@ class content_control extends admin_control{
         $this->assign('add_content', $add_name);
         $this->assign('edit_content', $edit_name);
 
+        //表格显示列表
+        $cols = "{type: 'checkbox', width: 50, fixed: 'left'},";
+        $cols .= "{field: 'id', width: 100, title: 'ID', sort: true, align: 'center'},";
+        $cols .= "{field: 'title', title: '".lang('title')."', edit: 'text'},";
+        $cols .= "{field: 'category', title: '".lang('category')."'},";
+        $cols .= "{field: 'tags_fmt', title: '".lang('tag')."'},";
+        $cols .= "{field: 'flag_fmt', minwidth: 170, title: '".lang('flag')."', align: 'center'},";
+        $cols .= "{field: 'author', width: 120, title: '".lang('author')."', align: 'center', edit: 'text'},";
+        $cols .= "{field: 'date', width: 145, title: '".lang('date')."', align: 'center'},";
+        // hook admin_content_control_index_cols_after.php
+        $cols .= "{title: '".lang('opt')."', width: 140, toolbar: '#currentTableBar', align: 'center'}";
+
         // hook admin_content_control_index_after.php
+        $this->assign('cols', $cols);
         $this->display();
     }
 
