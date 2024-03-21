@@ -68,7 +68,6 @@ class search_control extends base_control{
         $this->assign('cfg_var', $this->_var);
 
         $GLOBALS['run'] = &$this;
-        $GLOBALS['keyword'] = &$keyword;
         $_ENV['_theme'] = &$this->_cfg['theme'];
         $tpl = 'so.htm';
 

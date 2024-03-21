@@ -40,27 +40,32 @@ class admin_control extends control {
             // hook admin_admin_control_admauth_success.php
         }
 
-        if(R('control') == 'index' && (R('action') == 'login' || R('action') == 'vcode')) {
+        if(R('control') == 'index' && (R('action') == 'login' || R('action') == 'vcode')) { //这里不验证是否启用安全密钥和密钥是否正确
             if(!$err) {
                 exit('<html><body><script>top.location="./"</script></body></html>');
             }
         }elseif(R('control') == 'admin' && R('action') == 'init_navigation' && $err) {
             E(1, lang('please_login_again'));
         }elseif($err) {
-            $login_url = $this->admin_safe_login_url();
+            $login_r = $this->admin_safe_login_url(1);
+            if(isset($login_r['admin_safe'])){  //知道了后台目录，开启了安全验证，不是通过安全入口登录，跳转到首页
+                $login_url = $login_r['jumpurl'];
+            }else{
+                $login_url = $login_r;
+            }
             if(R('ajax')) {
                 $this->message(0, lang('illegal_access'), $login_url);
             }
             exit('<html><body><script>top.location="'.$login_url.'"</script></body></html>');
         }
-		
-		$GLOBALS['run'] = &$this;
+
+        $GLOBALS['run'] = &$this;
 
         // hook admin_admin_control_construct_after.php
     }
 
     //获取安全的登录入口
-    protected function admin_safe_login_url(){
+    protected function admin_safe_login_url($r = 0){
         if( isset($this->data['cfg']) ) {
             $cfg = $this->data['cfg'];
         }else{
@@ -69,10 +74,17 @@ class admin_control extends control {
         }
         if(isset($cfg['admin_safe_entrance']) && $cfg['admin_safe_entrance'] && $cfg['admin_safe_auth']){
             $login_url = 'index.php?index-login-auth-'.$cfg['admin_safe_auth'];
+            $admin_safe_auth = $cfg['admin_safe_auth'];
         }else{
             $login_url = 'index.php?index-login';
+            $admin_safe_auth = '';
         }
-        return $login_url;
+
+        if($r && $admin_safe_auth){
+            return array('admin_safe'=>1, 'login_url'=>$login_url, 'jumpurl'=>HTTP.$cfg['webdomain'].$cfg['webdir']);
+        }else{
+            return $login_url;
+        }
     }
 
     // 检查是不是管理员
