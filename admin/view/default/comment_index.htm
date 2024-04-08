@@ -106,6 +106,7 @@
 		});
 		// 监听下拉框操作
 		form.on('select(mid)', function(data){
+			mid = data.value;
 			//执行搜索重载
 			table.reload('data-table', {
 				url: 'index.php?comment-get_list-mid-'+data.value+'-',

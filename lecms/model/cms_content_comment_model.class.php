@@ -130,7 +130,9 @@ class cms_content_comment extends model {
         }
         // hook cms_content_comment_model_xdelete_after.php
 
-		return $this->delete($commentid) ? '' : lang('delete_failed');
+        $r = $this->delete($commentid);
+        // hook cms_content_comment_model_xdelete_success.php
+		return $r ? '' : lang('delete_failed');
 	}
 
     // hook cms_content_comment_model_after.php

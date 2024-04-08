@@ -15,6 +15,7 @@ class admin_control extends control {
     private $data = array();		// 防止重复查询
 
     function __construct() {
+        // hook admin_admin_control_construct_before.php
         $_ENV['_config']['FORM_HASH'] = form_hash();
         $this->assign('C', $_ENV['_config']);
         $this->assign_value('core', F_APP_NAME);
@@ -22,6 +23,7 @@ class admin_control extends control {
         $err = 0;
         //登录验证（cookie或者session）
         $r = $this->user->user_token_check();
+        // hook admin_admin_control_construct_user_token_check_after.php
         if($r['err']){
             $err = 1;
             // hook admin_admin_control_admauth_failed.php
@@ -66,6 +68,7 @@ class admin_control extends control {
 
     //获取安全的登录入口
     protected function admin_safe_login_url($r = 0){
+        // hook admin_admin_control_admin_safe_login_url_before.php
         if( isset($this->data['cfg']) ) {
             $cfg = $this->data['cfg'];
         }else{
@@ -79,7 +82,7 @@ class admin_control extends control {
             $login_url = 'index.php?index-login';
             $admin_safe_auth = '';
         }
-
+        // hook admin_admin_control_admin_safe_login_url_after.php
         if($r && $admin_safe_auth){
             return array('admin_safe'=>1, 'login_url'=>$login_url, 'jumpurl'=>HTTP.$cfg['webdomain'].$cfg['webdir']);
         }else{
