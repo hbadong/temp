@@ -109,5 +109,30 @@ return array(
     'add_field_failed'=>'Add {field} failed',
     'filed_not_empty'=>'{field} cannot be empty',
 
+    //前后台共用（主要是发布内容，不只后台、前台也用得着）
+    'user_not_exists'=>'User information does not exist',
+    'category_not_exists'=>'Category does not exist',
+    'alias_error_number_and_number'=>'Alias cannot be in the format of "number_number"',
+    'please_select_category'=>'Please select category',
+    'please_fill_title'=>'Please fill in the title',
+    'please_fill_content_over_5'=>'Your content is too few words. It cannot be less than 5 characters',
+    'id_not_exists'=>'ID does not exist',
+    'alias_error_1'=>'Alias can only be number letter _',
+    'alias_error_2'=>'Alias can only be number letter _ -',
+    'alias_error_3'=>'Alias already used by tag URL',
+    'alias_error_4'=>'Alias already used by comment URL',
+    'alias_error_5'=>'Alias already used by Personal URL',
+    'alias_error_6'=>'Reserved keywords are not allowed for alias',
+    'alias_error_7'=>'Alias is already used by category',
+    'alias_error_8'=>'Alias is already used by content',
+    'cid_error'=>'Category ID error',
+    'write_tag_table_failed'=>'Failed to write database table',
+    'write_content_table_failed'=>'Failed to write database table',
+    'write_content_data_table_failed'=>'Failed to write database table',
+    'write_content_views_table_failed'=>'Failed to write database table',
+    'fabu_successfully'=>'Add successfully',
+    'isremote_failed_tip_1'=>',Remote capture of picture failed:',
+    'isremote_failed_tip_2'=>'',
+
     // hook xiunophp_lang_en.php
 );
