@@ -142,6 +142,7 @@ CREATE TABLE pre_cms_article (
   seo_description varchar(255) NOT NULL DEFAULT '' COMMENT 'SEO描述',
   jumpurl varchar(255) NOT NULL DEFAULT '' COMMENT '跳转URL',
   PRIMARY KEY (id),
+  KEY uid (uid),
   KEY cid_id (cid,id),
   KEY cid_dateline (cid,dateline)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci COMMENT='文章主表';
