@@ -197,7 +197,9 @@ layui.use(['form','layer', 'miniTab', 'element'], function () {
 	//安装
 	$(".install").click(function(){
 		var dir = $(this).parent().attr("plugin");
+		var loadIndex = layer.load(2);
 		adminAjax.postd("index.php?plugin-install-ajax-1", {"dir" : dir},function (json) {
+			layer.close(loadIndex);
 			var res = toJson(json);
 			if( res.err ){
 				layer.msg(res.msg, {icon: 5});
@@ -213,7 +215,9 @@ layui.use(['form','layer', 'miniTab', 'element'], function () {
 	$(".del").click(function(){
 		var dir = $(this).parent().attr("plugin");
 		adminAjax.confirm("{lang:delete_confirm} “<font color='red'>"+dir+"</font>”", function(){
+			var loadIndex = layer.load(2);
 			adminAjax.postd("index.php?plugin-delete-ajax-1", {"dir" : dir},function (json) {
+				layer.close(loadIndex);
 				var res = toJson(json);
 				if( res.err ){
 					layer.msg(res.msg, {icon: 5});
