@@ -57,6 +57,10 @@ class debug{
 			if(in_array($errno, array(E_NOTICE, E_USER_NOTICE, E_DEPRECATED))) {
 				log::write($s);
 			}else{
+                if(!defined('ADMIN_PATH')){
+                    header("HTTP/1.1 404 Not Found");
+                    exit('[程序错误: 请查看日志或者开启调试模式查看详细信息]');
+                }
 				throw new Exception($s);
 			}
 		}
@@ -84,6 +88,11 @@ class debug{
 
 		// 第2步写日志 (暂不使用 error_log() )
 		log::write("$message File: $file [$line]");
+
+        if(!defined('ADMIN_PATH') && !DEBUG){
+            header("HTTP/1.1 404 Not Found");
+            exit('[程序异常: 请查看日志或者开启调试模式查看详细信息]');
+        }
 
 		// 第3步根据情况输出错误信息
 		try{
