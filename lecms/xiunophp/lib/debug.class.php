@@ -59,7 +59,7 @@ class debug{
 			}else{
                 if(!defined('ADMIN_PATH')){
                     header("HTTP/1.1 404 Not Found");
-                    exit('[程序错误: 请查看日志或者开启调试模式查看详细信息]');
+                    exit('[程序错误: 请开启调试模式查看详细信息]');
                 }
 				throw new Exception($s);
 			}
