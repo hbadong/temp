@@ -35,40 +35,11 @@
 									<tr>
 										<td>{lang:content_url}</td>
 										<td>
-											<div>
-												<input name="selection" lay-filter="selection" type="radio" title="{lang:content_url_option_0} http://{$cfg[webdomain]}{$cfg[webdir]}520/123.html" value="{cid}/{id}.html"{if:$cfg['link_show_type']==1} checked="checked"{/if}>
-											</div>
-
-											<div>
-												<input name="selection" lay-filter="selection" type="radio" title="{lang:content_url_option_1} http://{$cfg[webdomain]}{$cfg[webdir]}fenlei/123.html" value="{cate_alias}/{id}.html"{if:$cfg['link_show_type']==2} checked="checked"{/if}>
-											</div>
-
-											<div>
-												<input name="selection" lay-filter="selection" type="radio" title="{lang:content_url_option_2} http://{$cfg[webdomain]}{$cfg[webdir]}bieming.html" value="{alias}.html"{if:$cfg['link_show_type']==3} checked="checked"{/if}>
-											</div>
-
-											<div>
-												<input name="selection" lay-filter="selection" type="radio" title="{lang:content_url_option_3} http://{$cfg[webdomain]}{$cfg[webdir]}password.html" value="{password}.html"{if:$cfg['link_show_type']==4} checked="checked"{/if}>
-											</div>
-
-											<div>
-												<input name="selection" lay-filter="selection" type="radio" title="HashID http://{$cfg[webdomain]}{$cfg[webdir]}hashids.html" value="{hashids}.html"{if:$cfg['link_show_type']==8} checked="checked"{/if}>
-											</div>
-
-											<div>
-												<input name="selection" lay-filter="selection" type="radio" title="{lang:content_url_option_4} http://{$cfg[webdomain]}{$cfg[webdir]}id.html" value="{id}.html"{if:$cfg['link_show_type']==5} checked="checked"{/if}>
-											</div>
-
-											<div>
-												<input name="selection" lay-filter="selection" type="radio" title="{lang:content_url_option_5} http://{$cfg[webdomain]}{$cfg[webdir]}fenlei/bieming.html" value="{cate_alias}/{alias}.html"{if:$cfg['link_show_type']==6} checked="checked"{/if}>
-											</div>
-											<div>
-												<input name="selection" lay-filter="selection" type="radio" title="{lang:content_url_option_6}（{lang:content_url_option_6_tips}） http://{$cfg[webdomain]}{$cfg[webdir]}{php} echo date('Ymd');{/php}/bieming.html" value="{ymd}/{alias}.html"{if:$cfg['link_show_type']==7} checked="checked"{/if}>
-											</div>
+											{$input[content_url]}
 											{hook:admin_setting_link_url_type_after.htm}
 											<div style="padding-top:8px">
 												<div class="layui-inline">
-													<label>{php}echo http();{/php}{$cfg[webdomain]}{$cfg[webdir]}</label>
+													<label>{$weburl}</label>
 													<div class="layui-input-inline">
 														{$input[link_show]}
 													</div>
@@ -264,7 +235,7 @@
 			}
 		}
 
-		form.on('radio(selection)', function (data) {
+		form.on('radio(content_url)', function (data) {
 			var value = data.value;   //  当前选中的value值
 			$("input[name='link_show']").val(value);
 			var title = data.elem.title;
@@ -272,7 +243,7 @@
 		});
 
 		$(document).ready(function(){
-			var title = $('input[name="selection"]:checked').attr("title");
+			var title = $('input[name="content_url"]:checked').attr("title");
 			link_show_redonly(title);
 		});
 

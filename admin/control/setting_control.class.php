@@ -274,6 +274,22 @@ class setting_control extends admin_control{
                     E(1, lang('delete').' httpd.ini '.lang('failed'));
                 }
             }
+            $weburl = HTTP.$cfg['webdomain'].$cfg['webdir'];
+            $content_url_arr = array(
+                1=>array('title'=>lang('content_url_option_0')." {$weburl}520/123.html", 'url'=>'{cid}/{id}.html'),
+                2=>array('title'=>lang('content_url_option_1')." {$weburl}fenlei/123.html", 'url'=>'{cate_alias}/{id}.html'),
+                3=>array('title'=>lang('content_url_option_2')." {$weburl}bieming.html", 'url'=>'{alias}.html'),
+                4=>array('title'=>lang('content_url_option_3')." {$weburl}password.html", 'url'=>'{password}.html'),
+                5=>array('title'=>lang('content_url_option_4')." {$weburl}id.html", 'url'=>'{id}.html'),
+                8=>array('title'=>"HashID {$weburl}hashids.html", 'url'=>'{hashids}.html'),
+                6=>array('title'=>lang('content_url_option_5')." {$weburl}fenlei/bieming.html", 'url'=>'{cate_alias}/{alias}.html'),
+                7=>array('title'=>lang('content_url_option_6')." {$weburl}".date('Ymd')."/bieming.html", 'url'=>'{ymd}/{alias}.html'),
+            );
+            // hook admin_setting_control_link_content_url_after.php
+            $content_url_html = '';
+            foreach ($content_url_arr as $v=>$n){
+                $content_url_html .= '<div><input lay-filter="content_url" name="content_url" type="radio" link_show_type="'.$v.'" title="'.$n['title'].'" value="'.$n['url'].'"'.($v==$cfg['link_show_type'] ? ' checked="checked"' : '').'><div>';
+            }
 
             $input = array();
             $input['parseurl'] = form::layui_loop('radio', 'parseurl', array('0'=>lang('url_option_0'), '1'=>lang('url_option_1')), $parseurl, '','lay-filter="parseurl"');
@@ -287,13 +303,14 @@ class setting_control extends admin_control{
             $input['link_comment_pre'] = form::get_text('link_comment_pre', $cfg['link_comment_pre'], '', 'required="required" lay-verify="required"');
             $input['link_space_pre'] = form::get_text('link_space_pre', $cfg['link_space_pre'], '', 'required="required" lay-verify="required"');
             $input['link_space_end'] = form::get_text('link_space_end', $cfg['link_space_end'], '', 'required="required" lay-verify="required"');
+            $input['content_url'] = $content_url_html;
 
             $arr = array('0'=>lang('tag_name'), '1'=>lang('tag_id'), 2=>lang('content_url_option_3'), 3=>'HashID');
             $input['link_tag_type'] = form::layui_loop('radio', 'link_tag_type', $arr, $cfg['link_tag_type']);
 
             // hook admin_setting_control_link_after.php
             $this->assign('input', $input);
-
+            $this->assign('weburl', $weburl);
             $this->display();
         }else{
             _trim($_POST);
