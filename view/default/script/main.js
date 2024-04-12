@@ -117,16 +117,22 @@ $(document).ready(function(){
 		var author_v = $("input[name='author']").val();
 		var cont = $("#ctf_content").val();
 		if(author_v == ''){
+			window.ctf_form_one = false;
 			pxmu.fail('请填写昵称！');
+			return false;
 		}
 		if($("#ctf_vcode").length > 0){
 			var vcode = $("#ctf_vcode").val();
 			if(vcode == ''){
+				window.ctf_form_one = false;
 				pxmu.fail('请填写验证码！');
+				return false;
 			}
 		}
 		if(cont == ''){
+			window.ctf_form_one = false;
 			pxmu.fail('请填写评论内容！');
+			return false;
 		}
 
 		if(!browser.firefox) $("#ctf_submit").attr("disabled", "disabled");
@@ -137,6 +143,7 @@ $(document).ready(function(){
 
 		var _this = $(this);
 		$.post(_this.attr("action"), _this.serialize(), function(data){
+			window.ctf_form_one = false;
 			try{
 				var json = eval("("+data+")");
 				if(json.status) {
