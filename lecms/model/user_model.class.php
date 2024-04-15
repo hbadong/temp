@@ -72,6 +72,7 @@ class user extends model {
 
 	//返回加密后的密码
     public function safe_password($password = '', $salt = ''){
+		empty($salt) && $salt = random(16, 3);
         // hook usre_model_safe_password_before.php
         return md5(md5($password).$salt);
     }

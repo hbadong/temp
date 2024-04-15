@@ -75,6 +75,7 @@ class user_control extends base_control {
 
     // 用户登录
     public function login() {
+        // hook user_control_login_before.php
         if( !isset($this->_cfg['open_user_login']) || empty($this->_cfg['open_user_login']) ){
             $this->message(0, lang('login_close'), $this->_cfg['weburl']);
         }
@@ -165,6 +166,7 @@ class user_control extends base_control {
 
     // 用户注册
     public function register() {
+        // hook user_control_register_before.php
         if( !isset($this->_cfg['open_user_register']) || empty($this->_cfg['open_user_register']) ){
             $this->message(0, lang('register_close'), $this->_cfg['weburl']);
         }
@@ -232,7 +234,7 @@ class user_control extends base_control {
                 'regip'=>$ip,
                 'regdate'=>$_ENV['_time'],
             );
-            // hook user_control_register_post_data_after.php
+            // hook user_control_register_post_after.php
 
             $uid = $user->create($data);
             if($uid){
@@ -248,8 +250,11 @@ class user_control extends base_control {
                 $data['logins'] = 1;
                 $user->update($data);
 
+                // hook user_control_register_post_create_success.php
+
                 $this->message(1, lang('register_successfully'), $this->_http_referer);
             }else{
+                // hook user_control_register_post_create_failed.php
                 $this->message(0, lang('register_failed'));
             }
         }else{
@@ -259,6 +264,7 @@ class user_control extends base_control {
 
     //找回密码
     public function forget(){
+        // hook user_control_forget_before.php
         if( !isset($this->_cfg['open_user_reset_password']) || empty($this->_cfg['open_user_reset_password']) ){
             $this->message(0, lang('password_recovery_disabled'));
         }elseif( !isset($this->_cfg['open_email']) || empty($this->_cfg['open_email']) ){
@@ -313,6 +319,8 @@ class user_control extends base_control {
                 $reset_url = $this->_cfg['weburl'].'index.php?user-resetpwd-auth-'.$userauth.$_ENV['_config']['url_suffix'];
                 $body = "<div><h2>{$this->_cfg['webname']}：".lang('reset_password')."</h2><p>".lang('reset_password_validity')."</p><p>".lang('copy_url_to_broswer')."：{$reset_url}</p></div>";
 
+                // hook user_control_forget_post_body_after.php
+
                 //邮件配置
                 $config = array(
                     'debug' => 0,
@@ -344,6 +352,7 @@ class user_control extends base_control {
 
     //重置密码
     public function resetpwd(){
+        // hook user_user_control_resetpwd_before.php
         if( empty($_POST) ) {
             $auth = R('auth','G');
             if( empty($auth) ){
