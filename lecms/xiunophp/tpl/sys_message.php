@@ -3,7 +3,11 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title><?php echo lang('tips'); ?></title>
+<?php if(APP_NAME != 'lecms'){ ?>
+<link rel="stylesheet" href="../static/layui/lib/layui-v2.8.15/css/layui.css" media="all">
+<?php }else { ?>
 <link rel="stylesheet" href="<?php echo http_url_path(); ?>static/layui/lib/layui-v2.8.15/css/layui.css" media="all">
+<?php } ?>
 <style type="text/css">
 .lecms_message{margin: 10px;background-color: whitesmoke;width: calc(100vw - 20px);}
 .result {text-align: center;}
