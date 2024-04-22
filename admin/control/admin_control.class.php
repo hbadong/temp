@@ -185,6 +185,14 @@ class admin_control extends control {
             ),
         );
 
+        //自定义导航位
+        $nav_location_arr = $this->kv->get('navigate_location');
+        if(is_array($nav_location_arr) && $nav_location_arr){
+            foreach ($nav_location_arr as $nav_location_alias=>$nav_location_name){
+                $menu['menuInfo']['category']['child'][] = array('title' => $nav_location_name, 'href' => 'index.php?navigate-index-location-'.$nav_location_alias, 'icon' => 'fa fa-list', 'target' => '_self');
+            }
+        }
+
         // hook admin_admin_control_init_nav_category_after.php
 
         $menu['menuInfo']['content'] = array(

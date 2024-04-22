@@ -24,6 +24,10 @@ function block_list_by_keywords($conf) {
 
 	// hook block_list_by_keywords_before.php
 
+    //方便传递动态参数过来~     $GLOBALS['keywords'] = 'lecms';
+    if((!isset($conf['keywords']) || empty($conf['keywords'])) && isset($GLOBALS['keywords'])){
+        $conf['keywords'] = $GLOBALS['keywords'];
+    }
     $keywords = isset($conf['keywords']) ? strtolower($conf['keywords']) : '';
     $cid = isset($conf['cid']) ? intval($conf['cid']) : (isset($_GET['cid']) ? intval($_GET['cid']) : 0);
 	$mid = _int($conf, 'mid', 2);

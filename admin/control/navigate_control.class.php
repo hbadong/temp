@@ -20,10 +20,11 @@ class navigate_control extends admin_control {
 		$category_arr = $this->category->get_category();
 		$this->assign('category_arr', $category_arr);
 
-        $mobile = intval( R('mobile','G') );
-        if($mobile){
-            $field = 'navigate_mobile';
-            $template = 'navigate_mobile.htm';
+        $location = R('location','R');
+        if($location){
+            $field = 'navigate_'.$location;
+            $template = 'navigate_defined.htm';
+            $this->assign('location', $location);
         }else{
             $field = 'navigate';
             $template = 'navigate_index.htm';
@@ -41,6 +42,10 @@ class navigate_control extends admin_control {
 		}
 		$this->assign('nav_arr', $nav_arr);
 
+        //已有导航位
+        $nav_location_arr = $this->kv->get('navigate_location');
+        $this->assign('nav_location_arr', $nav_location_arr);
+
 		// hook admin_navigate_control_index_after.php
 
 		$this->display($template);
@@ -48,9 +53,9 @@ class navigate_control extends admin_control {
 
 	// 导航管理
 	public function get_navigate_content() {
-        $mobile = intval( R('mobile','G') );
-        if($mobile){
-            $field = 'navigate_mobile';
+        $location = R('location','R');
+        if($location){
+            $field = 'navigate_'.$location;
         }else{
             $field = 'navigate';
         }
@@ -65,9 +70,9 @@ class navigate_control extends admin_control {
 	// 保存修改
 	public function nav_save() {
 		$navi = R('navi', 'P');
-        $mobile = intval( R('mobile','G') );
-        if($mobile){
-            $field = 'navigate_mobile';
+        $location = R('location','R');
+        if($location){
+            $field = 'navigate_'.$location;
         }else{
             $field = 'navigate';
         }
@@ -109,9 +114,9 @@ class navigate_control extends admin_control {
 	// 添加分类
 	public function add_cate() {
 		$cate = R('cate', 'P');
-        $mobile = intval( R('mobile','G') );
-        if($mobile){
-            $field = 'navigate_mobile';
+        $location = R('location','R');
+        if($location){
+            $field = 'navigate_'.$location;
         }else{
             $field = 'navigate';
         }
@@ -139,9 +144,9 @@ class navigate_control extends admin_control {
 
 	// 添加链接
 	public function add_link() {
-        $mobile = intval( R('mobile','G') );
-        if($mobile){
-            $field = 'navigate_mobile';
+        $location = R('location','R');
+        if($location){
+            $field = 'navigate_'.$location;
         }else{
             $field = 'navigate';
         }
@@ -167,9 +172,9 @@ class navigate_control extends admin_control {
 	// 删除
 	public function del() {
 		$key = R('key', 'P');
-        $mobile = intval( R('mobile','G') );
-        if($mobile){
-            $field = 'navigate_mobile';
+        $location = R('location','R');
+        if($location){
+            $field = 'navigate_'.$location;
         }else{
             $field = 'navigate';
         }
@@ -191,6 +196,64 @@ class navigate_control extends admin_control {
 
 		E(0, lang('delete_successfully'));
 	}
+
+	//添加导航位
+	public function add_nav_location(){
+	    if($_POST){
+	        $nav_location_alias = trim(R('nav_location_alias', 'P'));
+            $nav_location_name = trim(R('nav_location_name', 'P'));
+
+            if(empty($nav_location_alias)){
+                E(1, lang('nav_location_alias_no_empty'));
+            }elseif (empty($nav_location_name)){
+                E(1, lang('nav_location_name_no_empty'));
+            }
+
+            if(!preg_match("/^[0-9a-z]+$/i",$nav_location_alias)){
+                E(1, lang('nav_location_alias_error'));
+            }
+
+            $nav_field = 'navigate_location';
+
+            $nav_location_arr = $this->kv->get($nav_field);
+            if(isset($nav_location_arr[$nav_location_alias])){
+                E(1, lang('nav_location_alias_exists'));
+            }
+
+            $nav_location_arr[$nav_location_alias] = $nav_location_name;
+
+            $this->kv->set($nav_field, $nav_location_arr);
+
+            $this->clear_cache();
+            E(0, lang('opt_successfully'));
+        }
+    }
+
+    //删除导航位
+    public function del_nav_location(){
+        if($_POST){
+            $alias = trim(R('alias', 'P'));
+            if(empty($alias)){
+                E(1, lang('data_error'));
+            }
+
+            $nav_field = 'navigate_location';
+            $nav_location_arr = $this->kv->get($nav_field);
+
+            if(isset($nav_location_arr[$alias])){
+                unset($nav_location_arr[$alias]);
+
+                $this->kv->set($nav_field, $nav_location_arr);
+
+                //删除cfg里面的导航数据
+                $this->kv->xdelete('navigate_'.$alias);
+
+                $this->clear_cache();
+            }
+
+            E(0, lang('opt_successfully'));
+        }
+    }
 
 	// hook admin_navigate_control_after.php
 }

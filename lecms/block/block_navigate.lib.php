@@ -3,7 +3,7 @@ defined('ROOT_PATH') || exit;
 
 /**
  * 导航模块 (最多支持两级)
- * @param int mobile 移动端导航
+ * @param string alias 导航位别名
  * @param int showcate 是否显示分类信息
  * @param string nocids 排除的分类cid串 多个用英文逗号隔开
  * @param int life 缓存时间
@@ -13,7 +13,7 @@ function block_navigate($conf) {
 	global $run;
 
     // hook block_navigate_before.php
-    $mobile = isset($conf['mobile']) ? intval($conf['mobile']) : 0;
+    $alias = isset($conf['alias']) ? $conf['alias'] : 0;
     $showcate = _int($conf, 'showcate', 0);
     $nocids = empty($conf['nocids']) ? '' : $conf['nocids'];
     $life = isset($conf['life']) ? (int)$conf['life'] : (isset($run->_cfg['life']) ? (int)$run->_cfg['life'] : 0);
@@ -28,8 +28,8 @@ function block_navigate($conf) {
         }
     }
 
-    if($mobile){
-        $field = 'navigate_mobile';
+    if($alias){
+        $field = 'navigate_'.$alias;
     }else{
         $field = 'navigate';
     }

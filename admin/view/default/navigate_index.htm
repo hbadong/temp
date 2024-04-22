@@ -29,11 +29,70 @@
 .layui-card-header .layui-btn{margin-bottom: 5px;}
 .layui-elem-field legend{font-size: 14px;}
 </style>
-
+<script id="edit_code" type="text/html">
+	<div class="layui-tab layui-tab-brief" style="margin: 0;">
+		<ul class="layui-tab-title">
+			<li class="layui-this">{lang:add_nav_location}</li>
+			<li>{lang:has_nav_location}</li>
+		</ul>
+		<div class="layui-tab-content">
+			<div class="layui-tab-item layui-show">
+				<div class="layui-form">
+					<div class="layui-form-item">
+						<label class="layui-form-label required">{lang:nav_location_alias}</label>
+						<div class="layui-input-inline">
+							<input id="nav_location_alias" name="nav_location_alias" type="text" required="required" class="layui-input" />
+						</div>
+						<div class="layui-form-mid layui-text-em">{lang:nav_location_alias_tips}</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label required">{lang:nav_location_name}</label>
+						<div class="layui-input-inline">
+							<input id="nav_location_name" name="nav_location_name" type="text" required="required" class="layui-input" />
+						</div>
+						<div class="layui-form-mid layui-text-em">{lang:nav_location_name_tips}</div>
+					</div>
+				</div>
+			</div>
+			<div class="layui-tab-item">
+				{if:$nav_location_arr}
+				<table class="layui-table">
+					<colgroup>
+						<col width="150">
+						<col width="150">
+						<col width="80">
+					</colgroup>
+					<thead>
+					<tr>
+						<th>{lang:nav_location_alias}</th>
+						<th>{lang:nav_location_name}</th>
+						<th>{lang:opt}</th>
+					</tr>
+					</thead>
+					<tbody>
+					{loop:$nav_location_arr $name $k}
+					<tr>
+						<td>{$k}</td>
+						<td>{$name}</td>
+						<td><button class="layui-btn layui-btn-xs layui-btn-danger" onclick="del_nav_location('{$k}')">{lang:delete}</button></td>
+					</tr>
+					{/loop}
+					</tbody>
+				</table>
+				{else}
+				<blockquote class="layui-elem-quote layui-quote-nm">{lang:no_data}</blockquote>
+				{/if}
+			</div>
+		</div>
+	</div>
+</script>
 <div class="layuimini-container">
 	<div class="layuimini-main">
 		<div class="layui-card p">
-			<div class="layui-card-header"><input id="add" type="button" value="{lang:add}" data-type="add" class="layui-btn layui-btn-sm layui-btn-normal"></div>
+			<div class="layui-card-header">
+				<input id="add" type="button" value="{lang:add}" data-type="add" class="layui-btn layui-btn-sm layui-btn-normal">
+				<button class="layui-btn layui-btn-sm" id="nav_location">{lang:nav_location}</button>
+			</div>
 			<div class="layui-card-body">
 				{if:empty($nav_arr)}<div class="layui-btn layui-btn-disabled layui-btn-fluid">{lang:no_data}</div>{/if}
 				<div id="nav_cont">
@@ -323,6 +382,24 @@ layui.use(['form','layer','table','element'], function () {
 
 		}, '{lang:add_navigate}');
 	});
+
+	$("#nav_location").click(function () {
+		adminAjax.confirm($('#edit_code').html(),function (index) {
+			var nav_location_alias = $("#nav_location_alias").val();
+			var nav_location_name = $("#nav_location_name").val();
+			if(nav_location_alias == ''){
+				layer.msg('{lang:nav_location_alias_no_empty}', {icon:5});
+			}else if(nav_location_name == ''){
+				layer.msg('{lang:nav_location_name_no_empty}', {icon:5});
+			}else{
+				adminAjax.postd("index.php?navigate-add_nav_location-ajax-1", {"nav_location_alias":nav_location_alias,"nav_location_name":nav_location_name});
+			}
+		},function () {
+
+		},'<i class="fa fa-exclamation-circle" aria-hidden="true" /></i> {lang:nav_location_tips}');
+	});
+
+
 });
 
 //删除
@@ -404,6 +481,13 @@ function check_change() {
 		}catch(e){}
 	}
 	if($("#nav_change").length) $("#nav_change").remove();
+}
+
+//删除导航位
+function del_nav_location(alias) {
+	adminAjax.confirm('{lang:delete_confirm}', function () {
+		adminAjax.postd("index.php?navigate-del_nav_location-ajax-1", {"alias":alias});
+	});
 }
 
 init_load();
