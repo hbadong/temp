@@ -5,7 +5,7 @@ defined('ROOT_PATH') || exit;
  * 单页模块
  * @return array
  */
-function block_global_page() {
+function block_global_page($conf) {
 	global $run;
 
 	// hook block_global_page_before.php
