@@ -202,6 +202,7 @@ class cms_content extends model {
         }
 
         $err = $this->check_post($post);
+		// hook cms_content_model_xadd_check_post_after.php
         if($err){
             return array('err'=>1 ,'msg'=>$err);
         }
@@ -459,6 +460,7 @@ class cms_content extends model {
         $isremote = isset($post['isremote']) ? (int)$post['isremote'] : 0;
 
         $err = $this->check_post($post, 0);
+		// hook cms_content_model_xedit_check_post_after.php
         if($err){
             return array('err'=>1 ,'msg'=>$err);
         }
