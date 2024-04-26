@@ -123,5 +123,8 @@ return array(
 
     'please_fill_content_over_5'=>'您的内容字数太少了哦，不能少于5个字符',
 
+    'cate_type_1'=>'频道',
+    'cate_type_0'=>'列表',
+
     // hook lang_zh_cn.php
 );

@@ -123,5 +123,8 @@ return array(
 
     'please_fill_content_over_5'=>'Your content is too few words. It cannot be less than 5 characters',
 
+    'cate_type_1'=>'Channel',
+    'cate_type_0'=>'List',
+
     // hook lang_en.php
 );
