@@ -39,7 +39,21 @@ class comment_control extends admin_control {
 
         $midhtml = $this->cms_content_comment->get_commenthtml_mid($this->_mid, 'lay-filter="mid"', 1);
         $this->assign('midhtml',$midhtml);
+
+
+        //表格显示列表
+        $cols = "{type: 'checkbox', width: 50, fixed: 'left'},";
+        $cols .= "{field: 'title', title: '".lang('title')."'},";
+        $cols .= "{field: 'uid', width: 100, title: '".lang('uid')."', align: 'center'},";
+        $cols .= "{field: 'author', width: 100, title: '".lang('author')."', align: 'center', edit: 'text'},";
+        $cols .= "{field: 'date', width: 145, title: '".lang('date')."', align: 'center'},";
+        $cols .= "{field: 'fullip', width: 145, title: '".lang('ip')."', align: 'center'},";
+        $cols .= "{field: 'content', minwidth: 150, title: '".lang('content')."', edit: 'text'},";
+        // hook admin_comment_control_index_cols_after.php
+        $cols .= "{title: '".lang('opt')."', width: 100, toolbar: '#currentTableBar', align: 'center'}";
+
         // hook admin_comment_control_index_after.php
+        $this->assign('cols', $cols);
 		$this->display();
 	}
 

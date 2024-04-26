@@ -72,16 +72,7 @@
 			defaultToolbar: ['filter', 'exports', 'print'],
 			cellMinWidth: 50,
 			escape: false,
-			cols: [[
-				{type: "checkbox", width: 50, fixed: 'left'},
-				{field: 'title', title: '{lang:title}'},
-				{field: 'uid', width: 100, title: '{lang:uid}', align: 'center'},
-				{field: 'author', width: 100, title: '{lang:author}', align: 'center', edit: 'text'},
-				{field: 'date', width: 145, title: '{lang:date}', align: 'center'},
-				{field: 'fullip', width: 145, title: '{lang:ip}', align: 'center'},
-				{field: 'content', minwidth: 150, title: '{lang:content}', edit: 'text'},
-				{title: '{lang:opt}', width: 100, toolbar: '#currentTableBar', align: "center"}
-			]],
+			cols: [[{$cols}]],
 			limits: [10, 15, 20, 25, 50, 100],
 			limit: 15,
 			page: true
