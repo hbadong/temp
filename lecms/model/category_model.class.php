@@ -341,10 +341,10 @@ class category extends model {
 	}
 
 	// 获取分类下拉列表HTML (内容发布时使用)
-	public function get_cidhtml_by_mid($_mid = 0, $cid = 0, $tips = '选择分类', $in_cid = array()) {
+	public function get_cidhtml_by_mid($_mid = 0, $cid = 0, $tips = '选择分类', $in_cid = array(), $other = '') {
 		$category_arr = $this->get_category();
 
-		$s = '<select name="cid" id="cid" lay-filter="cid">';
+		$s = '<select name="cid" id="cid" lay-filter="cid" '.$other.'>';
 		if(empty($category_arr)) {
 			$s .= '<option value="0">'.lang('none').'</option>';
 		}else{

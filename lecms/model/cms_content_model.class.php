@@ -186,6 +186,7 @@ class cms_content extends model {
         if(isset($post['jumpurl']) && $post['jumpurl'] == '[db:跳转URL]' ) $post['jumpurl'] = '';
         if(isset($post['isremote']) && $post['isremote'] == '[db:远程图片本地化]' ) $post['isremote'] = 0;
         if(isset($post['iscomment']) && $post['iscomment'] == '[db:禁止评论]' ) $post['iscomment'] = 0;
+        if(isset($post['content']) && $post['content'] == '[db:内容]' ) $post['content'] = '';
 
         // hook cms_content_model_xadd_post_after.php
 
@@ -202,7 +203,7 @@ class cms_content extends model {
         }
 
         $err = $this->check_post($post);
-		// hook cms_content_model_xadd_check_post_after.php
+        // hook cms_content_model_xadd_check_post_after.php
         if($err){
             return array('err'=>1 ,'msg'=>$err);
         }
@@ -460,7 +461,7 @@ class cms_content extends model {
         $isremote = isset($post['isremote']) ? (int)$post['isremote'] : 0;
 
         $err = $this->check_post($post, 0);
-		// hook cms_content_model_xedit_check_post_after.php
+        // hook cms_content_model_xedit_check_post_after.php
         if($err){
             return array('err'=>1 ,'msg'=>$err);
         }
@@ -597,6 +598,9 @@ class cms_content extends model {
             }
         }
 
+        $tags_arr = $tags = array();
+        $tags_old = (array)_json_decode($olddata['tags']);  //旧标签数组
+
         // 比较标签变化
         if($tagstr){
             $tags_new = explode(',', $tagstr);
@@ -605,8 +609,6 @@ class cms_content extends model {
         }else{
             $tags_new = array();
         }
-        $tags_old = (array)_json_decode($olddata['tags']);
-        $tags_arr = $tags = array();
         foreach($tags_new as $tagname) {
             $tagname = $this->cms_content_tag->_tagformat($tagname);
             if($tagname){
