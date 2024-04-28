@@ -43,13 +43,7 @@
             defaultToolbar: ['filter', 'exports', 'print'],
             cellMinWidth: 50,
             escape: false,
-            cols: [[
-                {type: "checkbox", width: 50, fixed: 'left'},
-                {field: 'groupid', width: 110, title: 'groupid', align: "center"},
-                {field: 'groupname', minwidth: 100, title: '{lang:user_group}', edit: 'text'},
-                {field: 'system', width: 100,  title: '{lang:system}', templet: '#models-system', align: "center"},
-                {title: '{lang:opt}', width: 100, toolbar: '#currentTableBar', align: "center"}
-            ]],
+            cols: [[{$cols}]],
             page: false
         });
         /**

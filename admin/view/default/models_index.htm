@@ -36,19 +36,7 @@
             defaultToolbar: ['filter', 'exports', 'print'],
             cellMinWidth: 50,
             escape: false,
-            cols: [[
-                {field: 'mid', width: 80, title: 'mid', align: "center"},
-                {field: 'name', minwidth: 100, title: '{lang:model_name}'},
-                {field: 'tablename', minwidth: 100, title: '{lang:table}'},
-                {field: 'index_tpl', minwidth: 100, title: '{lang:channel_tpl}', edit: 'text'},
-                {field: 'cate_tpl', minwidth: 100, title: '{lang:cate_tpl}', edit: 'text'},
-                {field: 'show_tpl', minwidth: 100, title: '{lang:show_tpl}', edit: 'text'},
-                {field: 'width', minwidth: 100, title: '{lang:pic_width}', edit: 'text'},
-                {field: 'height', minwidth: 100, title: '{lang:pic_height}', edit: 'text'},
-                {field: 'icon', minwidth: 100, title: '{lang:menu_icon}', edit: 'text'},
-                {field: 'system', width: 90,  title: '{lang:system}', templet: '#models-system', align: "center"},
-                {title: '操作', width: 120, toolbar: '#currentTableBar', align: "center"}
-            ]],
+            cols: [[{$cols}]],
             page: false
         });
         /**

@@ -38,15 +38,10 @@ layui.use(['form','layer','table', 'treetable', 'miniTab'], function () {
 		toolbar: '#toolbar',
 		defaultToolbar: ['filter', 'exports', 'print'],
 		page: false,
-		cols: [[
-			{field: 'cid', width: 80, title: '{lang:cid}', align: 'center'},
-			{field: 'name', minWidth: 150, title: '{lang:cate_name}'},
-			{field: 'alias', title: '{lang:alias}', edit: 'text'},
-			{field: 'cate_tpl', title: '{lang:cate_tpl}', edit: 'text'},
-			{field: 'orderby', width: 80, title: '{lang:orderby}', edit: 'number', align: 'center'},
-			{templet: '#currentTableBar', width: 145, align: 'center', title: '{lang:opt}'}
-		]]
+		escape: false,
+		cols: [[{$cols}]]
 	});
+
 	//监听单元格编辑
 	table.on('edit(data-table-filter)', function(obj){
 		var value = obj.value //得到修改后的值

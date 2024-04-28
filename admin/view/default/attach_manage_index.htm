@@ -72,19 +72,7 @@
 			defaultToolbar: ['filter', 'exports', 'print'],
 			cellMinWidth: 50,
 			escape: false,
-			cols: [[
-				{field: 'filename', title: '{lang:filename}', edit: 'text'},
-				{field: 'filetype', width: 80, title: '{lang:ext}', align: 'center'},
-				{field: 'size', width: 120, title: '{lang:filesize}', align: 'center'},
-				{field: 'filepath', title: '{lang:filepath}'},
-				{field: 'date', width: 165, title: '{lang:uploadtime}', align: 'center'},
-				{field: 'id', width: 100, title: '{lang:cmsid}', align: 'center'},
-				{field: 'uid', width: 80, title: '{lang:uid}', align: 'center'},
-				{field: 'downloads', width: 100, title: '{lang:downloads}', align: 'center', edit: 'text'},
-				{field: 'golds', width: 80, title: '{lang:golds}', align: 'center', edit: 'text'},
-				{field: 'credits', width: 80, title: '{lang:credits}', align: 'center', edit: 'text'},
-				{title: '{lang:opt}', width: 105, toolbar: '#currentTableBar', align: "center"}
-			]],
+			cols: [[{$cols}]],
 			limits: [10, 15, 20, 25, 50, 100],
 			limit: 15,
 			page: true

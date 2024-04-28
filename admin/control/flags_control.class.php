@@ -48,7 +48,16 @@ class flags_control extends admin_control {
         $flaghtml = $this->cms_content_flag->get_flaghtml($flag, $_ENV['_config']['admin_lang'], lang('all'));
         $this->assign('flaghtml',$flaghtml);
 
+        //表格显示列表
+        $cols = "{type: 'checkbox', width: 50, fixed: 'left'},";
+        $cols .= "{field: 'title', title: '".lang('title')."'},";
+        $cols .= "{field: 'category', title: '".lang('category')."'},";
+        $cols .= "{field: 'flag_fmt', width: 100, title: '".lang('flag')."', align: 'center'},";
+        // hook admin_flags_control_index_cols_after.php
+        $cols .= "{title: '".lang('opt')."', width: 105, toolbar: '#currentTableBar', align: 'center'}";
+
         // hook admin_flags_control_index_after.php
+        $this->assign('cols', $cols);
 		$this->display();
 	}
 

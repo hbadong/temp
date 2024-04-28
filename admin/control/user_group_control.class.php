@@ -5,6 +5,16 @@ class user_group_control extends admin_control{
     public function index(){
         // hook admin_user_group_control_index_before.php
 
+        //表格显示列表
+        $cols = "{type: 'checkbox', width: 50, fixed: 'left'},";
+        $cols .= "{field: 'groupid', width: 120, title: 'groupid', align: 'center'},";
+        $cols .= "{field: 'groupname', minwidth: 100, title: '".lang('user_group')."', edit: 'text'},";
+        $cols .= "{field: 'system', width: 100,  title: '".lang('system')."', templet: '#models-system', align: 'center'},";
+        // hook admin_user_group_control_index_cols_after.php
+        $cols .= "{title: '".lang('opt')."', width: 100, toolbar: '#currentTableBar', align: 'center'}";
+
+        // hook admin_user_group_control_index_after.php
+        $this->assign('cols', $cols);
         $this->display();
     }
 

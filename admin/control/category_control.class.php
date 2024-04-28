@@ -6,8 +6,21 @@ class category_control extends admin_control{
     public function index() {
         // hook admin_category_control_index_before.php
 
-        // hook admin_category_control_index_after.php
+        //表格显示列表
+        $cols = "{field: 'cid', width: 80, title: '".lang('cid')."', align: 'center'},";
+        $cols .= "{field: 'name', minWidth: 150, title: '".lang('cate_name')."'},";
+        $cols .= "{field: 'alias', title: '".lang('alias')."', edit: 'text'},";
+        $cols .= "{field: 'modelname', width: 100, title: '".lang('model')."', align: 'center'},";
+        $cols .= "{field: 'type', width: 85, title: '".lang('type')."', align: 'center', templet: '#cate-type'},";
+        $cols .= "{field: 'count', width: 130, title: '".lang('cate_count')."', align: 'center'},";
+        $cols .= "{field: 'cate_tpl', title: '".lang('cate_tpl')."', edit: 'text'},";
+        $cols .= "{field: 'show_tpl', title: '".lang('show_tpl')."', edit: 'text'},";
+        $cols .= "{field: 'orderby', width: 80, title: '".lang('orderby')."', edit: 'number', align: 'center'},";
+        // hook admin_category_control_index_cols_after.php
+        $cols .= "{title: '".lang('opt')."', width: 145, toolbar: '#currentTableBar', align: 'center'}";
 
+        // hook admin_category_control_index_after.php
+        $this->assign('cols', $cols);
         $this->display();
     }
 
@@ -62,12 +75,14 @@ class category_control extends admin_control{
             //单页分类
             $categorys['mid'] == 1 && E(1, lang('data_error'));
 
+            $change_alias = 0;
             if($field == 'alias'){  //修改别名 需要判断
                 $value = strtolower($value);
                 if($categorys['alias'] != $value){
                     if($err = $this->category->check_alias($value)) {
                         E(1, $err['msg']);
                     }
+                    $change_alias = 1;
                 }
             }
 
@@ -76,6 +91,12 @@ class category_control extends admin_control{
             if(!$this->category->update($categorys)) {
                 E(1, lang('edit_failed'));
             }
+
+            // 修改导航中的分类的别名
+            if($change_alias){
+                $this->category->update_navigate_alias($categorys);
+            }
+
             // hook admin_category_control_set_field_after.php
 
             // 删除缓存

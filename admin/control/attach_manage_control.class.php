@@ -27,8 +27,23 @@ class attach_manage_control extends admin_control {
 
         $midhtml = $this->cms_content_attach->get_attachhtml_mid($this->_mid, 'lay-filter="mid"');
         $this->assign('midhtml',$midhtml);
-        // hook admin_attach_manage_control_index_after.php
 
+        //表格显示列表
+        $cols = "{field: 'filename', title: '".lang('filename')."', edit: 'text'},";
+        $cols .= "{field: 'filetype', width: 80, title: '".lang('ext')."', align: 'center'},";
+        $cols .= "{field: 'size', width: 120, title: '".lang('filesize')."', align: 'center'},";
+        $cols .= "{field: 'filepath', title: '".lang('filepath')."'},";
+        $cols .= "{field: 'date', width: 165, title: '".lang('uploadtime')."', align: 'center'},";
+        $cols .= "{field: 'id', width: 100, title: '".lang('cmsid')."', align: 'center'},";
+        $cols .= "{field: 'uid', width: 80, title: '".lang('uid')."', align: 'center'},";
+        $cols .= "{field: 'downloads', width: 100, title: '".lang('downloads')."', align: 'center', edit: 'text'},";
+        $cols .= "{field: 'golds', width: 80, title: '".lang('golds')."', align: 'center', edit: 'text'},";
+        $cols .= "{field: 'credits', width: 80, title: '".lang('credits')."', align: 'center', edit: 'text'},";
+        // hook admin_attach_manage_control_index_cols_after.php
+        $cols .= "{title: '".lang('opt')."', width: 105, toolbar: '#currentTableBar', align: 'center'}";
+
+        // hook admin_attach_manage_control_index_after.php
+        $this->assign('cols', $cols);
 		$this->display();
 	}
 

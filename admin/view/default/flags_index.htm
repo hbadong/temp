@@ -60,13 +60,7 @@
 			defaultToolbar: ['filter', 'exports', 'print'],
 			cellMinWidth: 50,
 			escape: false,
-			cols: [[
-				{type: "checkbox", width: 50, fixed: 'left'},
-				{field: 'title', title: '{lang:title}'},
-				{field: 'category', title: '{lang:category}'},
-				{field: 'flag_fmt', width: 100, title: '{lang:flag}'},
-				{title: '{lang:opt}', width: 105, toolbar: '#currentTableBar', align: "center"}
-			]],
+			cols: [[{$cols}]],
 			limits: [10, 15, 20, 25, 50, 100],
 			limit: 15,
 			page: true

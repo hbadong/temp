@@ -9,7 +9,22 @@ class models_control extends admin_control {
 	    $models_filed_plugin = plugin_is_enable('models_filed') ? 1 : 0;
 	    $this->assign('models_filed',$models_filed_plugin);
 
+        //表格显示列表
+        $cols = "{field: 'mid', width: 80, title: 'mid', align: 'center'},";
+        $cols .= "{field: 'name', minwidth: 100, title: '".lang('model_name')."'},";
+        $cols .= "{field: 'tablename', minwidth: 100, title: '".lang('table')."'},";
+        $cols .= "{field: 'index_tpl', minwidth: 100, title: '".lang('channel_tpl')."', edit: 'text'},";
+        $cols .= "{field: 'cate_tpl', minwidth: 100, title: '".lang('cate_tpl')."', edit: 'text'},";
+        $cols .= "{field: 'show_tpl', minwidth: 100, title: '".lang('show_tpl')."', edit: 'text'},";
+        $cols .= "{field: 'width', width: 100, title: '".lang('pic_width')."', align: 'center', edit: 'text'},";
+        $cols .= "{field: 'height', width: 100, title: '".lang('pic_height')."', align: 'center', edit: 'text'},";
+        $cols .= "{field: 'icon', minwidth: 100, title: '".lang('menu_icon')."', align: 'center', edit: 'text'},";
+        $cols .= "{field: 'system', width: 90,  title: '".lang('system')."', templet: '#models-system', align: 'center'},";
+        // hook admin_models_control_index_cols_after.php
+        $cols .= "{title: '".lang('opt')."', width: 120, toolbar: '#currentTableBar', align: 'center'}";
+
         // hook admin_models_control_index_after.php
+        $this->assign('cols', $cols);
         $this->display();
 	}
 
