@@ -112,6 +112,15 @@ class category extends model {
 
         // 删除导航中的分类
         $nav_key_arr = array('navigate', 'navigate_mobile');
+
+        //用户自定义导航位
+        $nav_location_arr = $this->kv->get('navigate_location');
+        if($nav_location_arr){
+            foreach ($nav_location_arr as $location=>$name){
+                $nav_key_arr[] = 'navigate_'.$location;
+            }
+        }
+
         foreach ($nav_key_arr as $nav_key){
             $navigate = $this->kv->xget($nav_key);
             foreach($navigate as $k=>$v) {
@@ -132,6 +141,15 @@ class category extends model {
     //更新导航菜单中的分类alias
     public function update_navigate_alias($category = array()){
         $nav_key_arr = array('navigate', 'navigate_mobile');
+
+        //用户自定义导航位
+        $nav_location_arr = $this->kv->get('navigate_location');
+        if($nav_location_arr){
+            foreach ($nav_location_arr as $location=>$name){
+                $nav_key_arr[] = 'navigate_'.$location;
+            }
+        }
+
         // hook category_model_update_navigate_alias_before.php
 
         foreach ($nav_key_arr as $nav_key){
