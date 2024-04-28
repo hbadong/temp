@@ -58,13 +58,26 @@ class debug{
 				log::write($s);
 			}else{
                 if(!defined('ADMIN_PATH')){
-                    header("HTTP/1.1 404 Not Found");
-                    exit('[程序错误: 请开启调试模式查看详细信息]');
+                    self::error_die('[程序错误: 请开启调试模式查看详细信息]');
                 }
 				throw new Exception($s);
 			}
 		}
 	}
+
+	public static function error_die($msg){
+        header("HTTP/1.1 404 Not Found");
+        $css = 'body{margin: 10px;background: #f2f2f2;}@media screen and (min-width:768px) {.layui-container {width:720px}}@media screen and (min-width:992px) {.layui-container {width:960px}}@media screen and (min-width:1200px) {.layui-container {width:1150px}}
+.layui-container {position: relative;margin: 0 auto;box-sizing: border-box;margin-top:15%;}
+.layui-card {margin-bottom: 15px;border-radius: 5px;background-color: #fff;box-shadow: 0 1px 2px 0 rgba(0,0,0,.05);}
+.layui-card-header {position: relative;height: 42px;line-height: 42px;padding: 0 15px;border-bottom: 1px solid #f8f8f8;color: #333;border-radius: 2px 2px 0 0;font-size: 14px;}
+.layui-card-body {position: relative;padding: 10px 15px;line-height: 24px;}';
+
+        $div = '<div class="layui-container"><div class="layui-card"><div class="layui-card-header"><b>出错啦！</b></div><div class="layui-card-body">'.$msg.'</div></div></div>';
+
+        $html = '<!DOCTYPE html><html><head><title>出错啦</title><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><style>'.$css.'</style></head><body>'.$div.'</body></html>';
+        exit($html);
+    }
 
 	/**
 	 * 异常处理
@@ -90,8 +103,7 @@ class debug{
 		log::write("$message File: $file [$line]");
 
         if(!defined('ADMIN_PATH') && !DEBUG){
-            header("HTTP/1.1 404 Not Found");
-            exit('[程序异常: 请查看日志或者开启调试模式查看详细信息]');
+            self::error_die('[程序异常: 请查看日志或者开启调试模式查看详细信息]');
         }
 
 		// 第3步根据情况输出错误信息
