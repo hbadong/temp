@@ -27,6 +27,10 @@ class space_control extends base_control{
         // SEO 相关
         // hook space_control_index_seo_before.php
         $this->_cfg['titles'] = $this->_var['author'].'-'.$this->_cfg['webname'];
+		$page = (int)R('page','G');
+        if( $page > 1 ){
+            $this->_cfg['titles']  .= '-'.lang('page_current', array('page'=>$page));
+        }
         $this->_cfg['seo_keywords'] = $this->_var['author'].','.$this->_cfg['webname'];
         $this->_cfg['seo_description'] = empty($this->_var['intro']) ? $this->_cfg['webname'] : $this->_var['intro'];
         // hook space_control_index_seo_after.php
