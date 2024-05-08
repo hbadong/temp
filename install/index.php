@@ -137,7 +137,7 @@ if($do == 'lang') {
         'webdomain' => $webdomain,
         'webdir' => $webdir,
         'webmail' => 'admin@qq.com',
-        'webqq'=>'lecms',
+        'webqq'=>'',
         'webweixin'=>'',
         'webtel'=>'',
         'tongji' => '',
@@ -158,7 +158,7 @@ if($do == 'lang') {
         'open_attach' => 0, //是否开启附件上传
         'open_comment' => 0, //是否开启全站评论
         'open_comment_vcode' => 0, //是否开启评论验证码
-        'comment_default_author' => 'Lecms游客', //评论默认昵称
+        'comment_default_author' => '游客', //评论默认昵称
         'open_user' => 0,    //是否开启用户功能
         'open_user_register' => 0,   //是否开启用户注册
         'open_user_register_vcode' => 0, //是否开启用户注册验证码
@@ -220,10 +220,10 @@ if($do == 'lang') {
 
     // 清空缓存
     $runtime = ROOT_PATH.'/runcache/';
-    $file = $runtime.'_runtime.php';
+    $file = $runtime.'_lecms.php';
     if(is_file($file)) {
-        $ret = unlink($runtime.'_runtime.php');
-        js_show(lang('clear').' runcache/_runtime.php ...'.lang('successfully'), 0);
+        $ret = unlink($runtime.'_lecms.php');
+        js_show(lang('clear').' runcache/_lecms.php ...'.lang('successfully'), 0);
     }
     $tpmdir = array('_control', '_model', '_view');
     foreach($tpmdir as $dir) {

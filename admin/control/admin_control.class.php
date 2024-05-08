@@ -222,7 +222,7 @@ class admin_control extends control {
 
             // hook admin_admin_control_init_nav_content_foreach.php
 
-            $menu['menuInfo']['content']['child'][] = array('title' => $modelname.lang('manage'), 'href' => $href, 'icon' => isset($model['icon']) ? $model['icon'] : 'fa fa-bars', 'target' => '_self');
+            $menu['menuInfo']['content']['child'][] = array('title' => $modelname.lang('manage'), 'href' => $href, 'icon' => isset($model['icon']) ? $model['icon'] : 'fa fa-bars', 'target' => '_self' , 'table'=>$model['tablename']);
         }
 
         // hook admin_admin_control_init_nav_content_center.php

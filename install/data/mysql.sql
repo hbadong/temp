@@ -106,7 +106,7 @@ CREATE TABLE pre_only_alias (
   id int(10) unsigned NOT NULL DEFAULT '0' COMMENT '内容ID',
   PRIMARY KEY (alias),
   KEY mid_id (mid,id)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci COMMENT='URL别名表';
 
 # 单页表
 DROP TABLE IF EXISTS pre_cms_page;
