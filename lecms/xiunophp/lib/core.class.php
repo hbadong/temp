@@ -553,6 +553,7 @@ class core{
 	//清除头尾不需要的代码
 	public static function clear_code($s) {
 		$s = trim($s);
+		if(substr($s, 0, 11) == '<?php exit;') $s = substr($s, 11);
 		if(substr($s, 0, 5) == '<?php') $s = substr($s, 5);
 		$s = ltrim($s);
 		if(substr($s, 0, 29) == 'defined(\'ROOT_PATH\') || exit;') $s = substr($s, 29);
