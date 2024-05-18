@@ -215,7 +215,7 @@ class admin_control extends control {
             $href = 'index.php?content-index-mid-'.$model['mid'];
 
             //优先使用本模型的后台管理路由控制器，比如你添加了产品模型，表名为product，那么本身的管理路由文件为 product_admin_control.class.php
-            $model_control_file = ROOT_PATH.APP_NAME.'/control/'.$model['tablename'].'_admin_control.class.php';
+            $model_control_file = ADMIN_PATH.'control/'.$model['tablename'].'_admin_control.class.php';
             if( is_file($model_control_file) ){
                 $href = 'index.php?'.$model['tablename'].'_admin-index';
             }
