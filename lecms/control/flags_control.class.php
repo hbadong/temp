@@ -44,9 +44,20 @@ class flags_control extends base_control{
         $GLOBALS['flag'] = &$flag;
         $tpl = 'flags.htm';
 
-        //不同模型 可以对应自己的属性内容页模板
-        if($mid > 2 && view_tpl_exists("flags_{$mid}.htm")){
-            $tpl = "flags_{$mid}.htm";
+        /**
+         * 针对自定义模型（文章模型除外）
+         * 不同模型 可以对应自己的属性内容列表页模板(优先表名 然后模型ID， 因为表名是固定的， mid是变化的)
+         * 比如有一个产品模型， table=product mid=3
+         * search_product.htm   search_3.htm
+         */
+        if($mid > 2){
+            $tpl_arr = array("flags_{$table}.htm", "flags_{$mid}.htm");
+            foreach ($tpl_arr as $t){
+                if(view_tpl_exists($t)){
+                    $tpl = $t;
+                    break;
+                }
+            }
         }
 
         // hook flags_control_index_after.php

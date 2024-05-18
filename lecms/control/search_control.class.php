@@ -24,6 +24,10 @@ class search_control extends base_control{
 		    $this->message(0, lang('close_search_tips'));
         }
 
+        $mid = max(2, (int)R('mid'));
+        $table = isset($this->_cfg['table_arr'][$mid]) ? $this->_cfg['table_arr'][$mid] : '';
+        if( empty($table) ) core::error404();
+
         $page = (int)R('page','G');
         if( $page > 1){
             $this->_cfg['titles']  .= '-'.lang('page_current', array('page'=>$page));
@@ -40,10 +44,21 @@ class search_control extends base_control{
         $_ENV['_theme'] = &$this->_cfg['theme'];
         $tpl = 'search.htm';
 
-        //不同模型 可以对应自己的搜索结果页模板
-        $mid = max(2, (int)R('mid'));
-        if($mid > 2 && view_tpl_exists("search_{$mid}.htm")){
-            $tpl = "search_{$mid}.htm";
+        /**
+         * 针对自定义模型（文章模型除外）
+         * 不同模型 可以对应自己的搜索结果页模板(优先表名 然后模型ID， 因为表名是固定的， mid是变化的)
+         * 比如有一个产品模型， table=product mid=3
+         * search_product.htm   search_3.htm
+         */
+
+        if($mid > 2){
+            $tpl_arr = array("search_{$table}.htm", "search_{$mid}.htm");
+            foreach ($tpl_arr as $t){
+                if(view_tpl_exists($t)){
+                    $tpl = $t;
+                    break;
+                }
+            }
         }
 
 		// hook search_control_index_after.php
