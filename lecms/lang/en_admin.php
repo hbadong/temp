@@ -116,6 +116,7 @@ return array(
     'basic_setting'=>'Basic Setting',
     'seo_setting'=>'SEO Setting',
     'link_setting'=>'Links Setting',
+    'sitemap_setting'=>'Sitemap Setting',
     'user_setting'=>'User Setting',
     'attach_setting'=>'Attach Setting',
     'image_setting'=>'Image Setting',

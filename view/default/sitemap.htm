@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head profile="http://gmpg.org/xfn/11">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="copyright" content="{$cfg[weburl]}" />
+        <title>站点地图 - {$cfg[webname]}</title>
+        <style type="text/css">
+            *{-moz-box-sizing: border-box;-webkit-box-sizing: border-box;-o-box-sizing: border-box;-ms-box-sizing: border-box;box-sizing: border-box;font-family:微软雅黑,宋体,Arial,Helvetica,sans-serif;font-size: 12px;margin:0;padding:0;background-color: #fff;color: #000;font-weight: normal;}
+            h1{text-align: center;font-size: 18px;font-weight: bold;}
+            body{max-width: 1200px;margin:0 auto;}
+            ul{padding-left:40px;}
+            .articles h3,.categories h3,.Tags h3{font-size: 16px;font-weight: bold;margin-bottom:10px;}
+            .copyright p{line-height:24px;}
+        </style>
+    </head>
+<body>
+<h1><a href="{host}" target="_blank">{$cfg[webname]}的网站地图</a></h1>
+<div class="articles">
+    <h3>地图内容</h3>
+    <ul>{$htmlx}</ul>
+</div>
+<div class="copyright">
+    <p>最近更新时间: {$lastTime}</p>
+</div>
+</body>
+</html>

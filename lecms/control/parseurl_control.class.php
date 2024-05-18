@@ -32,25 +32,19 @@ class parseurl_control extends control{
                 http_location($cfg['weburl'].$uri, '301');
             }
 
-            // 多个 // 的301到一个 / 的？ 用伪静态规则去实现
-//            $request_uri = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
-//            if($request_uri && $request_uri != '/'.$uri){
-//                http_location($cfg['weburl'].$uri, '301');
-//            }
-
             $url_suffix = $_ENV['_config']['url_suffix'];
             $url_suffix_len = strlen($url_suffix);
 
             // hook parseurl_control_index_rewrite_before.php
 
-//            if( isset($_ENV['_config']['route_open']) && !empty($_ENV['_config']['route_open']) ) {
-//                // hook parseurl_control_index_route_open_before.php
-//                $r = $this->route_inc_rewrite($cfg, $uri);
-//                if ($r) {
-//                    return;
-//                }
-//                // hook parseurl_control_index_route_open_after.php
-//            }
+            //站点地图
+            $sitemap_uri = array('sitemap.xml', 'sitemap.html', 'sitemap.txt');
+            if(in_array($uri, $sitemap_uri)){
+                $u_arr = explode('.', $uri);
+                $_GET['control'] = 'sitemap';
+                $_GET['action'] = $u_arr[1];
+                return;
+            }
 
             // hook parseurl_control_index_link_cate_before.php
             $r = $this->category_url($cfg, $uri);

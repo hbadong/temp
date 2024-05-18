@@ -160,6 +160,7 @@ class admin_control extends control {
                 array('title' => lang('basic_setting'), 'href' => 'index.php?setting-index', 'icon' => 'fa fa-cog', 'target' => '_self'),
                 array('title' => lang('seo_setting'), 'href' => 'index.php?setting-seo', 'icon' => 'fa fa-life-ring', 'target' => '_self'),
                 array('title' => lang('link_setting'), 'href' => 'index.php?setting-link', 'icon' => 'fa fa-link', 'target' => '_self'),
+                array('title' => lang('sitemap_setting'), 'href' => 'index.php?setting-sitemap', 'icon' => 'fa fa-map', 'target' => '_self'),
                 array('title' => lang('user_setting'), 'href' => 'index.php?setting-user', 'icon' => 'fa fa-user-circle', 'target' => '_self'),
                 array('title' => lang('attach_setting'), 'href' => 'index.php?setting-attach', 'icon' => 'fa fa-paperclip', 'target' => '_self'),
                 array('title' => lang('image_setting'), 'href' => 'index.php?setting-image', 'icon' => 'fa fa-file-image-o', 'target' => '_self'),

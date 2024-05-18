@@ -116,6 +116,7 @@ return array(
     'basic_setting'=>'基本设置',
     'seo_setting'=>'SEO设置',
     'link_setting'=>'链接设置',
+    'sitemap_setting'=>'地图设置',
     'user_setting'=>'用户设置',
     'attach_setting'=>'上传设置',
     'image_setting'=>'图片设置',

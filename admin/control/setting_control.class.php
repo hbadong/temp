@@ -411,6 +411,102 @@ class setting_control extends admin_control{
         }
     }
 
+    //站点地图设置
+    public function sitemap(){
+        // hook admin_setting_control_sitemap_before.php
+        if(empty($_POST)) {
+            $sitemap = $this->kv->xget('sitemap');
+            $input = array();
+
+            $changefreq_arr = array(
+                'always'=>'一直更新',
+                'hourly'=>'小时',
+                'daily'=>'天',
+                'weekly'=>'周',
+                'monthly'=>'月',
+                'yearly'=>'年',
+                'never'=>'从不更新',
+            );
+            $priority_arr = array(
+                '1'=>1, '0.9'=>0.9,'0.8'=>0.8,'0.7'=>0.7,'0.6'=>0.6, '0.5'=>0.5, '0.4'=>0.4,'0.3'=>0.3,'0.2'=>0.2,'0.1'=>0.1,
+            );
+
+            $baidu_changefreq_index = isset($sitemap['baidu_changefreq_index']) ? $sitemap['baidu_changefreq_index'] : 'daily';
+            $baidu_priority_index = isset($sitemap['baidu_priority_index']) ? $sitemap['baidu_priority_index'] : '1';
+            $input['baidu_changefreq_index'] = form::layui_loop('select', 'baidu_changefreq_index', $changefreq_arr, $baidu_changefreq_index);
+            $input['baidu_priority_index'] = form::layui_loop('select', 'baidu_priority_index', $priority_arr, $baidu_priority_index);
+
+            $baidu_changefreq_index = isset($sitemap['baidu_changefreq_category']) ? $sitemap['baidu_changefreq_category'] : 'daily';
+            $baidu_priority_index = isset($sitemap['baidu_priority_category']) ? $sitemap['baidu_priority_category'] : '0.9';
+            $input['baidu_changefreq_category'] = form::layui_loop('select', 'baidu_changefreq_category', $changefreq_arr, $baidu_changefreq_index);
+            $input['baidu_priority_category'] = form::layui_loop('select', 'baidu_priority_category', $priority_arr, $baidu_priority_index);
+
+            //内容模型的 内容+tag
+            $models_arr = $this->models->find_fetch(array(), array('mid' => 1));
+            $models = array();
+            foreach ($models_arr as $k=>$v) {
+                $mid = $v['mid'];
+                if ($mid > 1) {
+
+                    $baidu_changefreq_content = isset($sitemaps_setting['baidu_changefreq_content_'.$mid]) ? $sitemaps_setting['baidu_changefreq_content_'.$mid] : 'daily';
+                    $baidu_priority_content = isset($sitemaps_setting['baidu_priority_content_'.$mid]) ? $sitemaps_setting['baidu_priority_content_'.$mid] : '0.8';
+                    $content_count = isset($sitemaps_setting['content_count_'.$mid]) ? $sitemaps_setting['content_count_'.$mid] : 200;
+
+                    $baidu_changefreq_tag = isset($sitemaps_setting['baidu_changefreq_tag_'.$mid]) ? $sitemaps_setting['baidu_changefreq_tag_'.$mid] : 'daily';
+                    $baidu_priority_tag = isset($sitemaps_setting['baidu_priority_tag_'.$mid]) ? $sitemaps_setting['baidu_priority_tag_'.$mid] : '0.7';
+                    $tag_count = isset($sitemaps_setting['tag_count_'.$mid]) ? $sitemaps_setting['tag_count_'.$mid] : 100;
+
+                    $input['baidu_changefreq_content_'.$mid] = form::layui_loop('select', 'baidu_changefreq_content_'.$mid, $changefreq_arr, $baidu_changefreq_content);
+                    $input['baidu_priority_content_'.$mid] = form::layui_loop('select', 'baidu_priority_content_'.$mid, $priority_arr, $baidu_priority_content);
+                    $input['content_count_'.$mid] = form::get_number('content_count_'.$mid, $content_count);
+
+                    $input['baidu_changefreq_tag_'.$mid] = form::layui_loop('select', 'baidu_changefreq_tag_'.$mid, $changefreq_arr, $baidu_changefreq_tag);
+                    $input['baidu_priority_tag_'.$mid] = form::layui_loop('select', 'baidu_priority_tag_'.$mid, $priority_arr, $baidu_priority_tag);
+                    $input['tag_count_'.$mid] = form::get_number('tag_count_'.$mid, $tag_count);
+
+                    $models[$mid] = $v['name'];
+                }else{
+                    unset($models_arr[$k]);
+                }
+            }
+
+            // hook admin_setting_control_sitemap_after.php
+            $this->assign('models_arr', $models_arr);
+            $this->assign('input', $input);
+            $this->display();
+        }else{
+            _trim($_POST);
+
+            //首页和分类页
+            $arr = array(
+                'baidu_changefreq_index'=>R('baidu_changefreq_index', 'P'),
+                'baidu_priority_index'=>R('baidu_priority_index', 'P'),
+                'baidu_changefreq_category'=>R('baidu_changefreq_category', 'P'),
+                'baidu_priority_category'=>R('baidu_priority_category', 'P'),
+            );
+
+            //内容模型的 内容+tag
+            $models_arr = $this->models->find_fetch(array(), array('mid' => 1));
+            foreach ($models_arr as $v) {
+                $mid = $v['mid'];
+                if ($mid > 1) {
+                    $arr['baidu_changefreq_content_'.$mid] = R('baidu_changefreq_content_'.$mid, 'P');
+                    $arr['baidu_priority_content_'.$mid] = R('baidu_priority_content_'.$mid, 'P');
+                    $arr['content_count_'.$mid] = (int)R('content_count_'.$mid, 'P');
+
+                    $arr['baidu_changefreq_tag_'.$mid] = R('baidu_changefreq_tag_'.$mid, 'P');
+                    $arr['baidu_priority_tag_'.$mid] = R('baidu_priority_tag_'.$mid, 'P');
+                    $arr['tag_count_'.$mid] = (int)R('tag_count_'.$mid, 'P');
+                }
+            }
+
+            // hook admin_setting_control_sitemap_post_after.php
+
+            $this->kv->set('sitemap', $arr);
+            E(0, lang('edit_successfully'));
+        }
+    }
+
     //用户设置
     public function user(){
         // hook admin_setting_control_user_before.php
