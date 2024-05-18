@@ -7,5 +7,46 @@
  */
 defined('FRAMEWORK_PATH') || exit('Access Denied.');
 
+//-----------------------常用页面判断
+function is_home(){
+    if( isset($_GET['control']) && isset($_GET['action']) && $_GET['control'] == 'index' && $_GET['action'] == 'index' ){
+        return true;
+    }else{
+        return false;
+    }
+}
+
+function is_cate(){
+    if( isset($_GET['control']) && isset($_GET['action']) && $_GET['control'] == 'cate' && $_GET['action'] == 'index' ){
+        return true;
+    }else{
+        return false;
+    }
+}
+
+function is_show(){
+    if( isset($_GET['control']) && isset($_GET['action']) && $_GET['control'] == 'show' && $_GET['action'] == 'index' ){
+        return true;
+    }else{
+        return false;
+    }
+}
+
+function is_tag(){
+    if( isset($_GET['control']) && isset($_GET['action']) && $_GET['control'] == 'tag' && $_GET['action'] == 'index' ){
+        return true;
+    }else{
+        return false;
+    }
+}
+
+function is_search(){
+    if( isset($_GET['control']) && isset($_GET['action']) && $_GET['control'] == 'search' && $_GET['action'] == 'index' ){
+        return true;
+    }else{
+        return false;
+    }
+}
+
 // hook misc_func.php
 ?>
