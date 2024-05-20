@@ -72,7 +72,7 @@ function block_category_tree($conf)
     block_category_tree_format($category_tree, 1, $nocids_arr);
 
     if($category){
-        $ret = array('list'=> $category_tree, 'cate'=>$category);
+        $ret = array('list'=> $category_tree, 'cate'=>$category, 'son'=>isset($category_tree[$cid]['son']) ? $category_tree[$cid]['son'] : array());
     }else{
         $ret = array('list'=> $category_tree);
     }
