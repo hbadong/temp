@@ -210,7 +210,15 @@ class cms_content extends model {
 
         $isremote = isset($post['isremote']) ? (int)$post['isremote'] : 0;
         $cid = isset($post['cid']) ? (int)$post['cid'] : 0;
-        $uid = isset($user['uid']) ? (int)$user['uid'] : (isset($post['uid']) ? (int)$post['uid'] : 1);
+        //优先使用传递过来的uid
+        if(isset($post['uid'])){
+            $uid = max(1, (int)$post['uid']);
+            $user = array();
+        }elseif (isset($user['uid'])){
+            $uid = max(1, (int)$user['uid']);
+        }else{
+            $uid = 1;
+        }
         $title = isset($post['title']) ? trim(strip_tags($post['title'])) : '';
         $contentstr = isset($post['content']) ? trim($post['content']) : '';
         $intro = isset($post['intro']) ? trim($post['intro']) : '';
@@ -476,7 +484,15 @@ class cms_content extends model {
         }
 
         $cid = isset($post['cid']) ? (int)$post['cid'] : 0;
-        $uid = isset($user['uid']) ? (int)$user['uid'] : 1;
+        //优先使用传递过来的uid
+        if(isset($post['uid'])){
+            $uid = max(1, (int)$post['uid']);
+            $user = array();
+        }elseif (isset($user['uid'])){
+            $uid = max(1, (int)$user['uid']);
+        }else{
+            $uid = 1;
+        }
         $title = isset($post['title']) ? trim(strip_tags($post['title'])) : '';
         $contentstr = isset($post['content']) ? trim($post['content']) : '';
         $intro = isset($post['intro']) ? trim($post['intro']) : '';
