@@ -48,6 +48,7 @@ return array(
     'unknown'=>'未知',
     'enable'=>'启用',
     'disable'=>'禁用',
+    'upload'=>'上传',
     'download'=>'下载',
     'install'=>'安装',
     'unstall'=>'卸载',

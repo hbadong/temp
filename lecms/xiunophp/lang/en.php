@@ -48,6 +48,7 @@ return array(
     'unknown'=>'Unknown',
     'enable'=>'Enable',
     'disable'=>'Disable',
+    'upload'=>'Upload',
     'download'=>'Download',
     'install'=>'Install',
     'unstall'=>'Unstall',
