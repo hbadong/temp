@@ -12,6 +12,7 @@ defined('ROOT_PATH') || exit;
  * @param int orderway 降序(-1),升序(1)
  * @param int start 开始位置
  * @param int limit 显示几条
+ * @param int newlimit 在最新的多少条内取数判断（点击排行用，比如最新100条数据、按views排序，设置 newlimit=100，这个数据不建议太大）
  * @param int life 缓存时间 (存放在runtime表)
  * @param int showcate 是否读取分类信息
  * @param int field_format 是否格式化主表自定义字段内容（主要是单选框、多选框、下拉框）
@@ -30,6 +31,7 @@ function block_list_top($conf) {
 	$orderway = isset($conf['orderway']) && $conf['orderway'] == 1 ? 1 : -1;
 	$start = _int($conf, 'start');
 	$limit = _int($conf, 'limit', 10);
+    $newlimit = _int($conf, 'newlimit', 0);
     $life = isset($conf['life']) ? (int)$conf['life'] : (isset($run->_cfg['life']) ? (int)$run->_cfg['life'] : 0);
     $showcate = _int($conf, 'showcate', 0);
     $field_format = _int($conf, 'field_format', 0);
@@ -72,14 +74,27 @@ function block_list_top($conf) {
 
 	if($orderby == 'views') {
 		$run->cms_content_views->table = $table_key = 'cms_'.$table.'_views';
-		$key_arr = $run->cms_content_views->find_fetch($where, array($orderby => $orderway), $start, $limit, $life);
 
-		$table_key .= '-id-';
-		$views_key = 'cms_'.$table.'_views-id-';
-		$keys = array();
-		foreach($key_arr as $lk=>$lv) {
-			$keys[] = isset($lv['id']) ? $lv['id'] : (int)str_replace($views_key,'',$lk);
-		}
+        $table_key .= '-id-';
+        $views_key = 'cms_'.$table.'_views-id-';
+        $keys = array();
+
+		if($newlimit){  //在最新的多少条数据里面取数排序
+            $tablefull = $_ENV['_config']['db']['master']['tablepre'].$run->cms_content_views->table;
+            $sql = "SELECT * FROM (SELECT * FROM {$tablefull} ORDER BY id DESC LIMIT {$newlimit}) AS sub_query ORDER BY views DESC LIMIT {$start},{$limit};";
+            $list_arr = $run->db->fetch_all($sql);
+            $key_arr = array();
+            foreach ($list_arr as $v){
+                $keys[] = $v['id'];
+                $key_arr[$views_key.$v['id']] = $v;
+            }
+            unset($list_arr);
+        }else{
+            $key_arr = $run->cms_content_views->find_fetch($where, array($orderby => $orderway), $start, $limit, $life);
+            foreach($key_arr as $lk=>$lv) {
+                $keys[] = isset($lv['id']) ? $lv['id'] : (int)str_replace($views_key,'',$lk);
+            }
+        }
 
 		// 读取内容列表
 		$run->cms_content->table = 'cms_'.$table;
