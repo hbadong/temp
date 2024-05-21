@@ -46,6 +46,8 @@ class sitemap_control extends control{
         $baidu_priority_index = isset($this->_sitemap_setting['baidu_priority_index']) ? $this->_sitemap_setting['baidu_priority_index'] : '1';
         $sitemapObj->baiduxml_item($this->_cfg['weburl'], $today, $baidu_changefreq_index, $baidu_priority_index);
 
+        // hook sitemap_control_xml_home_after.php
+
         //分类
         $baidu_changefreq_category = isset($this->_sitemap_setting['baidu_changefreq_category']) ? $this->_sitemap_setting['baidu_changefreq_category'] : 'daily';
         $baidu_priority_category = isset($this->_sitemap_setting['baidu_priority_category']) ? $this->_sitemap_setting['baidu_priority_category'] : '0.9';
@@ -54,6 +56,8 @@ class sitemap_control extends control{
             $url = $this->webroot.$this->category->category_url($cate);
             $sitemapObj->baiduxml_item($url, $today, $baidu_changefreq_category, $baidu_priority_category);
         }
+
+        // hook sitemap_control_xml_category_after.php
 
         //内容URL 和 标签URL
         foreach ($this->_cfg['table_arr'] as $mid=>$table) {
@@ -75,6 +79,7 @@ class sitemap_control extends control{
                         $sitemapObj->baiduxml_item($url, $updatetime, $changefreq, $priority);
                     }
                 }
+                // hook sitemap_control_xml_content_after.php
 
                 if ($tag_count) {
                     $this->cms_content_tag->table = 'cms_'.$table.'_tag';
@@ -84,6 +89,7 @@ class sitemap_control extends control{
                         $sitemapObj->baiduxml_item($url, '', $tag_changefreq, $tag_priority);
                     }
                 }
+                // hook sitemap_control_xml_tag_after.php
             }
         }
 
@@ -117,6 +123,7 @@ class sitemap_control extends control{
         }
 
         $Htmlx = '';
+        // hook sitemap_control_html_home_after.php
 
         //分类
         $category = $this->category->find_fetch(array('type'=>0), array('cid'=>1));
@@ -124,6 +131,8 @@ class sitemap_control extends control{
             $url = $this->webroot.$this->category->category_url($cate);
             $Htmlx .= '<li><a href="' . $url . '" title="' . $cate['name'] . '" target="_blank">' . $cate['name'] . '</a></li>';
         }
+
+        // hook sitemap_control_html_category_after.php
 
         //内容URL 和 标签URL
         foreach ($this->_cfg['table_arr'] as $mid=>$table) {
@@ -139,6 +148,7 @@ class sitemap_control extends control{
                         $Htmlx .= '<li><a href="' . $url . '" title="' . $v['title'] . '" target="_blank">' . $v['title'] . '</a></li>';
                     }
                 }
+                // hook sitemap_control_html_content_after.php
 
                 if ($tag_count) {
                     $this->cms_content_tag->table = 'cms_'.$table.'_tag';
@@ -148,6 +158,7 @@ class sitemap_control extends control{
                         $Htmlx .= '<li><a href="' . $url . '" title="' . $v['name'] . '" target="_blank">' . $v['name'] . '</a></li>';
                     }
                 }
+                // hook sitemap_control_tag_content_after.php
             }
         }
 
@@ -170,12 +181,14 @@ class sitemap_control extends control{
     public function txt(){
         // hook sitemap_control_txt_before.php
         $txtx = $this->_cfg['weburl'] . PHP_EOL;
+        // hook sitemap_control_txt_home_after.php
 
         $category = $this->category->find_fetch(array('type'=>0), array('cid'=>1));
         foreach ($category as $cate){
             $url = $this->webroot.$this->category->category_url($cate);
             $txtx .= $url . PHP_EOL;
         }
+        // hook sitemap_control_txt_category_after.php
 
         //内容URL 和 标签URL
         foreach ($this->_cfg['table_arr'] as $mid=>$table) {
@@ -191,6 +204,7 @@ class sitemap_control extends control{
                         $txtx .= $url . PHP_EOL;
                     }
                 }
+                // hook sitemap_control_txt_content_after.php
 
                 if ($tag_count) {
                     $this->cms_content_tag->table = 'cms_'.$table.'_tag';
@@ -200,6 +214,7 @@ class sitemap_control extends control{
                         $txtx .= $url . PHP_EOL;
                     }
                 }
+                // hook sitemap_control_txt_tag_after.php
             }
         }
 
