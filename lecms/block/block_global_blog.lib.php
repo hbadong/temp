@@ -78,7 +78,14 @@ function block_global_blog($conf) {
     }
 
 	$page = min($maxpage, max(1, intval(R('page'))));
-	$pages = paginator::$page_function($page, $maxpage, $run->urls->index_url($mid), $pageoffset);
+
+    if(R('control', 'G') == 'model'){
+        $url = $run->urls->model_url($table, $mid, TRUE);
+    }else{
+        $url = $run->urls->index_url($mid, TRUE);
+    }
+
+	$pages = paginator::$page_function($page, $maxpage, $url, $pageoffset);
 
     if($showcate){
         $allcategorys = $run->category->get_category_db();

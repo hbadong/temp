@@ -45,15 +45,17 @@ class runtime extends model {
 
 				//模型
                 $models = $this->models->get_models();
-                $table_arr = $mod_name = array();
+                $table_arr = $mod_name = $mod_url = array();
                 foreach ($models as $md){
                     $table_arr[$md['mid']] = $md['tablename'];
                     if($md['mid'] > 1){
                         $mod_name[$md['mid']] = $md['name'];
+                        $mod_url[$md['tablename']] = $this->urls->model_url($md['tablename'], $md['mid'], false, array('cfg'=>$cfg));
                     }
                 }
 				$cfg['table_arr'] = $table_arr;
 				$cfg['mod_name'] = $mod_name;
+                $cfg['mod_url'] = $mod_url;
 
 				//用户组
 				if(isset($cfg['open_user']) && $cfg['open_user']){

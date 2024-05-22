@@ -126,6 +126,7 @@ return array(
     'alias_error_6'=>'Reserved keywords are not allowed for alias',
     'alias_error_7'=>'Alias is already used by category',
     'alias_error_8'=>'Alias is already used by content',
+    'alias_error_9'=>'Alias is already used by model tablename',
     'cid_error'=>'Category ID error',
     'write_tag_table_failed'=>'Failed to write database table',
     'write_content_table_failed'=>'Failed to write database table',

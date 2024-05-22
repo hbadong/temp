@@ -27,6 +27,15 @@ class only_alias extends model {
 		$cfg = $this->runtime->xget();
 		$keywords = $this->kv->xget('link_keywords'); // 保留关键词
 
+        //不能是模型表名
+        if(isset($cfg['table_arr']) && !empty($cfg['table_arr'])){
+            foreach ($cfg['table_arr'] as $table){
+                if($alias == $table){
+                    return lang('alias_error_9');
+                }
+            }
+        }
+
 		if(isset($cfg['link_tag_pre']) && $alias == $cfg['link_tag_pre']) {
 			return lang('alias_error_3');
 		}elseif(isset($cfg['link_comment_pre']) && $alias == $cfg['link_comment_pre']) {

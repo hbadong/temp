@@ -126,6 +126,7 @@ return array(
     'alias_error_6'=>'不允许使用保留关键词',
     'alias_error_7'=>'已经被其它分类别名使用',
     'alias_error_8'=>'已经被其它内容别名使用',
+    'alias_error_9'=>'不能是内容模型表名',
     'cid_error'=>'分类ID非法',
     'write_tag_table_failed'=>'写入标签表出错',
     'write_content_table_failed'=>'写入内容表出错',

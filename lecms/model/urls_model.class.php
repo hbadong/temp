@@ -8,19 +8,21 @@ defined('ROOT_PATH') or exit;
 //用户自定义模型， 主键必须是id
 class urls extends model {
     private $data = array();		// 防止重复查询
-    public $cfg = array();
 
 	function __construct() {
 		$this->table = '';			// 表名 (用户自定义表)
 		$this->pri = array('id');	// 主键
 		$this->maxid = 'id';		// 自增字段
-
-        if( isset($this->data['cfg']) && !empty($this->data['cfg']) ){
-            $this->cfg = $this->data['cfg'];
-        }else{
-            $this->cfg = $this->runtime->xget();
-        }
 	}
+
+    // 暂时用些方法解决获取 cfg 值
+    function __get($var) {
+        if($var == 'cfg') {
+            return $this->cfg = $this->runtime->xget();
+        }else{
+            return parent::__get($var);
+        }
+    }
 
     // 首页分页链接格式化
     public function index_url($mid = 2, $extra = array()) {
@@ -39,6 +41,29 @@ class urls extends model {
             }else{
                 return $this->cfg['weburl'].'index_{page}'.$_ENV['_config']['url_suffix'];
             }
+        }
+    }
+
+    //模型页URL链接格式
+    public function model_url($table = 'table', $mid = 2, $page = FALSE, $extra = array()){
+	    //runtime里面调用这个函数的时候 cfg 还没有
+	    if(!isset($this->cfg)){
+            $this->cfg = $extra['cfg'];
+        }
+
+        //使用相对URL
+        if(isset($this->cfg['url_path']) && !empty($this->cfg['url_path'])){
+            $this->cfg['weburl'] = $this->cfg['webdir'];
+        }
+        // hook urls_model_model_url_before.php
+
+        if(empty($_ENV['_config']['lecms_parseurl'])) {
+            $s = $page ? '-page-{page}' : '';
+            return $this->cfg['weburl'].'index.php?model--mid-'.$mid.$s.$_ENV['_config']['url_suffix'];
+        }else{
+            // hook urls_model_model_url_lecms_parseurl_before.php
+            $s = $page ? '/page_{page}' : '';
+            return $this->cfg['weburl'].$table.$s.'/';
         }
     }
 
@@ -177,7 +202,7 @@ class urls extends model {
             $this->cfg['weburl'] = $this->cfg['webdir'];
         }
         // hook urls_model_space_url_before.php
-		if(empty($uid)){return '';}
+        if(empty($uid)){return '';}
 
         if(empty($_ENV['_config']['lecms_parseurl'])) {
             $s = $page ? '-page-{page}' : '';

@@ -86,6 +86,11 @@ class parseurl_control extends control{
             if($r){return;}
             // hook parseurl_control_index_user_after.php
 
+            // hook parseurl_control_index_model_before.php
+            $r = $this->model_url($cfg, $uri);
+            if($r){return;}
+            // hook parseurl_control_index_model_after.php
+
             // hook parseurl_control_index_flags_before.php
             $r = $this->flags_url($cfg, $uri);
             if($r){return;}
@@ -116,6 +121,50 @@ class parseurl_control extends control{
     }
 
     //---------------------------------------------------------------------- 以下是各模块URL解析的具体函数实现
+
+    //模型页URL解析
+    protected function model_url($cfg = array(), $uri = ''){
+        // hook parseurl_control_model_url_before.php
+
+        //模型信息 table=>mid
+        $model_arr = array_flip($cfg['table_arr']);
+
+        // 模型URL未设置后缀/的情况，301重定向到已设置后缀的URL
+        if( isset($model_arr[$uri]) || substr($uri, -1) != '/') {
+            http_location($cfg['weburl'].$uri.'/', '301');
+        }
+
+        $_GET['control'] = 'model';
+        $_GET['action'] = 'index';
+
+        //模型首页URL
+        $newurl = substr($uri, 0, -1);
+        if( isset($model_arr[$newurl]) ) {
+            $_GET['mid'] = (int)$model_arr[$newurl];
+            return true;
+        }
+
+        //模型分页URL
+        $u_arr = explode('/', $newurl);
+        if( isset($model_arr[$u_arr[0]]) ) {
+            $_GET['mid'] = (int)$model_arr[$u_arr[0]];
+            //分页
+            if( isset($u_arr[1]) ){
+                if($page = $this->page_check($u_arr[1])){
+                    $_GET['page'] = $page;
+                }else{
+                    core::error404();
+                }
+            }
+            return true;
+        }
+
+        // hook parseurl_control_model_url_after.php
+
+        unset($_GET['control']);
+        unset($_GET['action']);
+        return false;
+    }
 
     //分类URL解析
     protected function category_url($cfg = array(), $uri = ''){

@@ -1,0 +1,95 @@
+{inc:header.htm}
+<section>
+	<div class="container th_margintop">
+		<div class="row pc_margintop">
+			<!--左侧文章列表start-->
+			<div class="col-md-9 col-xs-12">
+				<div>
+					<div class="thjingxuan">
+						<!--面包屑导航start-->
+						<div class="thjingxuan_title categorylist"><i></i>
+							<a href="{$cfg[weburl]}" title="{$cfg[webname]}">首页</a><span>/</span> <a href="{$cfg_var[url]}">{$cfg_var[name]}</a>
+						</div>
+						<!--面包屑导航end-->
+
+						{block:global_blog pagenum="10" dateformat="Y-m-d" showviews="1"}{/block}
+
+						<section class="thjingxuan_sec">
+							{loop:$gdata[list] $v}
+							<div class="col-md-12 col-xs-12 th_padding post_id_{$v[id]}">
+								<div class="thliorder1">
+									<div class="thnews-img">
+										<a href="{$v[url]}" title="{$v[title]}">
+											<img class="th-img thnews-img-height" src="{$v[pic]}" alt="{$v[title]}">
+										</a>
+									</div>
+									<div class="thnews-con">
+										<div class="news-con-tit"><a href="{$v[url]}" title="{$v[title]}">{$v[subject]}</a>
+										</div>
+										<div class="newsummary">{$v[intro]}</div>
+										<div class="thinfo">
+											时间：{$v[date]}&nbsp;&nbsp;|&nbsp;&nbsp;阅读：{$v[views]}&nbsp;&nbsp;{if:$v[tag_arr]}|&nbsp;&nbsp;标签：{loop:$v[tag_arr] $lv}<a class="th_hover_a1" href="{$lv[url]}" title="{$lv[name]}">{$lv[name]}</a>{/loop}{/if}
+										</div>
+									</div>
+								</div>
+							</div>
+							{/loop}
+							{if:$gdata[pages]}
+							<div class="col-md-12 col-xs-12 th_padding">
+								<div class="list-title pagebar">
+									{$gdata[pages]}
+								</div>
+							</div>
+							{/if}
+						</section>
+					</div>
+				</div>
+			</div>
+			<!--左侧文章列表end-->
+			<div class="col-md-3 col-xs-12 wap_margintop">
+				<div>{inc:about.htm}</div>
+				<!--当前分类阅读排行榜start-->
+				<div class="th_margintop">
+					{block:list_top orderby="views" cid="0" limit="8" titlenum="24"}
+					<section>
+						<div class="thleftcon">
+							<div class="thleftbt"><span>阅读排行</span></div>
+							<ul class="th-5">
+								{loop:$data[list] $v}
+								<li class="post_id_{$v[id]}"><span class="date">{$v[views]}℃</span><i>{$v[xuhao]}</i><a href="{$v[url]}" title="{$v[title]}">{$v[subject]}</a></li>
+								{/loop}
+							</ul>
+						</div>
+					</section>
+					{/block}
+				</div>
+				<!--当前分类阅读排行榜end-->
+				<!--随机文章start-->
+				<div class="th_margintop">
+					<section>{inc:rand.htm}</section>
+				</div>
+				<!--随机文章end-->
+				<!--热门标签start-->
+				<div class="th_margintop">
+					<section>
+						<div class="thleftcon">
+							<div class="thleftbt"><span>热门标签</span></div>
+							<ul class="th-7">
+								{block:taglist mid="2" limit="18" orderby="count"}
+								{loop:$data[list] $v}
+								<li class="tag_id_{$v[tagid]}"><a title="{$v[name]}" href="{$v[url]}">{$v[name]}</a></li>
+								{/loop}
+								{/block}
+							</ul>
+						</div>
+					</section>
+				</div>
+				<!--热门标签end-->
+			</div>
+		</div>
+	</div>
+</section>
+
+{inc:footer.htm}
+</body>
+</html>
