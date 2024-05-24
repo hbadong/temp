@@ -69,7 +69,6 @@ class cms_page_control extends admin_control{
                         E(1, $err['msg']);
                     }
                     // 修改导航中的分类的别名
-                    $this->category->update_navigate_alias($post);
                     $change_alias = 1;
                 }
             }
