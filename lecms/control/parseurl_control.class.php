@@ -130,15 +130,20 @@ class parseurl_control extends control{
         $model_arr = array_flip($cfg['table_arr']);
 
         // 模型URL未设置后缀/的情况，301重定向到已设置后缀的URL
-        if( isset($model_arr[$uri]) || substr($uri, -1) != '/') {
+        if( isset($model_arr[$uri]) ) {
             http_location($cfg['weburl'].$uri.'/', '301');
         }
 
         $_GET['control'] = 'model';
         $_GET['action'] = 'index';
 
+        if(substr($uri, -1) == '/'){
+            $newurl = substr($uri, 0, -1);
+        }else{
+            $newurl = $uri;
+        }
+
         //模型首页URL
-        $newurl = substr($uri, 0, -1);
         if( isset($model_arr[$newurl]) ) {
             $_GET['mid'] = (int)$model_arr[$newurl];
             return true;
