@@ -192,7 +192,7 @@ if($do == 'lang') {
         'link_space_pre' => 'space/',
         'link_space_end' => '/',
 
-        'up_img_ext' => 'jpg,jpeg,gif,png',
+        'up_img_ext' => 'jpg,jpeg,gif,png,webp',
         'up_img_max_size' => '3074',
         'up_file_ext' => 'zip,gz,rar,iso,xls,xlsx,csv,doc,docx,ppt,wps,txt,pdf',
         'up_file_max_size' => '20480',

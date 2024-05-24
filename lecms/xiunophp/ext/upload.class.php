@@ -176,7 +176,7 @@ class upload{
 		// 白名单后缀，其他文件后缀为 .file
 		// 防XSS漏洞需要注意：IE会解析 .jpg .gif .txt 中的 <script>
 		$Exts = array(
-			'gif', 'jpg', 'jpeg', 'png', 'bmp',
+			'gif', 'jpg', 'jpeg', 'png', 'bmp', 'webp',
 			'swf', 'fla', 'as',
 			'mp3', 'mp4', 'flv', 'wav', 'wma', 'wmv', 'mid', 'avi', 'mpg', 'asf', 'rm', 'rmvb',
 			'wps', 'doc', 'ppt', 'docx', 'xsl', 'xls', 'xlsx', 'txt', 'csv',

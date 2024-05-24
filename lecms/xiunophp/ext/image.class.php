@@ -15,7 +15,7 @@ class image{
 		is_null($dst_file) && $dst_file = self::thumb_name($src_file);
 
 		$dst_ext = self::ext($dst_file);
-		if(!in_array($dst_ext, array('jpg', 'gif', 'png'))) return FALSE;
+		if(!in_array($dst_ext, array('jpg', 'gif', 'png', 'webp'))) return FALSE;
 
 		$imgs = getimagesize($src_file);
 		$src_w = $imgs[0];
@@ -86,6 +86,7 @@ class image{
 			case 'jpg': imagejpeg($im_dst, $dst_file, $quality); break;
 			case 'gif': imagegif($im_dst, $dst_file); break;
 			case 'png': imagepng($im_dst, $dst_file); break;
+            case 'webp':imagewebp($im_dst, $dst_file); break;
 		}
 
 		imagedestroy($im_dst);
@@ -103,7 +104,7 @@ class image{
 	 */
 	public static function watermark($src_file, $wat_file, $dst_file = null, $pos = 0, $pct = 80){
 		$src_ext = self::ext($src_file);
-		if(!in_array($src_ext, array('jpg', 'jpeg', 'gif', 'png'))) return FALSE;
+		if(!in_array($src_ext, array('jpg', 'jpeg', 'gif', 'png', 'webp'))) return FALSE;
 
 		is_null($dst_file) && $dst_file = &$src_file;
 
@@ -113,17 +114,20 @@ class image{
 			return filesize($dst_file);
 		}
 
+		//水印图
 		$wat_ext = self::ext($wat_file);
-		if(!in_array($wat_ext, array('jpg', 'gif', 'png'))) return FALSE;
+		if(!in_array($wat_ext, array('jpg', 'gif', 'png', 'webp'))) return FALSE;
 
 		if(!function_exists('imagecopy')) return FALSE;
 
 		$srcs = getimagesize($src_file);
+
 		$wats = getimagesize($wat_file);
 		if(empty($srcs[0]) || empty($wats[0])) return FALSE;
 
 		// 加载原图
 		$im_src = self::load_img($src_file, $srcs['mime']);
+		if(!$im_src) return false;
 
 		// 加载水印图
 		$im_wat = self::load_img($wat_file, $wats['mime']);
@@ -189,6 +193,7 @@ class image{
 			case 'image/jpeg': imagejpeg($im_src, $dst_file, 100); break;
 			case 'image/gif': imagegif($im_src, $dst_file); break;
 			case 'image/png': imagepng($im_src, $dst_file); break;
+            case 'image/webp': imagewebp($im_src, $dst_file); break;
 		}
 
 		imagedestroy($im_src);
@@ -232,6 +237,9 @@ class image{
 			case 'image/wbmp':
 				$im_src = @imagecreatefromwbmp($src_file);
 				break;
+            case 'image/webp':
+                $im_src = @imagecreatefromwebp($src_file);
+                break;
 			default:
 				return FALSE;
 		}
