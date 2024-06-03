@@ -210,6 +210,8 @@
 					}, function(){});
 				}
 			}
+
+			{hook:admin_content_index_toolbar_filter_js_after.htm}
 		});
 
 		//监听单元格编辑
@@ -254,7 +256,11 @@
 					});
 				});
 			}
+
+			{hook:admin_content_index_currenttablebar_filter_js_after.htm}
 		});
+
+		{hook:admin_content_index_layui_js_after.htm}
 	});
 </script>
 {hook:admin_content_index_after.htm}
