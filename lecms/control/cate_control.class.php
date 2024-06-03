@@ -18,6 +18,9 @@ class cate_control extends base_control{
         empty($this->_var) && core::error404();
 
         $this->category->format($this->_var);
+
+        $_GET['mid'] = $this->_var['mid'];
+        $_GET['type'] = $this->_var['type'];
         
         // hook cate_control_index_center.php
 

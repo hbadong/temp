@@ -7,7 +7,8 @@
  */
 defined('FRAMEWORK_PATH') || exit('Access Denied.');
 
-//-----------------------常用页面判断
+//-----------------------常用页面判断，常用于模板里面的共用页面
+//首页
 function is_home(){
     if( isset($_GET['control']) && isset($_GET['action']) && $_GET['control'] == 'index' && $_GET['action'] == 'index' ){
         return true;
@@ -15,7 +16,7 @@ function is_home(){
         return false;
     }
 }
-
+//分类页
 function is_cate(){
     if( isset($_GET['control']) && isset($_GET['action']) && $_GET['control'] == 'cate' && $_GET['action'] == 'index' ){
         return true;
@@ -23,7 +24,31 @@ function is_cate(){
         return false;
     }
 }
-
+//单页分类
+function is_cate_page(){
+    if( is_cate() && R('mid', 'G') == 1 ){
+        return true;
+    }else{
+        return false;
+    }
+}
+//列表分类页
+function is_cate_list(){
+    if( is_cate() && R('mid', 'G') > 1 && isset($_GET['type']) && R('type', 'G') == 0 ){
+        return true;
+    }else{
+        return false;
+    }
+}
+//频道分类页
+function is_cate_channel(){
+    if( is_cate() && R('mid', 'G') > 1 && isset($_GET['type']) && R('type', 'G') == 1 ){
+        return true;
+    }else{
+        return false;
+    }
+}
+//内容页
 function is_show(){
     if( isset($_GET['control']) && isset($_GET['action']) && $_GET['control'] == 'show' && $_GET['action'] == 'index' ){
         return true;
@@ -31,7 +56,7 @@ function is_show(){
         return false;
     }
 }
-
+//标签列表页
 function is_tag(){
     if( isset($_GET['control']) && isset($_GET['action']) && $_GET['control'] == 'tag' && $_GET['action'] == 'index' ){
         return true;
@@ -39,7 +64,7 @@ function is_tag(){
         return false;
     }
 }
-
+//搜索结果页
 function is_search(){
     if( isset($_GET['control']) && isset($_GET['action']) && $_GET['control'] == 'search' && $_GET['action'] == 'index' ){
         return true;
