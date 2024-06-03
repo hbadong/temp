@@ -95,13 +95,16 @@ class cms_content extends model {
         if( empty($v['pic']) ){
             $v['haspic'] = 0;
             $v['pic'] = $v['pic_thumb'] = $this->cfg['webdir'].'static/img/nopic.gif';
+            $v['pic_url'] = $this->cfg['weburl'].'static/img/nopic.gif';    //完整的图片地址
         }else{
             $v['haspic'] = 1;
             if( substr($v['pic'], 0, 2) != '//' && substr($v['pic'], 0, 4) != 'http' ){ //不是外链图片
                 $v['pic_thumb'] = $this->cfg['webdir'].image::thumb_name($v['pic']);
                 $v['pic'] = $this->cfg['webdir'].$v['pic'];
+                $v['pic_url'] = $this->cfg['weburl'].$v['pic'];
             }else{
                 $v['pic_thumb'] = $v['pic'];
+                $v['pic_url'] = $v['pic'];
             }
         }
         //跳转URL
