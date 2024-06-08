@@ -42,6 +42,12 @@ function block_category($conf) {
         $nocids_arr = array();
     }
 
+    //同时有cid和mid 但是cid自身的mid和传递的mid不一致,修正
+    if($cid && $mid && isset($cate_arr[$cid])){
+        $mid = $cate_arr[$cid]['mid'];
+    }
+
+    $upid = 0;
 	switch($type) {
 		case 'sibling':
 			$upid = isset($cate_arr[$cid]) ? $cate_arr[$cid]['upid'] : 0;
@@ -56,9 +62,10 @@ function block_category($conf) {
 		case 'top':
 			$upid = 0;
 	}
+    // hook block_category_type_after.php
 
 	foreach($cate_arr as $k => &$v) {
-		if($v['upid'] != $upid || $v['mid'] != $mid) {
+		if($v['upid'] != $upid || ($mid && $v['mid'] != $mid)) {
 			unset($cate_arr[$k]);
 		}
 
