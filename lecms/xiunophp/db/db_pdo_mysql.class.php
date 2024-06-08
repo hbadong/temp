@@ -643,13 +643,21 @@ class db_pdo_mysql implements db_interface {
 		$link = $this->link = $this->wlink;
 		$n = 0;
 		try {
-			$n = $link->exec($sql); // 返回受到影响的行，插入的 id ?
+            if(defined('DEBUG') && DEBUG && isset($_ENV['_sqls']) && count($_ENV['_sqls']) < 1000) {
+                $start = microtime(1);
+                $n = $link->exec($sql); // 返回受到影响的行，插入的 id ?
+                $runtime = number_format(microtime(1) - $start, 4);
+                $_ENV['_sqls'][] = ' <font color="red">[time:'.$runtime.'s]</font> '.htmlspecialchars(stripslashes($sql));
+            }else{
+                $n = $link->exec($sql); // 返回受到影响的行，插入的 id ?
+            }
 		} catch (Exception $e){
 			$s = $link->errorInfo();
 			$s = str_replace($this->tablepre, '***', $s); // 防止泄露敏感信息
 			throw new Exception('Pdo_MySQL Query Error:'.$sql.' '.(isset($s[2]) ? "Errstr: $s[2]" : ''));
 			return FALSE;
 		}
+        $_ENV['_sqlnum']++;
 
 		if($n !== FALSE) {
 			$pre = strtoupper(substr(trim($sql), 0, 7));
@@ -675,8 +683,8 @@ class db_pdo_mysql implements db_interface {
 	 * @return array
 	 */
 	public function fetch_first($sql, $link = NULL) {
-		empty($link) && $link = $this->rlink;
-		$result = $link->query($sql);
+        empty($link) && $link = $this->rlink;
+		$result = $this->query($sql, $link);
 		if(is_object($result)) {
 			$r = $result->setFetchMode(PDO::FETCH_ASSOC);
             if( !$r ){
@@ -696,8 +704,8 @@ class db_pdo_mysql implements db_interface {
 	 * @return array
 	 */
 	public function fetch_all($sql, $link = NULL) {
-		empty($link) && $link = $this->rlink;
-		$result = $link->query($sql);
+        empty($link) && $link = $this->rlink;
+		$result = $this->query($sql, $link);
 		if(is_object($result)) {
 			$r = $result->setFetchMode(PDO::FETCH_ASSOC);
             if( !$r ){
