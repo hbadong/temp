@@ -57,6 +57,10 @@ class content_control extends admin_control{
         $this->assign('add_content', $add_name);
         $this->assign('edit_content', $edit_name);
 
+        //操作列宽度和操作列的菜单初始化
+        $opt_width = 140;
+        $tr_btn = '';
+
         //表格显示列表
         $cols = "{type: 'checkbox', width: 50, fixed: 'left'},";
         $cols .= "{field: 'id', width: 100, title: 'ID', sort: true, align: 'center'},";
@@ -67,10 +71,13 @@ class content_control extends admin_control{
         $cols .= "{field: 'author', width: 120, title: '".lang('author')."', align: 'center', edit: 'text'},";
         $cols .= "{field: 'date', width: 145, title: '".lang('date')."', align: 'center'},";
         // hook admin_content_control_index_cols_after.php
-        $cols .= "{title: '".lang('opt')."', width: 140, toolbar: '#currentTableBar', align: 'center'}";
+        $cols .= "{title: '".lang('opt')."', width: {$opt_width}, toolbar: '#currentTableBar', align: 'center'}";
+
+        $tr_btn .= '<a class="layui-btn layui-btn-xs" lay-event="edit">'.lang('edit').'</a><a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="view">'.lang('view').'</a><a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delete">'.lang('delete').'</a>';
 
         // hook admin_content_control_index_after.php
         $this->assign('cols', $cols);
+        $this->assign('tr_btn', $tr_btn);
         $this->display();
     }
 
