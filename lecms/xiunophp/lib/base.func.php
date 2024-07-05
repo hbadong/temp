@@ -584,11 +584,14 @@ function http_location($url = '', $code = '') {
 }
 
 // 判断是否为手机访问 或者是wap域名
-function is_mobile() {
-    //移动端域名wap. 或者 m.
-    if( substr($_SERVER['HTTP_HOST'],0,4) == 'wap.' || substr($_SERVER['HTTP_HOST'],0,2) == 'm.' ){
+function is_mobile($waphost = 1) {
+
+    //判断是不是移动端域名 wap. 或者 m.
+    if($waphost && (substr($_SERVER['HTTP_HOST'],0,4) == 'wap.' || substr($_SERVER['HTTP_HOST'],0,2) == 'm.')){
         return 1;
-    } elseif ( isset($_SERVER['HTTP_VIA']) && stristr($_SERVER['HTTP_VIA'], "wap") ){
+    }
+
+    if ( isset($_SERVER['HTTP_VIA']) && stristr($_SERVER['HTTP_VIA'], "wap") ){
         return 1;
     } elseif ( isset($_SERVER['HTTP_ACCEPT']) && strpos(strtoupper($_SERVER['HTTP_ACCEPT']), "VND.WAP.WML") ){
         return 1;
