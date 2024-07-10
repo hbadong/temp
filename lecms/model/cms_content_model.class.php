@@ -190,6 +190,13 @@ class cms_content extends model {
         if(isset($post['isremote']) && $post['isremote'] == '[db:远程图片本地化]' ) $post['isremote'] = 0;
         if(isset($post['iscomment']) && $post['iscomment'] == '[db:禁止评论]' ) $post['iscomment'] = 0;
         if(isset($post['content']) && $post['content'] == '[db:内容]' ) $post['content'] = '';
+		//处理发布时间
+        if(isset($post['dateline']) && $post['dateline'] == '[db:发布时间]' ) unset($post['dateline']);
+        //可以传递 2024-07-10 这种格式
+        if( isset($post['dateline']) && $post['dateline'] && !is_numeric($post['dateline']) ){
+            $post['dateline'] = strtotime($post['dateline']);
+			if(empty($post['dateline'])){unset($post['dateline']);}
+        }
 
         // hook cms_content_model_xadd_post_after.php
 
