@@ -147,7 +147,7 @@ class models extends model {
 		  KEY uid (uid),
           KEY cid_id (cid,id),
           KEY cid_dateline (cid,dateline)
-        ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;";
+        ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;";
         $this->db->query($sql_table);
 
         $sql_table = "CREATE TABLE IF NOT EXISTS {$table_cms_attach} (
@@ -167,14 +167,14 @@ class models extends model {
           PRIMARY KEY (aid),
           KEY id (id, aid),
           KEY uid (uid, aid)
-        ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci";
+        ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci";
         $this->db->query($sql_table);
 
         $sql_table = "CREATE TABLE IF NOT EXISTS {$table_cms_data} (
           id int(10) unsigned NOT NULL DEFAULT '0' COMMENT '内容ID',
           content mediumtext NOT NULL COMMENT '内容',
           PRIMARY KEY  (id)
-        ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci";
+        ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;";
         $this->db->query($sql_table);
 
         $sql_table = "CREATE TABLE IF NOT EXISTS {$table_cms_flag} (
@@ -184,7 +184,7 @@ class models extends model {
           PRIMARY KEY  (flag,id),
           KEY flag_cid (flag,cid,id),
           KEY id (id)
-        ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci";
+        ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci";
         $this->db->query($sql_table);
 
         $sql_table = "CREATE TABLE IF NOT EXISTS {$table_cms_tag} (
@@ -200,14 +200,14 @@ class models extends model {
           PRIMARY KEY  (tagid),
           UNIQUE KEY tagname (`name`),
           KEY content_count (`count`)
-        ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci";
+        ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci";
         $this->db->query($sql_table);
 
         $sql_table = "CREATE TABLE IF NOT EXISTS {$table_cms_tag_data} (
           tagid int(10) unsigned NOT NULL COMMENT '标签ID',
           id int(10) unsigned NOT NULL DEFAULT '0' COMMENT '内容ID',
           PRIMARY KEY  (tagid,id)
-        ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci";
+        ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci";
         $this->db->query($sql_table);
 
         $sql_table = "CREATE TABLE IF NOT EXISTS {$table_cms_views} (
@@ -217,7 +217,7 @@ class models extends model {
           PRIMARY KEY  (id),
           KEY cid (cid,views),
           KEY views (views)
-        ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci";
+        ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci";
         $this->db->query($sql_table);
 
         // hook models_model_xadd_after.php

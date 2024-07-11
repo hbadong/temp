@@ -25,7 +25,7 @@ $_ENV['_config'] = array(
 			'user' => 'root',
 			'password' => '',
 			'name' => 'lecms',
-			'charset' => 'utf8',
+			'charset' => 'utf8mb4',
 			'tablepre' => 'pre_',
 			'engine'=>'MyISAM',
 		),
