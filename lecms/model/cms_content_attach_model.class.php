@@ -200,7 +200,8 @@ class cms_content_attach extends model {
                     'isimage' => 1,
                 );
                 // hook cms_content_attach_model_remote_down_data_after.php
-                if(!$this->create($data)) return FALSE;
+                $createaid = $this->create($data);
+                if(!$createaid) return FALSE;
             }
             // hook cms_content_attach_model_remote_down_after.php
             return $filepath;
