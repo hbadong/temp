@@ -235,7 +235,7 @@ class parseurl_control extends control{
 
         $_GET['control'] = 'show';
         $_GET['action'] = 'index';
-
+		// hook parseurl_control_content_url_switch_before.php
         switch ($cfg['link_show_type']){
             case 1: //数字型
                 // hook parseurl_control_content_url_switch_1_before.php
