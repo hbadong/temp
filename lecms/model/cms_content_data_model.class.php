@@ -12,9 +12,9 @@ class cms_content_data extends model {
 	public function format_content($data = array(), $curpage = 1){
         // hook cms_content_data_model_format_content_before.php
 
-        if (isset($data['content']) && strpos($data['content'], '<hr class="ui_editor_pagebreak">') !== FALSE) {
+        if (isset($data['content']) && strpos($data['content'], '<hr class="ui_editor_pagebreak"/>') !== FALSE) {
             $page = 1;
-            $match = explode('<hr class="ui_editor_pagebreak">', $data['content']);
+            $match = explode('<hr class="ui_editor_pagebreak"/>', $data['content']);
             $content_fmt = array();
             foreach ($match as $i => $t) {
                 $content_fmt[$page] = $t;
