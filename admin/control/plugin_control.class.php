@@ -69,6 +69,31 @@ class plugin_control extends admin_control {
 		}
 	}
 
+    //插件卸载，不会删除插件文件夹
+    public function unstall(){
+        $dir = R('dir', 'P');
+        $this->check_plugin($dir);
+        $plugins = $this->get_plugin_config();
+        // 只允许卸载停用的插件
+        if(isset($plugins[$dir]) && empty($plugins[$dir]['enable'])) {
+            // 检测有 uninstall.php 文件，则执行卸载
+            $uninstall = PLUGIN_PATH.$dir.'/uninstall.php';
+            if(is_file($uninstall)) {
+                include $uninstall;
+            }
+
+            unset($plugins[$dir]);
+            if(!$this->set_plugin_config($plugins)) {
+                E(1, lang('write_config_failed'));
+            }
+            $this->clear_cache();
+
+            E(0, lang('unstall_successfully'));
+        }else{
+            E(1, lang('opt_failed'));
+        }
+    }
+
 	// 插件删除
 	public function delete() {
         // hook admin_plugin_control_delete_before.php
@@ -91,6 +116,7 @@ class plugin_control extends admin_control {
 					if(!$this->set_plugin_config($plugins)) {
 						E(1, lang('write_config_failed'));
 					}
+                    $this->clear_cache();
 				}
                 // hook admin_plugin_control_delete_success.php
 				E(0, lang('delete_successfully'));

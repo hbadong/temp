@@ -77,6 +77,7 @@ return array(
     'browser'=>'浏览器',
     'being_used'=>'正在使用',
     'install_successfully'=>'安装成功',
+    'unstall_successfully'=>'卸载成功',
     'enable_successfully'=>'启用成功',
     'disable_successfully'=>'停用成功',
     'search'=>'搜索',
@@ -428,6 +429,7 @@ return array(
     'theme_dir_no_safe'=>'主题目录名只能是 字母 数字 _',
     'theme_dir_no_exists'=>'主题目录不存在',
     'write_config_failed'=>'写入 plugin.inc.php 文件失败',
+    'delete_plugin_dir_tips'=>'将删除插件文件夹',
 
     'user_group'=>'用户组',
     'all_user_group'=>'所有用户组',

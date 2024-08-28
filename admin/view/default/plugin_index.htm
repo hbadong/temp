@@ -79,7 +79,7 @@
 												{else}
 												<a class="layui-btn layui-btn-sm enable">{lang:enable}</a>
 												{/if}
-												<a class="layui-btn layui-btn-sm layui-btn-danger del">{lang:delete}</a>
+												<a class="layui-btn layui-btn-sm layui-btn-danger unstall">{lang:unstall}</a>
 											</p>
 										</div>
 										<div class="layui-col-md12" style="border-top: 1px solid #eee;margin-top: 5px;">
@@ -194,6 +194,21 @@ layui.use(['form','layer', 'miniTab', 'element'], function () {
 		});
 	});
 
+	//卸载
+	$(".unstall").click(function(){
+		var dir = $(this).parent().attr("plugin");
+		adminAjax.postd("index.php?plugin-unstall-ajax-1", {"dir" : dir},function (json) {
+			var res = toJson(json);
+			if( res.err ){
+				layer.msg(res.msg, {icon: 5});
+			}else{
+				layer.msg(res.msg, {icon: 1, time: 1000},function () {
+					window.location.reload(true);
+				});
+			}
+		});
+	});
+
 	//安装
 	$(".install").click(function(){
 		var dir = $(this).parent().attr("plugin");
@@ -214,7 +229,7 @@ layui.use(['form','layer', 'miniTab', 'element'], function () {
 	//删除
 	$(".del").click(function(){
 		var dir = $(this).parent().attr("plugin");
-		adminAjax.confirm("{lang:delete_confirm} “<font color='red'>"+dir+"</font>”", function(){
+		adminAjax.confirm("{lang:delete_confirm} “<font color='red'>"+dir+"</font>”，{lang:delete_plugin_dir_tips}", function(){
 			var loadIndex = layer.load(2);
 			adminAjax.postd("index.php?plugin-delete-ajax-1", {"dir" : dir},function (json) {
 				layer.close(loadIndex);

@@ -77,6 +77,7 @@ return array(
     'browser'=>'Browser',
     'being_used'=>'In use',
     'install_successfully'=>'Install successfully',
+    'unstall_successfully'=>'Unstall successfully',
     'enable_successfully'=>'Enable successfully',
     'disable_successfully'=>'Disable successfully',
     'search'=>'Search',
@@ -428,6 +429,7 @@ return array(
     'theme_dir_no_safe'=>'Theme dir is composed of numbers and letters',
     'theme_dir_no_exists'=>'Theme dir no exists',
     'write_config_failed'=>'Write plugin.inc.php failed',
+    'delete_plugin_dir_tips'=>'delete plugin dir',
 
     'user_group'=>'User Group',
     'all_user_group'=>'All User Group',
