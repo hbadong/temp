@@ -86,7 +86,7 @@ class plugin_control extends admin_control {
             if(!$this->set_plugin_config($plugins)) {
                 E(1, lang('write_config_failed'));
             }
-            $this->clear_cache();
+            $this->clear_cache();   //安装了，可能没有启用，但是也会写入一些配置信息，这里卸载的时候，再次执行删除缓存
 
             E(0, lang('unstall_successfully'));
         }else{
@@ -94,7 +94,7 @@ class plugin_control extends admin_control {
         }
     }
 
-	// 插件删除
+	// 插件删除（240824增加了卸载操作，其实这里不需要再次执行卸载操作， 加上这个只是为了兼容之前的）
 	public function delete() {
         // hook admin_plugin_control_delete_before.php
 		$dir = R('dir', 'P');
@@ -116,7 +116,6 @@ class plugin_control extends admin_control {
 					if(!$this->set_plugin_config($plugins)) {
 						E(1, lang('write_config_failed'));
 					}
-                    $this->clear_cache();
 				}
                 // hook admin_plugin_control_delete_success.php
 				E(0, lang('delete_successfully'));
