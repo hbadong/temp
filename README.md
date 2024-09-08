@@ -12,19 +12,55 @@ PHP & MYSQL架构、基于xiunophp框架开发
 2.  layui
 3.  layuimini
 
+
+lecms交流论坛：www.lecms.cc
+lecms交流QQ群：797599080
+lecms插件：https://www.lecms.cc/index.php?forum-3.htm
+lecms模板：https://www.lecms.cc/index.php?forum-2.htm
+lecms模板开发手册：https://www.lecms.cc/index.php?forum-7.htm
+
+Lecms程序特性
+1、程序框架采用懒加载、分布式服务器的设计，单表能承受亿级数据，速度让你惊讶。
+2、插件扩展简单而强大，采用AOP插件机制，性能方面零损耗，强大简单；可自由扩展程序功能，尽情二次开发。
+3、轻量级网站内容管理系统，简洁精干，我们注重实用性，主程序只做最核心，最实用的功能，其它任何功能都可以通过插件来实现。
+4、内置多种SEO设置，对网站URL路径设置自由度极高，可自由灵活设置网站的URL，让你的网站在搜索引擎中获得好的收录排名。
+5、后台使用基于Layui编写的一套简洁易用的后台框架layuimini，响应式设计，支持电脑、平板、智能手机等设备，以及各种常见浏览器。
+6、 **采用 MIT 协议发布** ，您可以自由修改、派生版本、商用而不用担心任何法律风险。
+
+便捷的模板标签
+采用高效、简洁的模板标签
+只要懂HTML和CSS即可快速开发网站
+建站成本低、周期短
+
+Xiunophp内核框架
+采用xiunophp内核框架，大数据无忧
+强大的缓存技术，代码整齐规范，便于二次开发
+强大的HOOK功能可以将常用功能制作成插件
+
+响应式管理后台
+采用基于Layuimini的响应式管理后台
+满足各类设备随时管理的需要
+手机端也有不错的使用体验
+
+自定义内容模型及字段
+支持自定义内容模型及字段（插件）
+实现自主增添不同模型和模型字段
+提示： **N千万级大数据** 可以考虑存放不同模型
+
+伪静态URL
+内置多种SEO设置
+对网站URL路径设置自由度极高
+可自由灵活设置网站内容的URL
+
+源免费
+开放源代码，无任何加密
+ **不区分商业版与免费版** 
+ **基于MIT协议，免费使用，无需授权** 
+
+
 #### 参与贡献
 
 1.  Fork 本仓库
 2.  新建 Feat_xxx 分支
 3.  提交代码
 4.  新建 Pull Request
-
-
-#### 特技
-
-1.  使用 Readme\_XXX.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
-2.  Gitee 官方博客 [blog.gitee.com](https://blog.gitee.com)
-3.  你可以 [https://gitee.com/explore](https://gitee.com/explore) 这个地址来了解 Gitee 上的优秀开源项目
-4.  [GVP](https://gitee.com/gvp) 全称是 Gitee 最有价值开源项目，是综合评定出的优秀开源项目
-5.  Gitee 官方提供的使用手册 [https://gitee.com/help](https://gitee.com/help)
-6.  Gitee 封面人物是一档用来展示 Gitee 会员风采的栏目 [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
