@@ -122,7 +122,7 @@ function block_global_cate($conf) {
         $xuhao++;
         // hook block_global_cate_foreach_after.php
 	}
-
+    // hook block_global_cate_list_arr_after.php
     $ret = array('total'=> $total, 'pages'=> $pages, 'list'=> $list_arr);
 
     if($cache_key){
