@@ -130,7 +130,7 @@ function block_list($conf) {
         $xuhao++;
         // hook block_list_foreach_after.php
 	}
-
+    // hook block_list_list_arr_after.php
     $ret = array('cate_name'=> $cate_name, 'cate_url'=> $cate_url, 'list'=> $list_arr);
 
     if($cache_key){
