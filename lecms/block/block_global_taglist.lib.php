@@ -107,7 +107,7 @@ function block_global_taglist($conf) {
         $xuhao++;
         // hook block_global_taglist_foreach_after.php
 	}
-
+    // hook block_taglike_list_arr_after.php
     $ret = array('total'=> $total, 'pages'=> $pages, 'list'=> $list_arr);
 
     if($cache_key){
