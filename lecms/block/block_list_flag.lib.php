@@ -119,7 +119,7 @@ function block_list_flag($conf) {
         $xuhao++;
         // hook block_list_flag_foreach_after.php
 	}
-
+    // hook block_list_flag_list_arr_after.php
     $ret = array('list'=> $list_arr);
     if($cache_key){
         $run->runtime->set_block_data_cache($cache_key, $ret, $life);
