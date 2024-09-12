@@ -119,6 +119,7 @@ function block_list_rand($conf) {
         // hook block_list_rand_foreach.php
 	}
 
+        // hook block_list_rand_list_arr.php
     $ret = array('list'=> $list_arr);
 
 	if($cache_key){
