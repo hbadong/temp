@@ -127,7 +127,7 @@ function block_global_blog($conf) {
         $xuhao++;
         // hook block_global_blog_foreach_after.php
 	}
-
+    // hook block_global_blog_list_arr_after.php
     $ret = array('total'=> $total, 'pages'=> $pages, 'list'=> $list_arr);
 
     if($cache_key){
