@@ -159,7 +159,7 @@ function block_list_top($conf) {
             // hook block_list_top_lastdate_foreach_after.php
 		}
 	}
-
+    // hook block_list_top_lastdate_list_arr_after.php
     $ret = array('list'=> $list_arr);
 
 	//写入缓存表
