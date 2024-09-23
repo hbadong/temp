@@ -6,7 +6,6 @@ defined('ROOT_PATH') || exit;
  * @param string dateformat 时间格式
  * @param int show_prev_next 显示上下翻页
  * @param int cid 上下翻页读取数据是否要分类CID参数
- * @param int showcate 是否读取分类信息
  * @param int field_format 是否格式化主表自定义字段内容（主要是单选框、多选框、下拉框、图集等）
  * @param int pageoffset 内容分页显示偏移量
  * @param string page_function 分页函数，xiunophp/ext/paginator.class.php
@@ -93,13 +92,7 @@ function block_global_show($conf) {
         $_show['views'] = 1;
         empty($run->_cfg['close_views']) && $run->cms_content_views->set($id, array('views'=>1,'cid'=>$_show['cid']));
     }
-    //获取分类信息
-    if($showcate){
-        $allcategorys = $run->category->get($_show['cid']);
-        $run->category->getCategoryInfoByList($_show, $allcategorys);
-    }else{
-        $allcategorys = array();
-    }
+
     //附件信息
     if(isset($_show['filenum']) && !empty($_show['filenum'])){
         list($attachlist, $imagelist, $filelist) = $run->cms_content_attach->attach_find_by_id($run->_var['table'], $id, array('id'=>$id, 'isimage'=>0));
