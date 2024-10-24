@@ -339,7 +339,12 @@ class parseurl_control extends control{
                     '\{d\}' => '(?<d>\d{2})',
                     '\{auth_key\}' => '(?<auth_key>\w+)',
                 ));
+                $quotelength = mb_strlen($uri, 'UTF-8'); // 指定字符编码为UTF-8
                 preg_match('#'.$quote.'#', $uri, $mat);
+                $matlength = mb_strlen($mat[0], 'UTF-8');
+                if($quotelength !== $matlength){
+                    core::error404();
+                }
                 if($mat){
                     //用于control验证日期
                     isset($mat['ymd']) AND $_GET['date_ymd'] = $mat['ymd'];
