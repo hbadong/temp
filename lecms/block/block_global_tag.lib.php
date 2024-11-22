@@ -84,6 +84,7 @@ function block_global_tag($conf) {
 
     $ret = array('total'=> $total, 'pages'=> $pages, 'list'=>$list_arr, 'title'=>lang('all'));
 
+    // hook block_global_tag_set_block_data_cache_before.php
     if($cache_key){
         $run->runtime->set_block_data_cache($cache_key, $ret, $life);
     }

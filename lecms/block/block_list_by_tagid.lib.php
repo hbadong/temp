@@ -109,6 +109,7 @@ function block_list_by_tagid($conf) {
 
         $ret = array('tag_name'=> $tag_name, 'tag_url'=> $tag_url, 'list'=> $list_arr);
 
+        // hook block_list_by_tagid_set_block_data_cache_before.php
         if($cache_key){
             $run->runtime->set_block_data_cache($cache_key, $ret, $life);
         }
@@ -167,6 +168,7 @@ function block_list_by_tagid($conf) {
             }
         }
 
+        // hook block_list_by_tagid_set_block_data_cache_before.php
         if($cache_key){
             $run->runtime->set_block_data_cache($cache_key, $ret, $life);
         }

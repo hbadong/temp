@@ -175,6 +175,7 @@ function block_listeach($conf) {
         // hook block_listeach_foreach_after.php
 	}
 
+    // hook block_listeach_set_block_data_cache_before.php
     if($cache_key){
         $run->runtime->set_block_data_cache($cache_key, $ret, $life);
     }

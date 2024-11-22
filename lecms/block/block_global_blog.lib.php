@@ -130,6 +130,7 @@ function block_global_blog($conf) {
     // hook block_global_blog_list_arr_after.php
     $ret = array('total'=> $total, 'pages'=> $pages, 'list'=> $list_arr);
 
+    // hook block_global_blog_set_block_data_cache_before.php
     if($cache_key){
         $run->runtime->set_block_data_cache($cache_key, $ret, $life);
     }

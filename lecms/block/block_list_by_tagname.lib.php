@@ -110,6 +110,7 @@ function block_list_by_tagname($conf) {
 
     $ret = array('tag_name'=> $tagname, 'tag_url'=> $tag_url, 'list'=>$list_arr);
 
+    // hook block_list_by_tagname_set_block_data_cache_before.php
     if($cache_key){
         $run->runtime->set_block_data_cache($cache_key, $ret, $life);
     }

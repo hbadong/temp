@@ -122,6 +122,7 @@ function block_list_rand($conf) {
 	// hook block_list_rand_list_arr_after.php
     $ret = array('list'=> $list_arr);
 
+    // hook block_list_rand_set_block_data_cache_before.php
 	if($cache_key){
         $run->runtime->set_block_data_cache($cache_key, $ret, $life);
     }

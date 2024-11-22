@@ -48,6 +48,8 @@ function block_category_info($conf) {
         }
 
         $ret = array('list'=> $list_arr);
+
+        // hook block_category_info_set_block_data_cache_before.php
         if($cache_key){
             $run->runtime->set_block_data_cache($cache_key, $ret, $life);
         }
@@ -65,6 +67,7 @@ function block_category_info($conf) {
             $cate['content'] = $page['content'];
         }
 
+        // hook block_category_info_set_block_data_cache_before.php
         if($cache_key){
             $run->runtime->set_block_data_cache($cache_key, $cate, $life);
         }

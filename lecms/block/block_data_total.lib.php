@@ -103,6 +103,7 @@ function block_data_total($conf) {
 
     }
 
+    // hook block_data_total_set_block_data_cache_before.php
     if($cache_key){
         $run->runtime->set_block_data_cache($cache_key, $total, $life);
     }

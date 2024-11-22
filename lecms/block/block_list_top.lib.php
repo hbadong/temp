@@ -162,7 +162,7 @@ function block_list_top($conf) {
     // hook block_list_top_list_arr_after.php
     $ret = array('list'=> $list_arr);
 
-	//写入缓存表
+    // hook block_list_top_set_block_data_cache_before.php
     if($cache_key){
         $run->runtime->set_block_data_cache($cache_key, $ret, $life);
     }

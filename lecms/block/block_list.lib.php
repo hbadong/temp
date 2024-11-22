@@ -133,6 +133,7 @@ function block_list($conf) {
     // hook block_list_list_arr_after.php
     $ret = array('cate_name'=> $cate_name, 'cate_url'=> $cate_url, 'list'=> $list_arr);
 
+    // hook block_list_set_block_data_cache_before.php
     if($cache_key){
         $run->runtime->set_block_data_cache($cache_key, $ret, $life);
     }

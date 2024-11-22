@@ -89,6 +89,7 @@ function block_category_new($conf) {
     if($limit && $cate_arr){$cate_arr = array_slice($cate_arr, 0, $limit);}
 	$ret['list'] = $cate_arr;
 
+    // hook block_category_new_set_block_data_cache_before.php
     if($cache_key){
         $run->runtime->set_block_data_cache($cache_key, $ret, $life);
     }

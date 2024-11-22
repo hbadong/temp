@@ -77,6 +77,7 @@ function block_category_tree($conf)
         $ret = array('list'=> $category_tree);
     }
 
+    // hook block_category_tree_set_block_data_cache_before.php
     if($cache_key){
         $run->runtime->set_block_data_cache($cache_key, $ret, $life);
     }

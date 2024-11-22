@@ -45,6 +45,7 @@ function block_user_info($conf) {
 
     $run->user->format($user, $dateformat, $showgroup);
 
+    // hook block_userinfo_set_block_data_cache_before.php
     if($cache_key){
         $run->runtime->set_block_data_cache($cache_key, $user, $life);
     }
