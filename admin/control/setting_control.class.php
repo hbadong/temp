@@ -448,13 +448,13 @@ class setting_control extends admin_control{
                 $mid = $v['mid'];
                 if ($mid > 1) {
 
-                    $baidu_changefreq_content = isset($sitemaps_setting['baidu_changefreq_content_'.$mid]) ? $sitemaps_setting['baidu_changefreq_content_'.$mid] : 'daily';
-                    $baidu_priority_content = isset($sitemaps_setting['baidu_priority_content_'.$mid]) ? $sitemaps_setting['baidu_priority_content_'.$mid] : '0.8';
-                    $content_count = isset($sitemaps_setting['content_count_'.$mid]) ? $sitemaps_setting['content_count_'.$mid] : 200;
+                    $baidu_changefreq_content = isset($sitemap['baidu_changefreq_content_'.$mid]) ? $sitemap['baidu_changefreq_content_'.$mid] : 'daily';
+                    $baidu_priority_content = isset($sitemap['baidu_priority_content_'.$mid]) ? $sitemap['baidu_priority_content_'.$mid] : '0.8';
+                    $content_count = isset($sitemap['content_count_'.$mid]) ? $sitemap['content_count_'.$mid] : 200;
 
-                    $baidu_changefreq_tag = isset($sitemaps_setting['baidu_changefreq_tag_'.$mid]) ? $sitemaps_setting['baidu_changefreq_tag_'.$mid] : 'daily';
-                    $baidu_priority_tag = isset($sitemaps_setting['baidu_priority_tag_'.$mid]) ? $sitemaps_setting['baidu_priority_tag_'.$mid] : '0.7';
-                    $tag_count = isset($sitemaps_setting['tag_count_'.$mid]) ? $sitemaps_setting['tag_count_'.$mid] : 100;
+                    $baidu_changefreq_tag = isset($sitemap['baidu_changefreq_tag_'.$mid]) ? $sitemap['baidu_changefreq_tag_'.$mid] : 'daily';
+                    $baidu_priority_tag = isset($sitemap['baidu_priority_tag_'.$mid]) ? $sitemap['baidu_priority_tag_'.$mid] : '0.7';
+                    $tag_count = isset($sitemap['tag_count_'.$mid]) ? $sitemap['tag_count_'.$mid] : 100;
 
                     $input['baidu_changefreq_content_'.$mid] = form::layui_loop('select', 'baidu_changefreq_content_'.$mid, $changefreq_arr, $baidu_changefreq_content);
                     $input['baidu_priority_content_'.$mid] = form::layui_loop('select', 'baidu_priority_content_'.$mid, $priority_arr, $baidu_priority_content);
