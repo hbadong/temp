@@ -8,6 +8,7 @@ defined('ROOT_PATH') || exit;
  * @param int titlenum 标题长度
  * @param int intronum 简介长度
  * @param int limit 显示几条
+ * @param int start 起始位置，一般不用填写，默认为0
  * @param int showcate 是否显示分类信息
  * @param int showviews 是否显示内容浏览量信息
  * @param int field_format 是否格式化主表自定义字段内容（主要是单选框、多选框、下拉框、图集等）
@@ -24,6 +25,7 @@ function block_list_prev_next($conf) {
 	$titlenum = _int($conf, 'titlenum');
 	$intronum = _int($conf, 'intronum');
 	$limit = _int($conf, 'limit', 10);
+    $start = _int($conf, 'start', 0);
     $showcate = _int($conf, 'showcate', 0);
     $showviews = _int($conf, 'showviews', 0);
     $field_format = _int($conf, 'field_format', 0);
@@ -61,9 +63,9 @@ function block_list_prev_next($conf) {
     // hook block_list_prev_next_where_after.php
 
     if($type == 'prev'){
-        $list_arr = $run->cms_content->list_arr($prev_where, 'id', -1, 0, $limit, $limit, $extra);
+        $list_arr = $run->cms_content->list_arr($prev_where, 'id', -1, $start, $limit, $limit, $extra);
     }elseif ($type == 'next'){
-        $list_arr = $run->cms_content->list_arr($next_where, 'id', 1, 0, $limit, $limit, $extra);
+        $list_arr = $run->cms_content->list_arr($next_where, 'id', 1, $start, $limit, $limit, $extra);
     }else{
         $list_arr = array();
     }
