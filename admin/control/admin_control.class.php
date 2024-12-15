@@ -7,7 +7,7 @@
  */
 
 defined('ROOT_PATH') or exit;
-
+// hook admin_admin_control_before.php
 class admin_control extends control {
     public $_uid = 0;   //用户ID
     public $_user = array();	// 用户

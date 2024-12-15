@@ -1,6 +1,6 @@
 <?php
 defined('ROOT_PATH') or exit;
-
+// hook admin_content_control_before.php
 class content_control extends admin_control{
     public $_mid = 2;
     public $_table = 'article';
