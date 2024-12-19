@@ -627,12 +627,15 @@ function isSpider() {
     $agent= isset($_SERVER['HTTP_USER_AGENT']) ? strtolower($_SERVER['HTTP_USER_AGENT']) : '';
     if (!empty($agent)) {
         //手百UA  baiduboxapp
+        //yisouspider 神马
+        //Sogou 搜狗有多个，统一使用Sogou
         $spiderSite= array(
             "Baiduspider",
             "baiduboxapp",
             "Googlebot",
-            "Sogou Spider",
+            "Sogou",
             "360Spider",
+            "Bytespider",
             "HaosouSpider",
             "bing",
             "yisouspider",
