@@ -190,6 +190,7 @@ class cms_content extends model {
         if(isset($post['isremote']) && $post['isremote'] == '[db:远程图片本地化]' ) $post['isremote'] = 0;
         if(isset($post['iscomment']) && $post['iscomment'] == '[db:禁止评论]' ) $post['iscomment'] = 0;
         if(isset($post['content']) && $post['content'] == '[db:内容]' ) $post['content'] = '';
+        if(isset($post['show_tpl']) && $post['show_tpl'] == '[db:内容模板]' ) $post['show_tpl'] = '';
 		//处理发布时间
         if(isset($post['dateline']) && $post['dateline'] == '[db:发布时间]' ) unset($post['dateline']);
         //可以传递 2024-07-10 这种格式
@@ -293,6 +294,9 @@ class cms_content extends model {
             'seo_description' => isset($post['seo_description']) ? trim(strip_tags($post['seo_description'])) : '',
             'jumpurl' => isset($post['jumpurl']) ? trim($post['jumpurl']) : '',
         );
+        if(isset($post['show_tpl']) && $post['show_tpl']){
+            $cms_content['show_tpl'] = $post['show_tpl'];
+        }
         // hook cms_content_model_xadd_cms_content_after.php
 
         $cms_content_data = array(
@@ -568,6 +572,9 @@ class cms_content extends model {
             'seo_description' => isset($post['seo_description']) ? trim(strip_tags($post['seo_description'])) : '',
             'jumpurl' => isset($post['jumpurl']) ? trim($post['jumpurl']) : '',
         );
+        if(isset($post['show_tpl']) && $post['show_tpl']){
+            $cms_content['show_tpl'] = $post['show_tpl'];
+        }
         // hook cms_content_model_xedit_cms_content_after.php
 
         $cms_content_data = array(

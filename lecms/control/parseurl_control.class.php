@@ -249,7 +249,7 @@ class parseurl_control extends control{
                 break;
             case 2: //推荐型
                 // hook parseurl_control_content_url_switch_2_before.php
-                preg_match("/^(\w+)\/(\d+)$/i", $newurl, $mat);
+                preg_match("/^([a-zA-Z0-9-_]+)\/(\d+)$/i", $newurl, $mat);
                 if( isset($mat[2]) && isset($cate_arr[$mat[1]]) ){
                     $_GET['cid'] = $cate_arr[$mat[1]];
                     $_GET['id'] = $mat[2];

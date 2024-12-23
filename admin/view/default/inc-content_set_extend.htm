@@ -125,6 +125,12 @@
                             <input type="radio" name="iscomment" value="0" title="{lang:enable}" {if:empty($data[iscomment])}checked{/if} />
                         </div>
                     </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{lang:show_tpl}</label>
+                        <div class="layui-input-block">
+                            <input name="show_tpl" type="text" value="{$data[show_tpl]}" maxlength="80" class="layui-input" placeholder="{lang:show_tpl}" />
+                        </div>
+                    </div>
                     {hook:admin_content_set_right_after.htm}
                 </div>
             </div>

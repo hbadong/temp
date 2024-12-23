@@ -13,16 +13,11 @@ class only_alias extends model {
 	// 3.再排除分类表的 alias 字段
 	// 4.排除only_alias表的 alias 字段
 	public function check_alias($alias, $contentalias = 0) {
+        $alias_preg = "/^[0-9a-zA-Z-_]+$/i";
         // hook only_alias_model_check_alias_before.php
 
-	    if($contentalias == 0){
-            if(!preg_match('/^\w+$/', $alias)) {
-                return lang('alias_error_1');
-            }
-        }else{
-	        if(!preg_match("/^[0-9a-zA-Z-_]+$/i",$alias)){
-                return lang('alias_error_2');
-            }
+        if(!preg_match($alias_preg, $alias)){
+            return lang('alias_error_2');
         }
 		$cfg = $this->runtime->xget();
 		$keywords = $this->kv->xget('link_keywords'); // 保留关键词

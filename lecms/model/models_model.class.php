@@ -143,6 +143,7 @@ class models extends model {
           seo_keywords varchar(200) NOT NULL DEFAULT '' COMMENT 'SEO关键词',
           seo_description varchar(255) NOT NULL DEFAULT '' COMMENT 'SEO描述',
           jumpurl varchar(255) NOT NULL DEFAULT '' COMMENT '跳转URL',
+          show_tpl varchar(80) NOT NULL DEFAULT '' COMMENT '内容页模板',
           PRIMARY KEY  (id),
 		  KEY uid (uid),
           KEY cid_id (cid,id),
