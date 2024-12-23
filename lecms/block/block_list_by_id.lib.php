@@ -10,7 +10,8 @@ defined('ROOT_PATH') || exit;
  * @param int titlenum 标题长度
  * @param int intronum 简介长度
  * @param int showcate 是否显示分类信息
- * @param int showviews 是否内容浏览量信息
+ * @param int showviews 是否读取浏览量信息
+ * @param int showcontent 是否读取附表信息
  * @param int field_format 是否格式化主表自定义字段内容（主要是单选框、多选框、下拉框、图集等）
  * @param int life 缓存时间
  * @return array
@@ -28,6 +29,7 @@ function block_list_by_id($conf) {
 	$intronum = _int($conf, 'intronum');
     $showcate = _int($conf, 'showcate', 0);
     $showviews = _int($conf, 'showviews', 0);
+    $showcontent = _int($conf, 'showcontent', 0);
     $field_format = _int($conf, 'field_format', 0);
     $life = isset($conf['life']) ? (int)$conf['life'] : (isset($run->_cfg['life']) ? (int)$run->_cfg['life'] : 0);
     // hook block_list_by_id_conf_after.php
@@ -79,6 +81,15 @@ function block_list_by_id($conf) {
             $data['views'] = isset($views_arr['views']) ? (int)$views_arr['views'] : 0;
         }
 
+        if($showcontent){
+			$run->cms_content_data->table = 'cms_'.$table.'_data';
+			$cms_data = $run->cms_content_data->get($id);
+			if($cms_data){
+				$data += $cms_data;
+			}
+		}
+
+		// hook block_list_by_id_set_block_data_cache_before.php
         if($cache_key){
             $run->runtime->set_block_data_cache($cache_key, $data, $life);
         }
@@ -99,6 +110,15 @@ function block_list_by_id($conf) {
             $views_list_arr = array();
         }
 
+        if($showcontent){
+			$run->cms_content_data->table = 'cms_'.$table.'_data';
+			$cms_data_list_arr = $run->cms_content_data->mget($keys);
+			$cms_data_key = 'cms_'.$table.'_data-id-';
+		}else{
+			$cms_data_key = '';
+            $cms_data_list_arr = array();
+		}
+
         $xuhao = 1;
         foreach($list_arr as &$v) {
             $run->cms_content->format($v, $mid, $dateformat, $titlenum, $intronum, $field_format);
@@ -108,6 +128,12 @@ function block_list_by_id($conf) {
             }
             if($showviews && $views_list_arr){
                 $v['views'] = isset($views_list_arr[$views_key.$v['id']]['views']) ? (int)$views_list_arr[$views_key.$v['id']]['views'] : 0;
+            }
+            if($showcontent && $cms_data_list_arr){
+                $cms_data_arr = isset($cms_data_list_arr[$cms_data_key.$v['id']]) ? $cms_data_list_arr[$cms_data_key.$v['id']] : array();
+				if($cms_data_arr){
+					$v += $cms_data_arr;
+				}
             }
             $v['xuhao'] = $xuhao;
             $xuhao++;
