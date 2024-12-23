@@ -141,6 +141,11 @@ class core{
 				if(substr($u, -($suf_len)) == $url_suffix) $u = substr($u, 0, -($suf_len));
 			}
 
+            //处理带&的参数，例如：&page=1&limit=15
+            if(strpos($u, '&') !== false && strpos($u, '=') !== false){
+                $u = str_replace(array('&','='),'-',$u);
+            }
+            
 			$uarr = explode('-', $u);
 
 			if(isset($uarr[0])) {
