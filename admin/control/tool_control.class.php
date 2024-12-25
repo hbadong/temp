@@ -108,25 +108,7 @@ class tool_control extends admin_control{
     private function un_filecache() {
         // hook admin_tool_control_un_filecache_before.php
 
-        $_lecms = RUNTIME_PATH.'_lecms.php';
-        is_file($_lecms) && unlink($_lecms);
-
-        $tpmdir = array('_control', '_model', '_view');
-        foreach($tpmdir as $dir) {
-            _rmdir(RUNTIME_PATH.APP_NAME.$dir);
-            _rmdir(RUNTIME_PATH.F_APP_NAME.$dir);
-        }
-
-        //清除语言包缓存 by zhou 2023/02/07
-        _rmdir(RUNTIME_PATH.'core_lang');
-        _rmdir(RUNTIME_PATH.'lang');
-
-        //清除文件缓存文件夹
-        _rmdir(RUNTIME_PATH.'filecache');
-		
-		//清除自定义函数库文件缓存
-        $_misc = RUNTIME_PATH.'misc.func.php';
-        is_file($_misc) && unlink($_misc);
+        $this->runtime->clear_filecache();
 
         // hook admin_tool_control_un_filecache_after.php
         return TRUE;
