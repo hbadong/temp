@@ -187,5 +187,47 @@ class runtime extends model {
         return $datas;
     }
 
+    //清除缓存（可选 数据表缓存、文件缓存、或者两者）
+    public function clear_cache($type = 'all'){
+        // hook runtime_model_clear_cache_before.php
+        if($type == 'all'){
+            $this->truncate();
+            $this->clear_filecache();
+        }elseif ($type == 'db'){
+            $this->truncate();
+        }elseif ($type == 'file'){
+            $this->clear_filecache();
+        }
+        // hook runtime_model_clear_cache_after.php
+        return true;
+    }
+
+    //清除文件缓存
+    public function clear_filecache(){
+        // hook runtime_model_clear_filecache_before.php
+        $_lecms = RUNTIME_PATH.'_lecms.php';
+        is_file($_lecms) && unlink($_lecms);
+
+        $tpmdir = array('_control', '_model', '_view');
+        foreach($tpmdir as $dir) {
+            _rmdir(RUNTIME_PATH.APP_NAME.$dir);
+            defined(F_APP_NAME) && _rmdir(RUNTIME_PATH.F_APP_NAME.$dir);
+        }
+
+        //清除语言包缓存
+        _rmdir(RUNTIME_PATH.'core_lang');
+        _rmdir(RUNTIME_PATH.'lang');
+
+        //清除文件缓存文件夹
+        _rmdir(RUNTIME_PATH.'filecache');
+
+        //清除自定义函数库文件缓存
+        $_misc = RUNTIME_PATH.'misc.func.php';
+        is_file($_misc) && unlink($_misc);
+
+        // hook runtime_model_clear_filecache_after.php
+        return true;
+    }
+
     // hook runtime_model_after.php
 }
