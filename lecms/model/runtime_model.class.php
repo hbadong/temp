@@ -76,9 +76,11 @@ class runtime extends model {
 		}
         //移动端模板分离
         if($key == 'cfg' && !empty($this->data['cfg']['open_mobile_view']) && is_mobile()==1){
+            // hook runtime_model_xget_cfg_mobile_before.php
             $this->data['cfg']['theme'] =  isset($this->data['cfg']['mobile_view']) ? $this->data['cfg']['mobile_view'] : 'mobile';
             $this->data['cfg']['tpl'] = $this->data['cfg']['webdir'].'view/'.$this->data['cfg']['theme'].'/';
             $this->data['cfg']['weburl'] = HTTP.$_SERVER['HTTP_HOST'].$this->data['cfg']['webdir'];
+            // hook runtime_model_xget_cfg_mobile_after.php
         }
         // hook runtime_model_xget_cfg_after.php
 		return $this->data[$key];
