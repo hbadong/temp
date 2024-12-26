@@ -55,6 +55,7 @@ class sitemap_control extends control{
         foreach ($category as $cate){
             $url = $this->webroot.$this->category->category_url($cate);
             $sitemapObj->baiduxml_item($url, $today, $baidu_changefreq_category, $baidu_priority_category);
+            // hook sitemap_control_xml_category_url_foreach_after.php
         }
 
         // hook sitemap_control_xml_category_after.php
@@ -77,6 +78,7 @@ class sitemap_control extends control{
                         $url = $this->webroot.$this->cms_content->content_url($v, $mid);
                         $updatetime = date('c',$v['lasttime']);
                         $sitemapObj->baiduxml_item($url, $updatetime, $changefreq, $priority);
+                        // hook sitemap_control_xml_content_url_foreach_after.php
                     }
                 }
                 // hook sitemap_control_xml_content_after.php
@@ -87,6 +89,7 @@ class sitemap_control extends control{
                     foreach ($list_arr as $v){
                         $url = $this->webroot.$this->cms_content->tag_url($mid, $v);
                         $sitemapObj->baiduxml_item($url, '', $tag_changefreq, $tag_priority);
+                        // hook sitemap_control_xml_tag_url_foreach_after.php
                     }
                 }
                 // hook sitemap_control_xml_tag_after.php
@@ -107,9 +110,11 @@ class sitemap_control extends control{
                 echo '<changefreq>'.$v['changefreq'].'</changefreq>';
             }
             echo '<priority>'.$v['priority'].'</priority>'.PHP_EOL.'</url>'.PHP_EOL;
+            // hook sitemap_control_xml_url_foreach_after.php
         }
+        // hook sitemap_control_xml_urlset_after.php
         echo '</urlset>';
-
+        // hook sitemap_control_xml_urlset_end.php
         exit();
     }
 
@@ -130,6 +135,7 @@ class sitemap_control extends control{
         foreach ($category as $cate){
             $url = $this->webroot.$this->category->category_url($cate);
             $Htmlx .= '<li><a href="' . $url . '" title="' . $cate['name'] . '" target="_blank">' . $cate['name'] . '</a></li>';
+            // hook sitemap_control_html_category_url_foreach_after.php
         }
 
         // hook sitemap_control_html_category_after.php
@@ -146,6 +152,7 @@ class sitemap_control extends control{
                     foreach ($list_arr as $v){
                         $url = $this->webroot.$this->cms_content->content_url($v, $mid);
                         $Htmlx .= '<li><a href="' . $url . '" title="' . $v['title'] . '" target="_blank">' . $v['title'] . '</a></li>';
+                        // hook sitemap_control_html_content_url_foreach_after.php
                     }
                 }
                 // hook sitemap_control_html_content_after.php
@@ -156,6 +163,7 @@ class sitemap_control extends control{
                     foreach ($list_arr as $v){
                         $url = $this->webroot.$this->cms_content->tag_url($mid, $v);
                         $Htmlx .= '<li><a href="' . $url . '" title="' . $v['name'] . '" target="_blank">' . $v['name'] . '</a></li>';
+                        // hook sitemap_control_html_tag_url_foreach_after.php
                     }
                 }
                 // hook sitemap_control_tag_content_after.php
@@ -187,6 +195,7 @@ class sitemap_control extends control{
         foreach ($category as $cate){
             $url = $this->webroot.$this->category->category_url($cate);
             $txtx .= $url . PHP_EOL;
+            // hook sitemap_control_txt_category_url_foreach_after.php
         }
         // hook sitemap_control_txt_category_after.php
 
@@ -202,6 +211,7 @@ class sitemap_control extends control{
                     foreach ($list_arr as $v){
                         $url = $this->webroot.$this->cms_content->content_url($v, $mid);
                         $txtx .= $url . PHP_EOL;
+                        // hook sitemap_control_txt_content_url_foreach_after.php
                     }
                 }
                 // hook sitemap_control_txt_content_after.php
@@ -212,6 +222,7 @@ class sitemap_control extends control{
                     foreach ($list_arr as $v){
                         $url = $this->webroot.$this->cms_content->tag_url($mid, $v);
                         $txtx .= $url . PHP_EOL;
+                        // hook sitemap_control_txt_tag_url_foreach_after.php
                     }
                 }
                 // hook sitemap_control_txt_tag_after.php
