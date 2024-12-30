@@ -5,6 +5,17 @@ class user extends model {
     private $data = array();		// 防止重复查询
     public $_login_method = 'cookie';   //使用cookie方式登录
 
+    public $_field_length = array(
+        'username'=>16,
+        'author'=>50,
+        'email'=>50,
+        'homepage'=>255,
+        'intro'=>255,
+        'mobile'=>20,
+        'avatar'=>255,
+        // hook user_model_field_length_after.php
+    );
+
 	function __construct() {
 		$this->table = 'user';		// 表名
 		$this->pri = array('uid');	// 主键
