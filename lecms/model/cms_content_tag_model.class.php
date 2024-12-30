@@ -4,6 +4,16 @@ defined('ROOT_PATH') or exit;
 class cms_content_tag extends model {
     private $data = array();		// 防止重复查询
 
+    public $_field_length = array(
+        'name'=>80,
+        'content'=>255,
+        'pic'=>255,
+        'seo_title'=>255,
+        'seo_keywords'=>255,
+        'seo_description'=>255,
+        // hook cms_content_tag_model_field_length_after.php
+    );
+
 	function __construct() {
 		$this->table = '';				// 内容标签表表名 比如 cms_article_tag
 		$this->pri = array('tagid');	// 主键
