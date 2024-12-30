@@ -2,6 +2,14 @@
 defined('ROOT_PATH') or exit;
 
 class cms_content_attach extends model {
+    
+    public $_field_length = array(
+        'filename'=>200,
+        'filetype'=>10,
+        'filepath'=>200,
+        // hook cms_content_attach_model_field_length_after.php
+    );
+
 	function __construct() {
 		$this->table = '';			// 表名
 		$this->pri = array('aid');	// 主键
