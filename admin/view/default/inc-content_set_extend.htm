@@ -19,7 +19,7 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label required">{lang:title}</label>
                         <div class="layui-input-block">
-                            <input type="text" name="title" value="{$data[title]}" maxlength="80" autocomplete="off" placeholder="{lang:title}" class="layui-input" lay-verify="required" lay-reqtext="{lang:title_no_empty}" />
+                            <input type="text" name="title" value="{$data[title]}" maxlength="200" autocomplete="off" placeholder="{lang:title}" class="layui-input" lay-verify="required" lay-reqtext="{lang:title_no_empty}" />
                         </div>
                     </div>
                     {hook:admin_content_set_title_after.htm}
@@ -52,7 +52,7 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">{lang:alias}</label>
                         <div class="layui-input-inline">
-                            <input name="alias" type="text" value="{$data[alias]}" maxlength="50" class="layui-input" placeholder="{lang:alias}" />
+                            <input name="alias" type="text" value="{$data[alias]}" maxlength="80" class="layui-input" placeholder="{lang:alias}" />
                         </div>
                         <div class="layui-form-mid layui-word-aux">{lang:alias_tips}</div>
                     </div>
@@ -79,7 +79,7 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">{lang:author}</label>
                         <div class="layui-input-block">
-                            <input name="author" type="text" value="{$data[author]}" maxlength="20" class="layui-input" placeholder="{lang:author}" />
+                            <input name="author" type="text" value="{$data[author]}" maxlength="50" class="layui-input" placeholder="{lang:author}" />
                         </div>
                     </div>
                     <div class="layui-form-item">
@@ -97,13 +97,13 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">{lang:seo_title}</label>
                         <div class="layui-input-block">
-                            <input type="text" name="seo_title" value="{$data[seo_title]}" maxlength="100" autocomplete="off" placeholder="{lang:seo_title}" class="layui-input">
+                            <input type="text" name="seo_title" value="{$data[seo_title]}" maxlength="255" autocomplete="off" placeholder="{lang:seo_title}" class="layui-input">
                         </div>
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">{lang:seo_keywords}</label>
                         <div class="layui-input-block">
-                            <input type="text" name="seo_keywords" value="{$data[seo_keywords]}" maxlength="200" autocomplete="off" placeholder="{lang:seo_keywords}" class="layui-input">
+                            <input type="text" name="seo_keywords" value="{$data[seo_keywords]}" maxlength="255" autocomplete="off" placeholder="{lang:seo_keywords}" class="layui-input">
                         </div>
                     </div>
                     <div class="layui-form-item">
