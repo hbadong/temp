@@ -4,6 +4,12 @@ defined('ROOT_PATH') or exit;
 class cms_content_comment extends model {
     private $data = array();		// 防止重复查询
 
+    public $_field_length = array(
+        'author'=>50,
+        'content'=>255,
+        // hook cms_content_comment_model_field_length_after.php
+    );
+
 	function __construct() {
 		$this->table = 'cms_comment';			// 表名
 		$this->pri = array('commentid');	// 主键
