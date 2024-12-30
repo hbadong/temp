@@ -4,6 +4,19 @@ defined('ROOT_PATH') or exit;
 class category extends model {
 	private $data = array();		// 防止重复查询
 
+    public $_field_length = array(
+        'name'=>50,
+        'alias'=>50,
+        'pic'=>255,
+        'intro'=>255,
+        'cate_tpl'=>80,
+        'show_tpl'=>80,
+        'seo_title'=>255,
+        'seo_keywords'=>255,
+        'seo_description'=>255,
+        // hook category_model_field_length_after.php
+    );
+
 	function __construct() {
 		$this->table = 'category';	// 表名
 		$this->pri = array('cid');	// 主键
