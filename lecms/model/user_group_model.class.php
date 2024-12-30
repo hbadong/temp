@@ -4,6 +4,11 @@ defined('ROOT_PATH') or exit;
 class user_group extends model {
     private $data = array();		// 防止重复查询
 
+    public $_field_length = array(
+        'groupname'=>20,
+        // hook user_group_model_field_length_after.php
+    );
+
 	function __construct() {
 		$this->table = 'user_group';	// 表名
 		$this->pri = array('groupid');	// 主键
