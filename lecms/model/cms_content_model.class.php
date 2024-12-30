@@ -14,6 +14,7 @@ class cms_content extends model {
     public $_field_length = array(
         'title'=>200,
         'alias'=>80,
+        'tags'=>255,
         'pic'=>255,
         'intro'=>255,
         'author'=>50,
