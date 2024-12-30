@@ -129,7 +129,7 @@ class models extends model {
           intro varchar(255) NOT NULL DEFAULT '' COMMENT '内容介绍',
           pic varchar(255) NOT NULL DEFAULT '' COMMENT '图片地址',
           uid int(10) unsigned NOT NULL DEFAULT '0' COMMENT '用户ID',
-          author varchar(20) NOT NULL DEFAULT '' COMMENT '作者(昵称)',
+          author varchar(50) NOT NULL DEFAULT '' COMMENT '作者(昵称)',
           source varchar(100) NOT NULL DEFAULT '' COMMENT '来源',
           dateline int(10) unsigned NOT NULL DEFAULT '0' COMMENT '发表时间',
           lasttime int(10) unsigned NOT NULL DEFAULT '0' COMMENT '更新时间',
