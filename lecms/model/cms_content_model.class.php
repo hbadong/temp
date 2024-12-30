@@ -11,6 +11,21 @@ class cms_content extends model {
         1=>'Recommend',2=>'Hot',3=>'Headline',4=>'Choice',5=>'Slide'
     );
 
+    public $_field_length = array(
+        'title'=>200,
+        'alias'=>80,
+        'pic'=>255,
+        'intro'=>255,
+        'author'=>50,
+        'source'=>100,
+        'seo_title'=>255,
+        'seo_keywords'=>255,
+        'seo_description'=>255,
+        'jumpurl'=>255,
+        'show_tpl'=>80,
+        // hook cms_content_model_field_length_after.php
+    );
+
 	function __construct() {
 		$this->table = '';			// 内容表表名 比如 cms_article
 		$this->pri = array('id');	// 主键
