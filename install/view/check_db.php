@@ -108,7 +108,7 @@ $err = 0;
                             <div class="layui-form-item">
                                 <label class="layui-form-label"><?php echo lang('author'); ?>:</label>
                                 <div class="layui-input-inline">
-                                    <input type="text" name="adm_author" maxlength="20" value="<?php echo lang('author_name'); ?>" autocomplete="off" class="layui-input">
+                                    <input type="text" name="adm_author" maxlength="50" value="<?php echo lang('author_name'); ?>" autocomplete="off" class="layui-input">
                                 </div>
                             </div>
                         </div>
