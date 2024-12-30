@@ -125,16 +125,24 @@ class tag_control extends admin_control {
 	public function add() {
         // hook admin_tag_control_add_before.php
         if(empty($_POST)) {
-            $midhtml = $this->cms_content_tag->get_taghtml_mid($this->_mid, 'lay-filter="mid"');
-            $this->assign('midhtml',$midhtml);
-
             $data = array(
                 'tagid'=>0,
+                'name'=>'',
+                'orderby'=>0,
+                'pic'=>'',
+                'content'=>'',
+                'seo_title'=>'',
+                'seo_keywords'=>'',
+                'seo_description'=>'',
             );
 
-            // hook admin_tag_control_add_after.php
+            // hook admin_tag_control_add_data_after.php
             $this->assign('data',$data);
 
+            $input = $this->get_input($data);
+            // hook admin_tag_control_add_get_input_after.php
+            $this->assign('input',$input);
+            // hook admin_tag_control_add_after.php
             $this->display('tag_set.htm');
         }else{
             $name = trim(safe_str(R('name', 'P')));
@@ -211,19 +219,39 @@ class tag_control extends admin_control {
         }
 	}
 
+    protected function get_input($data = array())
+    {
+        $input = array();
+        $input['mid'] = $this->cms_content_tag->get_taghtml_mid($this->_mid, 'lay-filter="mid"');
+        $input['name'] = form::get_text('name', $data['name'], '', 'placeholder="'.lang('tagname').'" maxlength="'.$this->cms_content_tag->_field_length['name'].'"');
+
+        $input['pic'] = form::get_text('pic', $data['pic'], '', 'id="pic_val" placeholder="'.lang('thumb').'" maxlength="'.$this->cms_content_tag->_field_length['pic'].'"');
+        $input['orderby'] = form::get_number('orderby', $data['orderby'], '', 'placeholder="'.lang('orderby').'"');
+        $input['content'] = form::get_text('content', $data['content'], '', 'placeholder="'.lang('content').'" maxlength="'.$this->cms_content_tag->_field_length['content'].'"');
+
+        $input['seo_title'] = form::get_text('seo_title', $data['seo_title'], '', 'placeholder="'.lang('seo_title').'" maxlength="'.$this->cms_content_tag->_field_length['seo_title'].'"');
+        $input['seo_keywords'] = form::get_text('seo_keywords', $data['seo_keywords'], '', 'placeholder="'.lang('seo_keywords').'" maxlength="'.$this->cms_content_tag->_field_length['seo_keywords'].'"');
+        $input['seo_description'] = form::get_text('seo_description', $data['seo_description'], '', 'placeholder="'.lang('seo_description').'" maxlength="'.$this->cms_content_tag->_field_length['seo_description'].'"');
+
+        // hook admin_tag_control_get_input_after.php
+        return $input;
+    }
+
 	//编辑
     public function edit(){
         // hook admin_tag_control_edit_before.php
 
 	    if(empty($_POST)){
-            $midhtml = $this->cms_content_tag->get_taghtml_mid($this->_mid, 'lay-filter="mid"');
-            $this->assign('midhtml',$midhtml);
-
             $tagid = intval( R('tagid','G') );
             $data = $this->cms_content_tag->get($tagid);
             if(empty($data)) $this->message(0, lang('data_error'), -1);
 
+            // hook admin_tag_control_edit_data_after.php
             $this->assign('data',$data);
+
+            $input = $this->get_input($data);
+            // hook admin_tag_control_edit_get_input_after.php
+            $this->assign('input',$input);
 
             $this->display('tag_set.htm');
         }else{

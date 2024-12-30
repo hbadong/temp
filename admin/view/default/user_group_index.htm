@@ -19,7 +19,7 @@
         <div class="layui-form-item">
             <label class="layui-form-label required">{lang:user_group}</label>
             <div class="layui-input-block">
-                <input id="t_name" name="groupname" type="text" required="required" class="layui-input" />
+                <input id="t_name" name="groupname" type="text" required="required" class="layui-input" maxlength="20" />
             </div>
         </div>
     </div>
@@ -37,7 +37,7 @@
 
         table.render({
             elem: '#data-table',
-            url: 'index.php?user_group-get_list-',
+            url: 'index.php?user_group-get_list',
             height: 'full-100',
             toolbar: '#toolbar',
             defaultToolbar: ['filter', 'exports', 'print'],

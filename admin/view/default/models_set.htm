@@ -12,13 +12,13 @@
                         <div class="layui-form-item">
                             <label class="layui-form-label required">{lang:model_name}</label>
                             <div class="layui-input-inline">
-                              <input type="text" name="name" maxlength="30" required="required" placeholder="{lang:model_name}" value="" class="layui-input"/>
+                                {$input[name]}
                             </div>
                         </div>
                         <div class="layui-form-item">
                             <label class="layui-form-label required">{lang:table}</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="tablename" maxlength="20" required="required" placeholder="{lang:table}" value="" class="layui-input"/>
+                                {$input[tablename]}
                             </div>
                             <div class="layui-form-mid layui-word-aux">{lang:modeltablename_no_safe}</div>
                         </div>
@@ -26,19 +26,19 @@
                         <div class="layui-form-item">
                             <label class="layui-form-label required">{lang:pic_width}</label>
                             <div class="layui-input-inline">
-                                <input type="number" name="width" required="required" value="160" placeholder="{lang:pic_width}" autocomplete="off" class="layui-input"/>
+                                {$input[width]}
                             </div>
                         </div>
                         <div class="layui-form-item">
                             <label class="layui-form-label required">{lang:pic_height}</label>
                             <div class="layui-input-inline">
-                                <input type="number" name="height" required="required" value="120" placeholder="{lang:pic_height}" autocomplete="off" class="layui-input"/>
+                                {$input[height]}
                             </div>
                         </div>
                         <div class="layui-form-item">
                             <label class="layui-form-label required">{lang:menu_icon}</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="icon" maxlength="30" value="fa fa-bars" placeholder="{lang:menu_icon}" autocomplete="off" class="layui-input"/>
+                                {$input[icon]}
                             </div>
                         </div>
                         {hook:admin_models_set_after.htm}

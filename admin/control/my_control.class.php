@@ -122,11 +122,11 @@ class my_control extends admin_control {
         if(empty($_POST)) {
             $this->user->format($this->_user);
             $input = array();
-            $input['username'] = form::get_text('username', $this->_user['username'], 'layui-input', 'maxlength="16" required="required" lay-verify="required"');
-            $input['email'] = form::get_text('email', $this->_user['email'], 'layui-input', 'maxlength="50"');
-            $input['author'] = form::get_text('author', $this->_user['author'], 'layui-input', 'maxlength="50"');
-            $input['homepage'] = form::get_text('homepage', $this->_user['homepage'], 'layui-input', 'maxlength="255"');
-            $input['intro'] = form::get_textarea('intro', $this->_user['intro'], 'layui-textarea', 'maxlength="255"');
+            $input['username'] = form::get_text('username', $this->_user['username'], '', 'placeholder="'.lang('username').'" maxlength="'.$this->user->_field_length['username'].'" required="required" lay-verify="required"');
+            $input['email'] = form::get_text('email', $this->_user['email'], '', 'placeholder="'.lang('email').'" maxlength="'.$this->user->_field_length['email'].'"');
+            $input['author'] = form::get_text('author', $this->_user['author'], '', 'placeholder="'.lang('author').'" maxlength="'.$this->user->_field_length['author'].'"');
+            $input['homepage'] = form::get_text('homepage', $this->_user['homepage'], '', 'placeholder="'.lang('homepage').'" maxlength="'.$this->user->_field_length['homepage'].'"');
+            $input['intro'] = form::get_textarea('intro', $this->_user['intro'], '', 'placeholder="'.lang('intro').'" maxlength="'.$this->user->_field_length['intro'].'"');
 
             // hook admin_my_control_info_after.php
             $this->assign('input', $input);

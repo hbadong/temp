@@ -127,15 +127,25 @@ class user_control extends admin_control{
     public function add(){
         // hook admin_user_control_add_before.php
         if(empty($_POST)){
-            $def = 11;//默认为普通用户
-
-            // 获取用户组下拉框
-            $groupidhtml = $this->user_group->get_groupidhtml($def, lang('select_user_group'));
-            $this->assign('groupidhtml', $groupidhtml);
-
-            $data = array('password'=>'123456');
+            $data = array(
+                'uid'=>0,
+                'username'=>'',
+                'password'=>'123456',
+                'author'=>'',
+                'groupid'=>11,
+                'email'=>'',
+                'homepage'=>'',
+                'intro'=>'',
+                'credits'=>0,
+                'golds'=>0,
+                'mobile'=>''
+            );
             // hook admin_user_control_add_data_after.php
             $this->assign('data', $data);
+
+            $input = $this->get_input($data);
+            // hook admin_user_control_add_get_input_after.php
+            $this->assign('input',$input);
 
             $this->display('user_set.htm');
         }else{
@@ -199,6 +209,26 @@ class user_control extends admin_control{
         }
     }
 
+    protected function get_input($data = array())
+    {
+        $input = array();
+
+        // 获取用户组下拉框
+        $input['groupid'] = $this->user_group->get_groupidhtml($data['groupid'], lang('select_user_group'));
+
+        $input['username'] = form::get_text('username', $data['username'], '', 'placeholder="'.lang('username').'" maxlength="'.$this->user->_field_length['username'].'" required="required" lay-verify="required" lay-reqtext="'.lang('username_dis_empty').'" autocomplete="off"');
+        $input['author'] = form::get_text('author', $data['author'], '', 'placeholder="'.lang('author').'" maxlength="'.$this->user->_field_length['author'].'"');
+        $input['email'] = form::get_text('email', $data['email'], '', 'placeholder="'.lang('email').'" maxlength="'.$this->user->_field_length['email'].'"');
+        $input['mobile'] = form::get_text('mobile', $data['mobile'], '', 'placeholder="'.lang('mobile').'" maxlength="'.$this->user->_field_length['mobile'].'"');
+        $input['credits'] = form::get_number('credits', $data['credits'], '', 'placeholder="'.lang('credits').'"');
+        $input['golds'] = form::get_number('golds', $data['golds'], '', 'placeholder="'.lang('golds').'"');
+        $input['homepage'] = form::get_text('homepage', $data['homepage'], '', 'placeholder="'.lang('homepage').'" maxlength="'.$this->user->_field_length['homepage'].'"');
+        $input['intro'] = form::get_text('intro', $data['intro'], '', 'placeholder="'.lang('intro').'" maxlength="'.$this->user->_field_length['intro'].'"');
+
+        // hook admin_user_control_get_input_after.php
+        return $input;
+    }
+
     //编辑
     public function edit(){
         if(empty($_POST)){
@@ -208,11 +238,13 @@ class user_control extends admin_control{
             if(empty($data)) $this->message(0, lang('data_error'), -1);
 
             // hook admin_user_control_edit_before.php
-            // 获取用户组下拉框
-            $groupidhtml = $this->user_group->get_groupidhtml($data['groupid'], lang('select_user_group'));
-            $this->assign('groupidhtml', $groupidhtml);
 
             $this->assign('data', $data);
+
+            $input = $this->get_input($data);
+            // hook admin_user_control_edit_get_input_after.php
+            $this->assign('input',$input);
+
             $this->display('user_set.htm');
         }else{
             $uid = intval(R('uid', 'P'));

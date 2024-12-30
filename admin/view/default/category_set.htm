@@ -21,8 +21,7 @@
                         <div class="layui-form-item" id="i_type">
                             <label class="layui-form-label required">{lang:type}</label>
                             <div class="layui-input-block">
-                                <input lay-filter="type" name="type" type="radio" value="0" title="{lang:cate_type_0}" {if:$data[type] == 0}checked{/if}>
-                                <input lay-filter="type" name="type" type="radio" value="1" title="{lang:cate_type_1}" {if:$data[type] == 1}checked{/if}>
+                                {$input[type]}
                             </div>
                         </div>
                         <div class="layui-form-item" id="i_upid">
@@ -35,26 +34,26 @@
                             <div class="layui-inline">
                                 <label class="layui-form-label required">{lang:category_name}</label>
                                 <div class="layui-input-inline">
-                                    <input name="name" value="{$data[name]}" placeholder="{lang:category_name}" maxlength="50" type="text" class="layui-input" required="required" lay-verify="required"/>
+                                    {$input[name]}
                                 </div>
                             </div>
                             <div class="layui-inline">
                                 <label class="layui-form-label required">{lang:alias}</label>
                                 <div class="layui-input-inline">
-                                    <input name="alias" value="{$data[alias]}" placeholder="{lang:alias}" maxlength="50" type="text" class="layui-input" required="required" lay-verify="required"/>
+                                    {$input[alias]}
                                 </div>
                             </div>
                         </div>
                         <div class="layui-form-item">
                             <label class="layui-form-label">{lang:intro}</label>
                             <div class="layui-input-block">
-                                <input name="intro" value="{$data[intro]}" placeholder="{lang:intro}" maxlength="255" type="text" class="layui-input" />
+                                {$input[intro]}
                             </div>
                         </div>
                         <div class="layui-form-item">
                             <label class="layui-form-label">{lang:thumb}</label>
                             <div class="layui-input-block">
-                                <div class="layui-input-inline"><input name="pic" value="{$data[pic]}" id="pic_val" placeholder="{lang:thumb}" type="text" class="layui-input" /></div>
+                                <div class="layui-input-inline">{$input[pic]}</div>
                                 <div class="layui-input-inline">
                                     <button type="button" class="layui-btn" id="pic">
                                         <i class="layui-icon">&#xe67c;</i>{lang:upload_pic}
@@ -66,14 +65,13 @@
                             <div class="layui-inline">
                                 <label class="layui-form-label">{lang:orderby}</label>
                                 <div class="layui-input-inline">
-                                    <input name="orderby" value="{$data[orderby]}" type="number" class="layui-input" />
+                                    {$input[orderby]}
                                 </div>
                             </div>
                             <div class="layui-inline" id="i_contribute">
                                 <label class="layui-form-label">{lang:contribute}</label>
                                 <div class="layui-input-inline">
-                                    <input title="{lang:disable}" name="contribute" type="radio" value="0" {if:$data[contribute] == 0}checked{/if}>
-                                    <input title="{lang:enable}" name="contribute" type="radio" value="1" {if:$data[contribute] == 1}checked{/if}>
+                                    {$input[contribute]}
                                 </div>
                             </div>
                         </div>
@@ -86,19 +84,19 @@
                         <div class="layui-form-item">
                             <label class="layui-form-label">{lang:seo_title}</label>
                             <div class="layui-input-block">
-                                <input class="layui-input" placeholder="{lang:seo_title}" maxlength="255" type="text" name="seo_title" value="{$data[seo_title]}" />
+                                {$input[seo_title]}
                             </div>
                         </div>
                         <div class="layui-form-item">
                             <label class="layui-form-label">{lang:seo_keywords}</label>
                             <div class="layui-input-block">
-                                <input class="layui-input" placeholder="{lang:seo_keywords}" maxlength="255" type="text" name="seo_keywords" value="{$data[seo_keywords]}" />
+                                {$input[seo_keywords]}
                             </div>
                         </div>
                         <div class="layui-form-item">
                             <label class="layui-form-label">{lang:seo_description}</label>
                             <div class="layui-input-block">
-                                <input class="layui-input" placeholder="{lang:seo_description}" maxlength="255" type="text" name="seo_description" value="{$data[seo_description]}" />
+                                {$input[seo_description]}
                             </div>
                         </div>
                     </div>
@@ -111,13 +109,13 @@
                             <div class="layui-inline" id="i_cate_tpl">
                                 <label class="layui-form-label required">{lang:cate_tpl}</label>
                                 <div class="layui-input-inline">
-                                    <input class="layui-input" type="text" name="cate_tpl" id="cate_tpl" value="{$data[cate_tpl]}" maxlength="80" />
+                                    {$input[cate_tpl]}
                                 </div>
                             </div>
                             <div class="layui-inline" id="i_show_tpl">
                                 <label class="layui-form-label required">{lang:show_tpl}</label>
                                 <div class="layui-input-inline">
-                                    <input class="layui-input" type="text" name="show_tpl" id="show_tpl" value="{$data[show_tpl]}" maxlength="80" />
+                                    {$input[show_tpl]}
                                 </div>
                             </div>
                         </div>

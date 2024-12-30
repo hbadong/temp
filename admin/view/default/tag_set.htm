@@ -9,13 +9,13 @@
                         <div class="layui-form-item">
                             <label class="layui-form-label required">{lang:model}</label>
                             <div class="layui-input-inline">
-                                {$midhtml}
+                                {$input[mid]}
                             </div>
                         </div>
                         <div class="layui-form-item">
-                            <label class="layui-form-label required">{lang:tagname}</label>
+                            <label class="layui-form-label">{lang:tagname}</label>
                             <div class="layui-input-inline">
-                              <input type="text" name="name" placeholder="{lang:tagname}" value="{$data[name]}" class="layui-input"/>
+                                {$input[name]}
                             </div>
                         </div>
                         {if:$_GET['action'] == 'add'}
@@ -29,19 +29,19 @@
                         <div class="layui-form-item">
                             <label class="layui-form-label">{lang:orderby}</label>
                             <div class="layui-input-inline">
-                                <input type="number" name="orderby" placeholder="{lang:orderby}" value="{$data[orderby]}" class="layui-input"/>
+                                {$input[orderby]}
                             </div>
                         </div>
                         <div class="layui-form-item">
                             <label class="layui-form-label">{lang:content}</label>
                             <div class="layui-input-block">
-                                <textarea name="content" class="layui-textarea" autocomplete="off" placeholder="{lang:content}" style="min-height: 50px;" maxlength="255">{$data[content]}</textarea>
+                                {$input[content]}
                             </div>
                         </div>
                         <div class="layui-form-item">
                             <label class="layui-form-label">{lang:thumb}</label>
                             <div class="layui-input-block">
-                                <div class="layui-inline"><input id="pic_val" name="pic" type="text" value="{$data[pic]}" class="layui-input" placeholder="{lang:thumb}" /></div>
+                                <div class="layui-inline">{$input[pic]}</div>
                                 <div class="layui-inline">
                                     <button type="button" class="layui-btn layui-btn-sm" id="pic">
                                         <i class="layui-icon">&#xe67c;</i>{lang:upload_pic}
@@ -52,19 +52,19 @@
                         <div class="layui-form-item">
                             <label class="layui-form-label">{lang:seo_title}</label>
                             <div class="layui-input-block">
-                                <input type="text" name="seo_title" value="{$data[seo_title]}" autocomplete="off" placeholder="{lang:seo_title}" class="layui-input" maxlength="255">
+                                {$input[seo_title]}
                             </div>
                         </div>
                         <div class="layui-form-item">
                             <label class="layui-form-label">{lang:seo_keywords}</label>
                             <div class="layui-input-block">
-                                <input type="text" name="seo_keywords" value="{$data[seo_keywords]}" autocomplete="off" placeholder="{lang:seo_keywords}" class="layui-input" maxlength="255">
+                                {$input[seo_keywords]}
                             </div>
                         </div>
                         <div class="layui-form-item">
                             <label class="layui-form-label">{lang:seo_description}</label>
                             <div class="layui-input-block">
-                                <textarea name="seo_description" class="layui-textarea" autocomplete="off" placeholder="{lang:seo_description}" style="min-height: 50px;" maxlength="255">{$data[seo_description]}</textarea>
+                                {$input[seo_description]}
                             </div>
                         </div>
                         {hook:admin_tag_set_after.htm}

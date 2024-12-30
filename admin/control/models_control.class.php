@@ -69,8 +69,8 @@ class models_control extends admin_control {
                 }
             }
 
-            if(($field == 'index_tpl' || $field == 'cate_tpl' || $field == 'show_tpl') && strlen($value) > 80){
-                E(1, lang('many_characters', array('field'=>$field,'length'=>80)));
+            if(($field == 'index_tpl' || $field == 'cate_tpl' || $field == 'show_tpl') && strlen($value) > $this->models->_field_length[$field]){
+                E(1, lang('many_characters', array('field'=>$field,'length'=>$this->models->_field_length[$field])));
             }
 
             $models = $this->models->get($mid);
@@ -91,8 +91,20 @@ class models_control extends admin_control {
     public function add(){
         if(empty($_POST)) {
             // hook admin_models_control_add_before.php
-            $data = array('mid'=>0);
+            $data = array(
+                'mid'=>0,
+                'name'=>'',
+                'tablename'=>'',
+                'width'=>160,
+                'height'=>120,
+                'icon'=>'fa fa-bars',
+            );
+            // hook admin_models_control_add_data_after.php
             $this->assign('data', $data);
+
+            $input = $this->get_input($data);
+            // hook admin_models_control_add_get_input_after.php
+            $this->assign('input',$input);
 
             $this->display('models_set.htm');
         }else{
@@ -126,6 +138,20 @@ class models_control extends admin_control {
             // hook admin_models_control_add_post_success.php
             E(0, lang('add_successfully'));
         }
+    }
+
+    protected function get_input($data = array())
+    {
+        $input = array();
+
+        $input['name'] = form::get_text('name', $data['name'], '', 'placeholder="'.lang('model_name').'" maxlength="'.$this->models->_field_length['name'].'" required="required" lay-verify="required"');
+        $input['tablename'] = form::get_text('tablename', $data['tablename'], '', 'placeholder="'.lang('table').'" maxlength="'.$this->models->_field_length['tablename'].'" required="required" lay-verify="required"');
+        $input['icon'] = form::get_text('icon', $data['icon'], '', 'placeholder="'.lang('menu_icon').'" maxlength="'.$this->models->_field_length['icon'].'"');
+        $input['width'] = form::get_number('width', $data['width'], '', 'placeholder="'.lang('pic_width').'" required="required" lay-verify="required"');
+        $input['height'] = form::get_number('height', $data['height'], '', 'placeholder="'.lang('pic_height').'" required="required" lay-verify="required"');
+
+        // hook admin_models_control_get_input_after.php
+        return $input;
     }
 
     //删除

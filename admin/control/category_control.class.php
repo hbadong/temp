@@ -135,19 +135,30 @@ class category_control extends admin_control{
             $def_model = $this->models->get($def_mid);
 
             $data = array(
-                'mid'=>$def_mid,
-                'upid'=>0,
                 'cid'=>0,
+                'mid'=>$def_mid,
                 'type'=>0,
-                'orderby'=>0,
-                'count'=>0,
-                'son_cate'=>0,
+                'upid'=>0,
+                'name'=>'',
+                'alias'=>'',
+                'pic'=>'',
+                'intro'=>'',
                 'cate_tpl'=>$def_model['cate_tpl'],
                 'show_tpl'=>$def_model['show_tpl'],
+                'count'=>0,
+                'orderby'=>0,
+                'seo_title'=>'',
+                'seo_keywords'=>'',
+                'seo_description'=>'',
                 'contribute'=>0,
+                'son_cate'=>0
             );
             // hook admin_category_control_add_data_after.php
             $this->assign('data',$data);
+
+            $input = $this->get_input($data);
+            // hook admin_category_control_add_get_input_after.php
+            $this->assign('input',$input);
 
             $this->display('category_set.htm');
         }else{
@@ -180,6 +191,32 @@ class category_control extends admin_control{
             $this->runtime->truncate();
             E(0, lang('add_successfully'));
         }
+    }
+
+    protected function get_input($data = array())
+    {
+        $input = array();
+        $type_arr = array(0=>lang('cate_type_0'), 1=>lang('cate_type_1'));
+        $input['type'] = form::get_radio_layui('type', $type_arr, $data['type'], 'lay-filter="type"');
+        $input['name'] = form::get_text('name', $data['name'], '', 'placeholder="'.lang('category_name').'" maxlength="'.$this->category->_field_length['name'].'" required="required" lay-verify="required"');
+        $input['alias'] = form::get_text('alias', $data['alias'], '', 'placeholder="'.lang('alias').'" maxlength="'.$this->category->_field_length['alias'].'" required="required" lay-verify="required"');
+
+        $input['intro'] = form::get_text('intro', $data['intro'], '', 'placeholder="'.lang('intro').'" maxlength="'.$this->category->_field_length['intro'].'"');
+        $input['pic'] = form::get_text('pic', $data['pic'], '', 'id="pic_val" placeholder="'.lang('thumb').'" maxlength="'.$this->category->_field_length['pic'].'"');
+        $input['orderby'] = form::get_number('orderby', $data['orderby'], '', 'placeholder="'.lang('orderby').'"');
+
+        $contribute_arr = array(0=>lang('disable'), 1=>lang('enable'));
+        $input['contribute'] = form::get_radio_layui('contribute', $contribute_arr, $data['contribute'], 'lay-filter="contribute"');
+
+        $input['cate_tpl'] = form::get_text('cate_tpl', $data['cate_tpl'], '', 'id="cate_tpl" placeholder="'.lang('cate_tpl').'" maxlength="'.$this->category->_field_length['cate_tpl'].'" required="required" lay-verify="required"');
+        $input['show_tpl'] = form::get_text('show_tpl', $data['show_tpl'], '', 'id="show_tpl" placeholder="'.lang('show_tpl').'" maxlength="'.$this->category->_field_length['show_tpl'].'" required="required" lay-verify="required"');
+
+        $input['seo_title'] = form::get_text('seo_title', $data['seo_title'], '', 'placeholder="'.lang('seo_title').'" maxlength="'.$this->category->_field_length['seo_title'].'"');
+        $input['seo_keywords'] = form::get_text('seo_keywords', $data['seo_keywords'], '', 'placeholder="'.lang('seo_keywords').'" maxlength="'.$this->category->_field_length['seo_keywords'].'"');
+        $input['seo_description'] = form::get_text('seo_description', $data['seo_description'], '', 'placeholder="'.lang('seo_description').'" maxlength="'.$this->category->_field_length['seo_description'].'"');
+
+        // hook admin_category_control_get_input_after.php
+        return $input;
     }
 
     //编辑分类
@@ -222,6 +259,10 @@ class category_control extends admin_control{
             }
             // hook admin_category_control_edit_data_after.php
             $this->assign('data',$data);
+
+            $input = $this->get_input($data);
+            // hook admin_category_control_edit_get_input_after.php
+            $this->assign('input',$input);
 
             $this->display('category_set.htm');
         }else{

@@ -8,13 +8,13 @@
             <div class="layui-form-item">
                 <label class="layui-form-label required">{lang:user_group}</label>
                 <div class="layui-input-inline">
-                    {$groupidhtml}
+                    {$input[groupid]}
                 </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label required">{lang:username}</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="username" value="{$data[username]}" maxlength="16" lay-verify="required" lay-reqtext="{lang:username_dis_empty}" placeholder="{lang:username}" autocomplete="off" class="layui-input"/>
+                    {$input[username]}
                 </div>
             </div>
             {if:$_GET['action'] == 'add'}
@@ -28,43 +28,43 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">{lang:author}</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="author" value="{$data[author]}" maxlength="20" placeholder="{lang:author}" autocomplete="off" class="layui-input"/>
+                    {$input[author]}
                 </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label">{lang:email}</label>
                 <div class="layui-input-inline">
-                    <input type="email" name="email" value="{$data[email]}" maxlength="40" placeholder="{lang:email}" autocomplete="off" class="layui-input"/>
+                    {$input[email]}
                 </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label">{lang:mobile}</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="mobile" value="{$data[mobile]}" maxlength="20" placeholder="{lang:mobile}" autocomplete="off" class="layui-input"/>
+                    {$input[mobile]}
                 </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label">{lang:credits}</label>
                 <div class="layui-input-inline">
-                    <input type="number" name="credits" value="{$data[credits]}" placeholder="{lang:credits}" autocomplete="off" class="layui-input"/>
+                    {$input[credits]}
                 </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label">{lang:golds}</label>
                 <div class="layui-input-inline">
-                    <input type="number" name="golds" value="{$data[golds]}" placeholder="{lang:golds}" autocomplete="off" class="layui-input"/>
+                    {$input[golds]}
                 </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label">{lang:homepage}</label>
                 <div class="layui-input-block">
-                    <input type="text" name="homepage" value="{$data[homepage]}" maxlength="255" placeholder="{lang:homepage}" autocomplete="off" class="layui-input"/>
+                    {$input[homepage]}
                 </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label">{lang:intro}</label>
                 <div class="layui-input-block">
-                    <textarea name="intro" maxlength="255" placeholder="{lang:intro}" class="layui-textarea">{$data[intro]}</textarea>
+                    {$input[intro]}
                 </div>
             </div>
             {hook:admin_user_set_after.htm}

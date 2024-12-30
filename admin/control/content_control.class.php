@@ -214,22 +214,32 @@ class content_control extends admin_control{
             $habits = (array)$this->kv->get($this->_table.'_user_habits_uid_'.$uid);
             //默认值
             $data = array(
+                'id'=>0,
                 'cid'=>isset($habits['last_add_cid']) ? (int)$habits['last_add_cid'] : 0,
-                'views'=>0,
-                'iscomment'=>0, //允许评论
+                'title'=>'',
+                'alias'=>'',
+                'tags'=>'',
+                'intro'=>'',
+                'pic'=>'',
+                'flags'=>'',
                 'author'=>empty($this->_user['author'] ) ? $this->_user['username'] : $this->_user['author'],
+                'source'=>'',
+                'iscomment'=>0, //允许评论
+                'seo_title'=>'',
+                'seo_keywords'=>'',
+                'seo_description'=>'',
+                'jumpurl'=>'',
+                'show_tpl'=>'',
+                'content'=>'',
+                'views'=>0
             );
             // hook admin_content_control_add_def_data_after.php
 
             $this->assign('data', $data);
 
-            //分类下拉框
-            $cidhtml = $this->category->get_cidhtml_by_mid($this->_mid, $data['cid'], lang('select_category'));
-            $this->assign('cidhtml', $cidhtml);
-
-            //属性
-            $flaghtml = $this->cms_content->flag_html('', $_ENV['_config']['admin_lang']);
-            $this->assign('flaghtml', $flaghtml);
+            $input = $this->get_input($data);
+            // hook admin_content_control_add_get_input_after.php
+            $this->assign('input',$input);
 
             $edit_cid_id = '-mid-'.$this->_mid;
             $this->assign('edit_cid_id', $edit_cid_id);
@@ -256,6 +266,45 @@ class content_control extends admin_control{
         }
     }
 
+    protected function get_input($data = array())
+    {
+        $input = array();
+
+        $input['cid'] = $this->category->get_cidhtml_by_mid($this->_mid, $data['cid'], lang('select_category'));
+
+        $input['title'] = form::get_text('title', $data['title'], '', 'placeholder="'.lang('title').'" maxlength="'.$this->cms_content->_field_length['title'].'" required="required" lay-verify="required" lay-reqtext="'.lang('title_no_empty').'"');
+        $input['alias'] = form::get_text('alias', $data['alias'], '', 'placeholder="'.lang('alias').'" maxlength="'.$this->cms_content->_field_length['alias'].'" required="required" lay-verify="required"');
+
+        $input['intro'] = form::get_textarea('intro', $data['intro'], '', 'placeholder="'.lang('intro').'" maxlength="'.$this->cms_content->_field_length['intro'].'" style="min-height: 50px;"');
+        $input['tags'] = form::get_text('tags', $data['tags'], '', 'placeholder="'.lang('tag_tips').'" maxlength="'.$this->cms_content->_field_length['tags'].'"');
+
+        $input['pic'] = form::get_text('pic', $data['pic'], '', 'id="pic_val" placeholder="'.lang('thumb').'" maxlength="'.$this->cms_content->_field_length['pic'].'"');
+
+        $input['author'] = form::get_text('author', $data['author'], '', 'placeholder="'.lang('author').'" maxlength="'.$this->cms_content->_field_length['author'].'"');
+        $input['source'] = form::get_text('source', $data['source'], '', 'placeholder="'.lang('source').'" maxlength="'.$this->cms_content->_field_length['source'].'"');
+
+        $input['views'] = form::get_number('views', $data['views'], '', 'placeholder="'.lang('views').'"');
+
+        $iscomment_arr = array(0=>lang('enable'), 1=>lang('disable'));
+        $input['iscomment'] = form::get_radio_layui('iscomment', $iscomment_arr, $data['iscomment']);
+
+        $input['seo_title'] = form::get_text('seo_title', $data['seo_title'], '', 'placeholder="'.lang('seo_title').'" maxlength="'.$this->cms_content->_field_length['seo_title'].'"');
+        $input['seo_keywords'] = form::get_text('seo_keywords', $data['seo_keywords'], '', 'placeholder="'.lang('seo_keywords').'" maxlength="'.$this->cms_content->_field_length['seo_keywords'].'"');
+        $input['seo_description'] = form::get_text('seo_description', $data['seo_description'], '', 'placeholder="'.lang('seo_description').'" maxlength="'.$this->cms_content->_field_length['seo_description'].'"');
+        $input['jumpurl'] = form::get_text('jumpurl', $data['jumpurl'], '', 'placeholder="'.lang('jump_url').'" maxlength="'.$this->cms_content->_field_length['jumpurl'].'"');
+        $input['show_tpl'] = form::get_text('show_tpl', $data['show_tpl'], '', 'id="show_tpl" placeholder="'.lang('show_tpl').'" maxlength="'.$this->category->_field_length['show_tpl'].'" required="required" lay-verify="required"');
+
+        //属性
+        $input['flags'] = $this->cms_content->flag_html($data['flags'], $_ENV['_config']['admin_lang']);
+
+        if(isset($data['content'])){
+            $input['content'] = form::get_textarea('content', $data['content'], '', 'placeholder="'.lang('content').'" id="content" required autocomplete="off" style="min-height: 50px;"');
+        }
+
+        // hook admin_content_control_get_input_after.php
+        return $input;
+    }
+
     // 编辑
     public function edit(){
         // hook admin_content_control_edit_before.php
@@ -268,10 +317,6 @@ class content_control extends admin_control{
             $this->cms_content->table = 'cms_'.$this->_table;
             $data = $this->cms_content->get($id);
             if(empty($data)) $this->message(0, lang('data_error'), -1);
-
-            //分类下拉框
-            $cidhtml = $this->category->get_cidhtml_by_mid($this->_mid, $cid, lang('select_category'));
-            $this->assign('cidhtml', $cidhtml);
 
             $this->cms_content_data->table = 'cms_'.$this->_table.'_data';
             $this->cms_content_views->table = 'cms_'.$this->_table.'_views';
@@ -290,9 +335,9 @@ class content_control extends admin_control{
             // hook admin_article_control_edit_data_assign_before.php
             $this->assign('data', $data);
 
-            //属性
-            $flaghtml = $this->cms_content->flag_html($data['flags'], $_ENV['_config']['admin_lang']);
-            $this->assign('flaghtml', $flaghtml);
+            $input = $this->get_input($data);
+            // hook admin_content_control_edit_get_input_after.php
+            $this->assign('input',$input);
 
             $edit_cid_id = '-mid-'.$this->_mid.'-cid-'.$data['cid'].'-id-'.$data['id'];
             $this->assign('edit_cid_id', $edit_cid_id);
