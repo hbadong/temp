@@ -2,6 +2,12 @@
 defined('ROOT_PATH') or exit;
 
 class only_alias extends model {
+
+    public $_field_length = array(
+        'alias'=>80,
+        // hook only_alias_model_field_length_after.php
+    );
+    
 	function __construct() {
 		$this->table = 'only_alias';	// 表名
 		$this->pri = array('alias');	// 主键
