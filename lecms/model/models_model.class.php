@@ -4,6 +4,16 @@ defined('ROOT_PATH') or exit;
 class models extends model {
 	private $data = array();		// 防止重复查询
 
+    public $_field_length = array(
+        'name'=>30,
+        'tablename'=>20,
+        'index_tpl'=>80,
+        'cate_tpl'=>80,
+        'show_tpl'=>80,
+        'icon'=>30,
+        // hook models_model_field_length_after.php
+    );
+
 	function __construct() {
 		$this->table = 'models';	// 表名
 		$this->pri = array('mid');	// 主键
