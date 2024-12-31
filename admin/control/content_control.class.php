@@ -273,7 +273,7 @@ class content_control extends admin_control{
         $input['cid'] = $this->category->get_cidhtml_by_mid($this->_mid, $data['cid'], lang('select_category'));
 
         $input['title'] = form::get_text('title', $data['title'], '', 'placeholder="'.lang('title').'" maxlength="'.$this->cms_content->_field_length['title'].'" required="required" lay-verify="required" lay-reqtext="'.lang('title_no_empty').'"');
-        $input['alias'] = form::get_text('alias', $data['alias'], '', 'placeholder="'.lang('alias').'" maxlength="'.$this->cms_content->_field_length['alias'].'" required="required" lay-verify="required"');
+        $input['alias'] = form::get_text('alias', $data['alias'], '', 'placeholder="'.lang('alias').'" maxlength="'.$this->cms_content->_field_length['alias'].'"');
 
         $input['intro'] = form::get_textarea('intro', $data['intro'], '', 'placeholder="'.lang('intro').'" maxlength="'.$this->cms_content->_field_length['intro'].'" style="min-height: 50px;"');
         $input['tags'] = form::get_text('tags', $data['tags'], '', 'placeholder="'.lang('tag_tips').'" maxlength="'.$this->cms_content->_field_length['tags'].'"');
