@@ -292,7 +292,7 @@ class content_control extends admin_control{
         $input['seo_keywords'] = form::get_text('seo_keywords', $data['seo_keywords'], '', 'placeholder="'.lang('seo_keywords').'" maxlength="'.$this->cms_content->_field_length['seo_keywords'].'"');
         $input['seo_description'] = form::get_text('seo_description', $data['seo_description'], '', 'placeholder="'.lang('seo_description').'" maxlength="'.$this->cms_content->_field_length['seo_description'].'"');
         $input['jumpurl'] = form::get_text('jumpurl', $data['jumpurl'], '', 'placeholder="'.lang('jump_url').'" maxlength="'.$this->cms_content->_field_length['jumpurl'].'"');
-        $input['show_tpl'] = form::get_text('show_tpl', $data['show_tpl'], '', 'id="show_tpl" placeholder="'.lang('show_tpl').'" maxlength="'.$this->category->_field_length['show_tpl'].'" required="required" lay-verify="required"');
+        $input['show_tpl'] = form::get_text('show_tpl', $data['show_tpl'], '', 'id="show_tpl" placeholder="'.lang('show_tpl').'" maxlength="'.$this->category->_field_length['show_tpl'].'"');
 
         //属性
         $input['flags'] = $this->cms_content->flag_html($data['flags'], $_ENV['_config']['admin_lang']);
