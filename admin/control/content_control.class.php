@@ -328,7 +328,7 @@ class content_control extends admin_control{
             // hook admin_article_control_edit_data_before.php
 
             $data = array_merge($data, $data2, $data3);
-            $data['content'] = isset($data['content']) ? htmlspecialchars($data['content']) : '';
+            //$data['content'] = isset($data['content']) ? htmlspecialchars($data['content']) : '';	form get_textarea 里面已经有了
             $data['tags'] = implode(',', (array)_json_decode($data['tags']));
             $data['intro'] = str_replace('<br />', "\n", strip_tags($data['intro'], '<br>'));
 
