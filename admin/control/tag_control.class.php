@@ -210,8 +210,9 @@ class tag_control extends admin_control {
             );
 
             // hook admin_tag_control_add_post_after.php
-
-            if($this->cms_content_tag->create($data)) {
+            $tagid = $this->cms_content_tag->create($data);
+            // hook admin_tag_control_add_post_end.php
+            if($tagid) {
                 E(0, lang('add_successfully'));
             }else{
                 E(1, lang('add_failed'));
@@ -304,8 +305,10 @@ class tag_control extends admin_control {
             );
 
             // hook admin_tag_control_edit_after.php
+            $r = $this->cms_content_tag->update($data);
+            // hook admin_tag_control_edit_post_end.php
 
-            if($this->cms_content_tag->update($data)) {
+            if($r) {
                 E(0, lang('edit_successfully'));
             }else{
                 E(1, lang('edit_failed'));
