@@ -588,6 +588,16 @@ class cms_content extends model {
             'seo_description' => isset($post['seo_description']) ? trim(strip_tags($post['seo_description'])) : '',
             'jumpurl' => isset($post['jumpurl']) ? trim($post['jumpurl']) : '',
         );
+        //发布时间 可以传递 2024-07-10 这种格式
+        if( isset($post['dateline']) && $post['dateline'] ){
+            if(!is_numeric($post['dateline'])){
+                $cms_content['dateline'] = strtotime($post['dateline']);
+            }else{
+                $cms_content['dateline'] = $post['dateline'];
+            }
+            if(empty($cms_content['dateline'])){unset($cms_content['dateline']);}
+        }
+        //内容模板
         if(isset($post['show_tpl']) && $post['show_tpl']){
             $cms_content['show_tpl'] = $post['show_tpl'];
         }

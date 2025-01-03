@@ -20,8 +20,14 @@
 </div>
 <script type="text/javascript">
 	var mid = "{$mid}";
-	layui.use(['form','layer', 'upload', 'miniTab'], function () {
-		var layer = layui.layer, upload = layui.upload, form = layui.form, miniTab = layui.miniTab;
+	layui.use(['form','layer', 'upload', 'miniTab', 'laydate'], function () {
+		var layer = layui.layer, upload = layui.upload, form = layui.form, miniTab = layui.miniTab, laydate = layui.laydate;
+
+		laydate.render({
+			elem: '#dateline',
+			type: 'datetime',
+			max: '{php}echo date("Y-m-d H:i:s", $data["max_dateline"]);{/php}'
+		});
 
 		//缩略图上传
 		upload.render({

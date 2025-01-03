@@ -231,7 +231,9 @@ class content_control extends admin_control{
                 'jumpurl'=>'',
                 'show_tpl'=>'',
                 'content'=>'',
-                'views'=>0
+                'views'=>0,
+                'dateline'=>$_ENV['_time'],
+                'max_dateline'=>$_ENV['_time']
             );
             // hook admin_content_control_add_def_data_after.php
 
@@ -301,6 +303,11 @@ class content_control extends admin_control{
             $input['content'] = form::get_textarea('content', $data['content'], '', 'placeholder="'.lang('content').'" id="content" required autocomplete="off" style="min-height: 50px;"');
         }
 
+        if(isset($data['dateline']) && $data['dateline']){
+            $data['dateline'] = date('Y-m-d H:i:s', $data['dateline']);
+            $input['dateline'] = form::get_text('dateline', $data['dateline'], '', 'id="dateline" placeholder="'.lang('date').'"');
+        }
+
         // hook admin_content_control_get_input_after.php
         return $input;
     }
@@ -331,7 +338,7 @@ class content_control extends admin_control{
             //$data['content'] = isset($data['content']) ? htmlspecialchars($data['content']) : '';	form get_textarea 里面已经有了
             $data['tags'] = implode(',', (array)_json_decode($data['tags']));
             $data['intro'] = str_replace('<br />', "\n", strip_tags($data['intro'], '<br>'));
-
+            $data['max_dateline'] = $_ENV['_time'];
             // hook admin_article_control_edit_data_assign_before.php
             $this->assign('data', $data);
 
