@@ -226,7 +226,7 @@ class tag_control extends admin_control {
         $input['mid'] = $this->cms_content_tag->get_taghtml_mid($this->_mid, 'lay-filter="mid"');
         $input['name'] = form::get_text('name', $data['name'], '', 'placeholder="'.lang('tagname').'" maxlength="'.$this->cms_content_tag->_field_length['name'].'"');
 
-        $input['pic'] = form::get_text('pic', $data['pic'], '', 'id="pic_val" placeholder="'.lang('thumb').'" maxlength="'.$this->cms_content_tag->_field_length['pic'].'"');
+        $input['pic'] = form::get_text('pic', $data['pic'], '', 'id="pic" placeholder="'.lang('thumb').'" maxlength="'.$this->cms_content_tag->_field_length['pic'].'"');
         $input['orderby'] = form::get_number('orderby', $data['orderby'], '', 'placeholder="'.lang('orderby').'"');
         $input['content'] = form::get_text('content', $data['content'], '', 'placeholder="'.lang('content').'" maxlength="'.$this->cms_content_tag->_field_length['content'].'"');
 

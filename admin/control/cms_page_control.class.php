@@ -174,7 +174,7 @@ class cms_page_control extends admin_control{
         $input['alias'] = form::get_text('alias', $data['alias'], '', 'placeholder="'.lang('alias').'" maxlength="'.$this->category->_field_length['alias'].'" required="required" lay-verify="required"');
 
         $input['intro'] = form::get_text('intro', $data['intro'], '', 'placeholder="'.lang('intro').'" maxlength="'.$this->category->_field_length['intro'].'"');
-        $input['pic'] = form::get_text('pic', $data['pic'], '', 'id="pic_val" placeholder="'.lang('thumb').'" maxlength="'.$this->category->_field_length['pic'].'"');
+        $input['pic'] = form::get_text('pic', $data['pic'], '', 'id="pic" placeholder="'.lang('thumb').'" maxlength="'.$this->category->_field_length['pic'].'"');
         $input['orderby'] = form::get_number('orderby', $data['orderby'], '', 'placeholder="'.lang('orderby').'"');
 
         $contribute_arr = array(0=>lang('disable'), 1=>lang('enable'));

@@ -280,7 +280,7 @@ class content_control extends admin_control{
         $input['intro'] = form::get_textarea('intro', $data['intro'], '', 'placeholder="'.lang('intro').'" maxlength="'.$this->cms_content->_field_length['intro'].'" style="min-height: 50px;"');
         $input['tags'] = form::get_text('tags', $data['tags'], '', 'placeholder="'.lang('tag_tips').'" maxlength="'.$this->cms_content->_field_length['tags'].'"');
 
-        $input['pic'] = form::get_text('pic', $data['pic'], '', 'id="pic_val" placeholder="'.lang('thumb').'" maxlength="'.$this->cms_content->_field_length['pic'].'"');
+        $input['pic'] = form::get_text('pic', $data['pic'], '', 'id="pic" placeholder="'.lang('thumb').'" maxlength="'.$this->cms_content->_field_length['pic'].'"');
 
         $input['author'] = form::get_text('author', $data['author'], '', 'placeholder="'.lang('author').'" maxlength="'.$this->cms_content->_field_length['author'].'"');
         $input['source'] = form::get_text('source', $data['source'], '', 'placeholder="'.lang('source').'" maxlength="'.$this->cms_content->_field_length['source'].'"');

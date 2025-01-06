@@ -43,7 +43,7 @@
                             <div class="layui-input-block">
                                 <div class="layui-inline">{$input[pic]}</div>
                                 <div class="layui-inline">
-                                    <button type="button" class="layui-btn layui-btn-sm" id="pic">
+                                    <button type="button" class="layui-btn" id="pic_btn">
                                         <i class="layui-icon">&#xe67c;</i>{lang:upload_pic}
                                     </button>
                                 </div>
@@ -86,7 +86,7 @@
 
         //缩略图上传
         upload.render({
-            elem: '#pic'
+            elem: '#pic_btn'
             ,url: 'index.php?attach-upload_pic-table-tag'
             ,field:'upfile'
             ,accept: 'images'
@@ -95,7 +95,7 @@
                 if(res.err == 1){
                     layer.msg(res.msg, {icon: 5});
                 }else{
-                    $("#pic_val").val(res.data.src);
+                    $("#pic").val(res.data.src);
                     layer.msg('{lang:upload_successfully}', {icon: 1});
                 }
             }
