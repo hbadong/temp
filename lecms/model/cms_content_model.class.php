@@ -1131,6 +1131,7 @@ class cms_content extends model {
                             '{m}' => date('m', $dateline),
                             '{d}' => date('d', $dateline),
                             '{auth_key}' => substr(md5($_ENV['_config']['auth_key']), 0, 6),
+                            '{hashids}' => hashids_encrypt($cid,$id)
                         ));
                     break;
             }

@@ -249,7 +249,7 @@ class parseurl_control extends control{
                 break;
             case 2: //推荐型
                 // hook parseurl_control_content_url_switch_2_before.php
-                preg_match("/^([a-zA-Z0-9-_]+)\/(\d+)$/i", $newurl, $mat);
+                preg_match("/^(\w+)\/(\d+)$/i", $newurl, $mat);
                 if( isset($mat[2]) && isset($cate_arr[$mat[1]]) ){
                     $_GET['cid'] = $cate_arr[$mat[1]];
                     $_GET['id'] = $mat[2];
@@ -338,7 +338,9 @@ class parseurl_control extends control{
                     '\{m\}' => '(?<m>\d{2})',
                     '\{d\}' => '(?<d>\d{2})',
                     '\{auth_key\}' => '(?<auth_key>\w+)',
+                    '\{hashids\}' => '(?<hashids>\w+)'
                 ));
+                // hook parseurl_control_content_url_switch_7_quote_after.php
                 preg_match('#'.$quote.'#', $uri, $mat);
                 if($mat){
                     //用于control验证日期
@@ -385,6 +387,13 @@ class parseurl_control extends control{
                         if(!empty($row)) {
                             $_GET['cid'] = $row['cid'];
                             $_GET['id'] = $row['id'];
+                            return true;
+                        }
+                    }elseif( isset($mat['hashids']) ) { // {hashids}
+                        $newurl = hashids_decrypt($mat['hashids']);//解密得到 cid id 数组
+                        if(is_array($newurl) && isset($newurl[1])){
+                            $_GET['cid'] = $newurl[0];
+                            $_GET['id'] = $newurl[1];
                             return true;
                         }
                     }
