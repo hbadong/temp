@@ -43,6 +43,9 @@ class plugin_control extends admin_control {
 		if($this->set_plugin_config($plugins)) {
 			$this->clear_cache();
 
+            //重新获取一次，更新缓存
+            $this->runtime->xget();
+
             // hook admin_plugin_control_enable_success.php
 			E(0, lang('enable_successfully'));
 		}else{
@@ -61,6 +64,9 @@ class plugin_control extends admin_control {
 		$plugins[$dir]['enable'] = 0;
 		if($this->set_plugin_config($plugins)) {
 			$this->clear_cache();
+
+            //重新获取一次，更新缓存
+            $this->runtime->xget();
 
             // hook admin_plugin_control_disabled_success.php
 			E(0, lang('disable_successfully'));
@@ -87,6 +93,9 @@ class plugin_control extends admin_control {
                 E(1, lang('write_config_failed'));
             }
             $this->clear_cache();   //安装了，可能没有启用，但是也会写入一些配置信息，这里卸载的时候，再次执行删除缓存
+
+            //重新获取一次，更新缓存
+            $this->runtime->xget();
 
             E(0, lang('unstall_successfully'));
         }else{
