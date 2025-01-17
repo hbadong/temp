@@ -215,6 +215,7 @@ class debug{
 	 * @return array
 	 */
 	public static function get_code($file, $line) {
+        if(!$file || !file_exists($file)){return '';}
 		$arr = file($file);
 		$arr2 = array_slice($arr, max(0, $line - 5), 10, true);
 
