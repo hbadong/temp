@@ -211,7 +211,7 @@ class runtime extends model {
         $tpmdir = array('_control', '_model', '_view');
         foreach($tpmdir as $dir) {
             _rmdir(RUNTIME_PATH.APP_NAME.$dir);
-            defined(F_APP_NAME) && _rmdir(RUNTIME_PATH.F_APP_NAME.$dir);
+            defined('F_APP_NAME') && _rmdir(RUNTIME_PATH.F_APP_NAME.$dir);
         }
 
         //清除语言包缓存
