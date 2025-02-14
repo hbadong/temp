@@ -135,6 +135,7 @@ return array(
     'fabu_successfully'=>'发布成功',
     'isremote_failed_tip_1'=>'，但远程抓取图片失败：',
     'isremote_failed_tip_2'=>'张',
+    'title_exists'=>'标题已经存在',
 
     // hook xiunophp_lang_zh_cn.php
 );

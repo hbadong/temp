@@ -641,6 +641,12 @@ function isSpider() {
             "yisouspider",
             "soso"
         );
+        //从配置文件获取
+        $spider_user_agent = C('spider_user_agent');
+        if($spider_user_agent){
+            $spiderSite = explode(',', $spider_user_agent);
+        }
+
         foreach($spiderSite as $val) {
             $str = strtolower($val);
             if (strpos($agent, $str) !== false) {

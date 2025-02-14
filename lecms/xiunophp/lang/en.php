@@ -135,6 +135,7 @@ return array(
     'fabu_successfully'=>'Add successfully',
     'isremote_failed_tip_1'=>',Remote capture of picture failed:',
     'isremote_failed_tip_2'=>'',
+    'title_exists'=>'The title already exists',
 
     // hook xiunophp_lang_en.php
 );
