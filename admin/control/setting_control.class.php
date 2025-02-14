@@ -846,16 +846,21 @@ class setting_control extends admin_control{
             $input['lang'] = form::layui_loop('select', 'lang', $arr1, $lang);
             $input['lang_admin'] = form::layui_loop('select', 'lang_admin', $arr1, $lang_admin);
 
+            $spider_user_agent = isset($_ENV['_config']['spider_user_agent']) ? $_ENV['_config']['spider_user_agent'] : '';
+            $input['spider_user_agent'] = form::get_text('spider_user_agent', $spider_user_agent);
+
             $cfg = $this->kv->xget('cfg');
             $arr = array('1'=>lang('yes'),'0'=>lang('no'));
             $close_website = isset($cfg['close_website']) ? (int)$cfg['close_website'] : 0;
             $close_search = isset($cfg['close_search']) ? (int)$cfg['close_search'] : 0;
             $close_views = isset($cfg['close_views']) ? (int)$cfg['close_views'] : 0;
             $auto_pic = isset($cfg['auto_pic']) ? (int)$cfg['auto_pic'] : 1;
+            $open_title_check = isset($cfg['open_title_check']) ? (int)$cfg['open_title_check'] : 0;
             $input['close_website'] = form::layui_loop('radio', 'close_website', $arr, $close_website);
             $input['close_search'] = form::layui_loop('radio', 'close_search', $arr, $close_search);
             $input['close_views'] = form::layui_loop('radio', 'close_views', $arr, $close_views);
             $input['auto_pic'] = form::layui_loop('radio', 'auto_pic', $arr, $auto_pic);
+            $input['open_title_check'] = form::layui_loop('radio', 'open_title_check', $arr, $open_title_check);
 
             $arr = array('0'=>lang('left_menu'),'1'=>lang('left_and_top_menu'));
             $input['admin_layout'] = form::layui_loop('radio', 'admin_layout', $arr, $cfg['admin_layout']);
@@ -876,6 +881,7 @@ class setting_control extends admin_control{
             $this->kv->xset('auto_pic', (int)R('auto_pic', 'P'), 'cfg');
             $this->kv->xset('admin_layout', (int)R('admin_layout', 'P'), 'cfg');
             $this->kv->xset('url_path', (int)R('url_path', 'P'), 'cfg');
+            $this->kv->xset('open_title_check', (int)R('open_title_check', 'P'), 'cfg');
 
             $debug = (int)R('debug','P');
             $debug_admin = (int)R('debug_admin','P');
@@ -885,6 +891,7 @@ class setting_control extends admin_control{
 
             $lang = R('lang','P');
             $lang_admin = R('lang_admin','P');
+            $spider_user_agent = R('spider_user_agent','P');
 
             //$url_suffix = R('url_suffix','P');
 
@@ -897,6 +904,7 @@ class setting_control extends admin_control{
             $s = preg_replace("#'debug_admin' => '\d*',#", "'debug_admin' => '".$debug_admin."',", $s);
             $s = preg_replace("#'lang' => '[\w-]*',#", "'lang' => '".addslashes($lang)."',", $s);
             $s = preg_replace("#'admin_lang' => '[\w-]*',#", "'admin_lang' => '".addslashes($lang_admin)."',", $s);
+            $s = preg_replace("#'spider_user_agent' => '[\w,-]*',#", "'spider_user_agent' => '".addslashes($spider_user_agent)."',", $s);
             //$s = preg_replace("#'url_suffix' => '(.)*',#", "'url_suffix' => '".addslashes($url_suffix)."',", $s);
 
             // hook admin_setting_control_other_post_after.php

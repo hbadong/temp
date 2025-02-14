@@ -194,6 +194,14 @@ class content_control extends admin_control{
             $content = $this->cms_content->get($id);
             empty($content) && E(1, lang('data_no_exists'));
 
+            //标题重复性校验
+            if($field == 'title' && $value != $content['title']){
+                $cfg = $this->kv->xget('cfg');
+                if(isset($cfg['open_title_check']) && $cfg['open_title_check'] && $this->cms_content->find_fetch(array('title'=>$value), array('id' => 1), 0, 1)){
+                    E(1, lang('title_exists'));
+                }
+            }
+
             $content[$field] = $value;
 
             if(!$this->cms_content->update($content)) {
