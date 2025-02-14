@@ -169,6 +169,7 @@ if($do == 'lang') {
         'user_avatar_height' => 200, //用户头像高度
         'open_no_login_comment' => 0,    //是否开启未登录用户评论
         'open_mobile_view' => 0,     //是否开启移动端模板
+        'open_title_check' => 0,    //是否开启标题重复检查
         'mobile_view'=>'mobile',   //移动端模板名
 
         'open_email' => 0,

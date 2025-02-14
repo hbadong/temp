@@ -70,4 +70,5 @@ $_ENV['_config'] = array(
     'php_error404' => '0',   //开启写404错误日志
     'debug' => '0',   //前台调试模式是否开启
     'debug_admin' => '0',   //后台调试模式是否开启
+    'spider_user_agent' => 'Baiduspider,baiduboxapp,Googlebot,Sogou,360Spider,Bytespider,HaosouSpider,bing,yisouspider,soso',    //搜索引擎UA标志，多个用英文逗号隔开
 );
