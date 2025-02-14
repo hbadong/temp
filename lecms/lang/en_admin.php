@@ -520,5 +520,10 @@ return array(
     'url_relative_path'=>'Relative URL',
     'url_absolute_path'=>'Absolute URL',
 
+    'open_title_check'=>'Title de duplication',
+    'open_title_check_tips'=>'When publishing content, check if the title is duplicated. It is not recommended to use big data as it affects publishing efficiency',
+    'spider_user_agent'=>'Search engine UA',
+    'spider_user_agent_tips'=>'Search engine User Agent tag, multiple separated by ,',
+
     // hook lang_en_admin.php
 );

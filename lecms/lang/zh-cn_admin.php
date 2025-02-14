@@ -520,5 +520,10 @@ return array(
     'url_relative_path'=>'相对URL',
     'url_absolute_path'=>'绝对URL',
 
+    'open_title_check'=>'标题去重',
+    'open_title_check_tips'=>'发布内容时，检查标题是否重复，大数据不建议使用，影响入库效率',
+    'spider_user_agent'=>'搜索引擎UA',
+    'spider_user_agent_tips'=>'搜索引擎User-Agent标记，多个用英文逗号隔开',
+
     // hook lang_zh_cn_admin.php
 );

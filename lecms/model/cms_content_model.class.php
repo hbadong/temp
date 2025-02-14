@@ -254,6 +254,7 @@ class cms_content extends model {
         $author =isset($post['author']) ? trim($post['author']) : '';
         $alias = isset($post['alias']) ? strtolower(trim($post['alias'])) : '';
         $auto_pic = isset($this->cfg['auto_pic']) ? (int)$this->cfg['auto_pic'] : 0;    //自动提取缩略图
+        $open_title_check = isset($this->cfg['open_title_check']) ? (int)$this->cfg['open_title_check'] : 0;    //是否开启标题重复检查
 
         if($alias && preg_match("/^\d+_\d+$/u",$alias)){    // 数字_数字 会和没有别名的 别名型URL冲突，导致404页面
             return array('err'=>1 ,'msg'=>lang('alias_error_number_and_number'));
@@ -286,6 +287,10 @@ class cms_content extends model {
         $this->table = 'cms_'.$table;
         $this->cms_content_data->table = 'cms_'.$table.'_data';
         $this->cms_content_views->table = 'cms_'.$table.'_views';
+
+        if($open_title_check && $this->find_fetch(array('title'=>$title), array('id' => 1), 0, 1)){
+            return array('err'=>1 ,'msg'=>lang('title_exists'));
+        }
 
         $cms_content = array(
             'cid' => $cid,
@@ -531,11 +536,17 @@ class cms_content extends model {
         $author =isset($post['author']) ? trim($post['author']) : '';
         $alias = isset($post['alias']) ? strtolower(trim($post['alias'])) : '';
         $auto_pic = isset($this->cfg['auto_pic']) ? (int)$this->cfg['auto_pic'] : 0;    //自动提取缩略图
+        $open_title_check = isset($this->cfg['open_title_check']) ? (int)$this->cfg['open_title_check'] : 0;    //是否开启标题重复检查
+
         if($alias && preg_match("/^\d+_\d+$/u",$alias)){    // 数字_数字 会和没有别名的 别名型URL冲突，导致404页面
             return array('err'=>1 ,'msg'=>lang('alias_error_number_and_number'));
         }
 
         // hook cms_content_model_xedit_info_after.php
+
+        if($open_title_check && $title != $olddata['title'] && $this->find_fetch(array('title'=>$title), array('id' => 1), 0, 1)){
+            return array('err'=>1 ,'msg'=>lang('title_exists'));
+        }
 
         $intro = auto_intro($intro, $contentstr);
         
