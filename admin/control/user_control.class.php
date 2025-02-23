@@ -282,6 +282,7 @@ class user_control extends admin_control{
 
             // hook admin_user_control_edit_post_before.php
             $data['groupid'] = $groupid;
+            $data['username'] = $username;
             $data['author'] = $author;
             $data['email'] = $email;
             $data['homepage'] = $homepage;
@@ -293,6 +294,7 @@ class user_control extends admin_control{
             if(!$this->user->update($data)) {
                 E(1, lang('edit_failed'));
             }
+
             // hook admin_user_control_edit_post_after.php
             E(0, lang('edit_successfully'));
         }
