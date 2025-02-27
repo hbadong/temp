@@ -7,7 +7,7 @@
  */
 
 defined('ROOT_PATH') or exit;
-
+// hook user_control_start.php
 class user_control extends base_control {
     public $_http_referer = ''; //来路
     public $_groupid = 11;  //默认为注册用户组

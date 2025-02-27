@@ -6,7 +6,7 @@
  * Description:前台分类控制器
  */
 defined('ROOT_PATH') or exit;
-
+// hook cate_control_start.php
 class cate_control extends base_control{
 
     //分类列表

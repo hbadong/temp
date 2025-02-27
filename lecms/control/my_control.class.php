@@ -7,7 +7,7 @@
  */
 
 defined('ROOT_PATH') or exit;
-
+// hook my_control_start.php
 class my_control extends base_control {
     public $_navs = array();	// 个人中心导航
 

@@ -6,7 +6,7 @@
  * Description:前台共用控制器（禁止直接访问~~~）
  */
 defined('ROOT_PATH') or exit;
-
+// hook base_control_start.php
 class base_control extends control{
     public $_cfg = array();	// 全站参数
     public $_var = array();	// 各个模块页参数

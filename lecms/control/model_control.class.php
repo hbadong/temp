@@ -6,7 +6,7 @@
  * Description:前台模型页控制器
  */
 defined('ROOT_PATH') or exit;
-
+// hook model_control_start.php
 class model_control extends base_control{
 
     //模型内容列表

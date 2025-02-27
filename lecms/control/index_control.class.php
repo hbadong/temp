@@ -6,7 +6,7 @@
  * Description:前台首页控制器
  */
 defined('ROOT_PATH') or exit;
-
+// hook index_control_start.php
 class index_control extends base_control{
 
     //首页

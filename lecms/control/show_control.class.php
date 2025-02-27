@@ -6,7 +6,7 @@
  * Description:前台内容页控制器
  */
 defined('ROOT_PATH') or exit;
-
+// hook show_control_start.php
 class show_control extends base_control{
 
     //内容详情

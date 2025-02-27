@@ -6,7 +6,7 @@
  * Description:站点地图路由
  */
 defined('ROOT_PATH') or exit;
-
+// hook sitemap_control_start.php
 class sitemap_control extends control{
     public $_cfg = array();	// 全站参数
     public $_var = array();	// 各个模块页参数

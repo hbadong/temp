@@ -1,6 +1,6 @@
 <?php
 defined('ROOT_PATH') or exit;
-
+// hook attach_control_start.php
 class attach_control extends base_control{
 
     //附件下载

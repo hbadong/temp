@@ -6,7 +6,7 @@
  * Description:前台搜索控制器
  */
 defined('ROOT_PATH') or exit;
-
+// hook search_control_start.php
 class search_control extends base_control{
 
     //搜索结果页

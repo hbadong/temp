@@ -6,7 +6,7 @@
  * Description:前台用户主页控制器
  */
 defined('ROOT_PATH') or exit;
-
+// hook space_control_start.php
 class space_control extends base_control{
 
     //用户主页详情

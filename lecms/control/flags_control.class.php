@@ -6,7 +6,7 @@
  * Description:前台属性内容控制器
  */
 defined('ROOT_PATH') or exit;
-
+// hook flags_control_start.php
 class flags_control extends base_control{
 
     //属性内容列表

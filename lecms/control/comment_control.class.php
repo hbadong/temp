@@ -6,7 +6,7 @@
  * Description:前台评论相关控制器
  */
 defined('ROOT_PATH') or exit;
-
+// hook comment_control_start.php
 class comment_control extends base_control{
 
 	public function index() {

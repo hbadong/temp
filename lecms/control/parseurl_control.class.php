@@ -6,6 +6,7 @@
  * Description:伪静态路由解析控制器，只要开启伪静态，路由会全部进入到这里
  */
 defined('ROOT_PATH') or exit;
+// hook parseurl_control_start.php
 class parseurl_control extends control{
     private $data = array();
     private $integer_pattern = '/^[1-9]\d*$/';   //正整数正则

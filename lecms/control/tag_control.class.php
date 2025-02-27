@@ -6,7 +6,7 @@
  * Description:前台标签控制器
  */
 defined('ROOT_PATH') or exit;
-
+// hook tag_control_start.php
 class tag_control extends base_control{
 
     //标签列表页
