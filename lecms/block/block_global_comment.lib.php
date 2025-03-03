@@ -8,6 +8,7 @@ defined('ROOT_PATH') || exit;
  * @param int humandate 人性化时间显示 默认开启 (开启: 1 关闭: 0)
  * @param int orderway 降序(-1),升序(1)
  * @param int pageoffset 分页显示偏移量
+ * @param int pageoffset_mobile 手机端分页显示偏移量
  * @param int showmaxpage 最多显示多少页
  * @param string page_function 分页函数，xiunophp/ext/paginator.class.php
  * @param int life 缓存时间
@@ -23,6 +24,10 @@ function block_global_comment($conf) {
 	$humandate = isset($conf['humandate']) ? ($conf['humandate'] == 1 ? TRUE : FALSE) : TRUE;
 	$orderway = isset($conf['orderway']) && $conf['orderway'] == 1 ? 1 : -1;
     $pageoffset = _int($conf, 'pageoffset', 5);
+    $pageoffset_mobile = _int($conf, 'pageoffset_mobile', 0);
+    if($pageoffset_mobile && is_mobile()){
+        $pageoffset = $pageoffset_mobile;
+    }
     $showmaxpage = _int($conf, 'showmaxpage', 0);
     $page_function = empty($conf['page_function']) ? 'pages' : $conf['page_function'];
     $life = isset($conf['life']) ? (int)$conf['life'] : (isset($run->_cfg['life']) ? (int)$run->_cfg['life'] : 0);

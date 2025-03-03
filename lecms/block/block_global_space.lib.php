@@ -13,6 +13,7 @@ defined('ROOT_PATH') || exit;
  * @param int showcate 是否显示分类信息
  * @param int showviews 是否读取内容浏览量信息
  * @param int pageoffset 分页显示偏移量
+ * @param int pageoffset_mobile 手机端分页显示偏移量
  * @param int showmaxpage 最多显示多少页
  * @param int field_format 是否格式化主表自定义字段内容（主要是单选框、多选框、下拉框）
  * @param string page_function 分页函数，xiunophp/ext/paginator.class.php
@@ -34,6 +35,10 @@ function block_global_space($conf) {
     $showcate = _int($conf, 'showcate', 0);
     $showviews = _int($conf, 'showviews', 0);
     $pageoffset = _int($conf, 'pageoffset', 5);
+    $pageoffset_mobile = _int($conf, 'pageoffset_mobile', 0);
+    if($pageoffset_mobile && is_mobile()){
+        $pageoffset = $pageoffset_mobile;
+    }
     $showmaxpage = _int($conf, 'showmaxpage', 0);
     $field_format = _int($conf, 'field_format', 0);
     $page_function = empty($conf['page_function']) ? 'pages' : $conf['page_function'];
