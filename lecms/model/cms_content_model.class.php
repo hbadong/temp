@@ -609,7 +609,7 @@ class cms_content extends model {
             if(empty($cms_content['dateline'])){unset($cms_content['dateline']);}
         }
         //内容模板
-        if(isset($post['show_tpl']) && $post['show_tpl']){
+        if(isset($post['show_tpl'])){
             $cms_content['show_tpl'] = $post['show_tpl'];
         }
         // hook cms_content_model_xedit_cms_content_after.php
