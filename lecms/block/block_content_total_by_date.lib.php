@@ -16,6 +16,7 @@ function block_content_total_by_date($conf) {
     $mid = _int($conf, 'mid', 2);
     $type = isset($conf['type']) ? $conf['type'] : 'all';
     $life = isset($conf['life']) ? (int)$conf['life'] : (isset($run->_cfg['life']) ? (int)$run->_cfg['life'] : 0);
+    $cache_params = array($mid, $type);
     // hook block_content_total_by_date_conf_after.php
 
     $table_arr = &$run->_cfg['table_arr'];
@@ -25,8 +26,8 @@ function block_content_total_by_date($conf) {
         return  0;
     }
 
-    //优先从缓存表读取。加前缀，避免不同的block，相同的conf，导致缓存数据错乱
-    $cache_key = $life ? md5('content_total_by_date'.serialize($conf)) : '';
+    //优先从缓存表读取。加前缀，避免不同的block，相同的cache_params，导致缓存数据错乱
+    $cache_key = $life ? md5('content_total_by_date'.serialize($cache_params)) : '';
     if($cache_key){
         $cache_data = $run->runtime->get_block_data_cache($cache_key);
         if($cache_data){

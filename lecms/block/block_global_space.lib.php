@@ -44,19 +44,23 @@ function block_global_space($conf) {
     $page_function = empty($conf['page_function']) ? 'pages' : $conf['page_function'];
     $life = isset($conf['life']) ? (int)$conf['life'] : (isset($run->_cfg['life']) ? (int)$run->_cfg['life'] : 0);
     $extra = array('block_name'=>'block_global_space');
+    $page = max(1, intval(R('page')));
+    $uid = &$run->_var['uid'];
+    $cache_params = array($page, $uid, $mid, $pagenum, $titlenum, $intronum, $dateformat, $orderby, $orderway, $showcate, $showviews, $pageoffset, $pageoffset_mobile, $showmaxpage, $field_format, $page_function);
     // hook block_global_space_conf_after.php
 
-    //优先从缓存表读取。加前缀，避免不同的block，相同的conf，导致缓存数据错乱
-    $cache_key = $life ? md5('global_space'.serialize($conf)) : '';
+    if(!$uid){
+        return array('total'=> 0, 'pages'=> '', 'list'=> array());
+    }
+
+    //优先从缓存表读取。加前缀，避免不同的block，相同的cache_params，导致缓存数据错乱
+    $cache_key = $life ? md5('global_space'.serialize($cache_params)) : '';
     if($cache_key){
         $cache_data = $run->runtime->get_block_data_cache($cache_key);
         if($cache_data){
             return $cache_data;
         }
     }
-
-	// 排除单页模型
-	$uid = &$run->_var['uid'];
 
     $table_arr = &$run->_cfg['table_arr'];
     $table = isset($table_arr[$mid]) ? $table_arr[$mid] : 'article';
@@ -72,14 +76,14 @@ function block_global_space($conf) {
 	$maxpage = max(1, ceil($total/$pagenum));
 
     //最大页数控制（超出进入404页面）
-    if( R('page', 'G') > $maxpage || ($showmaxpage && R('page', 'G') > $showmaxpage)){core::error404();}
+    if( $page > $maxpage || ($showmaxpage && $page > $showmaxpage)){core::error404();}
 
     //只显示最大指定页数
     if($showmaxpage && $maxpage > $showmaxpage){
         $maxpage = $showmaxpage;
     }
 
-	$page = min($maxpage, max(1, intval(R('page'))));
+	$page = min($maxpage, $page);
 	$pages = paginator::$page_function($page, $maxpage, $run->urls->space_url($uid, TRUE), $pageoffset);
 
     if($showcate){

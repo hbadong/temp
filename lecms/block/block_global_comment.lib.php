@@ -32,10 +32,19 @@ function block_global_comment($conf) {
     $page_function = empty($conf['page_function']) ? 'pages' : $conf['page_function'];
     $life = isset($conf['life']) ? (int)$conf['life'] : (isset($run->_cfg['life']) ? (int)$run->_cfg['life'] : 0);
     $extra = array('block_name'=>'block_global_comment');
+    $page = max(1, intval(R('page')));
+
+    $mid = &$run->_var['mid'];
+    if($mid == 1){
+        $id = &$_show['cid'];
+    }else{
+        $id = &$_show['id'];
+    }
+    $cache_params = array($mid, $id, $page, $pagenum, $dateformat, $humandate, $orderway, $pageoffset, $pageoffset_mobile, $showmaxpage, $page_function);
     // hook block_global_comment_conf_after.php
 
-    //优先从缓存表读取。加前缀，避免不同的block，相同的conf，导致缓存数据错乱
-    $cache_key = $life ? md5('global_comment'.serialize($conf)) : '';
+    //优先从缓存表读取。加前缀，避免不同的block，相同的cache_params，导致缓存数据错乱
+    $cache_key = $life ? md5('global_comment'.serialize($cache_params)) : '';
     if($cache_key){
         $cache_data = $run->runtime->get_block_data_cache($cache_key);
         if($cache_data){
@@ -43,16 +52,12 @@ function block_global_comment($conf) {
         }
     }
 
-	$mid = &$run->_var['mid'];
 
 	if($mid == 1){
-        $id = &$_show['cid'];
         // 格式化
         $run->category->format($run->_var);
-
         $_show['comments'] = $run->cms_content_comment->find_count(array('mid'=>1, 'id'=>$run->_var['cid']));
     }else{
-        $id = &$_show['id'];
         // 格式化
         $run->cms_content->format($_show, $mid, $dateformat);
     }
@@ -62,14 +67,14 @@ function block_global_comment($conf) {
     $maxpage = max(1, ceil($total/$pagenum));
 
     //最大页数控制（超出进入404页面）
-    if( R('page', 'G') > $maxpage || ($showmaxpage && R('page', 'G') > $showmaxpage)){core::error404();}
+    if( $page > $maxpage || ($showmaxpage && $page > $showmaxpage)){core::error404();}
 
     //只显示最大指定页数
     if($showmaxpage && $maxpage > $showmaxpage){
         $maxpage = $showmaxpage;
     }
 
-    $page = min($maxpage, max(1, (int) R('page')));
+    $page = min($maxpage, $page);
     $_show['pages'] = paginator::$page_function($page, $maxpage, $run->cms_content->comment_url($run->_var['cid'], $id, TRUE), $pageoffset);
 
     // hook block_global_comment_list_arr_before.php

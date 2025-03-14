@@ -20,6 +20,8 @@ function block_list_prev_next($conf) {
     global $run, $_show;
 
 	// hook block_list_prev_next_before.php
+    // 排除单页模型
+    $mid = &$run->_var['mid'];
     $type = isset($conf['type']) && in_array($conf['type'], array('prev', 'next')) ? $conf['type'] : 'prev';
 	$dateformat = empty($conf['dateformat']) ? 'Y-m-d H:i:s' : $conf['dateformat'];
 	$titlenum = _int($conf, 'titlenum');
@@ -32,20 +34,19 @@ function block_list_prev_next($conf) {
     $prev_next_cid = isset($conf['cid']) ? (int)$conf['cid'] : intval($_GET['cid']);
     $life = isset($conf['life']) ? (int)$conf['life'] : (isset($run->_cfg['life']) ? (int)$run->_cfg['life'] : 0);
     $extra = array('block_name'=>'block_list_prev_next');
+    $cache_params = array($mid, $type, $dateformat, $titlenum, $intronum, $limit, $start, $showcate, $showviews, $field_format, $prev_next_cid);
     // hook block_list_prev_next_conf_after.php
 
-    //优先从缓存表读取。加前缀，避免不同的block，相同的conf，导致缓存数据错乱
-    $cache_key = $life ? md5('list_prev_next'.serialize($conf)) : '';
+    if($mid == 1) return FALSE;
+
+    //优先从缓存表读取。加前缀，避免不同的block，相同的cache_params，导致缓存数据错乱
+    $cache_key = $life ? md5('list_prev_next'.serialize($cache_params)) : '';
     if($cache_key){
         $cache_data = $run->runtime->get_block_data_cache($cache_key);
         if($cache_data){
             return $cache_data;
         }
     }
-
-    // 排除单页模型
-    $mid = &$run->_var['mid'];
-    if($mid == 1) return FALSE;
 
     $table = $run->_var['table'];
 

@@ -16,7 +16,8 @@ function block_global_show($conf) {
 	global $run, $_show, $_user;
 
 	// hook block_global_show_before.php
-
+    $cid = isset($_show['cid']) ? (int)$_show['cid'] : 0;       //避免缓存数据错乱
+    $id = &$_show['id'];
 	$dateformat = empty($conf['dateformat']) ? 'Y-m-d H:i:s' : $conf['dateformat'];
 	$show_prev_next = isset($conf['show_prev_next']) && (int)$conf['show_prev_next'] ? true : false;
     $prev_next_cid = isset($conf['cid']) ? (int)$conf['cid'] : intval($_GET['cid']);
@@ -25,10 +26,12 @@ function block_global_show($conf) {
     $page_function = empty($conf['page_function']) ? 'pages' : $conf['page_function'];
     $life = isset($conf['life']) ? (int)$conf['life'] : (isset($run->_cfg['life']) ? (int)$run->_cfg['life'] : 0);
     $extra = array('block_name'=>'block_global_show');
+    $page = max(1, intval(R('page')));
+    $cache_params = array($page, $cid, $id, $dateformat, $show_prev_next, $prev_next_cid, $field_format, $pageoffset, $page_function);
     // hook block_global_show_conf_after.php
 
-    //优先从缓存表读取。加前缀，避免不同的block，相同的conf，导致缓存数据错乱
-    $cache_key = $life ? md5('global_show'.serialize($conf)) : '';
+    //优先从缓存表读取。加前缀，避免不同的block，相同的cache_params，导致缓存数据错乱
+    $cache_key = $life ? md5('global_show'.serialize($cache_params)) : '';
     if($cache_key){
         $cache_data = $run->runtime->get_block_data_cache($cache_key);
         if($cache_data){
@@ -66,7 +69,6 @@ function block_global_show($conf) {
         $_show += $data;
 
         //内容字段分页
-        $page = max(1,(int)R('page','G'));
         $_show = $run->cms_content_data->format_content($_show, $page);
         if( isset($_show['content_page']) && isset($_show['maxpage']) ){
             $_show['pages'] = paginator::$page_function($page, $_show['maxpage'], $run->cms_content->content_url($_show, $mid, TRUE), $pageoffset);

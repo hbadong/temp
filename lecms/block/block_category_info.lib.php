@@ -16,12 +16,13 @@ function block_category_info($conf) {
     $cids = isset($conf['cids']) ? trim($conf['cids']) : '';
 	$cid = isset($conf['cid']) ? intval($conf['cid']) : _int($_GET, 'cid');
     $life = isset($conf['life']) ? (int)$conf['life'] : (isset($run->_cfg['life']) ? (int)$run->_cfg['life'] : 0);
+    $cache_params = array($cids, $cid);
     // hook block_category_info_conf_after.php
 
 	if( empty($cids) && empty($cid) ) return array();
 
-    //优先从缓存表读取。加前缀，避免不同的block，相同的conf，导致缓存数据错乱
-    $cache_key = $life ? md5('category_info'.serialize($conf)) : '';
+    //优先从缓存表读取。加前缀，避免不同的block，相同的cache_params，导致缓存数据错乱
+    $cache_key = $life ? md5('category_info'.serialize($cache_params)) : '';
     if($cache_key){
         $cache_data = $run->runtime->get_block_data_cache($cache_key);
         if($cache_data){

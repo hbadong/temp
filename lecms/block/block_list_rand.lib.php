@@ -29,14 +29,14 @@ function block_list_rand($conf) {
     $showcate = _int($conf, 'showcate', 0);
     $showviews = _int($conf, 'showviews', 0);
     $field_format = _int($conf, 'field_format', 0);
-
     if(!isset($conf['cid']) && isset($_GET['cid'])){
         $conf['cid'] = intval($_GET['cid']);
     }
+    $cache_params = array($mid, $conf['cid'], $dateformat, $titlenum, $intronum, $limit, $showcate, $showviews, $field_format);
     // hook block_list_rand_conf_after.php
 
-    //优先从缓存表读取。加前缀，避免不同的block，相同的conf，导致缓存数据错乱
-    $cache_key = $life ? md5('list_rand'.serialize($conf)) : '';
+    //优先从缓存表读取。加前缀，避免不同的block，相同的cache_params，导致缓存数据错乱
+    $cache_key = $life ? md5('list_rand'.serialize($cache_params)) : '';
     if($cache_key){
         $cache_data = $run->runtime->get_block_data_cache($cache_key);
         if($cache_data){

@@ -23,24 +23,26 @@ function block_comment($conf) {
 	$orderway = isset($conf['orderway']) && $conf['orderway'] == -1 ? -1 : 1;
     $life = isset($conf['life']) ? (int)$conf['life'] : (isset($run->_cfg['life']) ? (int)$run->_cfg['life'] : 0);
     $extra = array('block_name'=>'block_comment');
-    // hook block_comment_conf_after.php
 
-    //优先从缓存表读取。加前缀，避免不同的block，相同的conf，导致缓存数据错乱
-    $cache_key = $life ? md5('comment'.serialize($conf)) : '';
-    if($cache_key){
-        $cache_data = $run->runtime->get_block_data_cache($cache_key);
-        if($cache_data){
-            return $cache_data;
-        }
-    }
-
-	$cid = &$run->_var['cid'];
+    $cid = &$run->_var['cid'];
     $mid = &$run->_var['mid'];
     if( isset($_show) ){
         if($mid < 2){return false;}
         $id = &$_show['id'];
     }else{
         $id = $cid;
+    }
+
+    $cache_params = array($pagenum, $firstnum, $dateformat, $humandate, $orderway, $cid, $mid, $id);
+    // hook block_comment_conf_after.php
+
+    //优先从缓存表读取。加前缀，避免不同的block，相同的cache_params，导致缓存数据错乱
+    $cache_key = $life ? md5('comment'.serialize($cache_params)) : '';
+    if($cache_key){
+        $cache_data = $run->runtime->get_block_data_cache($cache_key);
+        if($cache_data){
+            return $cache_data;
+        }
     }
 
 	// 内容页如果无评论则不继续执行

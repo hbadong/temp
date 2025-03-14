@@ -23,7 +23,6 @@ function block_global_cate($conf) {
 	global $run;
 
 	// hook block_global_cate_before.php
-
 	$pagenum = empty($conf['pagenum']) ? 20 : max(1, (int)$conf['pagenum']);
 	$titlenum = isset($conf['titlenum']) ? (int)$conf['titlenum'] : 0;
 	$intronum = isset($conf['intronum']) ? (int)$conf['intronum'] : 0;
@@ -42,21 +41,24 @@ function block_global_cate($conf) {
     $page_function = empty($conf['page_function']) ? 'pages' : $conf['page_function'];
     $life = isset($conf['life']) ? (int)$conf['life'] : (isset($run->_cfg['life']) ? (int)$run->_cfg['life'] : 0);
     $extra = array('block_name'=>'block_global_cate');
+
+    // 排除单页模型
+    $cid = &$run->_var['cid'];
+    $mid = &$run->_var['mid'];
+    if($mid == 1) return FALSE;
+
+    $page = max(1, intval(R('page')));
+    $cache_params = array($page, $cid, $mid, $pagenum, $titlenum, $intronum, $dateformat, $orderby, $orderway, $showcate, $showviews, $pageoffset, $pageoffset_mobile, $showmaxpage, $field_format, $page_function);
     // hook block_global_cate_conf_after.php
 
-    //优先从缓存表读取。加前缀，避免不同的block，相同的conf，导致缓存数据错乱
-    $cache_key = $life ? md5('global_cate'.serialize($conf)) : '';
+    //优先从缓存表读取。加前缀，避免不同的block，相同的cache_params，导致缓存数据错乱
+    $cache_key = $life ? md5('global_cate'.serialize($cache_params)) : '';
     if($cache_key){
         $cache_data = $run->runtime->get_block_data_cache($cache_key);
         if($cache_data){
             return $cache_data;
         }
     }
-
-	// 排除单页模型
-	$cid = &$run->_var['cid'];
-	$mid = &$run->_var['mid'];
-	if($mid == 1) return FALSE;
 
 	if(!empty($run->_var['son_cids']) && is_array($run->_var['son_cids'])) {
 		// 影响数据库性能
@@ -78,14 +80,14 @@ function block_global_cate($conf) {
 	$maxpage = max(1, ceil($total/$pagenum));
 
 	//最大页数控制（超出进入404页面）
-	if( R('page', 'G') > $maxpage || ($showmaxpage && R('page', 'G') > $showmaxpage)){core::error404();}
+	if( $page > $maxpage || ($showmaxpage && $page > $showmaxpage)){core::error404();}
 
 	//只显示最大指定页数
     if($showmaxpage && $maxpage > $showmaxpage){
         $maxpage = $showmaxpage;
     }
 
-	$page = min($maxpage, max(1, intval(R('page'))));
+	$page = min($maxpage, $page);
 	$pages = paginator::$page_function($page, $maxpage, $run->category->category_url($run->_var, TRUE), $pageoffset);
 
 	// 初始模型表名

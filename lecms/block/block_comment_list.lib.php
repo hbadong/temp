@@ -38,10 +38,11 @@ function block_comment_list($conf) {
     $showcms = _int($conf, 'showcms', 0);
     $life = isset($conf['life']) ? (int)$conf['life'] : (isset($run->_cfg['life']) ? (int)$run->_cfg['life'] : 0);
     $extra = array('block_name'=>'block_comment_list');
+    $cache_params = array($id, $uid, $mid, $dateformat, $humandate, $titlenum, $intronum, $orderby, $orderway, $start, $limit, $showcms);
     // hook block_comment_list_conf_after.php
 
-    //优先从缓存表读取。加前缀，避免不同的block，相同的conf，导致缓存数据错乱
-    $cache_key = $life ? md5('comment_list'.serialize($conf)) : '';
+    //优先从缓存表读取。加前缀，避免不同的block，相同的cache_params，导致缓存数据错乱
+    $cache_key = $life ? md5('comment_list'.serialize($cache_params)) : '';
     if($cache_key){
         $cache_data = $run->runtime->get_block_data_cache($cache_key);
         if($cache_data){

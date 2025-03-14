@@ -44,10 +44,11 @@ function block_listeach($conf) {
     $son = _int($conf, 'son', 0);
     $cate_limit = _int($conf, 'cate_limit', 0);
     $extra = array('block_name'=>'block_listeach');
+    $cache_params = array($cid, $mid, $dateformat, $titlenum, $intronum, $orderby, $orderway, $start, $limit, $showviews, $field_format, $nocids, $flag, $showcate, $son, $cate_limit);
     // hook block_listeach_conf_after.php
 
-    //优先从缓存表读取。加前缀，避免不同的block，相同的conf，导致缓存数据错乱
-    $cache_key = $life ? md5('listeach'.serialize($conf)) : '';
+    //优先从缓存表读取。加前缀，避免不同的block，相同的cache_params，导致缓存数据错乱
+    $cache_key = $life ? md5('listeach'.serialize($cache_params)) : '';
     if($cache_key){
         $cache_data = $run->runtime->get_block_data_cache($cache_key);
         if($cache_data){
