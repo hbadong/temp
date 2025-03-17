@@ -29,10 +29,17 @@ function block_list_rand($conf) {
     $showcate = _int($conf, 'showcate', 0);
     $showviews = _int($conf, 'showviews', 0);
     $field_format = _int($conf, 'field_format', 0);
-    if(!isset($conf['cid']) && isset($_GET['cid'])){
-        $conf['cid'] = intval($_GET['cid']);
+    //cid参数，目前并无实质作用
+    if(isset($conf['cid'])){
+        $cid = (int)$conf['cid'];
+    }else{
+        if(isset($_GET['cid'])){
+            $cid = intval($_GET['cid']);
+        }else{
+            $cid = 0;
+        }
     }
-    $cache_params = array($mid, $conf['cid'], $dateformat, $titlenum, $intronum, $limit, $showcate, $showviews, $field_format);
+    $cache_params = array($mid, $cid, $dateformat, $titlenum, $intronum, $limit, $showcate, $showviews, $field_format);
     // hook block_list_rand_conf_after.php
 
     //优先从缓存表读取。加前缀，避免不同的block，相同的cache_params，导致缓存数据错乱
