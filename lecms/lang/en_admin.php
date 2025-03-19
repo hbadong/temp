@@ -525,5 +525,9 @@ return array(
     'spider_user_agent'=>'Search engine UA',
     'spider_user_agent_tips'=>'Search engine User Agent tag, multiple separated by ,',
 
+    'vip_times'=>'VIP Times',
+    'vip_times_tips'=>'The VIP user group is valid and will automatically reset to a registered user group after expiration',
+    'vip_times_dis_empty'=>'VIP expiration time cannot be empty',
+
     // hook lang_en_admin.php
 );

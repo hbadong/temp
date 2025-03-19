@@ -525,5 +525,9 @@ return array(
     'spider_user_agent'=>'搜索引擎UA',
     'spider_user_agent_tips'=>'搜索引擎User-Agent标记，多个用英文逗号隔开',
 
+    'vip_times'=>'VIP到期时间',
+    'vip_times_tips'=>'VIP用户组有效，过期后自动重置为注册用户组',
+    'vip_times_dis_empty'=>'VIP到期时间不能为空',
+
     // hook lang_zh_cn_admin.php
 );
