@@ -138,7 +138,8 @@ class user_control extends admin_control{
                 'intro'=>'',
                 'credits'=>0,
                 'golds'=>0,
-                'mobile'=>''
+                'mobile'=>'',
+                'vip_times'=>''
             );
             // hook admin_user_control_add_data_after.php
             $this->assign('data', $data);
@@ -160,10 +161,22 @@ class user_control extends admin_control{
             $mobile = trim(R('mobile', 'P'));
             $credits = intval(R('credits', 'P'));
             $golds = intval(R('golds', 'P'));
+            $vip_times = R('vip_times', 'P');
 
             // hook admin_user_control_add_post_info_after.php
 
             empty($groupid) && E(1, lang('please_select_group'));
+            //VIP用户
+            if($groupid == 12){
+                if($vip_times){
+                    $vip_times = strtotime($vip_times);
+                }else{
+                    E(1, lang('vip_times_dis_empty'));
+                }
+            }else{
+                $vip_times = 0;
+            }
+
             if($message = $user->check_username($username)) {
                 E(1, $message);
             }elseif($message = $user->check_password($password)){
@@ -195,7 +208,8 @@ class user_control extends admin_control{
                 'intro' =>$intro,
                 'mobile'=>$mobile,
                 'credits'=>$credits,
-                'golds'=>$golds
+                'golds'=>$golds,
+                'vip_times'=>$vip_times
             );
 
             // hook admin_user_control_add_post_before.php
@@ -224,6 +238,12 @@ class user_control extends admin_control{
         $input['golds'] = form::get_number('golds', $data['golds'], '', 'placeholder="'.lang('golds').'"');
         $input['homepage'] = form::get_text('homepage', $data['homepage'], '', 'placeholder="'.lang('homepage').'" maxlength="'.$this->user->_field_length['homepage'].'"');
         $input['intro'] = form::get_text('intro', $data['intro'], '', 'placeholder="'.lang('intro').'" maxlength="'.$this->user->_field_length['intro'].'"');
+        if(isset($data['vip_times']) && $data['vip_times']){
+            $data['vip_times'] = date('Y-m-d H:i:s', $data['vip_times']);
+        }else{
+            $data['vip_times'] = '';
+        }
+        $input['vip_times'] = form::get_text('vip_times', $data['vip_times'], '', 'id="vip_times" placeholder="'.lang('vip_times').'"');
 
         // hook admin_user_control_get_input_after.php
         return $input;
@@ -257,11 +277,23 @@ class user_control extends admin_control{
             $mobile = trim(R('mobile', 'P'));
             $credits = intval(R('credits', 'P'));
             $golds = intval(R('golds', 'P'));
+            $vip_times = R('vip_times', 'P');
 
             // hook admin_user_control_edit_post_info_after.php
 
             empty($uid) && E(1, lang('data_error'));
             empty($groupid) && E(1, lang('data_error'));
+
+            //VIP用户
+            if($groupid == 12){
+                if($vip_times){
+                    $vip_times = strtotime($vip_times);
+                }else{
+                    E(1, lang('vip_times_dis_empty'));
+                }
+            }else{
+                $vip_times = 0;
+            }
 
             if($message = $this->user->check_username($username)) {
                 E(1, $message);
@@ -290,6 +322,7 @@ class user_control extends admin_control{
             $data['mobile'] = $mobile;
             $data['credits'] = $credits;
             $data['golds'] = $golds;
+            $data['vip_times'] = $vip_times;
 
             if(!$this->user->update($data)) {
                 E(1, lang('edit_failed'));

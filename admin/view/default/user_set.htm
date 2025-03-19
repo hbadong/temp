@@ -56,6 +56,13 @@
                 </div>
             </div>
             <div class="layui-form-item">
+                <label class="layui-form-label">{lang:vip_times}</label>
+                <div class="layui-input-inline">
+                    {$input[vip_times]}
+                </div>
+                <div class="layui-form-mid layui-word-aux">{lang:vip_times_tips}</div>
+            </div>
+            <div class="layui-form-item">
                 <label class="layui-form-label">{lang:homepage}</label>
                 <div class="layui-input-block">
                     {$input[homepage]}
@@ -78,8 +85,14 @@
 </div>
 
 <script type="text/javascript">
-    layui.use(['form','layer', 'miniTab'], function () {
-        var layer = layui.layer, form = layui.form, miniTab = layui.miniTab;
+    layui.use(['form','layer', 'miniTab', 'laydate'], function () {
+        var layer = layui.layer, form = layui.form, miniTab = layui.miniTab, laydate = layui.laydate;
+
+        laydate.render({
+            elem: '#vip_times',
+            type: 'datetime'
+        });
+
         //监听提交
         form.on('submit(form)', function () {
             adminAjax.postform('#form',function (data) {
