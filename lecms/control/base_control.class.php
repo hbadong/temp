@@ -29,6 +29,8 @@ class base_control extends control{
     public $_control = 0;  //当前访问的控制器
     public $_action = 0;  //当前访问的方法函数
 
+    // hook base_control_variable_after.php
+
     function __construct(){
         $this->_cfg = $this->runtime->xget();
         // hook base_control_construct_before.php
