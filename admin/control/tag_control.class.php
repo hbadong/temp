@@ -175,7 +175,8 @@ class tag_control extends admin_control {
                                 'pic'=>R('pic', 'P'),
                                 'seo_title' => trim(strip_tags(R('seo_title', 'P'))),
                                 'seo_keywords' => trim(strip_tags(R('seo_keywords', 'P'))),
-                                'seo_description' => trim(strip_tags(R('seo_description', 'P')))
+                                'seo_description' => trim(strip_tags(R('seo_description', 'P'))),
+                                'orderby'=>(int)R('orderby', 'P')
                             );
 
                             if($this->cms_content_tag->create($data)) {
@@ -206,7 +207,8 @@ class tag_control extends admin_control {
                 'pic'=>R('pic', 'P'),
                 'seo_title' => trim(strip_tags(R('seo_title', 'P'))),
                 'seo_keywords' => trim(strip_tags(R('seo_keywords', 'P'))),
-                'seo_description' => trim(strip_tags(R('seo_description', 'P')))
+                'seo_description' => trim(strip_tags(R('seo_description', 'P'))),
+                'orderby'=>(int)R('orderby', 'P')
             );
 
             // hook admin_tag_control_add_post_after.php
@@ -301,7 +303,8 @@ class tag_control extends admin_control {
                 'pic'=>R('pic', 'P'),
                 'seo_title' => trim(strip_tags(R('seo_title', 'P'))),
                 'seo_keywords' => trim(strip_tags(R('seo_keywords', 'P'))),
-                'seo_description' => trim(strip_tags(R('seo_description', 'P')))
+                'seo_description' => trim(strip_tags(R('seo_description', 'P'))),
+                'orderby'=>(int)R('orderby', 'P')
             );
 
             // hook admin_tag_control_edit_after.php
