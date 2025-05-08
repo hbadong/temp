@@ -81,7 +81,7 @@ function is_search(){
     }
 }
 
-//是否是搜索引擎
+//是否是搜索引擎，方便扩展
 function misc_is_spider(){
     // hook misc_func_misc_is_spider_before.php
     $r = isSpider();
@@ -92,7 +92,7 @@ function misc_is_spider(){
     return false;
 }
 
-//是否是移动端
+//是否是移动端，方便扩展
 function misc_is_mobile(){
     // hook misc_func_misc_is_mobile_before.php
     $r = is_mobile();
