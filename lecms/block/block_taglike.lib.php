@@ -50,6 +50,11 @@ function block_taglike($conf) {
         }
     }
 
+    //global_show标签加上life参数后，这里会变成json数据，需要重新转一次数组
+	if(!is_array($_show['tags'])){
+		$_show['tags'] = (array)_json_decode($_show['tags']);
+	}
+
 	if($type == -1){    //最后一个
 	    $end = array_slice($_show['tags'],-1, 1, true);
         $tagid = key( $end );
