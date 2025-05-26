@@ -113,11 +113,11 @@ class user extends model {
 	public function format(&$user, $dateformat = 'Y-m-d H:i', $group_fmt = 0) {
 		if(!$user) return;
 		$user['regdate'] = empty($user['regdate']) ? '0000-00-00 00:00' : date($dateformat, $user['regdate']);
-		$user['regip'] = long2ip($user['regip']);
+		$user['regip'] = long2ip((int)$user['regip']);
 		$user['logindate'] = empty($user['logindate']) ? '0000-00-00 00:00' : date($dateformat, $user['logindate']);
-		$user['loginip'] = long2ip($user['loginip']);
+		$user['loginip'] = long2ip((int)$user['loginip']);
 		$user['lastdate'] = empty($user['lastdate']) ? '0000-00-00 00:00' : date($dateformat, $user['lastdate']);
-		$user['lastip'] = long2ip($user['lastip']);
+		$user['lastip'] = long2ip((int)$user['lastip']);
 
         //用户个人主页
 		$user['user_url'] = $this->urls->space_url($user['uid']);

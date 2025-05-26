@@ -86,6 +86,22 @@ class cms_content_tag extends model {
         return $list_arr;
     }
 
+    //根据标签名获取标签信息
+    public function get_tag_by_tagname($name, $table = '')
+    {
+        // hook cms_content_tag_model_get_tag_by_tagname_before.php
+        if($table){
+            $this->table = 'cms_'.$table.'_tag';
+        }
+        $tags = $this->find_fetch(array('name'=>$name), array(), 0, 1);
+        if(!$tags){
+            return array();
+        }
+        $tags = current($tags);
+        // hook cms_content_tag_model_get_tag_by_tagname_after.php
+        return $tags;
+    }
+
     //根据表名和标签ID获取标签信息
     public function get_tag_by_table_tagid($table = 'article', $tagid = 0){
 	    if( empty($tagid) ){
