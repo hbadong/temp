@@ -75,11 +75,10 @@ function block_taglike($conf) {
         $table = $run->_cfg['table_arr'][$conf['mid']];
 
         $run->cms_content_tag->table = 'cms_'.$table.'_tag';
-        $tags = $run->cms_content_tag->find_fetch(array('name'=>$tag_name), array(), 0, 1);
+        $tags = $this->cms_content_tag->get_tag_by_tagname($tag_name);
         if(empty($tags)){
             return array('tag_name'=>$tag_name, 'tag_url'=>$tag_url, 'list'=> array());
         }else{
-            $tags = current($tags);
             $tagid = $tags['tagid'];
             $tag_url = $run->cms_content->tag_url($mid, $tags);
         }
