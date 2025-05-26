@@ -23,7 +23,7 @@ function block_list_by_id($conf) {
 
     $id = _int($conf, 'id', 0);   // 优先级高于ids
     $ids = empty($conf['ids']) ? '' : $conf['ids'];    //多个id 用,隔开
-	$mid = _int($conf, 'mid', 2);
+    $mid = isset($conf['mid']) ? max(2, intval($conf['mid'])) : (isset($_GET['mid']) ? max(2, intval($_GET['mid'])) : 2);
 	$dateformat = empty($conf['dateformat']) ? 'Y-m-d H:i:s' : $conf['dateformat'];
 	$titlenum = _int($conf, 'titlenum');
 	$intronum = _int($conf, 'intronum');

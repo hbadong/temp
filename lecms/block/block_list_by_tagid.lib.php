@@ -24,7 +24,7 @@ function block_list_by_tagid($conf) {
 
     $tagid = _int($conf, 'tagid', 0);   // 优先级高于tagids
     $tagids = empty($conf['tagids']) ? '' : $conf['tagids'];    //多个tagid 用,隔开
-	$mid = _int($conf, 'mid', 2);
+    $mid = isset($conf['mid']) ? max(2, intval($conf['mid'])) : (isset($_GET['mid']) ? max(2, intval($_GET['mid'])) : 2);
 	$dateformat = empty($conf['dateformat']) ? 'Y-m-d H:i:s' : $conf['dateformat'];
 	$titlenum = _int($conf, 'titlenum');
 	$intronum = _int($conf, 'intronum');

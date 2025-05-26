@@ -24,7 +24,7 @@ function block_list_by_uid($conf) {
 	// hook block_list_by_uid_before.php
 
     $uid = _int($conf, 'uid', 0);
-	$mid = _int($conf, 'mid', 2);
+    $mid = isset($conf['mid']) ? max(2, intval($conf['mid'])) : (isset($_GET['mid']) ? max(2, intval($_GET['mid'])) : 2);
 	$dateformat = empty($conf['dateformat']) ? 'Y-m-d H:i:s' : $conf['dateformat'];
 	$titlenum = _int($conf, 'titlenum');
 	$intronum = _int($conf, 'intronum');

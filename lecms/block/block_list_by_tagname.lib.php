@@ -22,7 +22,7 @@ function block_list_by_tagname($conf) {
 	// hook block_list_by_tagname_before.php
 
     $tagname = empty($conf['name']) ? '' : $conf['name'];
-	$mid = _int($conf, 'mid', 2);
+    $mid = isset($conf['mid']) ? max(2, intval($conf['mid'])) : (isset($_GET['mid']) ? max(2, intval($_GET['mid'])) : 2);
 	$dateformat = empty($conf['dateformat']) ? 'Y-m-d H:i:s' : $conf['dateformat'];
 	$titlenum = _int($conf, 'titlenum');
 	$intronum = _int($conf, 'intronum');
