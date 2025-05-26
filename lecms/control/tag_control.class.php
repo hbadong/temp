@@ -34,8 +34,7 @@ class tag_control extends base_control{
         if($tagid){
             $tags = $this->cms_content_tag->get($tagid);
         }elseif($name){
-            $tags = $this->cms_content_tag->find_fetch(array('name'=>$name), array(), 0, 1);
-            !empty($tags) && $tags = current($tags);
+            $tags = $this->cms_content_tag->get_tag_by_tagname($name);
         }elseif ($encrypt){
             if($this->_cfg['link_tag_type'] == 2){
                 $mid_tagid = decrypt($encrypt);//解密得到 mid_tagid
