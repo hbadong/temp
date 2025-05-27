@@ -61,9 +61,9 @@ function block_global_show($conf) {
 	$data = $run->cms_content_data->get($id);
     // hook block_global_show_data_after.php
 	if($data){
-        if($field_format && plugin_is_enable('models_filed')){
-            $models_field = $run->models_field->user_defined_field($mid);
-            $run->models_field->field_val_format($models_field, $data, 0);
+        if($field_format){
+			$models_field = $run->cms_content->get_model_fields_by_mid($mid);
+            $models_field && $run->models_field->field_val_format($models_field, $data, 0);
             // hook block_global_show_field_format_after.php
         }
         $_show += $data;
