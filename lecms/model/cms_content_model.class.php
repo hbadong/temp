@@ -133,14 +133,9 @@ class cms_content extends model {
         }
 
         //格式化主表扩展字段的值
-        if($field_format && plugin_is_enable('models_filed')){
-            if(isset($this->data['models_field'.$mid]) && !empty($this->data['models_field'.$mid])) {
-                $models_field = $this->data['models_field'.$mid];
-            }else{
-                $models_field = $this->models_field->user_defined_field($mid);
-                $this->data['models_field'.$mid] = $models_field;
-            }
-            $this->models_field->field_val_format($models_field, $v);
+        if($field_format){
+			$models_field = $this->get_model_fields_by_mid($mid);
+            $models_field && $this->models_field->field_val_format($models_field, $v);
         }
 
 		// hook cms_content_model_format_after.php
@@ -1188,6 +1183,22 @@ class cms_content extends model {
             return $this->cfg['weburl'].$control.'-'.$action.$s.$_ENV['_config']['url_suffix'];
         }
     }
+	
+	//获取模型的自定义字段(不执行格式化)
+	public function get_model_fields_by_mid($mid = 2){
+		// hook cms_content_model_get_model_fields_by_mid_before.php
+		if(!plugin_is_enable('models_filed')){
+			return array();
+		}
+		if(isset($this->data['models_field'.$mid]) && !empty($this->data['models_field'.$mid])) {
+			$models_field = $this->data['models_field'.$mid];
+		}else{
+			$models_field = $this->models_field->user_defined_field($mid);
+			$this->data['models_field'.$mid] = $models_field;
+		}
+		// hook cms_content_model_get_model_fields_by_mid_after.php
+		return $models_field;
+	}
 
     // 自动生成缩略图
     public function auto_pic($table = 'article', $uid = 1, $id = 0, $models = array()) {
