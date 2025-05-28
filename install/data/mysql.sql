@@ -57,6 +57,9 @@ CREATE TABLE pre_category (
   seo_keywords varchar(255) NOT NULL DEFAULT '' COMMENT 'SEO关键词',
   seo_description varchar(255) NOT NULL DEFAULT '' COMMENT 'SEO描述',
   contribute tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '允许投稿',
+  seo_title_rule varchar(255) NOT NULL DEFAULT '' COMMENT '内容SEO标题规则',
+  seo_keywords_rule varchar(255) NOT NULL DEFAULT '' COMMENT '内容SEO关键词规则',
+  seo_description_rule varchar(255) NOT NULL DEFAULT '' COMMENT '内容SEO描述规则',
   PRIMARY KEY (cid),
   KEY mid (mid),
   UNIQUE KEY alias (alias)
