@@ -151,7 +151,10 @@ class category_control extends admin_control{
                 'seo_keywords'=>'',
                 'seo_description'=>'',
                 'contribute'=>0,
-                'son_cate'=>0
+                'son_cate'=>0,
+                'seo_title_rule'=>'',
+                'seo_keywords_rule'=>'',
+                'seo_description_rule'=>''
             );
             // hook admin_category_control_add_data_after.php
             $this->assign('data',$data);
@@ -214,6 +217,11 @@ class category_control extends admin_control{
         $input['seo_title'] = form::get_text('seo_title', $data['seo_title'], '', 'placeholder="'.lang('seo_title').'" maxlength="'.$this->category->_field_length['seo_title'].'"');
         $input['seo_keywords'] = form::get_text('seo_keywords', $data['seo_keywords'], '', 'placeholder="'.lang('seo_keywords').'" maxlength="'.$this->category->_field_length['seo_keywords'].'"');
         $input['seo_description'] = form::get_text('seo_description', $data['seo_description'], '', 'placeholder="'.lang('seo_description').'" maxlength="'.$this->category->_field_length['seo_description'].'"');
+
+        $input['seo_title_rule'] = form::get_text('seo_title_rule', $data['seo_title_rule'], '', 'placeholder="'.lang('seo_title').'" maxlength="'.$this->category->_field_length['seo_title_rule'].'"');
+        $input['seo_keywords_rule'] = form::get_text('seo_keywords_rule', $data['seo_keywords_rule'], '', 'placeholder="'.lang('seo_keywords').'" maxlength="'.$this->category->_field_length['seo_keywords_rule'].'"');
+        $input['seo_description_rule'] = form::get_text('seo_description_rule', $data['seo_description_rule'], '', 'placeholder="'.lang('seo_description').'" maxlength="'.$this->category->_field_length['seo_description_rule'].'"');
+
 
         // hook admin_category_control_get_input_after.php
         return $input;
@@ -334,8 +342,16 @@ class category_control extends admin_control{
             'seo_title' => trim(strip_tags(R('seo_title', 'P'))),
             'seo_keywords' => trim(strip_tags(R('seo_keywords', 'P'))),
             'seo_description' => trim(strip_tags(R('seo_description', 'P'))),
-            'contribute' => $mid == 1 ? 0 : intval(R('contribute', 'P')),
+            'contribute' => $mid == 1 ? 0 : intval(R('contribute', 'P'))
         );
+
+        //列表分类
+        if($post['mid'] > 1 && empty($post['type'])){
+            $post['seo_title_rule'] = strip_tags(R('seo_title_rule', 'P'));
+            $post['seo_keywords_rule'] = strip_tags(R('seo_keywords_rule', 'P'));
+            $post['seo_description_rule'] = strip_tags(R('seo_description_rule', 'P'));
+        }
+
         // hook admin_category_control_get_post_after.php
         return $post;
     }
