@@ -70,7 +70,7 @@ class show_control extends base_control{
 
         // hook show_control_index_center.php
 
-        // SEO 相关
+        // SEO 相关（优先内容本身SEO信息，其次是分类SEO规则，然后是后台设置-SEO设置-内容页SEO规则设置，最后是程序本身）
         $seo_find_variable = array('{webname}', '{title}', '{seo_title}', '{seo_keywords}', '{seo_description}', '{intro}', '{cate_name}', '{cate_seo_title}', '{cate_seo_keywords}', '{tags}', '{page}');
         $seo_replace_variable = array($this->_cfg['webname'], $_show['title'], $_show['seo_title'], $_show['seo_keywords'], $_show['seo_description'], $_show['intro'], $this->_var['name'], $this->_var['seo_title'], $this->_var['seo_keywords'], $tags, lang('page_current', array('page'=>$page)));
 
@@ -78,7 +78,9 @@ class show_control extends base_control{
         if($_show['seo_title']){
             $this->_cfg['titles'] = $_show['seo_title'];
         }else{
-            if(isset($this->_cfg['show_seo_title_rule']) && !empty($this->_cfg['show_seo_title_rule'])){
+            if(isset($this->_var['seo_title_rule']) && !empty($this->_var['seo_title_rule'])){
+                $this->_cfg['titles'] = str_replace($seo_find_variable, $seo_replace_variable, $this->_var['seo_title_rule']);
+            }elseif(isset($this->_cfg['show_seo_title_rule']) && !empty($this->_cfg['show_seo_title_rule'])){
                 $this->_cfg['titles'] = str_replace($seo_find_variable, $seo_replace_variable, $this->_cfg['show_seo_title_rule']);
             }else{
                 $this->_cfg['titles'] = $_show['title'].'-'.$this->_cfg['webname'];
@@ -88,7 +90,9 @@ class show_control extends base_control{
         if($_show['seo_keywords']){
             $this->_cfg['seo_keywords'] = $_show['seo_keywords'];
         }else{
-            if(isset($this->_cfg['show_seo_keywords_rule']) && !empty($this->_cfg['show_seo_keywords_rule'])){
+            if(isset($this->_var['seo_keywords_rule']) && !empty($this->_var['seo_keywords_rule'])){
+                $this->_cfg['seo_keywords'] = str_replace($seo_find_variable, $seo_replace_variable, $this->_var['seo_keywords_rule']);
+            }elseif(isset($this->_cfg['show_seo_keywords_rule']) && !empty($this->_cfg['show_seo_keywords_rule'])){
                 $this->_cfg['seo_keywords'] = str_replace($seo_find_variable, $seo_replace_variable, $this->_cfg['show_seo_keywords_rule']);
             }else{
                 $this->_cfg['seo_keywords'] = $_show['title'].','.$this->_cfg['webname'];
@@ -98,7 +102,9 @@ class show_control extends base_control{
         if($_show['seo_description']){
             $this->_cfg['seo_description'] = $_show['seo_description'];
         }else{
-            if(isset($this->_cfg['show_seo_description_rule']) && !empty($this->_cfg['show_seo_description_rule'])){
+            if(isset($this->_var['seo_description_rule']) && !empty($this->_var['seo_description_rule'])){
+                $this->_cfg['seo_description'] = str_replace($seo_find_variable, $seo_replace_variable, $this->_var['seo_description_rule']);
+            }elseif(isset($this->_cfg['show_seo_description_rule']) && !empty($this->_cfg['show_seo_description_rule'])){
                 $this->_cfg['seo_description'] = str_replace($seo_find_variable, $seo_replace_variable, $this->_cfg['show_seo_description_rule']);
             }else{
                 $this->_cfg['seo_description'] = $this->_cfg['webname'].'：'.$_show['intro'];

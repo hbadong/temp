@@ -529,5 +529,9 @@ return array(
     'vip_times_tips'=>'VIP用户组有效，过期后自动重置为注册用户组',
     'vip_times_dis_empty'=>'VIP到期时间不能为空',
 
+    'content_seo_rule_tips'=>'内容SEO优先级：内容本身SEO > 分类SEO规则 > 此处SEO规则',
+    'content_seo_rule'=>'内容SEO规则',
+    'content_seo_variable'=>'参考：设置-SEO设置-内容页SEO规则设置 里面的可用变量',
+
     // hook lang_zh_cn_admin.php
 );

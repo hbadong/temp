@@ -529,5 +529,9 @@ return array(
     'vip_times_tips'=>'The VIP user group is valid and will automatically reset to a registered user group after expiration',
     'vip_times_dis_empty'=>'VIP expiration time cannot be empty',
 
+    'content_seo_rule_tips'=>'Content SEO Priority：Content SEO > Category SEO Rules > SEO Rules Here',
+    'content_seo_rule'=>'Content SEO Rules',
+    'content_seo_variable'=>'Settings - SEO Settings - Content SEO Rule Settings → Available Variables',
+
     // hook lang_en_admin.php
 );

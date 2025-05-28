@@ -14,6 +14,9 @@ class category extends model {
         'seo_title'=>255,
         'seo_keywords'=>255,
         'seo_description'=>255,
+        'seo_title_rule'=>255,
+        'seo_keywords_rule'=>255,
+        'seo_description_rule'=>255,
         // hook category_model_field_length_after.php
     );
 
