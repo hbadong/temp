@@ -171,6 +171,7 @@ if($do == 'lang') {
         'open_mobile_view' => 0,     //是否开启移动端模板
         'open_title_check' => 0,    //是否开启标题重复检查
         'mobile_view'=>'mobile',   //移动端模板名
+        'content_min_len'=>5,   //内容字段最小长度
 
         'open_email' => 0,
         'email_smtp'=>'smtp.qq.com',
