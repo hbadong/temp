@@ -16,7 +16,7 @@ class tag_control extends base_control{
 		$mid = (int)R('mid', 'G');
 		//动态链接文章标签URL默认省略了mid（加密和hashid除外）
 		if( empty($this->_parseurl) && !isset($_GET['mid'])){
-		    $mid = 2;
+            $_GET['mid'] = $mid = 2;
         }
 		$table = isset($this->_cfg['table_arr'][$mid]) ? $this->_cfg['table_arr'][$mid] : '';
         ($table == '' || $table == 'page') AND core::error404();
@@ -126,6 +126,7 @@ class tag_control extends base_control{
 
 		$this->_cfg['titles'] = lang('hot_tag');
 		$this->_var['topcid'] = -1;
+        $_GET['mid'] = $mid = max(2, (int)R('mid'));
 
         // hook tag_control_top_seo_after.php
 
@@ -135,6 +136,11 @@ class tag_control extends base_control{
 		$GLOBALS['run'] = &$this;
         $_ENV['_theme'] = &$this->_cfg['theme'];
         $tpl = 'tag_top.htm';
+
+        //不同模型 可以对应自己的热门标签模板
+        if($mid > 2 && view_tpl_exists("tag_top_{$mid}.htm")){
+            $tpl = "tag_top_{$mid}.htm";
+        }
 
 		// hook tag_control_top_after.php
 		$this->display($tpl);
@@ -147,7 +153,7 @@ class tag_control extends base_control{
         $this->_cfg['titles'] = lang('all_tag');
         $this->_var['topcid'] = -1;
 
-        $mid = max(2, (int)R('mid'));
+        $_GET['mid'] = $mid = max(2, (int)R('mid'));
         $page = (int)R('page','G');
         if( $page > 1 ){
             $this->_cfg['titles']  .= '-'.lang('page_current', array('page'=>$page));
@@ -161,8 +167,7 @@ class tag_control extends base_control{
         $_ENV['_theme'] = &$this->_cfg['theme'];
         $tpl = 'tag_all.htm';
 
-        //不同模型 可以对应自己的标签列表页模板
-        $mid = max(2, (int)R('mid'));
+        //不同模型 可以对应自己的全部标签模板
         if($mid > 2 && view_tpl_exists("tag_all_{$mid}.htm")){
             $tpl = "tag_all_{$mid}.htm";
         }

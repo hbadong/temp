@@ -18,11 +18,8 @@ function block_global_tag($conf) {
 	global $run;
 
 	// hook block_global_tag_before.php
-    if( isset($conf['mid']) ){
-        $mid = _int($conf, 'mid', 2);
-    }else{
-        $mid = max(2, (int)R('mid', 'R'));
-    }
+    $mid = isset($conf['mid']) ? max(2, intval($conf['mid'])) : (isset($_GET['mid']) ? max(2, intval($_GET['mid'])) : 2);
+    $_GET['mid'] = $mid;
 	$pagenum = empty($conf['pagenum']) ? 20 : max(1, (int)$conf['pagenum']);
     $orderby = isset($conf['orderby']) && in_array($conf['orderby'], array('tagid', 'count', 'orderby')) ? $conf['orderby'] : 'count';
 	$orderway = isset($conf['orderway']) && $conf['orderway'] == 1 ? 1 : -1;
