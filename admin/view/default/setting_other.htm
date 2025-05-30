@@ -4,41 +4,47 @@
 	<div class="layui-card-body">
 		<form id="form" class="layui-form" action="index.php?setting-other-ajax-1" method="post">
 			<div class="layui-form-item">
-				<label class="layui-form-label">{lang:debug_mod}</label>
-				<div class="layui-input-inline">
-					{$input[debug]}
+				<div class="layui-inline">
+					<label class="layui-form-label required">{lang:debug_mod}</label>
+					<div class="layui-input-inline">
+						{$input[debug]}
+					</div>
 				</div>
-			</div>
-			<div class="layui-form-item">
-				<label class="layui-form-label">{lang:debug_mod_admin}</label>
-				<div class="layui-input-inline">
-					{$input[debug_admin]}
-				</div>
-			</div>
-			<hr/>
-			<div class="layui-form-item">
-				<label class="layui-form-label">{lang:php_error}</label>
-				<div class="layui-input-inline">
-					{$input[php_error]}
-				</div>
-			</div>
-			<div class="layui-form-item">
-				<label class="layui-form-label">{lang:php_error404}</label>
-				<div class="layui-input-inline">
-					{$input[php_error404]}
+				<div class="layui-inline">
+					<label class="layui-form-label required">{lang:debug_mod_admin}</label>
+					<div class="layui-input-inline">
+						{$input[debug_admin]}
+					</div>
 				</div>
 			</div>
 			<hr/>
 			<div class="layui-form-item">
-				<label class="layui-form-label">{lang:lang_mod}</label>
-				<div class="layui-input-inline">
-					{$input[lang]}
+				<div class="layui-inline">
+					<label class="layui-form-label required">{lang:php_error}</label>
+					<div class="layui-input-inline">
+						{$input[php_error]}
+					</div>
+				</div>
+				<div class="layui-inline">
+					<label class="layui-form-label required">{lang:php_error404}</label>
+					<div class="layui-input-inline">
+						{$input[php_error404]}
+					</div>
 				</div>
 			</div>
+			<hr/>
 			<div class="layui-form-item">
-				<label class="layui-form-label">{lang:lang_mod_admin}</label>
-				<div class="layui-input-inline">
-					{$input[lang_admin]}
+				<div class="layui-inline">
+					<label class="layui-form-label required">{lang:lang_mod}</label>
+					<div class="layui-input-inline">
+						{$input[lang]}
+					</div>
+				</div>
+				<div class="layui-inline">
+					<label class="layui-form-label required">{lang:lang_mod_admin}</label>
+					<div class="layui-input-inline">
+						{$input[lang_admin]}
+					</div>
 				</div>
 			</div>
 			<hr/>
@@ -84,6 +90,13 @@
 					{$input[close_views]}
 				</div>
 				<div class="layui-form-mid layui-word-aux">{lang:close_views_tips}</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">{lang:content_len}</label>
+				<div class="layui-input-inline">
+					{$input[content_min_len]}
+				</div>
+				<div class="layui-form-mid layui-word-aux">{lang:content_min_len_tips}</div>
 			</div>
 			<div class="layui-form-item">
 				<label class="layui-form-label">{lang:url_path}</label>

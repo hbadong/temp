@@ -861,6 +861,8 @@ class setting_control extends admin_control{
             $input['close_views'] = form::layui_loop('radio', 'close_views', $arr, $close_views);
             $input['auto_pic'] = form::layui_loop('radio', 'auto_pic', $arr, $auto_pic);
             $input['open_title_check'] = form::layui_loop('radio', 'open_title_check', $arr, $open_title_check);
+            $content_min_len = isset($cfg['content_min_len']) ? (int)$cfg['content_min_len'] : 5;
+            $input['content_min_len'] = form::get_number('content_min_len', $content_min_len);
 
             $arr = array('0'=>lang('left_menu'),'1'=>lang('left_and_top_menu'));
             $input['admin_layout'] = form::layui_loop('radio', 'admin_layout', $arr, $cfg['admin_layout']);
@@ -882,6 +884,7 @@ class setting_control extends admin_control{
             $this->kv->xset('admin_layout', (int)R('admin_layout', 'P'), 'cfg');
             $this->kv->xset('url_path', (int)R('url_path', 'P'), 'cfg');
             $this->kv->xset('open_title_check', (int)R('open_title_check', 'P'), 'cfg');
+            $this->kv->xset('content_min_len', (int)R('content_min_len', 'P'), 'cfg');
 
             $debug = (int)R('debug','P');
             $debug_admin = (int)R('debug_admin','P');
