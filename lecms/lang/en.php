@@ -121,7 +121,7 @@ return array(
     'comment_content_no_empty'=>'Content cannot be empty',
     'comment_content_than_255'=>'Content cannot exceed 255 characters',
 
-    'please_fill_content_over_5'=>'Your content is too few words. It cannot be less than 5 characters',
+    'please_fill_content_over_5'=>'Your content is too few words. It cannot be less than {length} characters',
 
     'cate_type_1'=>'Channel',
     'cate_type_0'=>'List',

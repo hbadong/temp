@@ -121,7 +121,7 @@ return array(
     'comment_content_no_empty'=>'评论内容不能为空',
     'comment_content_than_255'=>'评论内容太长了',
 
-    'please_fill_content_over_5'=>'您的内容字数太少了哦，不能少于5个字符',
+    'please_fill_content_over_5'=>'您的内容字数太少了哦，不能少于{length}个字符，含html标签',
 
     'cate_type_1'=>'频道',
     'cate_type_0'=>'列表',

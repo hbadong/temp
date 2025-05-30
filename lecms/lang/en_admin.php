@@ -533,5 +533,8 @@ return array(
     'content_seo_rule'=>'Content SEO Rules',
     'content_seo_variable'=>'Settings - SEO Settings - Content SEO Rule Settings → Available Variables',
 
+    'content_len'=>'Content Length',
+    'content_min_len_tips'=>'Publish and edit content, minimum length of content field, including HTML tags',
+
     // hook lang_en_admin.php
 );

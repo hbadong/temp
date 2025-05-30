@@ -533,5 +533,8 @@ return array(
     'content_seo_rule'=>'内容SEO规则',
     'content_seo_variable'=>'参考：设置-SEO设置-内容页SEO规则设置 里面的可用变量',
 
+    'content_len'=>'内容长度',
+    'content_min_len_tips'=>'发布和编辑内容，内容字段最小长度，含html标签',
+
     // hook lang_zh_cn_admin.php
 );

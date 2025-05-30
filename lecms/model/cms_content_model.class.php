@@ -165,13 +165,14 @@ class cms_content extends model {
 
     //发布或编辑内容时检查数据
     public function check_post($post = array(), $isadd = 1){
+	    $content_min_len = isset($this->cfg['content_min_len']) ? (int)$this->cfg['content_min_len'] : 0;
         // hook cms_content_model_check_post_before.php
         if( empty($post['cid']) ){
             return lang('please_select_category');
         }elseif ( empty($post['title']) ){
             return lang('please_fill_title');
-        }elseif ( isset($post['content']) && strlen($post['content']) < 5 ){
-            return lang('please_fill_content_over_5');
+        }elseif ( isset($post['content']) && strlen($post['content']) < $content_min_len ){
+            return lang('please_fill_content_over_5', array('length'=>$content_min_len));
         }elseif ( $isadd && isset($post['alias'] ) && $post['alias'] && $err_msg = $this->only_alias->check_alias(strtolower($post['alias']), 1) ){
             return $err_msg;
         }elseif ( isset($post['id']) && empty($post['id']) ){
