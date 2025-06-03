@@ -38,8 +38,12 @@ function block_list_by_field($conf) {
     $showviews = _int($conf, 'showviews', 0);
     $field_format = _int($conf, 'field_format', 0);
     $life = isset($conf['life']) ? (int)$conf['life'] : (isset($run->_cfg['life']) ? (int)$run->_cfg['life'] : 0);
-    $field = isset($conf['field']) ? $conf['field'] : '';
+    $field = isset($conf['field']) ? $conf['field'] : 'title';
     $field_val = isset($conf['field_val']) ? $conf['field_val'] : '';
+    //内容页 field_val为某个变量？
+    if(!$field_val && isset($GLOBALS['_show'][$field])){
+        $field_val = $GLOBALS['_show'][$field];
+    }
     $field_match = isset($conf['field_match']) ? $conf['field_match'] : '=';
     $extra = array('block_name'=>'block_list_by_field');
     $cache_params = array($cid, $cids, $mid, $dateformat, $titlenum, $intronum, $orderby, $orderway, $start, $limit, $showcate, $showviews, $field_format, $field, $field_val, $field_match);
