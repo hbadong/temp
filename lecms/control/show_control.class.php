@@ -117,6 +117,7 @@ class show_control extends base_control{
 
         $GLOBALS['run'] = &$this;
         $GLOBALS['_show'] = &$_show;
+        $_ENV['_theme'] = &$this->_cfg['theme'];
         $tpl = $this->_var['show_tpl'];
         //内容单独指定的模板
         if(isset($_show['show_tpl']) && $_show['show_tpl']){
@@ -124,7 +125,6 @@ class show_control extends base_control{
         }
 
         // hook show_control_index_after.php
-        $_ENV['_theme'] = &$this->_cfg['theme'];
         $this->display($tpl);
     }
 

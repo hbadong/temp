@@ -42,6 +42,7 @@ class flags_control extends base_control{
         $GLOBALS['run'] = &$this;
         $GLOBALS['mid'] = &$mid;
         $GLOBALS['flag'] = &$flag;
+        $_ENV['_theme'] = &$this->_cfg['theme'];
         $tpl = 'flags.htm';
 
         /**
@@ -61,7 +62,6 @@ class flags_control extends base_control{
         }
 
         // hook flags_control_index_after.php
-        $_ENV['_theme'] = &$this->_cfg['theme'];
         $this->display($tpl);
     }
 

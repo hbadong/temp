@@ -40,10 +40,10 @@ class space_control extends base_control{
 
         $GLOBALS['run'] = &$this;
         $GLOBALS['_show'] = &$_show;
+        $_ENV['_theme'] = &$this->_cfg['theme'];
         $tpl = 'space.htm';
 
         // hook space_control_index_after.php
-        $_ENV['_theme'] = &$this->_cfg['theme'];
         $this->display($tpl);
     }
 

@@ -43,10 +43,10 @@ class model_control extends base_control{
         $this->assign('cfg_var', $this->_var);
 
         $GLOBALS['run'] = &$this;
+        $_ENV['_theme'] = &$this->_cfg['theme'];
         $tpl = $table.'_model.htm';
 
         // hook model_control_index_after.php
-        $_ENV['_theme'] = &$this->_cfg['theme'];
         $this->display($tpl);
     }
 

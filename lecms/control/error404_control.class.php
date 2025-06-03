@@ -48,11 +48,10 @@ class error404_control extends control{
 		$this->assign('cfg_var', $this->_var);
 
 		$GLOBALS['run'] = &$this;
+        $_ENV['_theme'] = &$this->_cfg['theme'];
         $tpl = '404.htm';
 
 		// hook error404_control_index_after.php
-
-		$_ENV['_theme'] = &$this->_cfg['theme'];
 		$this->display($tpl);
 	}
 
