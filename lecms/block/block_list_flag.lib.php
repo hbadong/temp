@@ -122,6 +122,11 @@ function block_list_flag($conf) {
 	}
     // hook block_list_flag_list_arr_after.php
     $ret = array('list'=> $list_arr);
+    //分类信息
+    if(isset($cate_arr) && $cate_arr){
+        $run->category->format($cate_arr);
+        $ret['cate'] = $cate_arr;
+    }
 
     // hook block_list_flag_set_block_data_cache_before.php
     if($cache_key){
