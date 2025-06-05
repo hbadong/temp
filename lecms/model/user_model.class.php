@@ -110,7 +110,7 @@ class user extends model {
 	}
 
 	// 格式化后显示给用户
-	public function format(&$user, $dateformat = 'Y-m-d H:i', $group_fmt = 0) {
+	public function format(&$user, $dateformat = 'Y-m-d H:i', $group_fmt = 0, $intronum = 0, $extra = array()) {
 		if(!$user) return;
 		$user['regdate'] = empty($user['regdate']) ? '0000-00-00 00:00' : date($dateformat, $user['regdate']);
 		$user['regip'] = long2ip((int)$user['regip']);
@@ -135,6 +135,8 @@ class user extends model {
                 $user['groupname'] = lang('data_error');
             }
         }
+
+        $intronum && $user['intro'] = utf8::cutstr_cn($user['intro'], $intronum);
 
 		// hook usre_model_format_after.php
 	}
