@@ -122,11 +122,8 @@ class user extends model {
         //用户个人主页
 		$user['user_url'] = $this->urls->space_url($user['uid']);
 
-		//用户头像
-        $user['avatar'] = $this->urls->user_avatar($user['uid']);
-
         empty($user['author']) && $user['author'] = $user['username'];
-
+        
         if($group_fmt){
             $group_arr = $this->user_group->get_name();
             if( isset($group_arr[$user['groupid']]) ){
@@ -135,6 +132,9 @@ class user extends model {
                 $user['groupname'] = lang('data_error');
             }
         }
+
+        //用户头像
+        $user['avatar'] = $this->urls->user_avatar($user['uid'], $user['avatar'], array('user'=>$user));
 
         $intronum && $user['intro'] = utf8::cutstr_cn($user['intro'], $intronum);
 

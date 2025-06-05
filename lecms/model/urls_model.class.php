@@ -230,7 +230,11 @@ class urls extends model {
             if( is_file(ROOT_PATH.$avatar) ){
                 return $this->cfg['weburl'].$avatar;
             }else{
-                $user = $this->user->get($uid);
+                if(isset($extra['user'])){
+                    $user = $extra['user'];
+                }else{
+                    $user = $this->user->get($uid);
+                }
                 if(isset($user['avatar']) && $user['avatar'] && is_file(ROOT_PATH.$user['avatar'])){
                     return $this->cfg['weburl'].$user['avatar'];
                 }
