@@ -15,6 +15,7 @@ defined('ROOT_PATH') || exit;
  * @param int limit 显示几条
  * @param int showcate 是否显示分类信息
  * @param int showviews 是否显示内容浏览量信息
+ * @param int showsoncate 是否显示子分类信息（传递的cid有子级分类才有效）
  * @param int field_format 是否格式化主表自定义字段内容（主要是单选框、多选框、下拉框、图集等）
  * @param int life 缓存时间
  * @return array
@@ -36,10 +37,11 @@ function block_list($conf) {
 	$limit = _int($conf, 'limit', 10);
     $showcate = _int($conf, 'showcate', 0);
     $showviews = _int($conf, 'showviews', 0);
+    $showsoncate = _int($conf, 'showsoncate', 0);
     $field_format = _int($conf, 'field_format', 0);
     $life = isset($conf['life']) ? (int)$conf['life'] : (isset($run->_cfg['life']) ? (int)$run->_cfg['life'] : 0);
     $extra = array('block_name'=>'block_list');
-    $cache_params = array($cid, $cids, $mid, $dateformat, $titlenum, $intronum, $orderby, $orderway, $start, $limit, $showcate, $showviews, $field_format);
+    $cache_params = array($cid, $cids, $mid, $dateformat, $titlenum, $intronum, $orderby, $orderway, $start, $limit, $showcate, $showviews, $showsoncate, $field_format);
     // hook block_list_conf_after.php
 
     //优先从缓存表读取。加前缀，避免不同的block，相同的cache_params，导致缓存数据错乱
@@ -80,6 +82,15 @@ function block_list($conf) {
 
             if(!empty($cate_arr['son_cids']) && is_array($cate_arr['son_cids'])) {
                 $where = array('cid' => array("IN" => $cate_arr['son_cids'])); // 影响数据库性能
+                if($showsoncate){
+                    $soncatelist = $run->category->mget($cate_arr['son_cids']);
+                    $xuhao = 1;
+                    foreach($soncatelist as &$soncate){
+                        $run->category->format($soncate);
+                        $soncate['xuhao'] = $xuhao;
+                        $xuhao++;
+                    }
+                }
             }else{
                 $where = array('cid' => $cid);
             }
@@ -133,6 +144,9 @@ function block_list($conf) {
 	}
     // hook block_list_list_arr_after.php
     $ret = array('cate_name'=> $cate_name, 'cate_url'=> $cate_url, 'list'=> $list_arr);
+    if(isset($soncatelist)){
+        $ret['soncate'] = $soncatelist;
+    }
 
     // hook block_list_set_block_data_cache_before.php
     if($cache_key){
