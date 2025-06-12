@@ -221,7 +221,7 @@ class urls extends model {
         }
         // hook urls_model_user_avatar_before.php
         if($uid){
-            if($avatar_file){
+            if($avatar_file && substr($avatar_file, 0, 14) != 'upload/avatar/'){
                 $avatar = 'upload/avatar/'.$avatar_file;
             }else{
                 $avatar = 'upload/avatar/'.substr(sprintf("%09d", $uid), 0, 3).'/'.$uid.'.png';
