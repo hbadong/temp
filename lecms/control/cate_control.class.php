@@ -25,9 +25,23 @@ class cate_control extends base_control{
         // hook cate_control_index_center.php
 
         // SEO 相关
-        $this->_cfg['titles'] = (empty($this->_var['seo_title']) ? $this->_var['name'] : $this->_var['seo_title']).'-'.$this->_cfg['webname'];
-        $this->_cfg['seo_keywords'] = (empty($this->_var['seo_keywords']) ? $this->_var['name'] : $this->_var['seo_keywords']).','.$this->_cfg['webname'];
-        !empty($this->_var['seo_description']) && $this->_cfg['seo_description'] =  $this->_var['seo_description'];
+        if($this->_var['seo_title']){
+            $this->_cfg['titles'] = $this->_var['seo_title'];
+        }else{
+            $this->_cfg['titles'] = $this->_var['name'].'-'.$this->_cfg['webname'];
+        }
+        if($this->_var['seo_keywords']){
+            $this->_cfg['seo_keywords'] = $this->_var['seo_keywords'];
+        }else{
+            $this->_cfg['seo_keywords'] = $this->_var['name'].','.$this->_cfg['webname'];
+        }
+        if($this->_var['seo_description']){
+            $this->_cfg['seo_description'] = $this->_var['seo_description'];
+        }elseif($this->_var['intro']){
+            $this->_cfg['seo_description'] = $this->_var['intro'];
+        }else{
+            $this->_cfg['seo_description'] = $this->_cfg['webname'].'：'.$this->_var['name'];
+        }
 
         $page = (int)R('page','G');
         if( $page > 1 ){
