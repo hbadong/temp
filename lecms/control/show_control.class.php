@@ -15,8 +15,12 @@ class show_control extends base_control{
 
         $_GET['id'] = (int)R('id');
         $_GET['cid'] = (int)R('cid');
+		$_GET['mid'] = (int)R('mid');
         $page = max(1, (int)R('page','G') );
+		
+		// hook show_control_index_param_after.php
 
+		$_show = array();
         if(empty($_GET['cid']) && !empty($_GET['id']) && !empty($_GET['mid'])){
             $mid = max(1, (int)$_GET['mid']);
             $table = isset($this->_cfg['table_arr'][$mid]) ? $this->_cfg['table_arr'][$mid] : '';
@@ -30,7 +34,7 @@ class show_control extends base_control{
             $_GET['cid'] = $_show['cid'];
             $this->_var = $this->category->get_cache($_GET['cid']);
             (empty($this->_var) || $this->_var['mid'] == 1) && core::error404();
-        }else{
+        }elseif($_GET['cid'] && $_GET['id']){
             $this->_var = $this->category->get_cache($_GET['cid']);
             (empty($this->_var) || $this->_var['mid'] == 1) && core::error404();
 
@@ -41,6 +45,10 @@ class show_control extends base_control{
             $_show = $this->cms_content->get($_GET['id']);
             if(empty($_show['cid']) || $_show['cid'] != $_GET['cid']) core::error404();
         }
+		
+		// hook show_control_index_get_show_after.php
+		
+		if( empty($_show) || empty($this->_var) ){core::error404();}
 
         //灵活型URL 含有日期，对日期进行验证
         if($this->_cfg['link_show_type'] == 7 && (isset($_GET['date_ymd']) || isset($_GET['date_y']) || isset($_GET['date_m']) || isset($_GET['date_d']))){
