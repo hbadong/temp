@@ -16,4 +16,7 @@
         window.admin_lang = "{php}echo C('admin_lang');{/php}";
     </script>
     <script src="{$C[admin_static]}admin/js/admin.js" charset="utf-8"></script>
+    {hook:admin_head_after.htm}
 </head>
+<body>
+{hook:admin_body_before.htm}
