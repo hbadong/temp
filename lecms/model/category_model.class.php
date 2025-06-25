@@ -387,15 +387,15 @@ class category extends model {
 				if($_mid && $mid != $_mid) continue;
 
 				foreach($arr as $v) {
-
 				    if($in_cid && !in_array($v['cid'], $in_cid)){
 				        continue;
                     }
-
 					$disabled = $v['type'] == 1 ? ' disabled="disabled"' : '';
 					$s .= '<option value="'.$v['cid'].'"'.($v['type'] == 0 && $v['cid'] == $cid ? ' selected="selected"' : '').$disabled.'>';
-					$s .= str_repeat("　", $v['pre']-1);
-					$s .= '|─'.$v['name'].($v['type'] == 1 ? '['.lang('cate_type_1').']' : '').'</option>';
+                    if($v['pre'] > 1){
+                        $s .= '|'.str_repeat("─", $v['pre']-1).' ';
+                    }
+					$s .= $v['name'].($v['type'] == 1 ? '['.lang('cate_type_1').']' : '').'</option>';
 				}
 			}
 		}
