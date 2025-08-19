@@ -60,8 +60,8 @@ class base_control extends control{
                 // hook base_control_get_user_failed.php
             }
 
-            $this->_login_url = $this->urls->user_url('login', 'user');
-            $this->_register_url = $this->urls->user_url('register', 'user');
+            $this->_cfg['open_user_login'] && $this->_login_url = $this->urls->user_url('login', 'user');
+            $this->_cfg['open_user_register'] && $this->_register_url = $this->urls->user_url('register', 'user');
             $this->_my_url = $this->urls->user_url('index', 'my');
             $this->_logout_url = $this->urls->user_url('logout', 'my');
 
