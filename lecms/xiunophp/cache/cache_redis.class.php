@@ -30,6 +30,8 @@ class cache_redis implements cache_interface{
 				if(!empty($c['multi'])) {
 					$this->is_getmulti = method_exists($this->redis, 'getMulti');
 				}
+                $redis_id = isset($c['id']) ? $c['id'] : 0;
+				$this->redis->select($redis_id);//选择数据库,int类型，一般是0-16，选一个
 				return $this->redis;
 			}else{
 				throw new Exception('Can not connect to Redis host.');
