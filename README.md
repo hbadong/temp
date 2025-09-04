@@ -14,7 +14,7 @@ PHP & MYSQL架构、基于xiunophp框架开发
 
 #### lecms相关：
 1. lecms交流论坛：www.lecms.cc
-2. lecms交流QQ群：797599080
+2. lecms交流QQ群： **797599080**  欢迎入群
 3. lecms插件：https://www.lecms.cc/index.php?forum-3.htm
 4. lecms模板：https://www.lecms.cc/index.php?forum-2.htm
 5. lecms模板开发手册：https://www.lecms.cc/index.php?forum-7.htm
