@@ -75,8 +75,8 @@ CREATE TABLE pre_models (
   cate_tpl varchar(80) NOT NULL DEFAULT '' COMMENT '默认列表页模板',
   show_tpl varchar(80) NOT NULL DEFAULT '' COMMENT '默认内容页模板',
   `system` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否系统内置',
-  width smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT '缩略图宽度',
-  height smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT '缩略图高度',
+  width smallint(5) unsigned NOT NULL DEFAULT '300' COMMENT '缩略图宽度',
+  height smallint(5) unsigned NOT NULL DEFAULT '300' COMMENT '缩略图高度',
   icon varchar(30) NOT NULL DEFAULT 'fa fa-bars' COMMENT '后台菜单图标',
   PRIMARY KEY (mid),
   UNIQUE KEY tablename (tablename)
