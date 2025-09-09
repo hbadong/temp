@@ -48,6 +48,8 @@ function block_list_rand_by_cid($conf) {
     $category = $run->category->get_cache($cid);
     if(empty($category) || $category['mid'] == 1){return array();}
 
+    $cate_name = $category['name'];
+    $cate_url = $run->category->category_url($category);
     $mid = $category['mid'];
     $table = $category['table'];
     $table_prefix = $_ENV['_config']['db']['master']['tablepre'];
@@ -132,7 +134,7 @@ function block_list_rand_by_cid($conf) {
 	}
 
 	// hook block_list_rand_by_cid_list_arr_after.php
-    $ret = array('list'=> $list_arr);
+    $ret = array('cate_name'=> $cate_name, 'cate_url'=> $cate_url, 'list'=> $list_arr);
 
     // hook block_list_rand_by_cid_set_block_data_cache_before.php
 	if($cache_key){
