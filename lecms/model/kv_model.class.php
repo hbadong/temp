@@ -27,7 +27,7 @@ class kv extends model {
 		$arr['k'] = $k;
 		$arr['v'] = $s;
 		$arr['expiry'] = $life ? $_ENV['_time'] + $life : 0;
-		return parent::set($k, $arr);
+		return parent::set($k, $arr, $life);
 	}
 
 	// 读取
