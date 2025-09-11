@@ -204,7 +204,10 @@ class content_control extends admin_control{
 
             $content[$field] = $value;
 
+            // hook admin_content_control_set_update_before.php
+
             if(!$this->cms_content->update($content)) {
+                // hook admin_content_control_set_update_failed.php
                 E(1, lang('edit_failed'));
             }
             // hook admin_content_control_set_after.php
