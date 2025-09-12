@@ -59,10 +59,9 @@ function block_lists($conf) {
     $run->cms_content->table = 'cms_'.$table;
     $run->cms_content_views->table = 'cms_'.$table.'_views';
 
-    $allcategorys = $run->category->get_category_db();
     $cid_arr = explode(',', $cids);
     foreach ($cid_arr as $cid){
-        $category = isset($allcategorys[$cid]) ? $allcategorys[$cid] : array();
+        $category = $run->category->get_cache($cid);
         if( empty($category) || $category['mid'] == 1 || $category['mid'] != $mid ){
             continue;
         }
@@ -70,8 +69,14 @@ function block_lists($conf) {
         $run->category->format($category);
         $ret[$cid] = $category;
 
+        if(isset($category['son_cids']) && !empty($category['son_cids'])) {
+            $where = array('cid' => array("IN" => $category['son_cids']));
+        }else{
+            $where = array('cid'=>$cid);
+        }
+
         // 读取内容列表
-        $list_arr = $run->cms_content->list_arr(array('cid'=>$cid), $orderby, $orderway, $start, $limit, $limit, $extra);
+        $list_arr = $run->cms_content->list_arr($where, $orderby, $orderway, $start, $limit, $limit, $extra);
 
         if($showviews && $list_arr){
             $keys = array();
