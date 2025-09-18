@@ -22,7 +22,7 @@ layui.define(['layer', 'form'], function(exports){
         that.config = {
             //默认工具bar
             tool: [
-                'strong', 'italic', 'underline', 'del'
+                'strong', 'italic', 'underline', 'del', 'html'
                 ,'|'
                 ,'left', 'center', 'right'
                 ,'|'
@@ -152,6 +152,7 @@ layui.define(['layer', 'form'], function(exports){
                     ,'a{color:#01AAED; text-decoration:none;}a:hover{color:#c00}'
                     ,'p{margin-bottom: 10px;}'
                     ,'img{display: inline-block; border: none; vertical-align: middle;}'
+                    ,'.layedit-source-mode{font-family: monospace !important; white-space: pre; background: #f5f5f5 !important; border: 1px solid #ddd !important; padding: 10px !important;min-height: inherit !important;overflow: auto !important;}'
                     ,'pre{margin: 10px 0; padding: 10px; line-height: 20px; border: 1px solid #ddd; border-left-width: 6px; background-color: #F2F2F2; color: #333; font-family: Courier New; font-size: 12px;}'
                     ,'</style>'].join(''))
                     ,body = conts.find('body');
@@ -423,6 +424,38 @@ layui.define(['layer', 'form'], function(exports){
                         ,content: ['', 'no']
                     });
                 }
+                // 新增源代码切换功能
+                ,html: function(range) {
+                    //console.log('切换源代码模式', '当前模式:', body.hasClass('layedit-source-mode'));
+                    var isSourceMode = body.hasClass('layedit-source-mode');
+                    var othis = $(this);
+                    var iframeBody = body[0];
+                    
+                    if (isSourceMode) {
+                        var sourceContent = iframeBody.innerText;
+                        iframeBody.innerHTML = sourceContent;
+                        body.removeClass('layedit-source-mode');
+                        othis.removeClass('layedit-tool-active');
+                    } else {
+                        var htmlContent = iframeBody.innerHTML.trim();
+                        // 如果是纯文本（无HTML标签），自动包裹<p>标签
+                        if (htmlContent && !/<[^>]+>/.test(htmlContent)) {
+                            htmlContent = '<p>' + htmlContent + '</p>';
+                        }
+                        iframeBody.textContent = htmlContent;
+                        body.addClass('layedit-source-mode');
+                        othis.addClass('layedit-tool-active');
+                    }
+                    // 强制聚焦并重置选区，避免光标异常
+                    iframeBody.focus();
+                    var selection = iframeWin.getSelection();
+                    var range = document.createRange();
+                    range.setStartAfter(iframeBody.lastChild || iframeBody);
+                    range.collapse(true);
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+                    //console.log('切换后内容:', isSourceMode ? '可视化HTML' : '源代码文本');
+                }
             }
                 ,tools = editor.find('.layui-layedit-tool')
 
@@ -636,7 +669,7 @@ layui.define(['layer', 'form'], function(exports){
             ,face: '<i class="layui-icon layedit-tool-face" title="表情" layedit-event="face"">&#xe650;</i>'
             ,image: '<i class="layui-icon layedit-tool-image" title="图片" layedit-event="image">&#xe64a;<input type="file" name="upfile"></i>'
             ,code: '<i class="layui-icon layedit-tool-code" title="插入代码" layedit-event="code">&#xe64e;</i>'
-
+            ,html: '<i class="layui-icon layedit-tool-html" title="HTML源代码" layedit-event="html">&#xe64b;</i>'
             ,help: '<i class="layui-icon layedit-tool-help" title="帮助" layedit-event="help">&#xe607;</i>'
         }
 
