@@ -17,6 +17,11 @@ defined('ROOT_PATH') || exit;
  * @param int showviews 是否显示内容浏览量信息
  * @param int field_format 是否格式化主表自定义字段内容（主要是单选框、多选框、下拉框、图集等）
  * @param int life 缓存时间
+ * @param string field 字段名
+ * @param string field_val 字段值（单个）
+ * @param string field_match 匹配方式，默认为=，也可以是LIKE，只对单字段值有效
+ * @param string field_vals 字段值（多个），优先级高于单字段值
+ * @param string field_vals_sep 多个字段值分隔符，默认为,
  * @return array
  */
 function block_list_by_field($conf) {
@@ -99,13 +104,17 @@ function block_list_by_field($conf) {
 
     //字段条件
     if($field){
-        switch ($field_match){
-            case 'LIKE':
-                $where[$field] = array('LIKE'=>$field_val);
-                break;
-            default:
-                $where[$field] = $field_val;
-        }
+        if($field_vals){
+			$where[$field] = array("IN" => explode($field_vals_sep, $field_vals));
+		}else{
+			switch ($field_match){
+				case 'LIKE':
+					$where[$field] = array('LIKE'=>$field_val);
+					break;
+				default:
+					$where[$field] = $field_val;
+			}
+		}
     }
 
     // hook block_list_by_field_where_after.php
