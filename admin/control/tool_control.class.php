@@ -15,6 +15,7 @@ class tool_control extends admin_control{
 
             E(0, lang('clear_success'));
         }
+        $this->assign_value('dbcache_count',$this->runtime->count());
         $this->display();
     }
 
