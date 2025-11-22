@@ -364,7 +364,8 @@ class db_pdo_mysql implements db_interface {
 
 		$sql = $s;
 		$ret = array();
-		$query = $this->rlink->query($sql);
+		//$query = $this->rlink->query($sql);   这个在DEBUG下不记录sql日志
+        $query = $this->query($sql, $this->rlink);
         if(!is_object($query)) {
             if( defined('DEBUG') && DEBUG ){
                 $error = $this->rlink->errorInfo();
