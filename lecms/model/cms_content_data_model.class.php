@@ -5,14 +5,14 @@ class cms_content_data extends model {
     protected $data = array();
 
 	function __construct() {
-		$this->table = '';			// 内容数据表表名 比如 cms_article_content
+		$this->table = '';			// 内容数据表表名 比如 cms_article_data
 		$this->pri = array('id');	// 主键
 		$this->maxid = 'id';		// 自增字段
 	}
 
     //根据ID获取内容附表数据
     public function get_cms_content_data($id = 0, $table = 'article'){
-        $this->table = 'cms_'.$table.'_content';
+        $this->table = 'cms_'.$table.'_data';
         $data = array();
         // hook cms_content_data_model_get_cms_content_data_before.php
         $data = $this->get($id);
