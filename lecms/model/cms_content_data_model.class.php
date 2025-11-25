@@ -10,14 +10,49 @@ class cms_content_data extends model {
 		$this->maxid = 'id';		// 自增字段
 	}
 
+    public function get_instance($table = 'article'){
+        // hook cms_content_data_model_get_instance_before.php
+        $table = 'cms_'.$table.'_data';
+        // hook cms_content_data_model_get_instance_after.php
+        $this->table = $table;
+    }
+
     //根据ID获取内容附表数据
     public function get_cms_content_data($id = 0, $table = 'article'){
-        $this->table = 'cms_'.$table.'_data';
+        $this->get_instance($table);
         $data = array();
         // hook cms_content_data_model_get_cms_content_data_before.php
         $data = $this->get($id);
         // hook cms_content_data_model_get_cms_content_data_after.php
         return $data;
+    }
+
+    //根据ID更新内容附表数据
+    public function update_cms_content_data($id = 0, $table = 'article', $data = array()){
+        $this->get_instance($table);
+        // hook cms_content_data_model_update_cms_content_data_before.php
+        $data['id'] = $id;
+        $r = $this->update($data);
+        // hook cms_content_data_model_update_cms_content_data_after.php
+        return $r;
+    }
+
+    //根据ID创建内容附表数据(如果ID存在则更新,否则创建)
+    public function set_cms_content_data($data = array(), $id = 0, $table = 'article'){
+        $this->get_instance($table);
+        // hook cms_content_data_model_set_cms_content_data_before.php
+        $r = $this->set($id, $data);
+        // hook cms_content_data_model_set_cms_content_data_after.php
+        return $r;
+    }
+
+    //根据ID删除内容附表数据
+    public function delete_cms_content_data($id = 0, $table = 'article'){
+        $this->get_instance($table);
+        // hook cms_content_data_model_delete_cms_content_data_before.php
+        $r = $this->delete($id);
+        // hook cms_content_data_model_delete_cms_content_data_after.php
+        return $r;
     }
 
 	/*内容字段分页*/
