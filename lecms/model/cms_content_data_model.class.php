@@ -38,7 +38,7 @@ class cms_content_data extends model {
     }
 
     //根据ID创建内容附表数据(如果ID存在则更新,否则创建)
-    public function set_cms_content_data($data = array(), $id = 0, $table = 'article'){
+    public function set_cms_content_data($id = 0, $data = array(), $table = 'article'){
         $this->get_instance($table);
         // hook cms_content_data_model_set_cms_content_data_before.php
         $r = $this->set($id, $data);
