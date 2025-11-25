@@ -28,7 +28,7 @@ class cms_content_data extends model {
     }
 
     //根据ID更新内容附表数据
-    public function update_cms_content_data($id = 0, $table = 'article', $data = array()){
+    public function update_cms_content_data($id = 0, $data = array(), $table = 'article'){
         $this->get_instance($table);
         // hook cms_content_data_model_update_cms_content_data_before.php
         $data['id'] = $id;
