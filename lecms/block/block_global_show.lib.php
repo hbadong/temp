@@ -58,7 +58,7 @@ function block_global_show($conf) {
     $_show['views_url'] = $run->_cfg['webdir'].'index.php?views--cid-'.$run->_var['cid'].'-id-'.$id;  //异步获取和更新浏览量URL
 
     // hook block_global_show_data_before.php
-	$data = $run->cms_content_data->get($id);
+	$data = $run->cms_content_data->get_cms_content_data($id, $run->_var['table']);
     // hook block_global_show_data_after.php
 	if($data){
         if($field_format){
@@ -82,7 +82,7 @@ function block_global_show($conf) {
 
 	//获取浏览量
     $run->cms_content_views->table = 'cms_'.$run->_var['table'].'_views';
-    $views_data = $run->cms_content_views->get($id);
+    $views_data = $run->cms_content_views->get_cms_content_views($id, $run->_var['table']);
     if($views_data){
         if( empty($run->_cfg['close_views']) ){
             $_show['views'] = $views_data['views']+1;
@@ -92,7 +92,7 @@ function block_global_show($conf) {
         }
     }else{
         $_show['views'] = 1;
-        empty($run->_cfg['close_views']) && $run->cms_content_views->set($id, array('views'=>1,'cid'=>$_show['cid']));
+        empty($run->_cfg['close_views']) && $run->cms_content_views->set_cms_content_views($id, array('views'=>1,'cid'=>$_show['cid']), $run->_var['table']);
     }
 
     //附件信息
