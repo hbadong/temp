@@ -417,7 +417,7 @@ class cms_content extends model {
         }
 
         //附表数据
-        if($this->cms_content_data->set($id, $cms_content_data)) {
+        if($this->cms_content_data->set_cms_content_data($id, $cms_content_data, $table)) {
             // hook cms_content_model_xadd_cms_content_data_success.php
         }else{
             // hook cms_content_model_xadd_cms_content_data_failed.php
@@ -434,9 +434,9 @@ class cms_content extends model {
         );
         // hook cms_content_model_xadd_cms_content_views_after.php
 
-        if(!$this->cms_content_views->set($id, $cms_content_views)) {
+        if(!$this->cms_content_views->set_cms_content_views($id, $cms_content_views, $table)) {
             $this->delete($id);    //删除主表数据
-            $this->cms_content_data->delete($id);   //删除附表数据
+            $this->cms_content_data->delete_cms_content_data($id, $table);   //删除附表数据
 
             DEBUG && log::le_log($cms_content_views, 'cms_content_xadd_error');
             return array('err'=>1 ,'msg'=>lang('write_content_views_table_failed'));
@@ -747,7 +747,7 @@ class cms_content extends model {
         }
 
         //附表数据
-        if($this->cms_content_data->set($id, $cms_content_data)) {
+        if($this->cms_content_data->set_cms_content_data($id, $cms_content_data, $table)) {
             // hook cms_content_model_xedit_cms_content_data_success.php
         }else{
             return array('err'=>1 ,'msg'=>lang('write_content_data_table_failed'));
@@ -761,7 +761,7 @@ class cms_content extends model {
         );
         // hook cms_content_model_xedit_cms_content_views_after.php
 
-        if($this->cms_content_views->set($id, $cms_content_views)) {
+        if($this->cms_content_views->set_cms_content_views($id, $cms_content_views, $table)) {
             // hook cms_content_model_xedit_cms_content_views_success.php
         }else{
             return array('err'=>1 ,'msg'=>lang('write_content_views_table_failed'));
@@ -908,9 +908,9 @@ class cms_content extends model {
         }
 
 		//删除内容
-		$this->cms_content_data->delete($id);
+		$this->cms_content_data->delete_cms_content_data($id, $table);
         //删除浏览量
-		$this->cms_content_views->delete($id);
+		$this->cms_content_views->delete_cms_content_views($id, $table);
 		//删除属性
 		$this->cms_content_flag->find_delete(array('id'=>$id));
 		//删除别名
