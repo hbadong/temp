@@ -336,21 +336,21 @@ class content_control extends admin_control{
             $data = $this->cms_content->get($id);
             if(empty($data)) $this->message(0, lang('data_error'), -1);
 
-            $this->cms_content_data->table = 'cms_'.$this->_table.'_data';
-            $this->cms_content_views->table = 'cms_'.$this->_table.'_views';
-            $data2 = $this->cms_content_data->get($id);
-            $data3 = $this->cms_content_views->get($id);
+            //获取内容附表数据
+            $data2 = $this->cms_content_data->get_cms_content_data($id, $this->_table);
+            //获取内容浏览量
+            $data3 = $this->cms_content_views->get_cms_content_views($id, $this->_table);
             $data2 === FALSE && $data2 = array();
             $data3 === FALSE && $data3 = array();
 
-            // hook admin_article_control_edit_data_before.php
+            // hook admin_content_control_edit_data_before.php
 
             $data = array_merge($data, $data2, $data3);
             //$data['content'] = isset($data['content']) ? htmlspecialchars($data['content']) : '';	form get_textarea 里面已经有了
             $data['tags'] = implode(',', (array)_json_decode($data['tags']));
             $data['intro'] = str_replace('<br />', "\n", strip_tags($data['intro'], '<br>'));
             $data['max_dateline'] = $_ENV['_time'];
-            // hook admin_article_control_edit_data_assign_before.php
+            // hook admin_content_control_edit_data_assign_before.php
             $this->assign('data', $data);
 
             $input = $this->get_input($data);
@@ -368,14 +368,14 @@ class content_control extends admin_control{
 
             $this->display('content_set.htm');
         }else{
-            // hook admin_article_control_edit_post_before.php
+            // hook admin_content_control_edit_post_before.php
 
             $res = $this->cms_content->xedit($_POST, $this->_user, $this->_table);
             if( $res['err'] ){
                 E(1, $res['msg']);
             }
 
-            // hook admin_article_control_edit_post_after.php
+            // hook admin_content_control_edit_post_after.php
             E(0, $res['msg']);
         }
     }
