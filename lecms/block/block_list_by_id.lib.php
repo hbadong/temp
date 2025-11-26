@@ -66,8 +66,7 @@ function block_list_by_id($conf) {
         }
 
         if($showviews){
-            $run->cms_content_views->table = 'cms_'.$table.'_views';
-            $views_arr = $run->cms_content_views->get($id);
+            $views_arr = $run->cms_content_views->get_cms_content_views($id, $table);
         }else{
             $views_arr = array();
         }
@@ -83,8 +82,7 @@ function block_list_by_id($conf) {
         }
 
         if($showcontent){
-			$run->cms_content_data->table = 'cms_'.$table.'_data';
-			$cms_data = $run->cms_content_data->get($id);
+			$cms_data = $run->cms_content_data->get_cms_content_data($id, $table);
 			if($cms_data){
 				$data += $cms_data;
 			}
@@ -103,8 +101,7 @@ function block_list_by_id($conf) {
         $list_arr = $run->cms_content->mget($keys);
 
         if($showviews && $list_arr){
-            $run->cms_content_views->table = 'cms_'.$table.'_views';
-            $views_list_arr = $run->cms_content_views->mget($keys);
+            $views_list_arr = $run->cms_content_views->mgets($keys, $table);
             $views_key = 'cms_'.$table.'_views-id-';
         }else{
             $views_key = '';
@@ -112,8 +109,7 @@ function block_list_by_id($conf) {
         }
 
         if($showcontent){
-			$run->cms_content_data->table = 'cms_'.$table.'_data';
-			$cms_data_list_arr = $run->cms_content_data->mget($keys);
+			$cms_data_list_arr = $run->cms_content_data->mgets($keys, $table);
 			$cms_data_key = 'cms_'.$table.'_data-id-';
 		}else{
 			$cms_data_key = '';
