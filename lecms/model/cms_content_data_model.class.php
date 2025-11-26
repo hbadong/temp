@@ -55,6 +55,15 @@ class cms_content_data extends model {
         return $r;
     }
 
+    //根据ID数组获取多条数据
+	public function mgets($id_arr = array(), $table = 'article'){
+		$this->get_instance($table);
+        // hook cms_content_data_model_mgets_before.php
+        $data = $this->mget($id_arr);
+        // hook cms_content_data_model_mgets_after.php
+        return $data;
+	}
+
 	/*内容字段分页*/
 	public function format_content($data = array(), $curpage = 1){
         // hook cms_content_data_model_format_content_before.php
