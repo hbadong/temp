@@ -287,7 +287,7 @@ class cms_content_attach extends model {
 
             //删除内容数据表的图片
             if($data['isimage']){
-                $cms_content_data = $this->cms_content_data->get($data['id']);
+                $cms_content_data = $this->cms_content_data->get_cms_content_data($data['id'], $table);
                 if($cms_content_data){
                     //清空内容字段里面的图
                     $contentstr = $cms_content_data['content'];
@@ -310,7 +310,7 @@ class cms_content_attach extends model {
                     // hook cms_content_attach_model_xdelete_cms_content_data_after.php
 
                     unset($cms_content_data['id']);
-                    $this->cms_content_data->set($data['id'], $cms_content_data);
+                    $this->cms_content_data->set_cms_content_data($data['id'], $cms_content_data, $table);
                 }
             }
         }
