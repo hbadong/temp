@@ -389,6 +389,16 @@ class core{
 			if($m[1] != 'control') {
 				$controlname = $m[1].'.class.php';
 				$realfile = CONTROL_PATH.$controlname;
+
+                //解决继承的类文件不存在的问题（继承的类文件在插件目录）
+				if(!is_file($realfile)) {
+					$controlfile = core::get_original_file($controlname, CONTROL_PATH);	
+					if($controlfile) {
+						$realfile = $controlfile;
+					}
+					unset($controlfile);
+				}
+                
 				if(is_file($realfile)) {
 					$objfile = RUNTIME_CONTROL.$controlname;
 					self::process_all($realfile, $objfile, "写入继承的类的编译文件 $controlname 失败");
