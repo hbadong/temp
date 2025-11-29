@@ -229,7 +229,7 @@ class models extends model {
           PRIMARY KEY  (id),
           KEY cid (cid,views),
           KEY views (views)
-        ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT '{$model_name}浏览量表'";
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT '{$model_name}浏览量表'";
         $this->db->query($sql_table);
 
         // hook models_model_xadd_after.php
