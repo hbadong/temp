@@ -200,7 +200,7 @@ CREATE TABLE pre_cms_article_views (
   PRIMARY KEY (id),
   KEY cid (cid,views),
   KEY views (views)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='文章浏览量表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='文章浏览量表';
 
 # 文章标签表
 DROP TABLE IF EXISTS pre_cms_article_tag;
