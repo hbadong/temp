@@ -45,13 +45,14 @@ function block_list_by_field($conf) {
     $life = isset($conf['life']) ? (int)$conf['life'] : (isset($run->_cfg['life']) ? (int)$run->_cfg['life'] : 0);
     $field = isset($conf['field']) ? $conf['field'] : 'title';
     $field_val = isset($conf['field_val']) ? $conf['field_val'] : '';
+    $field_vals = isset($conf['field_vals']) ? $conf['field_vals'] : '';
     //内容页 field_val为某个变量？
     if(!$field_val && isset($GLOBALS['_show'][$field])){
         $field_val = $GLOBALS['_show'][$field];
     }
     $field_match = isset($conf['field_match']) ? $conf['field_match'] : '=';
     $extra = array('block_name'=>'block_list_by_field');
-    $cache_params = array($cid, $cids, $mid, $dateformat, $titlenum, $intronum, $orderby, $orderway, $start, $limit, $showcate, $showviews, $field_format, $field, $field_val, $field_match);
+    $cache_params = array($cid, $cids, $mid, $dateformat, $titlenum, $intronum, $orderby, $orderway, $start, $limit, $showcate, $showviews, $field_format, $field, $field_val, $field_vals, $field_match);
     // hook block_list_by_field_conf_after.php
 
     //优先从缓存表读取。加前缀，避免不同的block，相同的cache_params，导致缓存数据错乱
