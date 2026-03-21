@@ -1,0 +1,108 @@
+<?php include $this->admin_tpl('meta', 'admin');?>
+<title>添加会员 - YzmCMS内容管理系统</title>
+</head>
+<body>
+<article class="page-container">
+<div class="formdoby_normal"> 
+	<form method="post" onsubmit="return dosub(this)">
+		<ul>
+			 <li><label><span class="c-red">*</span>用户名：</label>
+			 	<input type="text" class="input" name="username" value="" placeholder="用户名长度为3-30位" onblur="get_nickname()">
+			 </li>
+			 <li><label><span class="c-red">*</span>密码：</label>
+			 	<input type="password" class="input" name="password" value="" placeholder="密码长度为6-20位">
+			 </li>
+			 <li><label>昵称：</label>
+			 	<input type="text" class="input" name="nickname" value="" placeholder="长度为30个字符以内">
+			 </li>
+			 <li><label><span class="c-red">*</span>邮箱：</label>
+			 	<input type="email" class="input" name="email" value="" placeholder="@">
+			 </li>
+			 <li><label><span class="c-red">*</span>会员组：</label>
+			 <span class="span_input yzm-explain-box"><select  name="groupid" style="margin-left:0px;">
+			  <?php 
+				foreach($member_group as $val){
+					echo '<option value="'.$val['groupid'].'">'.$val['name'].'</option>';
+				}
+			   ?>			
+			 </select>
+			 <span class="yzm-explain">会员组别影响到经验</span>
+			</span>
+			 </li>
+			 <li><label><span class="c-red">*</span>积分：</label>
+			 	<input type="text" class="input" name="point" value="0" placeholder="请输入积分">
+			 </li>
+			 <li class="yzm-explain-box" style="height:30px;line-height:30px;display:flex;"><label>vip会员：</label>
+			 <label style="width:auto"><input name="vip" value="1" type="checkbox" onclick="change_vip(this)"> 是</label>&nbsp;&nbsp;
+			 <span id="vip_overduedate" style="display:none">到期时间 <input type="text" class="input-text laydate-icon" style="width:175px;height:30px;margin:0 5px" name="overduedate" value="" onclick="laydate({istime:true, format:'YYYY-MM-DD hh:mm:ss', min:'<?php echo date('Y-m-d H:i:s')?>'})"></span>
+			 <span class="yzm-explain">vip会员可以免积分查看付费内容</span>
+			 </li>
+		</ul>
+		<div class="footer_btn">
+			<input type="hidden" name="dosubmit" value="1">
+			<input class="btn btn-primary radius" type="submit" value="提 交">
+			<input class="btn btn-default radius" type="button" value="取 消" onclick="yzmcms_close()">	
+		</div>
+	</form>
+</div>
+</article>
+<?php include $this->admin_tpl('footer', 'admin');?>
+<script type="text/javascript" src="<?php echo STATIC_URL;?>plugin/laydate/1.1/laydate.js"></script>
+<script type="text/javascript">
+	function get_nickname(){
+		$username = $("input[name='username']").val();
+		if($username != ''){
+			$("input[name='nickname']").val($username);
+		}
+	}
+
+	function change_vip(obj){
+		if(obj.checked){
+			$("#vip_overduedate").show();
+		}else{
+			$("#vip_overduedate").hide();
+		}
+	}
+	
+	function dosub(obj){
+		 if(obj.username.value==''){
+			 layer.msg('用户名不能为空！', {icon:2});
+			 return false;
+		 }
+		 if(obj.password.value=='' || obj.password.value.length < 6){
+			 layer.msg('密码不能低于6位！', {icon:2});
+			 return false;
+		 }
+		 if(obj.email.value==''){
+			 layer.msg('邮箱不能为空！', {icon:2});
+			 return false;
+		 }
+		 if(obj.point.value=='' || isNaN(obj.point.value)){
+			 layer.msg('积分点数只能为数字类型！', {icon:2});
+			 return false;
+		 }
+		 if($('input[name="vip"]').prop('checked') && $("input[name='overduedate']").val()=='') {
+			layer.msg('请选择VIP到期时间！', {icon:2});
+			return false;
+		 }
+        $.ajax({
+            type: 'POST',
+            url: '<?php echo U('add');?>', 
+            data: $(obj).serialize(),
+		    dataType: "json", 
+            success: function (msg) {
+				if(msg.status == 1){
+					layer.msg(msg.message, {icon:1, time:800}, function(){
+						parent.location.reload();
+					});
+			    }else{
+					layer.msg(msg.message, {icon:2});
+				}
+            }
+        })		 
+		return false;			 
+	}
+</script> 
+
+</body>
+</html>

@@ -1,0 +1,37 @@
+<?php include $this->admin_tpl('meta', 'admin');?>
+<title>管理轮播分类 - YzmCMS内容管理系统</title>
+</head>
+<body>
+<article class="page-container">
+<div class="formdoby_normal"> 
+	<form method="post" action="<?php echo U('cat_manage');?>" id="myform">
+		<a href="javascript:;" onclick="yzm_dels('id', 1)" class="btn size-S btn-danger radius">批量删除</a>
+		<table class="table table-border table-bg table-hover mt-5 yzm-table-sort">
+			<thead>
+				<tr>
+					<th width="25"><input type="checkbox"></th>
+					<th>分类ID</th>
+					<th>分类名称</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php 
+				foreach($data as $val){
+				?>
+				<tr>
+					<td><input type="checkbox" value="<?php echo $val['tid']?>" name="id[]"></td>
+					<td><?php echo $val['tid']?></td>
+					<td><?php echo $val['name']?></td>
+				</tr>
+				<?php 
+				}
+				?>
+		</table>
+		<?php if(!$data){ ?><div class="yzm_no_data"><i class="yzm-iconfont yzm-iconshuoming"></i> 暂无数据</div><?php } ?>
+		
+	</form>
+</div>
+</article>
+<?php include $this->admin_tpl('footer','admin');?> 
+</body>
+</html>

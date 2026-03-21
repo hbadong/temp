@@ -1,0 +1,83 @@
+{m:include "member","header"}
+<div class="yzm_member_container main">
+    {m:include "member","left"}
+    <div class="main_right">
+        <div class="tit">
+            <h3>发信息</h3>
+        </div>
+        <div class="main_cont">
+            <form method="post" action="" onsubmit="return chcekall(this)">
+                <table>
+                    <tr>
+                        <td><span class="required">*</span>收件人：</td>
+                        <td>
+                        	<input type="text" name="send_to" value="{if isset($data['send_from'])}{$data['send_from']}{/if}" id="username" class="input">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span class="required">*</span>主 题：</td>
+                        <td>
+                        	<input type="text" name="subject" value="{if isset($data['subject'])}{$data['subject']}{/if}" class="input">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span class="required">*</span>内 容：</td>
+                        <td>
+                        	<textarea name="content" class="textarea"></textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span class="required">*</span>验证码：</td>
+                        <td> 
+                        	<input type="text" class="input" name="code" id="code" style="width:150px;"><img src="{U('api/index/code')}" onclick="this.src=this.src+'?'" class="yzm-code-img" title="看不清，换一张">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                        	<input type="submit" name="dosubmit" id="dosubmit" class="submit" value="提交">
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+	function chcekall(obj){
+		if(obj.send_to.value==''){
+		  layer.msg('收件人不能为空！', {icon:2, time:2000});
+		  return false;
+		}
+		if(obj.subject.value==''){
+		  layer.msg('主题不能为空！', {icon:2, time:2000});
+		  return false;
+		}
+		if(obj.content.value==''){
+		  layer.msg('内容不能为空！', {icon:2, time:2000});
+		  return false;
+		}
+		if(obj.code.value==''){
+		  layer.msg('验证码不能为空！', {icon:2, time:2000});
+		  return false;
+		}
+		$.ajax({
+		    type: "POST",
+		    url: "{U('new_messages')}", 
+		    data: $(obj).serialize(),
+		    dataType: "json", 
+		    success: function (msg) {
+		        if(msg.status == 1){
+		            layer.msg(msg.message, {icon:1, time:2000}, function(){
+		                location.href = msg.url;
+		            });
+		        }else{
+		        	$(".yzm-code-img").attr('src',$(".yzm-code-img").attr('src') + '?' + Math.random());
+		            layer.msg(msg.message, {icon:2});
+		        }
+		    }
+		})       
+		return false;	
+	}
+</script>
+{m:include "member","footer"}
