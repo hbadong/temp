@@ -5,11 +5,11 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/login',
     name: 'Login',
-    component: () => import('./views/Login.vue')
+    component: () => import('../views/Login.vue')
   },
   {
     path: '/',
-    component: () => import('./views/Layout.vue'),
+    component: () => import('../views/Layout.vue'),
     meta: { requiresAuth: true },
     children: [
       {
@@ -19,22 +19,22 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'dashboard',
         name: 'Dashboard',
-        component: () => import('./views/Dashboard.vue')
+        component: () => import('../views/Dashboard.vue')
       },
       {
         path: 'products',
         name: 'Products',
-        component: () => import('./views/Products.vue')
+        component: () => import('../views/Products.vue')
       },
       {
         path: 'cards',
         name: 'Cards',
-        component: () => import('./views/Cards.vue')
+        component: () => import('../views/Cards.vue')
       },
       {
         path: 'orders',
         name: 'Orders',
-        component: () => import('./views/Orders.vue')
+        component: () => import('../views/Orders.vue')
       }
     ]
   }
