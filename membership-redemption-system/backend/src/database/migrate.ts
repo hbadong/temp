@@ -13,6 +13,7 @@ async function runMigrations(): Promise<void> {
       port: config.db.port,
       user: config.db.user,
       password: config.db.password,
+      database: config.db.database,
       multipleStatements: true
     })
 
