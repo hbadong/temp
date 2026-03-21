@@ -1,0 +1,796 @@
+/* 起名网 qiming.cn 样式 */
+
+:root {
+  --primary-color: #a93121;
+  --border-color: #f4f4f4;
+  --text-color: #333;
+  --text-muted: #999;
+  --bg-muted: #f0f2f5;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  color: var(--text-color);
+  background-color: var(--bg-muted);
+  line-height: 1.6;
+}
+
+a {
+  color: #505050;
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--primary-color);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* Header */
+.header {
+  background: #fff;
+  box-shadow: 0 0 30px rgba(0,0,0,0.07);
+  z-index: 997;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  height: 86px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.logo img {
+  height: 49px;
+  margin-right: 41px;
+}
+
+.nav {
+  flex: 1;
+  height: 86px;
+}
+
+.nav ul {
+  list-style: none;
+  display: flex;
+  height: 100%;
+}
+
+.nav li {
+  display: inline-block;
+  line-height: 86px;
+}
+
+.nav li a {
+  margin: 0 13px;
+  font-size: 15px;
+  position: relative;
+}
+
+.nav li.current-menu-item a::after {
+  content: '';
+  display: block;
+  width: 100%;
+  left: 0;
+  right: 0;
+  height: 2px;
+  position: absolute;
+  bottom: -16px;
+  z-index: 10;
+  border-radius: 100px;
+  background: linear-gradient(90deg, #c92009, #e6614f);
+  box-shadow: 0 5px 10px 0 rgba(2,11,23,0.3);
+}
+
+.header-info {
+  display: flex;
+  align-items: center;
+}
+
+.header-info i {
+  margin-right: 15px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+/* Banner */
+.qiming_vipbgs {
+  width: 100%;
+}
+
+.qiming_vipbgs img {
+  width: 100%;
+  display: block;
+}
+
+/* 页面内容 */
+#page-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.qiming-pages-vip {
+  background: #fff;
+  padding: 30px;
+  border-radius: 8px;
+  margin-top: 20px;
+}
+
+.formGsQm {
+  padding: 30px;
+  background: linear-gradient(to bottom, #fae7e7, #fff);
+  border-radius: 13px;
+  text-align: center;
+  box-shadow: 0px 0px 10px 0px rgba(156,156,156,0.3);
+}
+
+.formGsQm h1 {
+  font-size: 2rem;
+  letter-spacing: 5px;
+  font-weight: bold;
+  color: #A82513;
+}
+
+.formGsQm > p {
+  font-size: 0.9rem;
+  color: #919191;
+  margin-top: 10px;
+  letter-spacing: 2px;
+  margin-bottom: 30px;
+}
+
+/* 表单样式 */
+.two_bd {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.list_bd {
+  height: 48px;
+  background: #fff;
+  border: 1px solid #edd5d2;
+  border-radius: 8px;
+  line-height: 46px;
+  text-align: left;
+  padding-left: 15px;
+  box-sizing: border-box;
+  position: relative;
+  flex: 1;
+  margin-right: 10px;
+}
+
+.list_bd:last-child {
+  margin-right: 0;
+}
+
+.list_bd input,
+.list_bd select {
+  height: 80%;
+  width: 90%;
+  border: 0;
+  font-size: 1rem;
+  background: none;
+}
+
+.list_bd select {
+  color: #696969;
+}
+
+.list_bd img {
+  position: absolute;
+  right: 15px;
+  top: 15px;
+}
+
+.sexSelect {
+  position: absolute;
+  right: 10px;
+  top: 8px;
+  font-size: 0;
+}
+
+.sexSelect span {
+  width: 28px;
+  height: 28px;
+  display: inline-block;
+  border-radius: 50%;
+  background: #f2f2ee;
+  font-size: 14px;
+  text-align: center;
+  line-height: 28px;
+  margin-left: 12px;
+  cursor: pointer;
+}
+
+.sexSelect span.active {
+  background: #a93121;
+  color: #f9f9f5;
+}
+
+.qmbtn {
+  width: 100%;
+  height: 48px;
+  border-radius: 10px;
+  font-size: 1.2rem;
+  color: #fff;
+  background: linear-gradient(90deg, #c92009, #e6614f);
+  line-height: 48px;
+  border: 0;
+  cursor: pointer;
+  display: block;
+  text-align: center;
+  margin-top: 20px;
+  box-shadow: 0 5px 10px 0 rgba(2,11,23,0.3);
+}
+
+.qmbtn:hover {
+  color: #fff;
+  opacity: 0.9;
+}
+
+/* 罗盘动画 */
+.lunpan_box {
+  display: none;
+}
+
+.lunpan {
+  width: 170px;
+  height: 170px;
+  margin: 0 auto;
+  position: fixed;
+  top: 40%;
+  left: 50%;
+  z-index: 105;
+  margin-left: -85px;
+}
+
+.lunpan img:nth-child(1) {
+  width: 170px;
+  height: 170px;
+  animation: rotate 4s linear infinite;
+}
+
+.lunpan img:nth-child(2) {
+  width: 20px;
+  height: 140px;
+  position: fixed;
+  top: 42%;
+  left: 50%;
+  margin-left: -10px;
+  animation: rotate2 4s linear infinite;
+}
+
+@keyframes rotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes rotate2 {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(-360deg); }
+}
+
+/* 内容区块 */
+.qiming-background-muted {
+  background-color: #f0f2f5;
+}
+
+.qiming-background-default {
+  background-color: #fff;
+}
+
+.qiming-background-secondary {
+  background-color: #333;
+}
+
+.qiming-background-cover {
+  background-size: cover;
+  background-position: center;
+}
+
+/* 区块标题 */
+.qiming-padding-app {
+  padding: 30px;
+}
+
+.qiming-margin-medium-bottom {
+  margin-bottom: 20px;
+}
+
+.qiming-margin-top-20 {
+  margin-top: 20px;
+}
+
+.apply {
+  font-size: 24px;
+  color: #0B1D30;
+  margin-bottom: 20px;
+  border-left: 4px solid var(--primary-color);
+  padding-left: 15px;
+}
+
+.apply::before {
+  content: '';
+}
+
+/* 六大维度服务 */
+.yuvip_serve_father {
+  padding: 0;
+}
+
+.yuvip_title {
+  text-align: center;
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 30px;
+}
+
+.yuvip_serve ul {
+  display: flex;
+  justify-content: space-between;
+  list-style: none;
+  flex-wrap: wrap;
+}
+
+.yuvip_serve li {
+  width: 16.66%;
+  text-align: center;
+  padding: 0 10px;
+}
+
+.yuvip_serve li div {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.yuvip_serve li img {
+  width: 60px;
+  height: 60px;
+  margin-bottom: 15px;
+}
+
+.yuvip_serve li p {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.yuvip_serve li em {
+  font-size: 13px;
+  color: #666;
+  font-style: normal;
+}
+
+/* QA区块 */
+.qiming-pages-web-qa {
+  padding: 40px 0;
+  margin-top: 30px;
+}
+
+.qiming-pages-web-qatitle {
+  text-align: center;
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 30px;
+}
+
+.qiming-pages-web-qa-box {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.qiming-pages-web-qa-box-each {
+  background: #fff;
+  padding: 25px;
+  border-radius: 8px;
+}
+
+.qiming-pages-web-qa-box-t p {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 12px;
+}
+
+.qa-box-each-detail-con {
+  color: #666;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+/* 名字潜移默化区块 */
+.qiming-pages-web-yw-box {
+  padding: 40px 0;
+}
+
+.web-yw-box-title {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.web-yw-box-title span {
+  font-size: 24px;
+  color: #333;
+}
+
+.web-yw-box-title p {
+  font-size: 14px;
+  color: #999;
+  margin-top: 10px;
+}
+
+.web-yw-box-con-li {
+  text-align: center;
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  transition: transform 0.3s;
+}
+
+.web-yw-box-con-li:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+}
+
+.web-yw-box-con-li span img {
+  width: 60px;
+  height: 60px;
+  margin-bottom: 15px;
+}
+
+.web-yw-box-con-li p {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.web-yw-box-con-li em {
+  font-size: 13px;
+  color: #666;
+  font-style: normal;
+}
+
+/* 博客区块 */
+.blog {
+  padding: 30px 0;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.section-title i {
+  font-size: 24px;
+  margin-right: 10px;
+  color: var(--primary-color);
+}
+
+.section-title h3 {
+  font-size: 20px;
+  color: #333;
+}
+
+.sub-nav {
+  flex: 1;
+  text-align: right;
+}
+
+.sub-nav a {
+  color: var(--primary-color);
+  font-size: 14px;
+}
+
+.qiming-grid {
+  display: grid;
+  gap: 20px;
+}
+
+.qiming-width-1-2 {
+  width: 50%;
+}
+
+.blog-item {
+  background: #fff;
+  padding: 15px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.blog-item:hover {
+  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+  transform: translateY(-3px);
+}
+
+.qiming-grid-collapse {
+  display: grid;
+  grid-template-columns: 2fr 3fr;
+  gap: 15px;
+}
+
+.qiming-vip-icons .cover {
+  height: 100%;
+  min-height: 120px;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.qiming-vip-icons .cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.blog-item-content {
+  padding: 0;
+}
+
+.blog-item-content h3 {
+  margin-bottom: 10px;
+}
+
+.blog-item-content h3 a {
+  font-size: 16px;
+  color: #333;
+}
+
+.blog-item-content h3 a:hover {
+  color: var(--primary-color);
+}
+
+.blog-item-content p {
+  font-size: 13px;
+  color: #999;
+  line-height: 1.6;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+.item-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.item-foot .cat a {
+  background: #af4031;
+  color: #fff;
+  padding: 3px 8px;
+  border-radius: 2px;
+  font-size: 12px;
+  margin-right: 8px;
+}
+
+.avatar {
+  display: flex;
+  align-items: center;
+}
+
+.avatar img {
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+}
+
+.avatar span {
+  font-size: 13px;
+  color: #999;
+  margin-left: 8px;
+}
+
+.qiming-text-small {
+  font-size: 13px;
+}
+
+.icon-time,
+.icon-browse {
+  margin-right: 4px;
+}
+
+/* Footer */
+.footer {
+  background: #333;
+  color: #fff;
+  padding: 48px 0 24px;
+}
+
+.foot {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.foot-item {
+  margin-bottom: 20px;
+}
+
+.foot-logo img {
+  height: 60px;
+  margin-bottom: 15px;
+}
+
+.foot-item-title {
+  font-size: 16px;
+  margin-bottom: 15px;
+  color: #fff;
+}
+
+.foot-item ul {
+  list-style: none;
+  padding: 0;
+}
+
+.foot-item ul li {
+  margin-bottom: 8px;
+}
+
+.foot-item ul li a {
+  color: #ccc;
+  font-size: 14px;
+}
+
+.foot-item ul li a:hover {
+  color: #fff;
+}
+
+.foot-cop {
+  border-top: 1px solid #444;
+  padding-top: 20px;
+  margin-top: 20px;
+  text-align: center;
+  font-size: 14px;
+  color: #999;
+}
+
+.foot-cop a {
+  color: #999;
+  margin: 0 8px;
+}
+
+.foot-cop a:hover {
+  color: #fff;
+}
+
+/* 按钮样式 */
+.btn {
+  border-radius: 4px;
+  color: #fff;
+  display: inline-block;
+  font-size: 16px;
+  padding: 8px 20px;
+  background: linear-gradient(90deg, #c92009, #e6614f);
+  box-shadow: 0 5px 10px 0 rgba(2,11,23,0.3);
+}
+
+.change-color {
+  background: linear-gradient(90deg, #c92009, #e6614f);
+  color: #fff;
+  box-shadow: 0 5px 10px 0 rgba(2,11,23,0.3);
+}
+
+.btn-search-all {
+  padding: 6px 19px;
+  font-size: 15px;
+}
+
+/* 搜索弹窗 */
+#header-search .qiming-tan {
+  width: 600px;
+  border-radius: 12px;
+}
+
+.qiming-tan h3 {
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+.qiming-tan .search-navbar {
+  display: flex;
+  border: 1px solid #eee;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.qiming-tan .search-navbar input {
+  flex: 1;
+  border: 0;
+  padding: 10px 15px;
+  font-size: 14px;
+}
+
+.qiming-tan .search-navbar i {
+  padding: 10px 15px;
+  background: #f5f5f5;
+}
+
+.header-btn-search {
+  margin-top: 20px;
+  text-align: center;
+}
+
+/* 移动端响应式 */
+@media (max-width: 768px) {
+  .navbar {
+    height: auto;
+    padding: 10px;
+    flex-wrap: wrap;
+  }
+  
+  .nav {
+    display: none;
+  }
+  
+  .header-home {
+    display: block;
+    font-size: 24px;
+  }
+  
+  .qiming_vipbgs img {
+    height: auto;
+  }
+  
+  .qiming-pages-vip {
+    padding: 15px;
+  }
+  
+  .formGsQm {
+    padding: 15px;
+  }
+  
+  .two_bd {
+    flex-direction: column;
+  }
+  
+  .list_bd {
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+  
+  .yuvip_serve li {
+    width: 50%;
+    margin-bottom: 15px;
+  }
+  
+  .qiming-pages-web-qa-box {
+    grid-template-columns: 1fr;
+  }
+  
+  .qiming-grid-collapse {
+    grid-template-columns: 1fr;
+  }
+  
+  .footer {
+    padding: 30px 0 20px;
+  }
+  
+  .foot-cop {
+    font-size: 12px;
+  }
+}
