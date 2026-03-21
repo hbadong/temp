@@ -1,31 +1,51 @@
 import express from 'express'
+import almanacCalculator from '../engines/almanacCalculator.js'
 
 const router = express.Router()
 
 router.get('/today', async (req, res) => {
-  const today = new Date()
-  res.json({
-    code: 200,
-    message: 'success',
-    data: {
-      date: today.toISOString().split('T')[0],
-      lunarYear: '乙巳',
-      lunarMonth: '二月',
-      lunarDay: '初四',
-      zodiac: '蛇',
-      solarTerm: '春分',
-      constellation: '白羊座',
-      weekday: '星期日',
-      yi: ['嫁娶', '祭祀', '开光', '祈福', '求嗣', '出行'],
-      ji: ['动土', '伐木', '安葬', '行丧'],
-      chongSha: '丁酉',
-      chongZodiac: '兔',
-      luckyHours: ['子', '丑', '卯', '午'],
-      caiShen: '东北',
-      xiShen: '西北',
-      fuShen: '西南'
+  try {
+    const today = new Date()
+    const dateStr = today.toISOString().split('T')[0]
+    const data = almanacCalculator.calculate(dateStr)
+    
+    res.json({
+      code: 200,
+      message: 'success',
+      data
+    })
+  } catch (error) {
+    res.status(500).json({
+      code: 500,
+      message: '计算黄历数据失败'
+    })
+  }
+})
+
+router.get('/date/:date', async (req, res) => {
+  try {
+    const { date } = req.params
+    
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+      return res.status(400).json({
+        code: 400,
+        message: '日期格式不正确，应为 YYYY-MM-DD'
+      })
     }
-  })
+    
+    const data = almanacCalculator.calculate(date)
+    
+    res.json({
+      code: 200,
+      message: 'success',
+      data
+    })
+  } catch (error) {
+    res.status(500).json({
+      code: 500,
+      message: '计算黄历数据失败'
+    })
+  }
 })
 
 export default router
