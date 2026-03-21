@@ -47,7 +47,7 @@ export class AdminService {
   async findByUsername(username: string): Promise<Admin | null> {
     const pool = getPool()
     const [rows] = await pool.query(
-      'SELECT * FROM admins WHERE username = ?',
+      'SELECT id, username, password_hash as passwordHash, role, status, last_login_at as lastLoginAt, failed_login_attempts as failedLoginAttempts, locked_until as lockedUntil, created_at as createdAt, updated_at as updatedAt FROM admins WHERE username = ?',
       [username]
     )
     const admins = rows as Admin[]
@@ -57,7 +57,7 @@ export class AdminService {
   async findById(id: number): Promise<Admin | null> {
     const pool = getPool()
     const [rows] = await pool.query(
-      'SELECT * FROM admins WHERE id = ?',
+      'SELECT id, username, password_hash as passwordHash, role, status, last_login_at as lastLoginAt, failed_login_attempts as failedLoginAttempts, locked_until as lockedUntil, created_at as createdAt, updated_at as updatedAt FROM admins WHERE id = ?',
       [id]
     )
     const admins = rows as Admin[]
