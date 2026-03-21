@@ -316,7 +316,7 @@ const poetryServices = [
 
 const hotNames = ref([
   '牟颖周', '迟善玺', '璩香之', '孔欣雅', '田彦鑫', '吴梓熙', '孙贝芊', '孙家淼', '魏玉来', '岳煦尧', '廖承锐', '舒宏庆'
-].map(n => ({ name: n, path: `/mingzi/${n}` }))
+].map(n => ({ name: n, path: `/mingzi/${n}` })));
 
 const latestArticles = [
   { title: '有哪些出自《易经》且有寓意的名字？', path: '/a/1126860.html' },
@@ -326,11 +326,11 @@ const latestArticles = [
 
 const boyNames = ref([
   '颜豪', '颢凯', '颢哲', '颢宁', '颢宸', '璟桓', '璟霆', '翔士', '名浩', '淳皓', '家岐', '毅铮'
-].map(n => ({ name: n, path: `/mingzi/${n}` }))
+].map(n => ({ name: n, path: `/mingzi/${n}` })));
 
 const girlNames = ref([
   '颜菲', '孟馨', '宁丽', '宁俪', '宁娟', '宁婕', '宁汐', '宁萱', '宇妃', '宇妍', '宇妮', '宇娇'
-].map(n => ({ name: n, path: `/mingzi/${n}` }))
+].map(n => ({ name: n, path: `/mingzi/${n}` })));
 
 const baziArticles = [
   { title: '八字起名取名的寓意，生辰八字怎么起名字', path: '/a/1746243.html' },
