@@ -1,0 +1,98 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: membership-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - NODE_ENV=production
+    env_file:
+      - ./backend/.env
+    volumes:
+      - ./backend/logs:/app/logs
+      - backend-data:/app/data
+    depends_on:
+      - mysql
+      - redis
+    networks:
+      - membership-network
+    restart: unless-stopped
+
+  user-frontend:
+    build:
+      context: ./user-frontend
+      dockerfile: Dockerfile
+    container_name: membership-user-frontend
+    ports:
+      - "3000:80"
+    networks:
+      - membership-network
+    restart: unless-stopped
+
+  admin-backend:
+    build:
+      context: ./admin-backend
+      dockerfile: Dockerfile
+    container_name: membership-admin-backend
+    ports:
+      - "3001:80"
+    networks:
+      - membership-network
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:alpine
+    container_name: membership-nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+    depends_on:
+      - backend
+      - user-frontend
+      - admin-backend
+    networks:
+      - membership-network
+    restart: unless-stopped
+
+  mysql:
+    image: mysql:8.0
+    container_name: membership-mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-rootpassword}
+      - MYSQL_DATABASE=membership_redemption
+      - MYSQL_USER=membership
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD:-membership123}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./mysql/init:/docker-entrypoint-initdb.d
+    networks:
+      - membership-network
+    restart: unless-stopped
+
+  redis:
+    image: redis:6-alpine
+    container_name: membership-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - membership-network
+    restart: unless-stopped
+
+networks:
+  membership-network:
+    driver: bridge
+
+volumes:
+  mysql-data:
+  redis-data:
+  backend-data:
