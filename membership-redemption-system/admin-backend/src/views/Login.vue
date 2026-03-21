@@ -49,7 +49,7 @@ const form = ref({
 })
 const loading = ref(false)
 
-const handleLogin = async () => {
+  const handleLogin = async () => {
   if (!form.value.username || !form.value.password) {
     ElMessage.warning('请输入用户名和密码')
     return
@@ -58,13 +58,21 @@ const handleLogin = async () => {
   loading.value = true
   
   try {
+    console.log('Sending login request:', form.value)
     const res = await axios.post('/api/v1/admin/login', form.value)
-    localStorage.setItem('adminToken', res.data.data.token)
-    localStorage.setItem('admin', JSON.stringify(res.data.data.admin))
-    ElMessage.success('登录成功')
-    router.push('/dashboard')
+    console.log('Login response:', res)
+    if (res.data.code === 0) {
+      localStorage.setItem('adminToken', res.data.data.token)
+      localStorage.setItem('admin', JSON.stringify(res.data.data.admin))
+      ElMessage.success('登录成功')
+      router.push('/dashboard')
+    } else {
+      ElMessage.error(res.data.message || '登录失败')
+    }
   } catch (error: any) {
-    ElMessage.error(error.response?.data?.message || '登录失败')
+    console.error('Login error:', error)
+    console.error('Error response:', error.response)
+    ElMessage.error(error.response?.data?.message || error.message || '登录失败')
   } finally {
     loading.value = false
   }
