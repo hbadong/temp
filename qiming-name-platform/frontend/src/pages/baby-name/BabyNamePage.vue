@@ -1,424 +1,334 @@
 <template>
   <div class="baby-name-page">
-    <header class="header">
-      <div class="container">
-        <router-link to="/" class="logo">起名网</router-link>
+    <header class="header qiming-background-default">
+      <div class="navbar">
+        <router-link to="/" class="logo">
+          <div class="logobg"></div>
+        </router-link>
         <nav class="nav">
-          <router-link to="/baobao" class="active">宝宝起名</router-link>
-          <router-link to="/bazi">八字起名</router-link>
-          <router-link to="/shici">诗词起名</router-link>
-          <router-link to="/xingmingceshi">姓名测试</router-link>
+          <ul>
+            <li>
+              <router-link to="/">首页</router-link>
+            </li>
+            <li class="current-menu-item">
+              <router-link to="/baobao">宝宝起名</router-link>
+            </li>
+            <li>
+              <router-link to="/bazi">八字起名</router-link>
+            </li>
+            <li>
+              <router-link to="/shici">诗词起名</router-link>
+            </li>
+            <li>
+              <router-link to="/gaimingzi">成人改名</router-link>
+            </li>
+            <li>
+              <router-link to="/xingmingceshi">姓名测试</router-link>
+            </li>
+            <li>
+              <router-link to="/gongsiqiming">公司起名</router-link>
+            </li>
+            <li>
+              <router-link to="/zhouyi">周易起名</router-link>
+            </li>
+            <li>
+              <router-link to="/zhishi">起名知识</router-link>
+            </li>
+            <li>
+              <router-link to="/kxzd">康熙字典</router-link>
+            </li>
+            <li>
+              <router-link to="/baijiaxing">百家姓</router-link>
+            </li>
+          </ul>
         </nav>
+        <div class="header-info">
+          <a href="#header-search" @click.prevent>
+            <i class="iconfont icon-search"></i>
+          </a>
+        </div>
       </div>
     </header>
 
-    <main class="main">
-      <section class="form-section">
-        <div class="container">
-          <h1>宝宝起名</h1>
-          <p class="subtitle">以先进AI技术和大数据融合千年传统起名智慧</p>
-          
-          <a-form :model="form" layout="inline" class="name-form">
-            <a-form-item>
-              <a-input v-model:value="form.surname" placeholder="请输入姓氏" size="large">
-                <template #prefix>
-                  <UserOutlined />
-                </template>
-              </a-input>
-            </a-form-item>
-            
-            <a-form-item>
-              <a-radio-group v-model:value="form.gender" size="large">
-                <a-radio-button :value="1">男宝宝</a-radio-button>
-                <a-radio-button :value="2">女宝宝</a-radio-button>
-              </a-radio-group>
-            </a-form-item>
-            
-            <a-form-item>
-              <a-date-picker
-                v-model:value="form.birthDate"
-                placeholder="选择出生日期"
-                size="large"
-                @change="onBirthDateChange"
-              />
-            </a-form-item>
-            
-            <a-form-item>
-              <a-select
-                v-model:value="form.birthTime"
-                placeholder="选择时辰"
-                size="large"
-                style="width: 150px"
-              >
-                <a-select-option v-for="time in timeOptions" :key="time.value" :value="time.value">
-                  {{ time.label }}
-                </a-select-option>
-              </a-select>
-            </a-form-item>
-            
-            <a-form-item>
-              <a-button type="primary" size="large" :loading="loading" @click="onSubmit">
-                立即起名
-              </a-button>
-            </a-form-item>
-          </a-form>
-        </div>
-      </section>
+    <div class="qiming_vipbgs">
+      <img src="/images/bbqmBanner.jpg" alt="" />
+    </div>
 
-      <section class="results-section" v-if="results.length > 0">
-        <div class="container">
-          <h2>为您找到 {{ total }} 个符合条件的好名字</h2>
-          
-          <div class="filter-bar">
-            <span>筛选条件：</span>
-            <a-tag v-if="form.surname">姓氏: {{ form.surname }}</a-tag>
-            <a-tag v-if="form.gender">{{ form.gender === 1 ? '男' : '女' }}</a-tag>
-            <a-tag v-if="form.firstElement">首字五行: {{ form.firstElement }}</a-tag>
-          </div>
-          
-          <a-list
-            :data-source="results"
-            :loading="loading"
-            :pagination="pagination"
-            item-layout="horizontal"
-          >
-            <template #renderItem="{ item }">
-              <a-list-item>
-                <template #actions>
-                  <a-button type="link" @click="viewDetail(item)">查看详情</a-button>
-                  <a-button type="link" @click="collectName(item)">收藏</a-button>
-                </template>
-                <a-list-item-meta>
-                  <template #title>
-                    <span class="name-title">{{ form.surname }}{{ item.given_name }}</span>
-                    <a-tag :color="getScoreColor(item.total_score)">
-                      {{ item.total_score }}分
-                    </a-tag>
-                  </template>
-                  <template #description>
-                    <div class="name-info">
-                      <span>拼音: {{ item.pinyin }}</span>
-                      <span>笔画: {{ item.stroke_count }}</span>
-                      <span>五行: {{ item.five_element }}</span>
-                      <span>三才五格: {{ item.wu_ge_ren }}格</span>
-                    </div>
-                    <div class="name-meaning">{{ item.meaning }}</div>
-                  </template>
-                </a-list-item-meta>
-              </a-list-item>
-            </template>
-          </a-list>
-        </div>
-      </section>
-
-      <section class="features-section">
-        <div class="container">
-          <h2>宝宝起名综合六大维度</h2>
-          <a-row :gutter="[24, 24]">
-            <a-col :span="4" v-for="feature in features" :key="feature.title">
-              <div class="feature-card">
-                <img :src="feature.image" :alt="feature.title" />
-                <h3>{{ feature.title }}</h3>
-                <p>{{ feature.desc }}</p>
+    <div id="page-content">
+      <div class="qiming-pages-vip">
+        <div class="qiming_portal_block_summary">
+          <div class="formGsQm">
+            <h1>宝宝起名</h1>
+            <p>以先进AI技术和大数据融合千年传统起名智慧，为您提供独一无二、寓意深远的宝宝名字方案</p>
+            <form method="post">
+              <div class="two_bd">
+                <div class="list_bd">
+                  <input type="text" v-model="form.surname" placeholder="请输入宝宝的姓氏" />
+                  <div class="sexSelect">
+                    <span :class="{ active: form.gender === 1 }" @click="form.gender = 1">男</span>
+                    <span :class="{ active: form.gender === 2 }" @click="form.gender = 2">女</span>
+                    <span class="wcs">未知</span>
+                  </div>
+                </div>
+                <div class="list_bd">
+                  <input type="text" v-model="form.birthday" class="J_datepicker" placeholder="请选择出生日期" readonly />
+                  <img src="/images/xl.png" alt="" />
+                </div>
               </div>
-            </a-col>
-          </a-row>
+              <div class="list_bd" style="width:100%;margin-right:0;margin-bottom:20px;">
+                <input type="text" v-model="form.birthAddress" placeholder="请选择出生地" readonly />
+                <img src="/images/xl.png" alt="" />
+              </div>
+              <a class="qmbtn" href="javascript:;" @click="handleSubmit">立即起名</a>
+            </form>
+          </div>
+        </div>
+
+        <section class="qiming-container qiming-margin-medium-bottom qiming-margin-top-20">
+          <div class="qiming-background-default qiming-padding-app qiming-margin-medium-bottom qiming-margin-top-20">
+            <h2 class="apply">宝宝起名：承载爱意，定制专属成长印记</h2>
+            <blockquote>
+              <p>给宝宝起名是每个家庭迎接新生命的重要环节，既需凝聚父母对孩子的满心期许，又要兼顾名字的音律和谐与内涵深度，同时避开常见重名，让宝宝拥有独特的身份标识。</p>
+              <p>起名时可从多方面汲取灵感：参考传统文化，从诗词典故中挑选雅致字词，赋予名字文化底蕴；结合自然意象，用"禾""沐""星"等字，传递对宝宝健康成长的美好祝愿；也可融入家庭情感，比如纪念特殊时刻或承载家族期许，让名字更具温度。</p>
+              <p>好的宝宝名字，不仅读来顺口易记，更能成为陪伴孩子一生的温暖符号，在成长路上悄然传递正向力量，见证孩子每一步的美好蜕变。</p>
+            </blockquote>
+          </div>
+        </section>
+      </div>
+
+      <div class="yuvip_serve_father">
+        <h3 class="yuvip_title">宝宝起名综合六大维度</h3>
+        <div class="yuvip_serve">
+          <ul>
+            <li>
+              <div>
+                <img src="/images/wd1.jpg" alt="国学起名" />
+                <p>国学起名</p>
+                <em>从国学经典中取材，将汉语文化精华与当代文化融合，取个影响一生的好名字。</em>
+              </div>
+            </li>
+            <li>
+              <div>
+                <img src="/images/wd2.jpg" alt="音形义起名" />
+                <p>音形义起名</p>
+                <em>着重考虑音顺，形美、义内涵的字。做到真正的音美、字美、意境美的好名字。</em>
+              </div>
+            </li>
+            <li>
+              <div>
+                <img src="/images/wd3.jpg" alt="期望起名" />
+                <p>期望起名</p>
+                <em>根据父母期望，来结合用字含义，使名字更加有寓意，凸显期望特性的好名字</em>
+              </div>
+            </li>
+            <li>
+              <div>
+                <img src="/images/wd4.jpg" alt="大数据起名" />
+                <p>大数据起名</p>
+                <em>基于每年百万宝宝起名数据分析，通过智能起名分析系统，分析出好的方案。</em>
+              </div>
+            </li>
+            <li>
+              <div>
+                <img src="/images/wd5.jpg" alt="诗词起名" />
+                <p>诗词起名</p>
+                <em>根据大量诗词古籍，分析好的名字，组合起更有诗意的名字。</em>
+              </div>
+            </li>
+            <li>
+              <div>
+                <img src="/images/wd6.jpg" alt="生肖起名" />
+                <p>生肖起名</p>
+                <em>根据生肖特性，筛选出更加适合使用者的名字方案。</em>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="qiming-pages-web-yw-box qiming-background-default">
+        <div class="container">
+          <div class="web-yw-box-title">
+            <span>名字潜移默化的影响</span>
+            <p>"培养宝宝成才，从取个好名字开始"</p>
+          </div>
+          <div class="qiming-grid" style="grid-template-columns: repeat(6, 1fr);">
+            <div class="web-yw-box-con-li qiming-dongtai">
+              <span><img src="/images/mh7.jpg" alt="塑造气质" /></span>
+              <p>塑造气质</p>
+              <em>好的名字寓意包含家长的期盼指引宝宝成长的方向</em>
+            </div>
+            <div class="web-yw-box-con-li qiming-dongtai">
+              <span><img src="/images/mh8.jpg" alt="培养自信" /></span>
+              <p>培养自信</p>
+              <em>好的名字是一个人的基本尊严给宝宝树立自信心</em>
+            </div>
+            <div class="web-yw-box-con-li qiming-dongtai">
+              <span><img src="/images/mh9.jpg" alt="影响人际" /></span>
+              <p>影响人际</p>
+              <em>好的名字会给别人留下好的印象,容易脱颖而出</em>
+            </div>
+            <div class="web-yw-box-con-li qiming-dongtai">
+              <span><img src="/images/mh10.jpg" alt="好运相持" /></span>
+              <p>好运相持</p>
+              <em>结合宝宝命里五行给宝宝一生健康平安，顺利幸福</em>
+            </div>
+            <div class="web-yw-box-con-li qiming-dongtai">
+              <span><img src="/images/mh11.jpg" alt="美好祝福" /></span>
+              <p>美好祝福</p>
+              <em>引经据典，寄托了父母对孩子未来的美好祝福</em>
+            </div>
+            <div class="web-yw-box-con-li qiming-dongtai">
+              <span><img src="/images/mh12.jpg" alt="非凡人生" /></span>
+              <p>非凡人生</p>
+              <em>好的名字为宝宝注入成长能量让孩子起点更高</em>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <section class="blog">
+        <div class="container qiming-margin-medium-top qiming-margin-bottom-40">
+          <div class="section-title">
+            <i class="iconfont icon-file-common"></i>
+            <h3 class="qiming-display-inline-block">宝宝起名推荐阅读</h3>
+            <div class="sub-nav qiming-visible@s">
+              <span class="all qiming-display-inline-block">
+                <a href="/bbqm/1.html" target="_blank">查看更多<i class="iconfont icon-arrow-right-bold"></i></a>
+              </span>
+            </div>
+          </div>
+          <div class="qiming-grid" style="grid-template-columns: repeat(2, 1fr);">
+            <div class="blog-item b-r-4 qiming-padding-small qiming-background-default qiming-overflow-hidden">
+              <div class="qiming-grid-collapse">
+                <div class="qiming-vip-icons">
+                  <a href="/a/1591321.html" class="cover b-r-4 qiming-display-block qiming-overflow-hidden">
+                    <img src="https://static.qiming.cn/upload/upimg/0919/1758256277595861.jpg" alt="宝宝起名别跟风" />
+                  </a>
+                </div>
+                <div class="qiming-cat-blog blog-item-content">
+                  <div class="qiming-blog-items">
+                    <h3 class="qiming-text-truncate">
+                      <a href="/a/1591321.html" class="title qiming-h4">宝宝起名别跟风！8个独特技巧，让名字跳出"重名魔咒"</a>
+                    </h3>
+                    <p class="qiming-text-small">大家有没有发现，每次去医院或者学校，总能碰到几个孩子叫子涵、梓涵、紫轩、宇轩这样的名字？</p>
+                  </div>
+                  <div class="item-foot">
+                    <div class="cat qiming-margin-bottom-10 qiming-margin-top-10 qiming-text-truncate">
+                      <a href="/bbqm/1.html"><i class="iconfont icon-menu qiming-right-3 arttag"></i>宝宝起名</a>
+                    </div>
+                    <div class="qiming-flex qiming-flex-middle">
+                      <div class="avatar qiming-flex-1 qiming-flex qiming-flex-middle">
+                        <img src="/images/avatar.jpg" class="avatar avatar-20 photo" height="20" width="20" />
+                        <span class="qiming-text-small qiming-display-block qiming-margin-small-left">清飞扬</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
-    </main>
+    </div>
+
+    <footer class="footer qiming-background-secondary">
+      <div class="foot qiming-container qiming-padding">
+        <div class="qiming-grid" style="grid-template-columns: 1fr 2fr;">
+          <div class="foot-item foot-item-first qiming-position-relative qiming-flex">
+            <a href="/" class="foot-logo qiming-display-block">
+              <img src="/images/logo_foot.png" alt="起名网" />
+            </a>
+            <p class="qiming-text-small">起名网专注科学智能宝宝起名，测名字打分平台，结合传统国学文化的智能起名系统研发和起名学术探索交流，以"只为一个好名字"为宗旨，潜心研发，百次升级，千万级大数据分析，助您轻松起好名。</p>
+          </div>
+          <div class="qiming-visible@s">
+            <div class="qiming-grid" style="grid-template-columns: repeat(3, 1fr);">
+              <div class="foot-item">
+                <div class="foot-item-title">
+                  <i class="iconfont icon-security"></i>快捷导航
+                </div>
+                <ul class="qiming-padding-remove">
+                  <li><a href="/baobao.html">宝宝起名</a></li>
+                  <li><a href="/bazi.html">八字起名</a></li>
+                  <li><a href="/zhouyiqiming.html">周易起名</a></li>
+                  <li><a href="/kxzd/index.html">康熙字典</a></li>
+                  <li><a href="/gongsiqiming.html">公司起名</a></li>
+                  <li><a href="/xingmingceshi.html">姓名测试</a></li>
+                </ul>
+              </div>
+              <div class="foot-item">
+                <div class="foot-item-title">
+                  <i class="iconfont icon-security"></i>关于我们
+                </div>
+                <ul class="qiming-padding-remove">
+                  <li><a href="/about.html">关于我们</a></li>
+                  <li><a href="/service.html">服务条款</a></li>
+                  <li><a href="/copyright.html">版权声明</a></li>
+                  <li><a href="/busine.html">投诉建议</a></li>
+                </ul>
+              </div>
+              <div class="foot-item">
+                <div class="foot-item-title">
+                  <i class="iconfont icon-security"></i>友情链接
+                </div>
+                <ul class="qiming-padding-remove">
+                  <li><a href="https://zidian.qiming.cn/" target="_blank">汉语字典</a></li>
+                  <li><a href="https://cidian.qiming.cn/" target="_blank">汉语词典</a></li>
+                  <li><a href="https://chengyu.qiming.cn/" target="_blank">成语大全</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="foot-cop">
+          <div class="qiming-container qiming-padding-small qiming-clearfix">
+            <div class="qiming-float-left">
+              <span>© 2005-2025 <a href="https://www.qiming.cn/" target="_blank">www.qiming.cn</a> &amp; All rights reserved</span>
+              <span class="qiming-margin-small-right"><a href="https://beian.miit.gov.cn/" target="_blank" rel="noreferrer nofollow">皖ICP备2024064902号</a></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { ref, reactive } from 'vue'
+import { useRouter } from 'vue-router'
 import { message } from 'ant-design-vue'
-import { UserOutlined } from '@ant-design/icons-vue'
-import request from '@/utils/request'
 
-const route = useRoute()
-const loading = ref(false)
-const results = ref([])
-const total = ref(0)
+const router = useRouter()
 
 const form = reactive({
   surname: '',
   gender: 1,
-  birthDate: null,
-  birthTime: '子',
-  firstElement: '',
-  lastElement: ''
+  birthday: '',
+  birthAddress: ''
 })
 
-const timeOptions = [
-  { value: '子', label: '子时 (23:00-01:00)' },
-  { value: '丑', label: '丑时 (01:00-03:00)' },
-  { value: '寅', label: '寅时 (03:00-05:00)' },
-  { value: '卯', label: '卯时 (05:00-07:00)' },
-  { value: '辰', label: '辰时 (07:00-09:00)' },
-  { value: '巳', label: '巳时 (09:00-11:00)' },
-  { value: '午', label: '午时 (11:00-13:00)' },
-  { value: '未', label: '未时 (13:00-15:00)' },
-  { value: '申', label: '申时 (15:00-17:00)' },
-  { value: '酉', label: '酉时 (17:00-19:00)' },
-  { value: '戌', label: '戌时 (19:00-21:00)' },
-  { value: '亥', label: '亥时 (21:00-23:00)' }
-]
-
-const features = [
-  { title: '国学起名', desc: '从国学经典中取材', image: '/images/wd1.jpg' },
-  { title: '音形义起名', desc: '音顺、形美、义内涵', image: '/images/wd2.jpg' },
-  { title: '期望起名', desc: '根据父母期望结合用字', image: '/images/wd3.jpg' },
-  { title: '大数据起名', desc: '百万宝宝数据分析', image: '/images/wd4.jpg' },
-  { title: '诗词起名', desc: '诗词古籍中分析组合', image: '/images/wd5.jpg' },
-  { title: '生肖起名', desc: '根据生肖特性筛选', image: '/images/wd6.jpg' }
-]
-
-const pagination = reactive({
-  current: 1,
-  pageSize: 20,
-  total: 0,
-  onChange: (page) => {
-    pagination.current = page
-    fetchResults()
-  }
-})
-
-onMounted(() => {
-  if (route.query.surname) {
-    form.surname = route.query.surname
-    form.gender = parseInt(route.query.gender) || 1
-    onSubmit()
-  }
-})
-
-const onBirthDateChange = (date, dateString) => {
-  form.birthDate = dateString
-}
-
-const onSubmit = async () => {
+const handleSubmit = () => {
   if (!form.surname) {
     message.warning('请输入姓氏')
     return
   }
-
-  loading.value = true
-
-  try {
-    const res = await request.post('/v1/names/recommend', {
-      surname: form.surname,
-      gender: form.gender,
-      birthDate: form.birthDate,
-      birthTime: form.birthTime,
-      firstElement: form.firstElement || undefined,
-      lastElement: form.lastElement || undefined,
-      page: pagination.current,
-      pageSize: pagination.pageSize
-    })
-
-    results.value = res.data.items
-    total.value = res.data.total
-    pagination.total = res.data.total
-  } catch (error) {
-    results.value = generateMockNames(form.surname, form.gender)
-    total.value = results.value.length
-    pagination.total = results.value.length
-  } finally {
-    loading.value = false
-  }
-}
-
-function generateMockNames(surname, gender) {
-  const boyNames = ['俊豪', '煜晨', '铭轩', '梓翔', '昊然', '思远', '文博', '家瑞']
-  const girlNames = ['欣怡', '梓涵', '雨桐', '诗涵', '思琪', '雅婷', '欣悦', '梦瑶']
-  const names = gender === 1 ? boyNames : girlNames
-  const elements = ['金', '木', '水', '火', '土']
-  
-  return names.map((givenName, index) => ({
-    id: index + 1,
-    surname,
-    given_name: givenName,
-    full_name: surname + givenName,
-    pinyin: `${surname.toLowerCase()} ${givenName.split('').map(c => getPinyin(c)).join(' ')}`,
-    five_element: elements[Math.floor(Math.random() * elements.length)],
-    total_score: 85 + Math.floor(Math.random() * 15),
-    stroke_count: getStroke(surname) + getStroke(givenName),
-    wu_ge_tian: getStroke(surname) + 1,
-    wu_ge_di: getStroke(givenName),
-    wu_ge_ren: getStroke(surname) + getStroke(givenName[0]),
-    wu_ge_zong: getStroke(surname) + getStroke(givenName),
-    wu_ge_lucky: '吉',
-    meaning: '寓意美好，吉祥如意'
-  }))
-}
-
-function getPinyin(char) {
-  const map = { '俊': 'jun', '豪': 'hao', '煜': 'yu', '晨': 'chen', '铭': 'ming', '轩': 'xuan', '梓': 'zi', '翔': 'xiang', '昊': 'hao', '然': 'ran', '欣': 'xin', '怡': 'yi', '涵': 'han', '雨': 'yu', '桐': 'tong', '诗': 'shi', '思': 'si', '琪': 'qi', '雅': 'ya', '婷': 'ting', '悦': 'yue', '梦': 'meng', '瑶': 'yao' }
-  return map[char] || 'yi'
-}
-
-function getStroke(name) {
-  const map = { '李': 7, '王': 4, '张': 11, '刘': 15, '陈': 16, '杨': 13, '赵': 9, '黄': 12, '周': 8, '吴': 7, '俊': 9, '豪': 14, '煜': 13, '晨': 11, '铭': 14, '轩': 10, '梓': 11, '翔': 12, '昊': 8, '然': 12, '欣': 8, '怡': 9, '涵': 11, '雨': 8, '桐': 10, '诗': 8, '思': 9, '琪': 12, '雅': 12, '婷': 12, '悦': 11, '梦': 11, '瑶': 13 }
-  let total = 0
-  for (const c of name) { total += map[c] || 8 }
-  return total
-}
-
-const fetchResults = async () => {
-  await onSubmit()
-}
-
-const getScoreColor = (score) => {
-  if (score >= 90) return 'green'
-  if (score >= 80) return 'blue'
-  if (score >= 70) return 'orange'
-  return 'red'
-}
-
-const viewDetail = (item) => {
-  message.info('查看详情: ' + item.full_name)
-}
-
-const collectName = async (item) => {
-  try {
-    await request.post('/v1/user/favorites', { nameId: item.id })
-    message.success('收藏成功')
-  } catch (error) {
-    message.error('收藏失败')
-  }
+  router.push({ path: '/baobao', query: { surname: form.surname, gender: form.gender } })
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
+@import '@/assets/styles/qiming.scss';
+
 .baby-name-page {
+  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
   min-height: 100vh;
-  background: #f5f5f5;
+  background: #f0f2f5;
 }
 
-.header {
-  background: #fff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-
-  .container {
-    display: flex;
-    align-items: center;
-    height: 64px;
-  }
-
-  .logo {
-    font-size: 20px;
-    font-weight: bold;
-    color: #d4380d;
-    margin-right: 48px;
-  }
-
-  .nav {
-    display: flex;
-    gap: 32px;
-
-    a {
-      color: #333;
-      text-decoration: none;
-
-      &:hover, &.active {
-        color: #d4380d;
-      }
-    }
-  }
-}
-
-.main {
-  padding-bottom: 48px;
-}
-
-.form-section {
-  background: linear-gradient(135deg, #d4380d 0%, #ff4d4f 100%);
-  padding: 48px 0;
-  color: #fff;
-  text-align: center;
-
-  h1 {
-    font-size: 32px;
-    margin-bottom: 8px;
-  }
-
-  .subtitle {
-    font-size: 16px;
-    margin-bottom: 32px;
-  }
-
-  .name-form {
-    justify-content: center;
-    background: rgba(255, 255, 255, 0.1);
-    padding: 24px;
-    border-radius: 8px;
-  }
-}
-
-.results-section {
-  padding: 48px 0;
-
-  h2 {
-    font-size: 20px;
-    margin-bottom: 16px;
-  }
-
-  .filter-bar {
-    margin-bottom: 24px;
-  }
-
-  .name-title {
-    font-size: 18px;
-    font-weight: bold;
-    margin-right: 8px;
-  }
-
-  .name-info {
-    display: flex;
-    gap: 16px;
-    color: #666;
-    margin-bottom: 8px;
-  }
-
-  .name-meaning {
-    color: #999;
-    font-size: 14px;
-  }
-}
-
-.features-section {
-  padding: 48px 0;
-  background: #fff;
-
-  h2 {
-    text-align: center;
-    margin-bottom: 32px;
-  }
-
-  .feature-card {
-    text-align: center;
-
-    img {
-      width: 64px;
-      height: 64px;
-      margin-bottom: 12px;
-    }
-
-    h3 {
-      font-size: 16px;
-      margin-bottom: 4px;
-    }
-
-    p {
-      font-size: 12px;
-      color: #666;
-    }
-  }
-}
-
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 24px;
+.logobg {
+  width: 160px;
+  height: 49px;
+  background: url('/images/logo.png') no-repeat;
+  background-size: 160px auto;
 }
 </style>
