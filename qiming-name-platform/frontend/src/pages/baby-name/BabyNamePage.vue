@@ -140,12 +140,50 @@
                   alt=""
                 >
               </div>
-              <a
+              <button
+                type="button"
                 class="qmbtn"
-                href="javascript:;"
                 @click="handleSubmit"
-              >立即起名</a>
+              >立即起名</button>
             </form>
+          </div>
+        </div>
+
+        <div
+          v-if="showResults"
+          class="name-results"
+        >
+          <div class="results-header">
+            <h3>{{ form.surname }}姓宝宝名字推荐</h3>
+            <p>共为您推荐 {{ nameResults.length }} 个好名字</p>
+          </div>
+          <div
+            v-if="loading"
+            class="loading"
+          >
+            <a-spin size="large" />
+            <p>正在为您分析取名...</p>
+          </div>
+          <div
+            v-else
+            class="results-list"
+          >
+            <div
+              v-for="(name, index) in nameResults"
+              :key="index"
+              class="result-item"
+              @click="handleResultClick(name)"
+            >
+              <div class="result-name">
+                <span class="full-name">{{ name.full_name }}</span>
+                <span class="pinyin">{{ name.pinyin }}</span>
+              </div>
+              <div class="result-info">
+                <span class="score">评分: {{ name.total_score }}分</span>
+                <span class="wuxing">五行: {{ name.five_element }}</span>
+                <span class="meaning">{{ name.meaning }}</span>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -462,11 +500,13 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref, reactive, onMounted, watch } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 import { message } from 'ant-design-vue';
+import request, { USE_MOCK } from '@/utils/request';
 
 const router = useRouter();
+const route = useRoute();
 
 const form = reactive({
   surname: '',
@@ -475,13 +515,49 @@ const form = reactive({
   birthAddress: ''
 });
 
+const loading = ref(false);
+const nameResults = ref([]);
+const showResults = ref(false);
+
 const handleSubmit = () => {
   if (!form.surname) {
     message.warning('请输入姓氏');
     return;
   }
-  router.push({ path: '/baobao', query: { surname: form.surname, gender: form.gender } });
+  loading.value = true;
+  showResults.value = true;
+  
+  if (USE_MOCK) {
+    setTimeout(() => {
+      request.mockGet('/v1/names/recommend', { surname: form.surname, gender: form.gender }).then(res => {
+        if (res.data) {
+          nameResults.value = res.data.items || [];
+        }
+        loading.value = false;
+      });
+    }, 500);
+  }
 };
+
+const handleResultClick = (name) => {
+  router.push({ path: '/xingmingceshi', query: { name: name.full_name } });
+};
+
+onMounted(() => {
+  if (route.query.surname) {
+    form.surname = route.query.surname;
+    form.gender = parseInt(route.query.gender) || 1;
+    handleSubmit();
+  }
+});
+
+watch(() => route.query, (newQuery) => {
+  if (newQuery.surname) {
+    form.surname = newQuery.surname;
+    form.gender = parseInt(newQuery.gender) || 1;
+    handleSubmit();
+  }
+}, { immediate: true });
 </script>
 
 <style lang="scss">
@@ -498,5 +574,126 @@ const handleSubmit = () => {
   height: 49px;
   background: url('/images/logo.png') no-repeat;
   background-size: 160px auto;
+}
+
+.name-results {
+  background: #fff;
+  border-radius: 8px;
+  padding: 30px;
+  margin-top: 20px;
+}
+
+.results-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.results-header h3 {
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.results-header p {
+  font-size: 14px;
+  color: #999;
+}
+
+.loading {
+  text-align: center;
+  padding: 60px 0;
+}
+
+.loading p {
+  margin-top: 20px;
+  color: #666;
+}
+
+.results-list {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+}
+
+@media (max-width: 1200px) {
+  .results-list {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .results-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.result-item {
+  background: #f9f9f9;
+  border-radius: 8px;
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.result-item:hover {
+  background: #a93121;
+  color: #fff;
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(169, 49, 33, 0.3);
+}
+
+.result-item:hover .result-info {
+  color: #fff;
+}
+
+.result-name {
+  text-align: center;
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.result-item:hover .result-name {
+  border-bottom-color: rgba(255,255,255,0.3);
+}
+
+.full-name {
+  display: block;
+  font-size: 24px;
+  font-weight: bold;
+  color: #a93121;
+  margin-bottom: 5px;
+}
+
+.result-item:hover .full-name {
+  color: #fff;
+}
+
+.pinyin {
+  font-size: 12px;
+  color: #999;
+}
+
+.result-item:hover .pinyin {
+  color: rgba(255,255,255,0.8);
+}
+
+.result-info {
+  font-size: 12px;
+  color: #666;
+}
+
+.result-info span {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.score {
+  color: #a93121;
+  font-weight: bold;
+}
+
+.result-item:hover .score {
+  color: #fff;
 }
 </style>

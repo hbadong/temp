@@ -140,11 +140,11 @@
                   alt=""
                 >
               </div>
-              <a
+              <button
+                type="button"
                 class="qmbtn"
-                href="javascript:;"
                 @click="handleSubmit"
-              >立即起名</a>
+              >立即起名</button>
             </form>
           </div>
         </div>
@@ -340,7 +340,9 @@
 
             <div class="names-checking">
               <h3>别人正在查的姓名</h3>
-              <p class="subtitle">专业的国学起名网站</p>
+              <p class="subtitle">
+                专业的国学起名网站
+              </p>
               <div class="names-list">
                 <router-link
                   v-for="name in checkingNames"
@@ -389,7 +391,9 @@
                 </div>
                 <div class="solar-term-info">
                   <p>{{ almanac.solarTerm }} (第{{ almanac.solarTermDay }}天)</p>
-                  <p class="next-term">距离下一节气{{ almanac.nextSolarTerm }}还有{{ almanac.nextSolarTermDays }}天</p>
+                  <p class="next-term">
+                    距离下一节气{{ almanac.nextSolarTerm }}还有{{ almanac.nextSolarTermDays }}天
+                  </p>
                 </div>
               </div>
               <div class="almanac-detail">
@@ -468,7 +472,9 @@
             <router-link
               to="/bazi"
               class="service-btn"
-            >立即八字起名</router-link>
+            >
+              立即八字起名
+            </router-link>
           </div>
         </div>
         <div class="service-card">
@@ -482,7 +488,9 @@
             <router-link
               to="/gongsiqiming"
               class="service-btn"
-            >立即公司起名</router-link>
+            >
+              立即公司起名
+            </router-link>
           </div>
         </div>
         <div class="service-card">
@@ -496,7 +504,9 @@
             <router-link
               to="/shici"
               class="service-btn"
-            >立即诗词起名</router-link>
+            >
+              立即诗词起名
+            </router-link>
           </div>
         </div>
         <div class="service-card">
@@ -510,7 +520,9 @@
             <router-link
               to="/zhouyi"
               class="service-btn"
-            >立即周易起名</router-link>
+            >
+              立即周易起名
+            </router-link>
           </div>
         </div>
       </div>
@@ -650,8 +662,12 @@
       <div class="name-ranks-section">
         <div class="ranks-grid">
           <div class="rank-card boy-zi">
-            <h3 class="rank-title">男孩起名用字排行</h3>
-            <p class="rank-subtitle">2026年3月男孩起名用字排行</p>
+            <h3 class="rank-title">
+              男孩起名用字排行
+            </h3>
+            <p class="rank-subtitle">
+              2026年3月男孩起名用字排行
+            </p>
             <ul class="rank-list">
               <li
                 v-for="(item, index) in boyZi"
@@ -676,8 +692,12 @@
           </div>
 
           <div class="rank-card girl-zi">
-            <h3 class="rank-title">女孩起名用字排行</h3>
-            <p class="rank-subtitle">2026年3月女孩起名用字排行</p>
+            <h3 class="rank-title">
+              女孩起名用字排行
+            </h3>
+            <p class="rank-subtitle">
+              2026年3月女孩起名用字排行
+            </p>
             <ul class="rank-list">
               <li
                 v-for="(item, index) in girlZi"
@@ -702,8 +722,12 @@
           </div>
 
           <div class="rank-card boy-names">
-            <h3 class="rank-title">男孩热门名字排行</h3>
-            <p class="rank-subtitle">2026年3月男孩名字排行</p>
+            <h3 class="rank-title">
+              男孩热门名字排行
+            </h3>
+            <p class="rank-subtitle">
+              2026年3月男孩名字排行
+            </p>
             <ul class="rank-list name-rank-list">
               <li
                 v-for="(name, index) in boyNames"
@@ -728,8 +752,12 @@
           </div>
 
           <div class="rank-card girl-names">
-            <h3 class="rank-title">女孩热门名字排行</h3>
-            <p class="rank-subtitle">2026年3月女孩名字排行</p>
+            <h3 class="rank-title">
+              女孩热门名字排行
+            </h3>
+            <p class="rank-subtitle">
+              2026年3月女孩名字排行
+            </p>
             <ul class="rank-list name-rank-list">
               <li
                 v-for="(name, index) in girlNames"
@@ -892,31 +920,57 @@
         <div class="container">
           <div class="stats-grid">
             <div class="stat-item">
-              <div class="stat-number">5000万+</div>
-              <div class="stat-label">访问总数</div>
+              <div class="stat-number">
+                5000万+
+              </div>
+              <div class="stat-label">
+                访问总数
+              </div>
             </div>
             <div class="stat-item">
-              <div class="stat-number">2000万+</div>
-              <div class="stat-label">名字库收录</div>
+              <div class="stat-number">
+                2000万+
+              </div>
+              <div class="stat-label">
+                名字库收录
+              </div>
             </div>
             <div class="stat-item">
-              <div class="stat-number">560万+</div>
-              <div class="stat-label">起名知识</div>
+              <div class="stat-number">
+                560万+
+              </div>
+              <div class="stat-label">
+                起名知识
+              </div>
             </div>
             <div class="stat-item">
-              <div class="stat-number">80万+</div>
-              <div class="stat-label">起名客户</div>
+              <div class="stat-number">
+                80万+
+              </div>
+              <div class="stat-label">
+                起名客户
+              </div>
             </div>
             <div class="stat-item">
-              <div class="stat-number">98%+</div>
-              <div class="stat-label">用户满意度</div>
+              <div class="stat-number">
+                98%+
+              </div>
+              <div class="stat-label">
+                用户满意度
+              </div>
             </div>
             <div class="stat-item">
-              <div class="stat-number">20年+</div>
-              <div class="stat-label">运行时间</div>
+              <div class="stat-number">
+                20年+
+              </div>
+              <div class="stat-label">
+                运行时间
+              </div>
             </div>
           </div>
-          <p class="stats-desc">已服务数据，客户的信任是我们成长的动力</p>
+          <p class="stats-desc">
+            已服务数据，客户的信任是我们成长的动力
+          </p>
         </div>
       </div>
     </div>
