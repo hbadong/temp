@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{$seo_title}</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Microsoft YaHei", Arial, sans-serif; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 15px; }
+        .page-header { background: linear-gradient(135deg, #9c27b0, #ba68c8); color: #fff; padding: 40px 0; text-align: center; }
+        .page-header h1 { font-size: 32px; margin-bottom: 10px; }
+        .page-header p { font-size: 16px; opacity: 0.9; }
+        
+        .main { padding: 40px 0; }
+        
+        .poetry-intro { background: #fff; border-radius: 10px; padding: 25px; margin-bottom: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .poetry-intro h3 { color: #9c27b0; margin-bottom: 15px; }
+        .poetry-item { padding: 15px 0; border-bottom: 1px dashed #eee; }
+        .poetry-item:last-child { border-bottom: none; }
+        .poetry-title { font-weight: bold; color: #333; margin-bottom: 5px; }
+        .poetry-author { color: #999; font-size: 12px; margin-bottom: 8px; }
+        .poetry-content { color: #666; font-size: 14px; line-height: 1.8; font-family: "KaiTi", "楷体", serif; }
+        
+        .names-section { background: #fff; border-radius: 10px; padding: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .names-section h3 { color: #333; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #9c27b0; }
+        
+        .filter-bar { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
+        .filter-btn { padding: 8px 20px; border: 1px solid #ddd; border-radius: 20px; background: #fff; cursor: pointer; font-size: 14px; transition: all 0.3s; }
+        .filter-btn:hover { border-color: #9c27b0; color: #9c27b0; }
+        .filter-btn.active { background: #9c27b0; color: #fff; border-color: #9c27b0; }
+        
+        .names-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .name-card { background: linear-gradient(135deg, #fafafa, #f5f5f5); padding: 20px; border-radius: 10px; text-align: center; transition: all 0.3s; cursor: pointer; border: 2px solid transparent; }
+        .name-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(156, 39, 176, 0.15); border-color: #9c27b0; }
+        .name-card .full-name { font-size: 28px; font-weight: bold; color: #333; margin-bottom: 10px; }
+        .name-card .poetry-source { font-size: 12px; color: #9c27b0; margin-bottom: 8px; font-style: italic; }
+        .name-card .score { font-size: 20px; color: #ff6600; font-weight: bold; }
+        .name-card .level { display: inline-block; padding: 3px 12px; background: #9c27b0; color: #fff; border-radius: 15px; font-size: 12px; margin-top: 8px; }
+        .name-card .wuge { font-size: 12px; color: #999; margin-top: 8px; }
+        
+        .btn-back { display: inline-block; padding: 12px 30px; background: #9c27b0; color: #fff; border-radius: 5px; margin-top: 30px; text-align: center; }
+        .btn-back:hover { background: #7b1fa2; }
+        
+        .action-bar { text-align: center; margin-top: 30px; }
+    </style>
+</head>
+<body>
+    <div class="page-header">
+        <div class="container">
+            <h1>诗词起名结果</h1>
+            <p>古诗词中蕴含的好名字</p>
+        </div>
+    </div>
+    
+    <div class="main">
+        <div class="container">
+            <div class="poetry-intro">
+                <h3>推荐诗词</h3>
+                <div class="poetry-item">
+                    <div class="poetry-title">静夜思</div>
+                    <div class="poetry-author">李白 · 唐</div>
+                    <div class="poetry-content">床前明月光，疑是地上霜。举头望明月，低头思故乡。</div>
+                </div>
+                <div class="poetry-item">
+                    <div class="poetry-title">春晓</div>
+                    <div class="poetry-author">孟浩然 · 唐</div>
+                    <div class="poetry-content">春眠不觉晓，处处闻啼鸟。夜来风雨声，花落知多少。</div>
+                </div>
+            </div>
+            
+            <div class="names-section">
+                <h3>为您推荐的名字（来自诗词）</h3>
+                <div class="names-grid">
+                    <?php foreach ($names as $n): ?>
+                    <div class="name-card">
+                        <div class="full-name"><?php echo $surname; ?><?php echo $n['name']; ?></div>
+                        <div class="poetry-source">诗意盎然 · 五格评分</div>
+                        <div class="score"><?php echo $n['score']; ?>分</div>
+                        <span class="level"><?php echo $n['level']; ?></span>
+                        <div class="wuge">天格<?php echo $n['wuge']['tiange']; ?> · 人格<?php echo $n['wuge']['renge']; ?> · 地格<?php echo $n['wuge']['dige']; ?></div>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+                
+                <div class="action-bar">
+                    <a href="<?php echo U('qiming/index/shici'); ?>" class="btn-back">重新选择诗词</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

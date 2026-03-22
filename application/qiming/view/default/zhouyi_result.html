@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{$seo_title}</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Microsoft YaHei", Arial, sans-serif; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 15px; }
+        .page-header { background: linear-gradient(135deg, #673ab7, #9575cd); color: #fff; padding: 40px 0; text-align: center; }
+        .page-header h1 { font-size: 32px; margin-bottom: 10px; }
+        .page-header p { font-size: 16px; opacity: 0.9; }
+        
+        .main { padding: 40px 0; }
+        
+        .bagua-section { background: #fff; border-radius: 10px; padding: 30px; margin-bottom: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .bagua-display { display: flex; align-items: center; gap: 30px; padding: 20px; background: linear-gradient(135deg, #fafafa, #f3e5f5); border-radius: 10px; }
+        .bagua-symbol { font-size: 80px; color: #673ab7; font-weight: bold; text-align: center; }
+        .bagua-info { flex: 1; }
+        .bagua-name { font-size: 28px; color: #673ab7; font-weight: bold; margin-bottom: 10px; }
+        .bagua-wuxing { font-size: 14px; color: #666; margin-bottom: 15px; }
+        .bagua-desc { color: #666; line-height: 1.8; }
+        .bagua-quote { margin-top: 15px; padding: 15px; background: #fff; border-left: 4px solid #673ab7; font-family: "KaiTi", "楷体", serif; font-style: italic; }
+        
+        .bazi-section { background: #fff; border-radius: 10px; padding: 25px; margin-bottom: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .bazi-title { color: #673ab7; margin-bottom: 15px; font-size: 18px; }
+        .bazi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
+        .bazi-item { text-align: center; padding: 15px; background: #f9f9f9; border-radius: 8px; }
+        .bazi-item .label { color: #999; font-size: 12px; }
+        .bazi-item .value { font-size: 20px; font-weight: bold; color: #673ab7; margin-top: 5px; }
+        
+        .names-section { background: #fff; border-radius: 10px; padding: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .names-section h3 { color: #333; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #673ab7; }
+        
+        .names-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+        .name-card { background: linear-gradient(135deg, #fafafa, #ede7f6); padding: 20px; border-radius: 10px; text-align: center; transition: all 0.3s; cursor: pointer; border: 2px solid transparent; }
+        .name-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(103, 58, 183, 0.2); border-color: #673ab7; }
+        .name-card .full-name { font-size: 26px; font-weight: bold; color: #333; margin-bottom: 10px; }
+        .name-card .wuxing-badge { display: inline-block; padding: 2px 10px; background: #673ab7; color: #fff; border-radius: 10px; font-size: 12px; margin-bottom: 10px; }
+        .name-card .score { font-size: 22px; color: #ff6600; font-weight: bold; }
+        .name-card .level { display: inline-block; padding: 3px 12px; background: #673ab7; color: #fff; border-radius: 15px; font-size: 12px; margin-top: 8px; }
+        .name-card .match { font-size: 12px; color: #4caf50; margin-top: 8px; }
+        
+        .btn-back { display: inline-block; padding: 12px 30px; background: #673ab7; color: #fff; border-radius: 5px; margin-top: 30px; text-align: center; }
+        .btn-back:hover { background: #512da8; }
+        .action-bar { text-align: center; margin-top: 30px; }
+        
+        @media (max-width: 768px) {
+            .bazi-grid { grid-template-columns: repeat(2, 1fr); }
+            .bagua-display { flex-direction: column; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-header">
+        <div class="container">
+            <h1>周易起名结果</h1>
+            <p>易经智慧 · 卦象分析 · 五行平衡</p>
+        </div>
+    </div>
+    
+    <div class="main">
+        <div class="container">
+            <?php if (!empty($bagua)): ?>
+            <div class="bagua-section">
+                <div class="bagua-display">
+                    <div class="bagua-symbol"><?php echo $bagua['gua_name']; ?></div>
+                    <div class="bagua-info">
+                        <div class="bagua-name"><?php echo $bagua['name']; ?>卦</div>
+                        <div class="bagua-wuxing">五行属<?php echo $bagua['wuxing']; ?></div>
+                        <div class="bagua-desc">
+                            <p><strong>卦辞：</strong><?php echo $bagua['gua_ci']; ?></p>
+                        </div>
+                        <div class="bagua-quote">
+                            <p><?php echo $bagua['xiang_ci']; ?></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <?php endif; ?>
+            
+            <div class="bazi-section">
+                <div class="bazi-title">生辰八字分析</div>
+                <div class="bazi-grid">
+                    <div class="bazi-item">
+                        <div class="label">年柱</div>
+                        <div class="value"><?php echo $bazi_result['year_gz']; ?></div>
+                    </div>
+                    <div class="bazi-item">
+                        <div class="label">月柱</div>
+                        <div class="value"><?php echo $bazi_result['month_gz']; ?></div>
+                    </div>
+                    <div class="bazi-item">
+                        <div class="label">日柱</div>
+                        <div class="value"><?php echo $bazi_result['day_gz']; ?></div>
+                    </div>
+                    <div class="bazi-item">
+                        <div class="label">时柱</div>
+                        <div class="value"><?php echo $bazi_result['hour_gz']; ?></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="names-section">
+                <h3>周易推荐姓名</h3>
+                <div class="names-grid">
+                    <?php foreach ($names as $n): ?>
+                    <div class="name-card">
+                        <div class="full-name"><?php echo $surname; ?><?php echo $n['name']; ?></div>
+                        <div class="wuxing-badge"><?php echo isset($n['wuxing']) ? $n['wuxing'] : '木'; ?>属性</div>
+                        <div class="score"><?php echo $n['total_score']; ?>分</div>
+                        <span class="level"><?php echo $n['level']; ?></span>
+                        <div class="match">与卦象匹配度：高</div>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+                
+                <div class="action-bar">
+                    <a href="<?php echo U('qiming/index/zhouyi'); ?>" class="btn-back">重新测算</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

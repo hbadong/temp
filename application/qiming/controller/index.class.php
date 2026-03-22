@@ -127,4 +127,123 @@ class index {
         
         include template('qiming', 'test_result');
     }
+    
+    /**
+     * 诗词起名结果
+     */
+    public function shici_result() {
+        $surname = isset($_GET['surname']) ? trim($_GET['surname']) : '';
+        $gender = isset($_GET['gender']) ? intval($_GET['gender']) : 1;
+        
+        if (empty($surname)) {
+            showmsg('请输入姓氏', 'stop');
+        }
+        
+        // 加载起名引擎
+        yzm_base::load_sys_class('name_engine', '', 0);
+        $engine = new name_engine();
+        
+        // 从诗词中获取好字
+        yzm_base::load_model('poetry', 'qiming', 0);
+        $poetry_model = new poetry_model();
+        $poetry_list = $poetry_model->get_random(1, 10); // 获取唐诗
+        
+        // 提取诗词中的好字
+        $good_chars = array();
+        foreach ($poetry_list as $poetry) {
+            $chars = $poetry_model->get_good_chars($poetry['id']);
+            $good_chars = array_merge($good_chars, $chars);
+        }
+        $good_chars = array_unique($good_chars);
+        
+        // 生成诗词风格的名字
+        $names = $this->generate_poetry_names($surname, $good_chars, 12);
+        
+        $seo_title = '诗词起名结果 - 起名网';
+        include template('qiming', 'shici_result');
+    }
+    
+    /**
+     * 周易起名结果
+     */
+    public function zhouyi_result() {
+        $surname = isset($_GET['surname']) ? trim($_GET['surname']) : '';
+        $gender = isset($_GET['gender']) ? intval($_GET['gender']) : 1;
+        $birthdate = isset($_GET['birthdate']) ? trim($_GET['birthdate']) : '';
+        $birthtime = isset($_GET['birthtime']) ? intval($_GET['birthtime']) : 0;
+        
+        if (empty($surname) || empty($birthdate)) {
+            showmsg('缺少必要参数', 'stop');
+        }
+        
+        // 计算八字
+        $birth_year = date('Y', strtotime($birthdate));
+        $birth_month = date('n', strtotime($birthdate));
+        $birth_day = date('j', strtotime($birthdate));
+        
+        yzm_base::load_sys_class('bazi', '', 0);
+        $bazi = new bazi();
+        $bazi_result = $bazi->calculate($birth_year, $birth_month, $birth_day, $birthtime);
+        
+        // 计算周易卦象
+        yzm_base::load_model('bagua', 'qiming', 0);
+        $bagua_model = new bagua_model();
+        $gua_index = (ord($surname) + $birth_year + $birth_month + $birth_day) % 64;
+        if ($gua_index < 1) $gua_index = 1;
+        $bagua = $bagua_model->get_detail($gua_index);
+        
+        // 加载起名引擎
+        yzm_base::load_sys_class('name_engine', '', 0);
+        $engine = new name_engine();
+        
+        // 分析五行需求
+        $wuxing_count = $bazi->analyzeWuxing();
+        $wuxing_need = $engine->analyze_bazi($birth_year, $birth_month, $birth_day, $birthtime);
+        
+        // 生成周易风格的名字
+        $names = $engine->generate_names($surname, $gender, $wuxing_need, 12);
+        
+        $seo_title = '周易起名结果 - 起名网';
+        include template('qiming', 'zhouyi_result');
+    }
+    
+    /**
+     * 生成诗词风格的名字
+     */
+    private function generate_poetry_names($surname, $chars, $limit) {
+        $names = array();
+        $len = count($chars);
+        
+        if ($len < 2) {
+            // 如果没有足够的好字，使用默认字库
+            $chars = array('梓', '轩', '墨', '涵', '瑶', '琪', '浩', '然', '明', '月', '云', '烟');
+            $len = count($chars);
+        }
+        
+        for ($i = 0; $i < $len && count($names) < $limit * 2; $i++) {
+            for ($j = 0; $j < $len && count($names) < $limit * 2; $j++) {
+                if ($i != $j) {
+                    $name = $chars[$i] . $chars[$j];
+                    // 计算五格评分
+                    yzm_base::load_sys_class('wuge', '', 0);
+                    $wuge = new wuge();
+                    $wuge_result = $wuge->calculate($surname, $name);
+                    $names[] = array(
+                        'name' => $name,
+                        'full_name' => $surname . $name,
+                        'score' => $wuge_result['total_score'],
+                        'level' => $wuge->get_level($wuge_result['total_score']),
+                        'wuge' => $wuge_result,
+                    );
+                }
+            }
+        }
+        
+        // 按评分排序
+        usort($names, function($a, $b) {
+            return $b['score'] - $a['score'];
+        });
+        
+        return array_slice($names, 0, $limit);
+    }
 }
