@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{$seo_title}</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Microsoft YaHei", Arial, sans-serif; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 15px; }
+        .page-header { background: linear-gradient(135deg, #1e88e5, #42a5f5); color: #fff; padding: 40px 0; text-align: center; }
+        .page-header h1 { font-size: 32px; margin-bottom: 10px; }
+        .page-header p { font-size: 16px; opacity: 0.9; }
+        
+        .main { padding: 40px 0; }
+        
+        .info-card { background: #fff; border-radius: 10px; padding: 25px; margin-bottom: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+        .info-item { text-align: center; padding: 15px; background: #f9f9f9; border-radius: 8px; }
+        .info-item .label { color: #999; font-size: 12px; margin-bottom: 5px; }
+        .info-item .value { color: #333; font-size: 16px; font-weight: 500; }
+        
+        .names-section { background: #fff; border-radius: 10px; padding: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .names-section h3 { color: #333; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #1e88e5; }
+        
+        .names-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .name-card { background: linear-gradient(135deg, #fafafa, #e3f2fd); padding: 25px; border-radius: 10px; text-align: center; transition: all 0.3s; cursor: pointer; border: 2px solid transparent; }
+        .name-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(30, 136, 229, 0.2); border-color: #1e88e5; }
+        .name-card .company-name { font-size: 28px; font-weight: bold; color: #1e88e5; margin-bottom: 10px; }
+        .name-card .suffix { font-size: 14px; color: #666; margin-bottom: 15px; }
+        .name-card .analysis { text-align: left; font-size: 13px; color: #666; line-height: 1.8; }
+        .name-card .analysis-item { padding: 8px 0; border-bottom: 1px dashed #eee; }
+        .name-card .analysis-item:last-child { border-bottom: none; }
+        .name-card .tag { display: inline-block; padding: 3px 12px; background: #1e88e5; color: #fff; border-radius: 15px; font-size: 12px; margin-top: 10px; }
+        
+        .feature-section { background: #fff; border-radius: 10px; padding: 30px; margin-top: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .feature-section h3 { color: #333; margin-bottom: 20px; }
+        .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .feature-item { padding: 20px; background: #f9f9f9; border-radius: 8px; }
+        .feature-item h4 { color: #1e88e5; margin-bottom: 10px; }
+        .feature-item p { color: #666; font-size: 14px; line-height: 1.6; }
+        
+        .btn-back { display: inline-block; padding: 12px 30px; background: #1e88e5; color: #fff; border-radius: 5px; margin-top: 30px; text-align: center; }
+        .btn-back:hover { background: #1976d2; }
+        .action-bar { text-align: center; margin-top: 30px; }
+        
+        @media (max-width: 768px) {
+            .names-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-header">
+        <div class="container">
+            <h1>公司起名结果</h1>
+            <p>为您推荐最适合的公司名称</p>
+        </div>
+    </div>
+    
+    <div class="main">
+        <div class="container">
+            <div class="info-card">
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="label">创始人</div>
+                        <div class="value">{$founder_name}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="label">公司类型</div>
+                        <div class="value">{$company_type_name}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="label">所属行业</div>
+                        <div class="value">{$industry_name}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="label">推荐数量</div>
+                        <div class="value"><?php echo count($names); ?> 个名称</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="names-section">
+                <h3>推荐公司名称</h3>
+                <div class="names-grid">
+                    <?php foreach ($names as $n): ?>
+                    <div class="name-card">
+                        <div class="company-name">{$surname}<?php echo $n['name']; ?></div>
+                        <div class="suffix">有限公司</div>
+                        <div class="analysis">
+                            <div class="analysis-item">
+                                <strong>五行属性：</strong><?php echo $n['wuxing']; ?>
+                            </div>
+                            <div class="analysis-item">
+                                <strong>行业匹配度：</strong><?php echo $n['industry_match']; ?>%
+                            </div>
+                            <div class="analysis-item">
+                                <strong>音韵评分：</strong><?php echo $n['yinyun_score']; ?>分
+                            </div>
+                            <div class="analysis-item">
+                                <strong>寓意：</strong><?php echo $n['meaning']; ?>
+                            </div>
+                        </div>
+                        <span class="tag"><?php echo $n['level']; ?></span>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+                
+                <div class="action-bar">
+                    <a href="<?php echo U('qiming/index/gongsi'); ?>" class="btn-back">重新起名</a>
+                </div>
+            </div>
+            
+            <div class="feature-section">
+                <h3>起名小知识</h3>
+                <div class="feature-grid">
+                    <div class="feature-item">
+                        <h4>五行与行业</h4>
+                        <p>不同行业有不同的五行属性，如互联网属火，金融属金，选择与行业五行相生的公司名称有利于事业发展。</p>
+                    </div>
+                    <div class="feature-item">
+                        <h4>音韵流畅</h4>
+                        <p>好的公司名称应该朗朗上口，音韵和谐。避免使用谐音不雅或拗口的字词。</p>
+                    </div>
+                    <div class="feature-item">
+                        <h4>寓意深远</h4>
+                        <p>公司名称应寓意美好，能够体现企业文化和发展愿景，给人积极向上的感觉。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
