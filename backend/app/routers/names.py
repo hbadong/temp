@@ -1,6 +1,6 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Query
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
 
 router = APIRouter(prefix="/api/names", tags=["名字库"])
 
@@ -119,15 +119,21 @@ async def get_names(gender: str = None, wuxing: str = None, limit: int = 20):
         'total': len(results)
     }
 
-@router.post("/recommend")
-async def recommend_names(surname: str, gender: str = None, missing: list = None, limit: int = 10):
+@router.get("/recommend")
+async def recommend_names(
+    surname: str = Query(...),
+    gender: Optional[str] = None,
+    missing: Optional[str] = None,
+    limit: int = 10
+):
     results = COMMON_NAMES
     
     if gender:
         results = [n for n in results if n['gender'] == gender.upper()]
     
     if missing:
-        results = [n for n in results if n['wuxing'] in missing]
+        missing_list = missing.split(',') if isinstance(missing, str) else missing
+        results = [n for n in results if n['wuxing'] in missing_list]
     
     results.sort(key=lambda x: x['bihua'], reverse=True)
     
