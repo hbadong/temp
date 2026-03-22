@@ -15,6 +15,8 @@ class index {
         $keywords = '起名,宝宝起名,八字起名,诗词起名,姓名测试,公司起名,周易起名,康熙字典';
         $description = '起名网专注科学智能宝宝起名，测名字打分平台，结合传统国学文化的智能起名系统研发和起名学术探索交流，以"只为一个好名字"为宗旨，潜心研发，百次升级，千万级大数据分析，助您轻松起好名。';
         
+        $action = 'init';
+        
         include template('qiming', 'index');
     }
     
@@ -23,6 +25,7 @@ class index {
      */
     public function baobao() {
         $seo_title = '宝宝起名 - 起名网';
+        $action = 'baobao';
         include template('qiming', 'baobao');
     }
     
@@ -31,6 +34,7 @@ class index {
      */
     public function bazi() {
         $seo_title = '八字起名 - 起名网';
+        $action = 'bazi';
         include template('qiming', 'bazi');
     }
     
@@ -39,6 +43,7 @@ class index {
      */
     public function shici() {
         $seo_title = '诗词起名 - 起名网';
+        $action = 'shici';
         include template('qiming', 'shici');
     }
     
@@ -47,6 +52,7 @@ class index {
      */
     public function ceshi() {
         $seo_title = '姓名测试 - 起名网';
+        $action = 'ceshi';
         include template('qiming', 'ceshi');
     }
     
@@ -55,6 +61,7 @@ class index {
      */
     public function zhouyi() {
         $seo_title = '周易起名 - 起名网';
+        $action = 'zhouyi';
         include template('qiming', 'zhouyi');
     }
     
@@ -63,6 +70,7 @@ class index {
      */
     public function gongsi() {
         $seo_title = '公司起名 - 起名网';
+        $action = 'gongsi';
         include template('qiming', 'gongsi');
     }
     
@@ -71,6 +79,7 @@ class index {
      */
     public function kxzd() {
         $seo_title = '康熙字典 - 起名网';
+        $action = 'kxzd';
         include template('qiming', 'kxzd');
     }
     
