@@ -122,22 +122,22 @@ class wuxing {
      */
     private function guess_wuxing_by_shape($char) {
         // 圆形、方形多为土
-        if ($this->is_circle_shape($char)) {
+        if ($this->is_circle_or_square_shape($char)) {
             return self::WUXING_TU;
         }
         
         // 尖锐形状为金
-        if ($this->is_sharp_shape($char)) {
+        if ($this->is_metal_shape($char)) {
             return self::WUXING_JIN;
         }
         
         // 直线性、生长性为木
-        if ($this->is_vertical_shape($char)) {
+        if ($this->is_wood_shape($char)) {
             return self::WUXING_MU;
         }
         
         // 流动形状为水
-        if ($this->is_flowing_shape($char)) {
+        if ($this->is_water_shape($char)) {
             return self::WUXING_SHUI;
         }
         
@@ -150,23 +150,73 @@ class wuxing {
         return self::WUXING_TU;
     }
     
-    private function is_circle_shape($char) {
+    /**
+     * 判断圆形或方形（土）
+     */
+    private function is_circle_or_square_shape($char) {
+        // 含"口"、"囗"等方形结构
+        $patterns = array('口', '囗', '回', '囧', '国', '囚', '园', '圆', '圈', '域', '在', '土', '圭', '垚');
+        foreach ($patterns as $p) {
+            if (strpos($char, $p) !== false) {
+                return true;
+            }
+        }
         return false;
     }
     
-    private function is_sharp_shape($char) {
+    /**
+     * 判断金属性（金）
+     */
+    private function is_metal_shape($char) {
+        // 含"金"偏旁或"刂"、"刀"等锐利形状
+        $patterns = array('金', '钅', '刂', '刀', '戈', '弓', '矢', '矛', '殳', '斤', '爪', '爫', '丿', '冂', '亍');
+        foreach ($patterns as $p) {
+            if (strpos($char, $p) !== false) {
+                return true;
+            }
+        }
         return false;
     }
     
-    private function is_vertical_shape($char) {
+    /**
+     * 判断木属性（木）
+     */
+    private function is_wood_shape($char) {
+        // 含"木"、"艹"、"竹"等植物相关
+        $patterns = array('木', '艹', '艸', '竹', '朮', '束', '禾', '爪', '耒', ' 花', '草', '茅', '菊', '莲', '苗', '芽', '蕊', '蓬', '藤', '枝', '根', '桂', '桐', '桦', '枫', '松', '柏', '楠', '榆', '槐', '榕', '樱', '柳', '桦', '桕', '桓', '栩', '棠', '槟', '榕');
+        foreach ($patterns as $p) {
+            if (strpos($char, $p) !== false) {
+                return true;
+            }
+        }
         return false;
     }
     
-    private function is_flowing_shape($char) {
+    /**
+     * 判断水属性（水）
+     */
+    private function is_water_shape($char) {
+        // 含"氵"、"冫"、"水"、"雨"等水相关
+        $patterns = array('氵', '冫', '水', '雨', '冖', '一', '二', '三', '四', '五', '六', '七', '八', '九', '十', '壹', '贰', '叁', '肆', '伍', '陆', '柒', '捌', '玖', '拾', '百', '千', '万', '亿', '零', '溢', '滚', '涛', '洛', '洱', '汐', '洁', '潮', '潭', '淋', '淑', '泪', '波', '涛', '浪', '浮', '深海', '渊', '满', '洪', '洲', '津', '浚', '汲', '溜', '滑', '漆', '漂', '漠', '汉', '汝', '江', '河', '湖', '溪', '沟', '渠', '湾', '滩', '灌', '漓', '溅', '汹', '涌', '泉', '瀑', '沐', '浴', '清', '湛', '港', '滞', '温', '溶', '潍', '汹', '澎湃');
+        foreach ($patterns as $p) {
+            if (strpos($char, $p) !== false) {
+                return true;
+            }
+        }
         return false;
     }
     
+    /**
+     * 判断火属性（火）
+     */
     private function is_fire_shape($char) {
+        // 含"火"、"灬"、"日"、"lightning"等火或热相关
+        $patterns = array('火', '灬', '日', '日', '灬', '光', '辉', '耀', '旺', '炽', '炎', '焰', '焚', '焘', '灿', '灵', '焱', '烟', '煤', '炭', '炉', '炒', '炸', '炖', '炙', '煮', '烹', '煎', '蒸', '熟', '食物', '烛', '熏', '熬', '熙', '灿', '熔', '烘', '烘', '烧', '烤', '烽', '煜', '熠', '燥', '灿', '烈', '热', '焕', '焜', '炬', '炭', '煲', '焯', '焱', '炬', '炖', '炀', '炀', '烊', '炀');
+        foreach ($patterns as $p) {
+            if (strpos($char, $p) !== false) {
+                return true;
+            }
+        }
         return false;
     }
     
