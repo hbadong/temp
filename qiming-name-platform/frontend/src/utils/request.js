@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios from 'axios';
 
 const request = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || '/api',
@@ -6,9 +6,9 @@ const request = axios.create({
   headers: {
     'Content-Type': 'application/json'
   }
-})
+});
 
-const USE_MOCK = true
+const USE_MOCK = true;
 
 const mockData = {
   '/v1/names/recommend': {
@@ -23,31 +23,31 @@ const mockData = {
   '/v1/almanac/today': generateMockAlmanac(),
   '/v1/names/popular': generateMockNames(10),
   '/v1/names/ranks': generateMockNames(30)
-}
+};
 
 function generateMockNames(count) {
-  const surnames = ['李', '王', '张', '刘', '陈', '杨', '赵', '黄', '周', '吴']
-  const boyNames = ['俊豪', '煜晨', '铭轩', '梓翔', '昊然', '思远', '文博', '家瑞', '宇航', '志豪', '子轩', '一鸣', '承锐', '宏泽', '梓航', '璟桓', '颢宁', '颢哲', '璟霆', '翔士']
-  const girlNames = ['欣怡', '梓涵', '雨桐', '诗涵', '思琪', '雅婷', '欣悦', '梦瑶', '佳怡', '雪丽', '宁丽', '宁汐', '宁萱', '宇妃', '宇妍', '宁婕', '颜菲', '孟馨', '颜菲', '千惠']
-  const elements = ['金', '木', '水', '火', '土']
+  const surnames = ['李', '王', '张', '刘', '陈', '杨', '赵', '黄', '周', '吴'];
+  const boyNames = ['俊豪', '煜晨', '铭轩', '梓翔', '昊然', '思远', '文博', '家瑞', '宇航', '志豪', '子轩', '一鸣', '承锐', '宏泽', '梓航', '璟桓', '颢宁', '颢哲', '璟霆', '翔士'];
+  const girlNames = ['欣怡', '梓涵', '雨桐', '诗涵', '思琪', '雅婷', '欣悦', '梦瑶', '佳怡', '雪丽', '宁丽', '宁汐', '宁萱', '宇妃', '宇妍', '宁婕', '颜菲', '孟馨', '颜菲', '千惠'];
+  const elements = ['金', '木', '水', '火', '土'];
   const meanings = [
     '才智超群，豪迈大气',
     '光明照耀，晨曦微露',
     '铭记于心，气宇轩昂',
     '生机勃勃，含养深厚',
     '正直勇敢，志向远大'
-  ]
+  ];
   
-  const results = []
+  const results = [];
   for (let i = 0; i < count; i++) {
-    const surname = surnames[Math.floor(Math.random() * surnames.length)]
-    const isBoy = Math.random() > 0.5
+    const surname = surnames[Math.floor(Math.random() * surnames.length)];
+    const isBoy = Math.random() > 0.5;
     const givenName = isBoy 
       ? boyNames[Math.floor(Math.random() * boyNames.length)]
-      : girlNames[Math.floor(Math.random() * girlNames.length)]
-    const fullName = surname + givenName
-    const score = 85 + Math.floor(Math.random() * 15)
-    const element = elements[Math.floor(Math.random() * elements.length)]
+      : girlNames[Math.floor(Math.random() * girlNames.length)];
+    const fullName = surname + givenName;
+    const score = 85 + Math.floor(Math.random() * 15);
+    const element = elements[Math.floor(Math.random() * elements.length)];
     
     results.push({
       id: i + 1,
@@ -65,27 +65,27 @@ function generateMockNames(count) {
       wu_ge_lucky: '吉',
       meaning: meanings[Math.floor(Math.random() * meanings.length)],
       gender: isBoy ? 1 : 2
-    })
+    });
   }
-  return results
+  return results;
 }
 
 function getPinyin(char) {
-  const map = { '俊': 'jun', '豪': 'hao', '煜': 'yu', '晨': 'chen', '铭': 'ming', '轩': 'xuan', '梓': 'zi', '翔': 'xiang', '昊': 'hao', '然': 'ran' }
-  return map[char] || 'yi'
+  const map = { '俊': 'jun', '豪': 'hao', '煜': 'yu', '晨': 'chen', '铭': 'ming', '轩': 'xuan', '梓': 'zi', '翔': 'xiang', '昊': 'hao', '然': 'ran' };
+  return map[char] || 'yi';
 }
 
 function getStrokeCount(name) {
-  let count = 0
+  let count = 0;
   for (const c of name) {
-    count += getCharStroke(c)
+    count += getCharStroke(c);
   }
-  return count
+  return count;
 }
 
 function getCharStroke(char) {
-  const map = { '李': 7, '王': 4, '张': 11, '刘': 15, '陈': 16, '杨': 13, '赵': 9, '黄': 12, '周': 8, '吴': 7, '俊': 9, '豪': 14, '煜': 13, '晨': 11, '铭': 14, '轩': 10, '梓': 11, '翔': 12, '昊': 8, '然': 12, '思': 9, '远': 11, '文': 4, '博': 12, '家': 10, '瑞': 14, '宇': 6, '航': 10, '志': 7, '豪': 14 }
-  return map[char] || 8
+  const map = { '李': 7, '王': 4, '张': 11, '刘': 15, '陈': 16, '杨': 13, '赵': 9, '黄': 12, '周': 8, '吴': 7, '俊': 9, '豪': 14, '煜': 13, '晨': 11, '铭': 14, '轩': 10, '梓': 11, '翔': 12, '昊': 8, '然': 12, '思': 9, '远': 11, '文': 4, '博': 12, '家': 10, '瑞': 14, '宇': 6, '航': 10, '志': 7 };
+  return map[char] || 8;
 }
 
 function generateMockTestResult() {
@@ -104,7 +104,7 @@ function generateMockTestResult() {
       wai: { value: 7, lucky: '吉', meaning: '刚毅果断' },
       zong: { value: 30, lucky: '半吉', meaning: '吉凶各半' }
     }
-  }
+  };
 }
 
 function generateMockBaziResult() {
@@ -121,11 +121,11 @@ function generateMockBaziResult() {
     jiShen: '火',
     dayMaster: '乙',
     strengthLevel: '偏弱'
-  }
+  };
 }
 
 function generateMockAlmanac() {
-  const today = new Date()
+  const today = new Date();
   return {
     date: today.toISOString().split('T')[0],
     lunarYear: '乙巳',
@@ -143,61 +143,61 @@ function generateMockAlmanac() {
     caiShen: '东北',
     xiShen: '西北',
     fuShen: '西南'
-  }
+  };
 }
 
 request.interceptors.request.use(
   config => {
-    const token = localStorage.getItem('token')
+    const token = localStorage.getItem('token');
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`
+      config.headers.Authorization = `Bearer ${token}`;
     }
-    return config
+    return config;
   },
   error => {
-    return Promise.reject(error)
+    return Promise.reject(error);
   }
-)
+);
 
 request.interceptors.response.use(
   response => {
-    const { code, message, data } = response.data
+    const { code, message, data } = response.data;
     
     if (code !== 200) {
-      console.error('API Error:', message)
-      return Promise.reject(new Error(message))
+      console.error('API Error:', message);
+      return Promise.reject(new Error(message));
     }
     
-    return response.data
+    return response.data;
   },
   error => {
     if (error.response) {
-      const { status, data } = error.response
+      const { status, data } = error.response;
       
       if (status === 401) {
-        localStorage.removeItem('token')
-        window.location.href = '/'
+        localStorage.removeItem('token');
+        window.location.href = '/';
       }
       
-      return Promise.reject(new Error(data.message || '请求失败'))
+      return Promise.reject(new Error(data.message || '请求失败'));
     }
     
-    return Promise.reject(error)
+    return Promise.reject(error);
   }
-)
+);
 
 request.mockGet = (url, params = {}) => {
   return new Promise((resolve) => {
     setTimeout(() => {
-      const mockKey = Object.keys(mockData).find(key => url.includes(key))
+      const mockKey = Object.keys(mockData).find(key => url.includes(key));
       if (mockKey) {
-        resolve({ code: 200, message: 'success', data: mockData[mockKey] })
+        resolve({ code: 200, message: 'success', data: mockData[mockKey] });
       } else {
-        resolve({ code: 200, message: 'success', data: null })
+        resolve({ code: 200, message: 'success', data: null });
       }
-    }, 300)
-  })
-}
+    }, 300);
+  });
+};
 
-export { USE_MOCK }
-export default request
+export { USE_MOCK };
+export default request;

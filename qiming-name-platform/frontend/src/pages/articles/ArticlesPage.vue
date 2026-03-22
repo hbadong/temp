@@ -2,11 +2,25 @@
   <div class="articles-page">
     <header class="header">
       <div class="container">
-        <router-link to="/" class="logo">起名网</router-link>
+        <router-link
+          to="/"
+          class="logo"
+        >
+          起名网
+        </router-link>
         <nav class="nav">
-          <router-link to="/baobao">宝宝起名</router-link>
-          <router-link to="/bazi">八字起名</router-link>
-          <router-link to="/zhishi" class="active">起名知识</router-link>
+          <router-link to="/baobao">
+            宝宝起名
+          </router-link>
+          <router-link to="/bazi">
+            八字起名
+          </router-link>
+          <router-link
+            to="/zhishi"
+            class="active"
+          >
+            起名知识
+          </router-link>
         </nav>
       </div>
     </header>
@@ -16,13 +30,28 @@
         <a-row :gutter="[24, 24]">
           <a-col :span="6">
             <a-card title="文章分类">
-              <a-menu v-model:selectedKeys="selectedKeys" mode="vertical">
-                <a-menu-item key="all">全部文章</a-menu-item>
-                <a-menu-item key="1">起名常识</a-menu-item>
-                <a-menu-item key="2">八字知识</a-menu-item>
-                <a-menu-item key="3">诗词起名</a-menu-item>
-                <a-menu-item key="4">周易起名</a-menu-item>
-                <a-menu-item key="5">姓名测试</a-menu-item>
+              <a-menu
+                v-model:selected-keys="selectedKeys"
+                mode="vertical"
+              >
+                <a-menu-item key="all">
+                  全部文章
+                </a-menu-item>
+                <a-menu-item key="1">
+                  起名常识
+                </a-menu-item>
+                <a-menu-item key="2">
+                  八字知识
+                </a-menu-item>
+                <a-menu-item key="3">
+                  诗词起名
+                </a-menu-item>
+                <a-menu-item key="4">
+                  周易起名
+                </a-menu-item>
+                <a-menu-item key="5">
+                  姓名测试
+                </a-menu-item>
               </a-menu>
             </a-card>
           </a-col>
@@ -31,7 +60,11 @@
             <div class="article-list">
               <h2>起名知识</h2>
               
-              <a-list :data-source="articles" :loading="loading" :pagination="pagination">
+              <a-list
+                :data-source="articles"
+                :loading="loading"
+                :pagination="pagination"
+              >
                 <template #renderItem="{ item }">
                   <a-list-item>
                     <a-list-item-meta
@@ -40,7 +73,10 @@
                       @click="viewArticle(item)"
                     >
                       <template #avatar>
-                        <a-avatar :src="item.cover" shape="square" />
+                        <a-avatar
+                          :src="item.cover"
+                          shape="square"
+                        />
                       </template>
                     </a-list-item-meta>
                     <template #actions>
@@ -59,11 +95,11 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
-import { EyeOutlined, CalendarOutlined } from '@ant-design/icons-vue'
+import { ref, reactive } from 'vue';
+import { EyeOutlined, CalendarOutlined } from '@ant-design/icons-vue';
 
-const loading = ref(false)
-const selectedKeys = ref(['all'])
+const loading = ref(false);
+const selectedKeys = ref(['all']);
 
 const articles = ref([
   {
@@ -90,17 +126,17 @@ const articles = ref([
     viewCount: 156,
     date: '2026-03-19'
   }
-])
+]);
 
 const pagination = reactive({
   current: 1,
   pageSize: 10,
   total: 3
-})
+});
 
 const viewArticle = (item) => {
-  console.log('查看文章:', item)
-}
+  console.log('查看文章:', item);
+};
 </script>
 
 <style lang="scss" scoped>

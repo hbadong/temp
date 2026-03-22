@@ -99,9 +99,12 @@ router.get('/ranks', async (req, res, next) => {
       orderBy = 'total_score DESC'
     }
     
+    const allowedOrderBy = ['usage_count DESC', 'total_score DESC']
+    const safeOrderBy = allowedOrderBy.includes(orderBy) ? orderBy : 'usage_count DESC'
+    
     const sql = `SELECT * FROM names WHERE status = 1 AND is_popular = 1` +
       (gender ? ' AND gender = ?' : '') +
-      ` ORDER BY ${orderBy} LIMIT 30`
+      ` ORDER BY ${safeOrderBy} LIMIT 30`
     
     const results = await query(sql, gender ? [gender] : [])
     

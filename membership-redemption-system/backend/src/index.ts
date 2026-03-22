@@ -34,6 +34,10 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 
 async function startServer() {
   try {
+    if (!config.jwt.secret) {
+      throw new Error('JWT_SECRET environment variable is required')
+    }
+    
     await initDatabase()
     await initRedis()
     

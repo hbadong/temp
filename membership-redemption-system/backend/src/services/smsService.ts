@@ -30,7 +30,7 @@ export class SmsService {
     await redis.setex(codeKey, VERIFY_CODE_EXPIRE_SECONDS, code)
     await redis.setex(lockKey, 60, '1')
 
-    logger.info(`Verify code for ${phone}: ${code}`)
+    logger.info(`Verify code sent to ${phone}: ****`)
 
     await this.saveSmsLog(phone, 'verify_code', `您的验证码为：${code}，5分钟内有效`)
   }

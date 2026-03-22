@@ -19,7 +19,7 @@ export const config = {
     password: process.env.REDIS_PASSWORD || undefined
   },
   jwt: {
-    secret: process.env.JWT_SECRET || 'default_secret_key',
+    secret: process.env.JWT_SECRET,
     expiresIn: process.env.JWT_EXPIRES_IN || '24h'
   },
   sms: {

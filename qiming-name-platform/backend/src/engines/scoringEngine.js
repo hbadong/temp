@@ -1,5 +1,6 @@
 import wuGeCalculator from './wuGeCalculator.js'
 import baziCalculator from './baziCalculator.js'
+import pinyin from 'pinyin'
 
 export class ScoringEngine {
   constructor() {
@@ -101,7 +102,33 @@ export class ScoringEngine {
   }
 
   isRadicalBalanced(char) {
-    return true
+    const leftRadicals = ['亻', '氵', '忄', '扌', '木', '月', '石', '目', '矢', '矢', '殳', '攵', '夂', '饣', '礻', '衤', '礻', '讠', '阝', '阝', '钅', '钅', '飠', '馬', '魚', '鳥', '虫', '虍', '卜', '卩', '厂', '厶', '又', '阝', '彐', '彡', '士', '夂', '夊', '尢', '屮', '巛', '巾', '幺', '广', '廴', '彳', '彡', '忄', '氵', '灬', '艹', '⺁', '犭', '犭', '⺾', '⺁', '⺀', '纟', '纟']
+    const rightRadicals = ['刂', '阝', '乚', '亅', '冂', '卜', '卩', '厂', '厶', '又', '阝', '彐', '彡', '戈', '攵', '殳', '瓦', '牙', '隹', '靣', '耂', '虍', '刂', '阝', '亅', '乚', '卜', '卩', '厂', '厶', '又']
+    
+    const code = char.charCodeAt(0)
+    if (code < 0x4E00 || code > 0x9FFF) {
+      return true
+    }
+    
+    const strokes = this.wuGe.getStrokeCount(char)
+    if (strokes <= 3) return true
+    
+    let leftScore = 0
+    let rightScore = 0
+    
+    for (const radical of leftRadicals) {
+      if (char.includes(radical)) leftScore += 2
+    }
+    for (const radical of rightRadicals) {
+      if (char.includes(radical)) rightScore += 2
+    }
+    
+    if (leftScore === 0 && rightScore === 0) {
+      return true
+    }
+    
+    const diff = Math.abs(leftScore - rightScore)
+    return diff <= 4
   }
 
   scoreShu(wuGe) {
@@ -154,7 +181,8 @@ export class ScoringEngine {
   }
 
   charToPinyin(char) {
-    return char
+    const result = pinyin(char, { style: pinyin.STYLE_NORMAL })
+    return result.length > 0 ? result[0].join('') : char
   }
 
   getStrokes(name) {

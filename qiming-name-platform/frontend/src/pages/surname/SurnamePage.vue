@@ -2,11 +2,25 @@
   <div class="surname-page">
     <header class="header">
       <div class="container">
-        <router-link to="/" class="logo">起名网</router-link>
+        <router-link
+          to="/"
+          class="logo"
+        >
+          起名网
+        </router-link>
         <nav class="nav">
-          <router-link to="/baobao">宝宝起名</router-link>
-          <router-link to="/baijiaxing" class="active">百家姓</router-link>
-          <router-link to="/kxzd">康熙字典</router-link>
+          <router-link to="/baobao">
+            宝宝起名
+          </router-link>
+          <router-link
+            to="/baijiaxing"
+            class="active"
+          >
+            百家姓
+          </router-link>
+          <router-link to="/kxzd">
+            康熙字典
+          </router-link>
         </nav>
       </div>
     </header>
@@ -15,9 +29,14 @@
       <section class="search-section">
         <div class="container">
           <h1>百家姓</h1>
-          <p class="subtitle">查询姓氏来源、名字大全</p>
+          <p class="subtitle">
+            查询姓氏来源、名字大全
+          </p>
           
-          <a-form layout="inline" class="search-form">
+          <a-form
+            layout="inline"
+            class="search-form"
+          >
             <a-form-item>
               <a-auto-complete
                 v-model:value="searchSurname"
@@ -25,8 +44,8 @@
                 :options="surnameOptions"
                 size="large"
                 style="width: 300px"
-                @select="onSearch"
                 allow-clear
+                @select="onSearch"
               >
                 <template #option="{ value }">
                   {{ value }}
@@ -35,25 +54,44 @@
             </a-form-item>
             
             <a-form-item label="性别">
-              <a-radio-group v-model:value="filterGender" size="large" @change="onFilterChange">
-                <a-radio-button :value="1">男孩</a-radio-button>
-                <a-radio-button :value="2">女孩</a-radio-button>
+              <a-radio-group
+                v-model:value="filterGender"
+                size="large"
+                @change="onFilterChange"
+              >
+                <a-radio-button :value="1">
+                  男孩
+                </a-radio-button>
+                <a-radio-button :value="2">
+                  女孩
+                </a-radio-button>
               </a-radio-group>
             </a-form-item>
           </a-form>
         </div>
       </section>
 
-      <section class="result-section" v-if="surnameDetail">
+      <section
+        v-if="surnameDetail"
+        class="result-section"
+      >
         <div class="container">
           <a-row :gutter="24">
             <a-col :span="12">
               <a-card :title="surnameDetail.surname + '姓'">
                 <a-descriptions :column="2">
-                  <a-descriptions-item label="拼音">{{ surnameDetail.pinyin }}</a-descriptions-item>
-                  <a-descriptions-item label="人口排名">第{{ surnameDetail.population_rank }}名</a-descriptions-item>
-                  <a-descriptions-item label="人口数量">{{ surnameDetail.population_count }}</a-descriptions-item>
-                  <a-descriptions-item label="姓氏来源">{{ surnameDetail.origin }}</a-descriptions-item>
+                  <a-descriptions-item label="拼音">
+                    {{ surnameDetail.pinyin }}
+                  </a-descriptions-item>
+                  <a-descriptions-item label="人口排名">
+                    第{{ surnameDetail.population_rank }}名
+                  </a-descriptions-item>
+                  <a-descriptions-item label="人口数量">
+                    {{ surnameDetail.population_count }}
+                  </a-descriptions-item>
+                  <a-descriptions-item label="姓氏来源">
+                    {{ surnameDetail.origin }}
+                  </a-descriptions-item>
                 </a-descriptions>
                 <a-divider>姓氏含义</a-divider>
                 <p>{{ surnameDetail.meaning }}</p>
@@ -67,13 +105,23 @@
             </a-col>
           </a-row>
           
-          <a-row :gutter="24" style="margin-top: 24px">
+          <a-row
+            :gutter="24"
+            style="margin-top: 24px"
+          >
             <a-col :span="12">
               <a-card title="男孩名字大全">
-                <a-list :data-source="boyNames" size="small" :loading="loading">
+                <a-list
+                  :data-source="boyNames"
+                  size="small"
+                  :loading="loading"
+                >
                   <template #renderItem="{ item }">
                     <a-list-item>
-                      <router-link :to="`/baobao?surname=${surname}&gender=1`" class="name-link">
+                      <router-link
+                        :to="`/baobao?surname=${surname}&gender=1`"
+                        class="name-link"
+                      >
                         {{ item.full_name }}
                       </router-link>
                     </a-list-item>
@@ -84,10 +132,17 @@
             
             <a-col :span="12">
               <a-card title="女孩名字大全">
-                <a-list :data-source="girlNames" size="small" :loading="loading">
+                <a-list
+                  :data-source="girlNames"
+                  size="small"
+                  :loading="loading"
+                >
                   <template #renderItem="{ item }">
                     <a-list-item>
-                      <router-link :to="`/baobao?surname=${surname}&gender=2`" class="name-link">
+                      <router-link
+                        :to="`/baobao?surname=${surname}&gender=2`"
+                        class="name-link"
+                      >
                         {{ item.full_name }}
                       </router-link>
                     </a-list-item>
@@ -99,19 +154,36 @@
         </div>
       </section>
 
-      <section class="list-section" v-if="!surnameDetail">
+      <section
+        v-if="!surnameDetail"
+        class="list-section"
+      >
         <div class="container">
           <h2>姓氏排行榜</h2>
           <a-row :gutter="[16, 16]">
-            <a-col :span="4" v-for="surname in topSurnames" :key="surname">
-              <a-card hoverable @click="onSearch(surname)" class="surname-card">
-                <div class="surname-char">{{ surname }}</div>
-                <div class="surname-name">姓</div>
+            <a-col
+              v-for="surname in topSurnames"
+              :key="surname"
+              :span="4"
+            >
+              <a-card
+                hoverable
+                class="surname-card"
+                @click="onSearch(surname)"
+              >
+                <div class="surname-char">
+                  {{ surname }}
+                </div>
+                <div class="surname-name">
+                  姓
+                </div>
               </a-card>
             </a-col>
           </a-row>
           
-          <h2 style="margin-top: 48px">全部姓氏</h2>
+          <h2 style="margin-top: 48px">
+            全部姓氏
+          </h2>
           <div class="surname-grid">
             <span
               v-for="surname in allSurnames"
@@ -129,53 +201,53 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
-import { message } from 'ant-design-vue'
-import request from '@/utils/request'
+import { ref, reactive, onMounted } from 'vue';
+import { message } from 'ant-design-vue';
+import request from '@/utils/request';
 
-const loading = ref(false)
-const searchSurname = ref('')
-const filterGender = ref(1)
-const surnameDetail = ref(null)
-const boyNames = ref([])
-const girlNames = ref([])
+const loading = ref(false);
+const searchSurname = ref('');
+const filterGender = ref(1);
+const surnameDetail = ref(null);
+const boyNames = ref([]);
+const girlNames = ref([]);
 
-const topSurnames = ['王', '李', '张', '刘', '陈', '杨', '黄', '赵', '吴', '周', '徐', '孙', '马', '朱', '胡', '郭', '何', '高', '林', '罗', '郑', '梁', '谢', '宋', '唐', '许', '韩', '冯', '邓', '曹', '彭', '曾', '萧', '蔡', '潘', '田', '董', '袁', '于', '余', '叶', '蒋', '杜', '苏', '魏', '程', '吕', '丁', '沈', '任', '姚', '卢', '传', '傅', '钟', '莹', '韦', '嘉']
+const topSurnames = ['王', '李', '张', '刘', '陈', '杨', '黄', '赵', '吴', '周', '徐', '孙', '马', '朱', '胡', '郭', '何', '高', '林', '罗', '郑', '梁', '谢', '宋', '唐', '许', '韩', '冯', '邓', '曹', '彭', '曾', '萧', '蔡', '潘', '田', '董', '袁', '于', '余', '叶', '蒋', '杜', '苏', '魏', '程', '吕', '丁', '沈', '任', '姚', '卢', '传', '傅', '钟', '莹', '韦', '嘉'];
 
-const allSurnames = ['王', '李', '张', '刘', '陈', '杨', '黄', '赵', '吴', '周', '徐', '孙', '马', '朱', '胡', '郭', '何', '高', '林', '罗', '郑', '梁', '谢', '宋', '唐', '许', '韩', '冯', '邓', '曹', '彭', '曾', '萧', '蔡', '潘', '田', '董', '袁', '于', '余', '叶', '蒋', '杜', '苏', '魏', '程', '吕', '丁', '沈', '任', '姚', '卢', '傅', '钟', '韦', '嘉']
+const allSurnames = ['王', '李', '张', '刘', '陈', '杨', '黄', '赵', '吴', '周', '徐', '孙', '马', '朱', '胡', '郭', '何', '高', '林', '罗', '郑', '梁', '谢', '宋', '唐', '许', '韩', '冯', '邓', '曹', '彭', '曾', '萧', '蔡', '潘', '田', '董', '袁', '于', '余', '叶', '蒋', '杜', '苏', '魏', '程', '吕', '丁', '沈', '任', '姚', '卢', '傅', '钟', '韦', '嘉'];
 
-const surnameOptions = allSurnames.map(s => ({ value: s }))
+const surnameOptions = allSurnames.map(s => ({ value: s }));
 
 const onSearch = async (value) => {
-  const surname = value || searchSurname.value
-  if (!surname) return
+  const surname = value || searchSurname.value;
+  if (!surname) return;
 
-  loading.value = true
-  searchSurname.value = surname
+  loading.value = true;
+  searchSurname.value = surname;
 
   try {
-    const res = await request.get(`/v1/surnames/${surname}`)
-    surnameDetail.value = res.data
+    const res = await request.get(`/v1/surnames/${surname}`);
+    surnameDetail.value = res.data;
     
     const namesRes = await request.get(`/v1/surnames/${surname}/names`, {
       params: { gender: filterGender.value, pageSize: 20 }
-    })
+    });
     
-    boyNames.value = namesRes.data?.filter(n => n.gender === 1) || []
-    girlNames.value = namesRes.data?.filter(n => n.gender === 2) || []
+    boyNames.value = namesRes.data?.filter(n => n.gender === 1) || [];
+    girlNames.value = namesRes.data?.filter(n => n.gender === 2) || [];
   } catch (error) {
-    surnameDetail.value = null
-    message.error('未找到该姓氏')
+    surnameDetail.value = null;
+    message.error('未找到该姓氏');
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
 const onFilterChange = async () => {
   if (surnameDetail.value) {
-    await onSearch(surnameDetail.value.surname)
+    await onSearch(surnameDetail.value.surname);
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
