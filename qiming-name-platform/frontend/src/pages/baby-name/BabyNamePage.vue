@@ -91,317 +91,146 @@
           <div class="formGsQm">
             <h1>宝宝起名</h1>
             <p>以先进AI技术和大数据融合千年传统起名智慧，为您提供独一无二、寓意深远的宝宝名字方案</p>
-            <form method="post">
-              <div class="two_bd">
-                <div class="list_bd">
-                  <input
-                    v-model="form.surname"
-                    type="text"
-                    placeholder="请输入宝宝的姓氏"
-                  >
-                  <div class="sexSelect">
-                    <span
-                      :class="{ active: form.gender === 1 }"
-                      @click="form.gender = 1"
-                    >男</span>
-                    <span
-                      :class="{ active: form.gender === 2 }"
-                      @click="form.gender = 2"
-                    >女</span>
-                    <span class="wcs">未知</span>
-                  </div>
-                </div>
-                <div class="list_bd">
-                  <input
-                    v-model="form.birthday"
-                    type="text"
-                    class="J_datepicker"
-                    placeholder="请选择出生日期"
-                    readonly
-                  >
-                  <img
-                    src="/images/xl.png"
-                    alt=""
-                  >
-                </div>
-              </div>
-              <div
-                class="list_bd"
-                style="width:100%;margin-right:0;margin-bottom:20px;"
-              >
+            <div class="two_bd">
+              <div class="list_bd">
                 <input
-                  v-model="form.birthAddress"
+                  v-model="form.surname"
                   type="text"
-                  placeholder="请选择出生地"
-                  readonly
+                  placeholder="请输入宝宝的姓氏"
                 >
-                <img
-                  src="/images/xl.png"
-                  alt=""
-                >
+                <div class="sexSelect">
+                  <span
+                    :class="{ active: form.gender === 1 }"
+                    @click="form.gender = 1"
+                  >男</span>
+                  <span
+                    :class="{ active: form.gender === 2 }"
+                    @click="form.gender = 2"
+                  >女</span>
+                  <span
+                    :class="{ active: form.gender === 0 }"
+                    @click="form.gender = 0"
+                  >未知</span>
+                </div>
               </div>
-              <button
-                type="button"
-                class="qmbtn"
-                @click="handleSubmit"
-              >
-                立即起名
-              </button>
-            </form>
-          </div>
-        </div>
-
-        <div
-          v-if="showResults"
-          class="name-results"
-        >
-          <div class="results-header">
-            <h3>{{ form.surname }}姓宝宝名字推荐</h3>
-            <p>共为您推荐 {{ nameResults.length }} 个好名字</p>
-          </div>
-          <div
-            v-if="loading"
-            class="loading"
-          >
-            <a-spin size="large" />
-            <p>正在为您分析取名...</p>
-          </div>
-          <div
-            v-else
-            class="results-list"
-          >
+              <div class="list_bd">
+                <a-date-picker
+                  v-model:value="form.birthday"
+                  placeholder="请选择出生日期"
+                  format="YYYY-MM-DD"
+                  :allow-clear="true"
+                  class="date-picker-input"
+                />
+              </div>
+            </div>
             <div
-              v-for="(name, index) in nameResults"
-              :key="index"
-              class="result-item"
-              @click="handleResultClick(name)"
+              class="list_bd"
+              style="width:100%;margin-right:0;margin-bottom:20px;"
             >
-              <div class="result-name">
-                <span class="full-name">{{ name.full_name }}</span>
-                <span class="pinyin">{{ name.pinyin }}</span>
-              </div>
-              <div class="result-info">
-                <span class="score">评分: {{ name.total_score }}分</span>
-                <span class="wuxing">五行: {{ name.five_element }}</span>
-                <span class="meaning">{{ name.meaning }}</span>
-              </div>
+              <a-cascader
+                v-model:value="form.birthAddress"
+                placeholder="请选择出生地"
+                :options="regionOptions"
+                change-on-select
+                class="region-cascader"
+              />
             </div>
+            <button
+              type="button"
+              class="qmbtn"
+              @click="handleSubmit"
+            >
+              立即起名
+            </button>
           </div>
-        </div>
-
-        <section class="qiming-container qiming-margin-medium-bottom qiming-margin-top-20">
-          <div class="qiming-background-default qiming-padding-app qiming-margin-medium-bottom qiming-margin-top-20">
-            <h2 class="apply">
-              宝宝起名：承载爱意，定制专属成长印记
-            </h2>
-            <blockquote>
-              <p>给宝宝起名是每个家庭迎接新生命的重要环节，既需凝聚父母对孩子的满心期许，又要兼顾名字的音律和谐与内涵深度，同时避开常见重名，让宝宝拥有独特的身份标识。</p>
-              <p>起名时可从多方面汲取灵感：参考传统文化，从诗词典故中挑选雅致字词，赋予名字文化底蕴；结合自然意象，用"禾""沐""星"等字，传递对宝宝健康成长的美好祝愿；也可融入家庭情感，比如纪念特殊时刻或承载家族期许，让名字更具温度。</p>
-              <p>好的宝宝名字，不仅读来顺口易记，更能成为陪伴孩子一生的温暖符号，在成长路上悄然传递正向力量，见证孩子每一步的美好蜕变。</p>
-            </blockquote>
-          </div>
-        </section>
-      </div>
-
-      <div class="yuvip_serve_father">
-        <h3 class="yuvip_title">
-          宝宝起名综合六大维度
-        </h3>
-        <div class="yuvip_serve">
-          <ul>
-            <li>
-              <div>
-                <img
-                  src="/images/wd1.jpg"
-                  alt="国学起名"
-                >
-                <p>国学起名</p>
-                <em>从国学经典中取材，将汉语文化精华与当代文化融合，取个影响一生的好名字。</em>
-              </div>
-            </li>
-            <li>
-              <div>
-                <img
-                  src="/images/wd2.jpg"
-                  alt="音形义起名"
-                >
-                <p>音形义起名</p>
-                <em>着重考虑音顺，形美、义内涵的字。做到真正的音美、字美、意境美的好名字。</em>
-              </div>
-            </li>
-            <li>
-              <div>
-                <img
-                  src="/images/wd3.jpg"
-                  alt="期望起名"
-                >
-                <p>期望起名</p>
-                <em>根据父母期望，来结合用字含义，使名字更加有寓意，凸显期望特性的好名字</em>
-              </div>
-            </li>
-            <li>
-              <div>
-                <img
-                  src="/images/wd4.jpg"
-                  alt="大数据起名"
-                >
-                <p>大数据起名</p>
-                <em>基于每年百万宝宝起名数据分析，通过智能起名分析系统，分析出好的方案。</em>
-              </div>
-            </li>
-            <li>
-              <div>
-                <img
-                  src="/images/wd5.jpg"
-                  alt="诗词起名"
-                >
-                <p>诗词起名</p>
-                <em>根据大量诗词古籍，分析好的名字，组合起更有诗意的名字。</em>
-              </div>
-            </li>
-            <li>
-              <div>
-                <img
-                  src="/images/wd6.jpg"
-                  alt="生肖起名"
-                >
-                <p>生肖起名</p>
-                <em>根据生肖特性，筛选出更加适合使用者的名字方案。</em>
-              </div>
-            </li>
-          </ul>
         </div>
       </div>
 
-      <div class="qiming-pages-web-yw-box qiming-background-default">
-        <div class="container">
-          <div class="web-yw-box-title">
-            <span>名字潜移默化的影响</span>
-            <p>"培养宝宝成才，从取个好名字开始"</p>
+      <div
+        v-if="showLunpan"
+        class="lunpan-overlay"
+        @click="closeLunpan"
+      >
+        <div class="lunpan-container">
+          <div class="lunpan">
+            <img
+              src="/images/luopan.png"
+              alt=""
+              class="luopan-img"
+            >
+            <img
+              src="/images/zhizheng.png"
+              alt=""
+              class="zhizheng-img"
+            >
           </div>
+          <p class="lunpan-text">
+            正在为您分析取名...
+          </p>
+        </div>
+      </div>
+
+      <div
+        v-if="showResults"
+        class="name-results"
+      >
+        <div class="results-header">
+          <h3>{{ form.surname }}姓宝宝名字推荐</h3>
+          <p>共为您推荐 {{ nameResults.length }} 个好名字</p>
+        </div>
+        <div class="results-list">
           <div
-            class="qiming-grid"
-            style="grid-template-columns: repeat(6, 1fr);"
+            v-for="(name, index) in nameResults"
+            :key="index"
+            class="result-item"
+            @click="handleResultClick(name)"
           >
-            <div class="web-yw-box-con-li qiming-dongtai">
-              <span><img
-                src="/images/mh7.jpg"
-                alt="塑造气质"
-              ></span>
-              <p>塑造气质</p>
-              <em>好的名字寓意包含家长的期盼指引宝宝成长的方向</em>
+            <div class="result-name">
+              <span class="full-name">{{ name.full_name }}</span>
+              <span class="pinyin">{{ name.pinyin }}</span>
             </div>
-            <div class="web-yw-box-con-li qiming-dongtai">
-              <span><img
-                src="/images/mh8.jpg"
-                alt="培养自信"
-              ></span>
-              <p>培养自信</p>
-              <em>好的名字是一个人的基本尊严给宝宝树立自信心</em>
-            </div>
-            <div class="web-yw-box-con-li qiming-dongtai">
-              <span><img
-                src="/images/mh9.jpg"
-                alt="影响人际"
-              ></span>
-              <p>影响人际</p>
-              <em>好的名字会给别人留下好的印象,容易脱颖而出</em>
-            </div>
-            <div class="web-yw-box-con-li qiming-dongtai">
-              <span><img
-                src="/images/mh10.jpg"
-                alt="好运相持"
-              ></span>
-              <p>好运相持</p>
-              <em>结合宝宝命里五行给宝宝一生健康平安，顺利幸福</em>
-            </div>
-            <div class="web-yw-box-con-li qiming-dongtai">
-              <span><img
-                src="/images/mh11.jpg"
-                alt="美好祝福"
-              ></span>
-              <p>美好祝福</p>
-              <em>引经据典，寄托了父母对孩子未来的美好祝福</em>
-            </div>
-            <div class="web-yw-box-con-li qiming-dongtai">
-              <span><img
-                src="/images/mh12.jpg"
-                alt="非凡人生"
-              ></span>
-              <p>非凡人生</p>
-              <em>好的名字为宝宝注入成长能量让孩子起点更高</em>
+            <div class="result-info">
+              <span class="score">评分: {{ name.total_score }}分</span>
+              <span class="wuxing">五行: {{ name.five_element }}</span>
+              <span class="meaning">{{ name.meaning }}</span>
             </div>
           </div>
         </div>
       </div>
 
-      <section class="blog">
-        <div class="container qiming-margin-medium-top qiming-margin-bottom-40">
-          <div class="section-title">
-            <i class="iconfont icon-file-common" />
-            <h3 class="qiming-display-inline-block">
-              宝宝起名推荐阅读
-            </h3>
-            <div class="sub-nav qiming-visible@s">
-              <span class="all qiming-display-inline-block">
-                <a
-                  href="/bbqm/1.html"
-                  target="_blank"
-                >查看更多<i class="iconfont icon-arrow-right-bold" /></a>
-              </span>
-            </div>
-          </div>
-          <div
-            class="qiming-grid"
-            style="grid-template-columns: repeat(2, 1fr);"
-          >
-            <div class="blog-item b-r-4 qiming-padding-small qiming-background-default qiming-overflow-hidden">
-              <div class="qiming-grid-collapse">
-                <div class="qiming-vip-icons">
-                  <a
-                    href="/a/1591321.html"
-                    class="cover b-r-4 qiming-display-block qiming-overflow-hidden"
-                  >
-                    <img
-                      src="https://static.qiming.cn/upload/upimg/0919/1758256277595861.jpg"
-                      alt="宝宝起名别跟风"
-                    >
-                  </a>
-                </div>
-                <div class="qiming-cat-blog blog-item-content">
-                  <div class="qiming-blog-items">
-                    <h3 class="qiming-text-truncate">
-                      <a
-                        href="/a/1591321.html"
-                        class="title qiming-h4"
-                      >宝宝起名别跟风！8个独特技巧，让名字跳出"重名魔咒"</a>
-                    </h3>
-                    <p class="qiming-text-small">
-                      大家有没有发现，每次去医院或者学校，总能碰到几个孩子叫子涵、梓涵、紫轩、宇轩这样的名字？
-                    </p>
-                  </div>
-                  <div class="item-foot">
-                    <div class="cat qiming-margin-bottom-10 qiming-margin-top-10 qiming-text-truncate">
-                      <a href="/bbqm/1.html"><i class="iconfont icon-menu qiming-right-3 arttag" />宝宝起名</a>
-                    </div>
-                    <div class="qiming-flex qiming-flex-middle">
-                      <div class="avatar qiming-flex-1 qiming-flex qiming-flex-middle">
-                        <img
-                          src="/images/avatar.jpg"
-                          class="avatar avatar-20 photo"
-                          height="20"
-                          width="20"
-                        >
-                        <span class="qiming-text-small qiming-display-block qiming-margin-small-left">清飞扬</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+      <section class="qiming-container qiming-margin-medium-bottom qiming-margin-top-20">
+        <div class="qiming-background-default qiming-padding-app qiming-margin-medium-bottom qiming-margin-top-20">
+          <h2 class="apply">
+            宝宝起名：承载爱意，定制专属成长印记
+          </h2>
+          <blockquote>
+            <p>给宝宝起名是每个家庭迎接新生命的重要环节，既需凝聚父母对孩子的满心期许，又要兼顾名字的音律和谐与内涵深度，同时避开常见重名，让宝宝拥有独特的身份标识。</p>
+            <p>起名时可从多方面汲取灵感：参考传统文化，从诗词典故中挑选雅致字词，赋予名字文化底蕴；结合自然意象，用"禾""沐""星"等字，传递对宝宝健康成长的美好祝愿；也可融入家庭情感，比如纪念特殊时刻或承载家族期许，让名字更具温度。</p>
+            <p>好的宝宝名字，不仅读来顺口易记，更能成为陪伴孩子一生的温暖符号，在成长路上悄然传递正向力量，见证孩子每一步的美好蜕变。</p>
+          </blockquote>
         </div>
       </section>
+    </div>
+
+    <div
+      class="wapnone qiming_follow_service"
+      style="top:75%"
+    >
+      <ul>
+        <li class="qiming_follow_service_box qiming_follow_service_ax goTop qiming_footer_s">
+          <a
+            href="#header"
+            class="qiming-display-block"
+            @click.prevent="scrollTop"
+          >
+            <i class="iconfont icon-direction-up" />
+            <div class="qiming_follow_service_ax_cont">
+              <span class="qiming_follow_service_triangle" />
+              <span>返回顶部</span>
+            </div>
+          </a>
+        </li>
+      </ul>
     </div>
 
     <footer class="footer qiming-background-secondary">
@@ -411,15 +240,15 @@
           style="grid-template-columns: 1fr 2fr;"
         >
           <div class="foot-item foot-item-first qiming-position-relative qiming-flex">
-            <a
-              href="/"
+            <router-link
+              to="/"
               class="foot-logo qiming-display-block"
             >
               <img
                 src="/images/logo_foot.png"
                 alt="起名网"
               >
-            </a>
+            </router-link>
             <p class="qiming-text-small">
               起名网专注科学智能宝宝起名，测名字打分平台，结合传统国学文化的智能起名系统研发和起名学术探索交流，以"只为一个好名字"为宗旨，潜心研发，百次升级，千万级大数据分析，助您轻松起好名。
             </p>
@@ -434,12 +263,36 @@
                   <i class="iconfont icon-security" />快捷导航
                 </div>
                 <ul class="qiming-padding-remove">
-                  <li><a href="/baobao.html">宝宝起名</a></li>
-                  <li><a href="/bazi.html">八字起名</a></li>
-                  <li><a href="/zhouyiqiming.html">周易起名</a></li>
-                  <li><a href="/kxzd/index.html">康熙字典</a></li>
-                  <li><a href="/gongsiqiming.html">公司起名</a></li>
-                  <li><a href="/xingmingceshi.html">姓名测试</a></li>
+                  <li>
+                    <router-link to="/baobao">
+                      宝宝起名
+                    </router-link>
+                  </li>
+                  <li>
+                    <router-link to="/bazi">
+                      八字起名
+                    </router-link>
+                  </li>
+                  <li>
+                    <router-link to="/zhouyi">
+                      周易起名
+                    </router-link>
+                  </li>
+                  <li>
+                    <router-link to="/kxzd">
+                      康熙字典
+                    </router-link>
+                  </li>
+                  <li>
+                    <router-link to="/gongsiqiming">
+                      公司起名
+                    </router-link>
+                  </li>
+                  <li>
+                    <router-link to="/xingmingceshi">
+                      姓名测试
+                    </router-link>
+                  </li>
                 </ul>
               </div>
               <div class="foot-item">
@@ -447,10 +300,26 @@
                   <i class="iconfont icon-security" />关于我们
                 </div>
                 <ul class="qiming-padding-remove">
-                  <li><a href="/about.html">关于我们</a></li>
-                  <li><a href="/service.html">服务条款</a></li>
-                  <li><a href="/copyright.html">版权声明</a></li>
-                  <li><a href="/busine.html">投诉建议</a></li>
+                  <li>
+                    <router-link to="/about">
+                      关于我们
+                    </router-link>
+                  </li>
+                  <li>
+                    <router-link to="/service">
+                      服务条款
+                    </router-link>
+                  </li>
+                  <li>
+                    <router-link to="/copyright">
+                      版权声明
+                    </router-link>
+                  </li>
+                  <li>
+                    <router-link to="/busine">
+                      投诉建议
+                    </router-link>
+                  </li>
                 </ul>
               </div>
               <div class="foot-item">
@@ -486,13 +355,16 @@
             <div class="qiming-float-left">
               <span>© 2005-2025 <a
                 href="https://www.qiming.cn/"
+                title="起名网"
                 target="_blank"
               >www.qiming.cn</a> &amp; All rights reserved</span>
-              <span class="qiming-margin-small-right"><a
-                href="https://beian.miit.gov.cn/"
-                target="_blank"
-                rel="noreferrer nofollow"
-              >皖ICP备2024064902号</a></span>
+              <span class="qiming-margin-small-right">
+                <a
+                  href="https://beian.miit.gov.cn/"
+                  target="_blank"
+                  rel="noreferrer nofollow"
+                >皖ICP备2024064902号</a>
+              </span>
             </div>
           </div>
         </div>
@@ -512,23 +384,112 @@ const route = useRoute();
 const form = reactive({
   surname: '',
   gender: 1,
-  birthday: '',
-  birthAddress: ''
+  birthday: null,
+  birthAddress: null
 });
 
-const loading = ref(false);
-const nameResults = ref([]);
+const showLunpan = ref(false);
 const showResults = ref(false);
+const nameResults = ref([]);
+
+const regionOptions = [
+  {
+    value: '华北',
+    label: '华北',
+    children: [
+      { value: '北京', label: '北京' },
+      { value: '天津', label: '天津' },
+      { value: '河北', label: '河北' },
+      { value: '山西', label: '山西' },
+      { value: '内蒙古', label: '内蒙古' }
+    ]
+  },
+  {
+    value: '东北',
+    label: '东北',
+    children: [
+      { value: '辽宁', label: '辽宁' },
+      { value: '吉林', label: '吉林' },
+      { value: '黑龙江', label: '黑龙江' }
+    ]
+  },
+  {
+    value: '华东',
+    label: '华东',
+    children: [
+      { value: '上海', label: '上海' },
+      { value: '江苏', label: '江苏' },
+      { value: '浙江', label: '浙江' },
+      { value: '安徽', label: '安徽' },
+      { value: '福建', label: '福建' },
+      { value: '江西', label: '江西' },
+      { value: '山东', label: '山东' }
+    ]
+  },
+  {
+    value: '华中',
+    label: '华中',
+    children: [
+      { value: '河南', label: '河南' },
+      { value: '湖北', label: '湖北' },
+      { value: '湖南', label: '湖南' }
+    ]
+  },
+  {
+    value: '华南',
+    label: '华南',
+    children: [
+      { value: '广东', label: '广东' },
+      { value: '广西', label: '广西' },
+      { value: '海南', label: '海南' }
+    ]
+  },
+  {
+    value: '西南',
+    label: '西南',
+    children: [
+      { value: '重庆', label: '重庆' },
+      { value: '四川', label: '四川' },
+      { value: '贵州', label: '贵州' },
+      { value: '云南', label: '云南' },
+      { value: '西藏', label: '西藏' }
+    ]
+  },
+  {
+    value: '西北',
+    label: '西北',
+    children: [
+      { value: '陕西', label: '陕西' },
+      { value: '甘肃', label: '甘肃' },
+      { value: '青海', label: '青海' },
+      { value: '宁夏', label: '宁夏' },
+      { value: '新疆', label: '新疆' }
+    ]
+  },
+  {
+    value: '港澳台',
+    label: '港澳台',
+    children: [
+      { value: '香港', label: '香港' },
+      { value: '澳门', label: '澳门' },
+      { value: '台湾', label: '台湾' }
+    ]
+  }
+];
 
 const mockNames = [
-  { full_name: '李俊豪', pinyin: 'li jun hao', total_score: 95, five_element: '金', meaning: '才智超群，豪迈大气' },
-  { full_name: '李梓涵', pinyin: 'li zi han', total_score: 92, five_element: '木', meaning: '生机勃勃，涵养深厚' },
-  { full_name: '李煜晨', pinyin: 'li yu chen', total_score: 94, five_element: '火', meaning: '光明照耀，晨曦微露' },
-  { full_name: '李思远', pinyin: 'li si yuan', total_score: 91, five_element: '土', meaning: '思虑周全，志向远大' },
-  { full_name: '李欣怡', pinyin: 'li xin yi', total_score: 93, five_element: '金', meaning: '心情愉悦，幸福美好' },
-  { full_name: '李雨桐', pinyin: 'li yu tong', total_score: 90, five_element: '水', meaning: '雨露滋润，梧桐栖凤' },
-  { full_name: '李诗涵', pinyin: 'li shi han', total_score: 94, five_element: '水', meaning: '诗情画意，含蓄内秀' },
-  { full_name: '李思琪', pinyin: 'li si qi', total_score: 92, five_element: '木', meaning: '思维敏捷，杰出不凡' }
+  { pinyin: 'jun hao', total_score: 95, five_element: '金', meaning: '才智超群，豪迈大气' },
+  { pinyin: 'zi han', total_score: 92, five_element: '木', meaning: '生机勃勃，涵养深厚' },
+  { pinyin: 'yu chen', total_score: 94, five_element: '火', meaning: '光明照耀，晨曦微露' },
+  { pinyin: 'si yuan', total_score: 91, five_element: '土', meaning: '思虑周全，志向远大' },
+  { pinyin: 'xin yi', total_score: 93, five_element: '金', meaning: '心情愉悦，幸福美好' },
+  { pinyin: 'yu tong', total_score: 90, five_element: '水', meaning: '雨露滋润，梧桐栖凤' },
+  { pinyin: 'shi han', total_score: 94, five_element: '水', meaning: '诗情画意，含蓄内秀' },
+  { pinyin: 'si qi', total_score: 92, five_element: '木', meaning: '思维敏捷，杰出不凡' },
+  { pinyin: 'bo wen', total_score: 93, five_element: '水', meaning: '博学多才，温文尔雅' },
+  { pinyin: 'jia rui', total_score: 91, five_element: '木', meaning: '家业兴旺，祥瑞降临' },
+  { pinyin: 'yu han', total_score: 94, five_element: '土', meaning: '玉树临风，寒梅傲雪' },
+  { pinyin: 'zi xuan', total_score: 90, five_element: '木', meaning: '紫气东来，轩昂大气' }
 ];
 
 const handleSubmit = () => {
@@ -536,20 +497,41 @@ const handleSubmit = () => {
     message.warning('请输入姓氏');
     return;
   }
-  loading.value = true;
-  showResults.value = true;
+  
+  showLunpan.value = true;
+  showResults.value = false;
   
   setTimeout(() => {
+    showLunpan.value = false;
     nameResults.value = mockNames.map(n => ({
       ...n,
-      full_name: form.surname + n.full_name.substring(1)
+      full_name: form.surname + mockNames[Math.floor(Math.random() * 7)].pinyin.split(' ')[0]
     }));
-    loading.value = false;
-  }, 800);
+    
+    const boyNames = ['俊豪', '梓涵', '煜晨', '思远', '欣怡', '雨桐', '诗涵', '思琪', '博文', '家瑞', '宇涵', '子轩'];
+    const girlNames = ['欣怡', '梓涵', '雨桐', '诗涵', '思琪', '雅婷', '欣悦', '梦瑶', '佳怡', '雪丽'];
+    const names = form.gender === 1 ? boyNames : (form.gender === 2 ? girlNames : [...boyNames, ...girlNames]);
+    
+    nameResults.value = names.slice(0, 8).map((name, i) => ({
+      ...mockNames[i],
+      full_name: form.surname + name
+    }));
+    
+    showResults.value = true;
+    showLunpan.value = false;
+  }, 2000);
+};
+
+const closeLunpan = () => {
+  showLunpan.value = false;
 };
 
 const handleResultClick = (name) => {
   router.push({ path: '/xingmingceshi', query: { name: name.full_name } });
+};
+
+const scrollTop = () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 
 onMounted(() => {
@@ -577,6 +559,94 @@ onMounted(() => {
   background-size: 160px auto;
 }
 
+.date-picker-input {
+  width: 100%;
+  height: 46px;
+  border: none;
+  background: transparent;
+  
+  .ant-picker {
+    border: none;
+    background: transparent;
+    
+    input {
+      font-size: 14px;
+      color: #696969;
+    }
+  }
+}
+
+.region-cascader {
+  width: 100%;
+  
+  .ant-cascader-input {
+    border: none;
+    background: transparent;
+  }
+  
+  input {
+    font-size: 14px;
+    color: #696969;
+  }
+}
+
+.lunpan-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.lunpan-container {
+  text-align: center;
+}
+
+.lunpan {
+  width: 200px;
+  height: 200px;
+  position: relative;
+  margin: 0 auto;
+}
+
+.luopan-img {
+  width: 200px;
+  height: 200px;
+  animation: rotate 4s linear infinite;
+}
+
+.zhizheng-img {
+  width: 20px;
+  height: 160px;
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  margin-left: -10px;
+  animation: rotate2 4s linear infinite;
+}
+
+@keyframes rotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes rotate2 {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(-360deg); }
+}
+
+.lunpan-text {
+  color: #fff;
+  font-size: 18px;
+  margin-top: 30px;
+}
+
 .name-results {
   background: #fff;
   border-radius: 8px;
@@ -598,16 +668,6 @@ onMounted(() => {
 .results-header p {
   font-size: 14px;
   color: #999;
-}
-
-.loading {
-  text-align: center;
-  padding: 60px 0;
-}
-
-.loading p {
-  margin-top: 20px;
-  color: #666;
 }
 
 .results-list {
@@ -696,5 +756,58 @@ onMounted(() => {
 
 .result-item:hover .score {
   color: #fff;
+}
+
+.wapnone {
+  @media (max-width: 767px) {
+    display: none;
+  }
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.qiming_follow_service {
+  position: fixed;
+  top: 75%;
+  right: 20px;
+  z-index: 100;
+}
+
+.qiming_follow_service_box {
+  list-style: none;
+}
+
+.qiming_follow_service_ax {
+  display: block;
+  width: 50px;
+  height: 50px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
+  text-align: center;
+  line-height: 50px;
+  color: #fff;
+  cursor: pointer;
+}
+
+.qiming_follow_service_ax:hover {
+  background: rgba(169, 49, 33, 0.8);
+}
+
+.qiming_follow_service_ax i {
+  font-size: 24px;
+}
+
+.qiming_follow_service_ax_cont {
+  display: none;
+}
+
+.qiming_follow_service_triangle {
+  display: none;
 }
 </style>
