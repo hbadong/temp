@@ -84,6 +84,56 @@ class index {
     }
     
     /**
+     * 百家姓页面
+     */
+    public function baijiaxing() {
+        $seo_title = '百家姓 - 起名网';
+        $action = 'baijiaxing';
+        
+        $surname = isset($_GET['surname']) ? trim($_GET['surname']) : '';
+        
+        if (!empty($surname)) {
+            $surname_data = $this->get_surname_data($surname);
+        } else {
+            $surname_data = null;
+        }
+        
+        $seo_title = '百家姓 - 起名网';
+        include template('qiming', 'baijiaxing');
+    }
+    
+    /**
+     * 获取姓氏数据
+     */
+    private function get_surname_data($surname) {
+        $data = array(
+            '李' => array('origin' => '源于理姓', 'famous' => '李白、李世民、李时珍', 'distribution' => '全国第一大姓', 'poems' => '李花怒放一树白'),
+            '王' => array('origin' => '源于姬姓', 'famous' => '王羲之、王安石、王阳明', 'distribution' => '全国第二大姓', 'poems' => '桃花潭水深千尺'),
+            '张' => array('origin' => '源于姬姓', 'famous' => '张飞、张良、张学良', 'distribution' => '全国第三大姓', 'poems' => '张帆出海去'),
+            '刘' => array('origin' => '源于祁姓', 'famous' => '刘邦、刘备、刘德华', 'distribution' => '全国第四大姓', 'poems' => '刘郎今又来'),
+            '陈' => array('origin' => '源于妫姓', 'famous' => '陈独秀、陈道明、陈奕迅', 'distribution' => '全国第五大姓', 'poems' => '陈王斗酒诗百篇'),
+            '杨' => array('origin' => '源于姬姓', 'famous' => '杨坚、杨过、杨幂', 'distribution' => '全国第六大姓', 'poems' => '杨柳依依情'),
+            '赵' => array('origin' => '源于嬴姓', 'famous' => '赵匡胤、赵本山、赵丽颖', 'distribution' => '全国第七大姓', 'poems' => '赵客缦胡缨'),
+            '黄' => array('origin' => '源于赢姓', 'famous' => '黄帝、黄巢、黄晓明', 'distribution' => '全国第八大姓', 'poems' => '黄沙百战穿金甲'),
+            '周' => array('origin' => '源于姬姓', 'famous' => '周恩来、周杰伦、周迅', 'distribution' => '全国第九大姓', 'poems' => '周公吐哺天下归心'),
+            '吴' => array('origin' => '源于姬姓', 'famous' => '吴道子、吴亦凡、吴京', 'distribution' => '全国第十大姓', 'poems' => '吴楚东南坼'),
+            '徐' => array('origin' => '源于赢姓', 'famous' => '徐悲鸿、徐志摩、徐帆', 'distribution' => '全国第十一大姓', 'poems' => '徐行不须急'),
+            '孙' => array('origin' => '源于姬姓', 'famous' => '孙中山、孙武、孙俪', 'distribution' => '全国第十二大姓', 'poems' => '孙子兵法传千古'),
+            '马' => array('origin' => '源于赵姓', 'famous' => '马超、马云、马化腾', 'distribution' => '全国第十三上大姓', 'poems' => '马作的卢飞快'),
+            '朱' => array('origin' => '源于曹姓', 'famous' => '朱元璋、朱自清、朱珠', 'distribution' => '全国第十四大姓', 'poems' => '朱颜犹对照水云'),
+            '胡' => array('origin' => '源于归姓', 'famous' => '胡适、胡歌、胡杏儿', 'distribution' => '全国第十五大姓', 'poems' => '胡马依北风'),
+            '郭' => array('origin' => '源于任姓', 'famous' => '郭子仪、郭晶晶、郭富城', 'distribution' => '全国第十七大姓', 'poems' => '城郭依稀报晓钟'),
+            '林' => array('origin' => '源于子姓', 'famous' => '林则徐、林黛玉、林青霞', 'distribution' => '全国第十六大姓', 'poems' => '林花谢了春红'),
+            '何' => array('origin' => '源于姬姓', 'famous' => '何香凝、何润东、何洁', 'distribution' => '全国第十八大姓', 'poems' => '何当共剪西窗烛'),
+            '高' => array('origin' => '源于姜姓', 'famous' => '高圆圆、高晓松、高尔基', 'distribution' => '全国第十九大姓', 'poems' => '高山仰止景行行'),
+            '罗' => array('origin' => '源于理姓', 'famous' => '罗贯中、罗伯特、罗志祥', 'distribution' => '全国第二十大姓', 'poems' => '罗衾不耐五更寒')
+        );
+        
+        $first_char = mb_substr($surname, 0, 1);
+        return isset($data[$first_char]) ? array_merge(array('surname' => $first_char), $data[$first_char]) : array('surname' => $first_char, 'origin' => '百家姓之一', 'famous' => '历史名人', 'distribution' => '姓氏分布广泛', 'poems' => '姓氏文化悠久');
+    }
+    
+    /**
      * 起名结果页
      */
     public function result() {
