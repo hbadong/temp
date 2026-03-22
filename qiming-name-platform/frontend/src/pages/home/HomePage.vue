@@ -91,63 +91,91 @@
           <div class="formGsQm">
             <h1>宝宝起名</h1>
             <p>以先进AI技术和大数据融合千年传统起名智慧，为您提供独一无二、寓意深远的宝宝名字方案</p>
-            <form method="post">
-              <div class="two_bd">
-                <div class="list_bd">
-                  <input
-                    v-model="form.surname"
-                    type="text"
-                    placeholder="请输入宝宝的姓氏"
-                  >
-                  <div class="sexSelect">
-                    <span
-                      :class="{ active: form.gender === 1 }"
-                      @click="form.gender = 1"
-                    >男</span>
-                    <span
-                      :class="{ active: form.gender === 2 }"
-                      @click="form.gender = 2"
-                    >女</span>
-                    <span class="wcs">未知</span>
-                  </div>
-                </div>
-                <div class="list_bd">
-                  <input
-                    v-model="form.birthday"
-                    type="text"
-                    class="J_datepicker"
-                    placeholder="请选择出生日期"
-                    readonly
-                  >
-                  <img
-                    src="/images/xl.png"
-                    alt=""
-                  >
+            <div class="two_bd">
+              <div class="list_bd">
+                <input
+                  v-model="form.surname"
+                  type="text"
+                  placeholder="请输入宝宝的姓氏"
+                >
+                <div class="sexSelect">
+                  <span
+                    :class="{ active: form.gender === 1 }"
+                    @click="form.gender = 1"
+                  >男</span>
+                  <span
+                    :class="{ active: form.gender === 2 }"
+                    @click="form.gender = 2"
+                  >女</span>
+                  <span
+                    :class="{ active: form.gender === 0 }"
+                    @click="form.gender = 0"
+                  >未知</span>
                 </div>
               </div>
-              <div
-                class="list_bd"
-                style="width:100%;margin-right:0;margin-bottom:20px;"
-              >
-                <input
-                  v-model="form.birthAddress"
-                  type="text"
-                  placeholder="请选择出生地"
-                  readonly
+              <div class="list_bd">
+                <select
+                  v-model="form.birthday"
+                  class="native-select"
                 >
+                  <option
+                    value=""
+                    disabled
+                    selected
+                  >
+                    请选择出生日期
+                  </option>
+                  <option
+                    v-for="date in dateOptions"
+                    :key="date"
+                    :value="date"
+                  >
+                    {{ date }}
+                  </option>
+                </select>
                 <img
                   src="/images/xl.png"
                   alt=""
+                  class="select-arrow"
                 >
               </div>
-              <button
-                type="button"
-                class="qmbtn"
-                @click="handleSubmit"
+            </div>
+            <div
+              class="list_bd"
+              style="width:100%;margin-right:0;margin-bottom:20px;"
+            >
+              <select
+                v-model="form.birthAddress"
+                class="native-select"
               >
-                立即起名
-              </button>
-            </form>
+                <option
+                  value=""
+                  disabled
+                  selected
+                >
+                  请选择出生地
+                </option>
+                <option
+                  v-for="region in flatRegions"
+                  :key="region.value"
+                  :value="region.value"
+                >
+                  {{ region.label }}
+                </option>
+              </select>
+              <img
+                src="/images/xl.png"
+                alt=""
+                class="select-arrow"
+              >
+            </div>
+            <button
+              type="button"
+              class="qmbtn"
+              @click="handleSubmit"
+            >
+              立即起名
+            </button>
           </div>
         </div>
       </div>
@@ -1205,6 +1233,57 @@ const form = reactive({
   birthAddress: ''
 });
 
+const generateDateOptions = () => {
+  const dates = [];
+  const today = new Date();
+  for (let i = 0; i < 365; i++) {
+    const date = new Date(today);
+    date.setDate(date.getDate() + i);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    dates.push(`${year}-${month}-${day}`);
+  }
+  return dates;
+};
+
+const dateOptions = generateDateOptions();
+
+const regionOptions = [
+  { value: '华北', label: '华北', children: [
+    { value: '北京', label: '北京' }, { value: '天津', label: '天津' }, { value: '河北', label: '河北' },
+    { value: '山西', label: '山西' }, { value: '内蒙古', label: '内蒙古' }
+  ]},
+  { value: '东北', label: '东北', children: [
+    { value: '辽宁', label: '辽宁' }, { value: '吉林', label: '吉林' }, { value: '黑龙江', label: '黑龙江' }
+  ]},
+  { value: '华东', label: '华东', children: [
+    { value: '上海', label: '上海' }, { value: '江苏', label: '江苏' }, { value: '浙江', label: '浙江' },
+    { value: '安徽', label: '安徽' }, { value: '福建', label: '福建' }, { value: '江西', label: '江西' }, { value: '山东', label: '山东' }
+  ]},
+  { value: '华中', label: '华中', children: [
+    { value: '河南', label: '河南' }, { value: '湖北', label: '湖北' }, { value: '湖南', label: '湖南' }
+  ]},
+  { value: '华南', label: '华南', children: [
+    { value: '广东', label: '广东' }, { value: '广西', label: '广西' }, { value: '海南', label: '海南' }
+  ]},
+  { value: '西南', label: '西南', children: [
+    { value: '重庆', label: '重庆' }, { value: '四川', label: '四川' }, { value: '贵州', label: '贵州' },
+    { value: '云南', label: '云南' }, { value: '西藏', label: '西藏' }
+  ]},
+  { value: '西北', label: '西北', children: [
+    { value: '陕西', label: '陕西' }, { value: '甘肃', label: '甘肃' }, { value: '青海', label: '青海' },
+    { value: '宁夏', label: '宁夏' }, { value: '新疆', label: '新疆' }
+  ]},
+  { value: '港澳台', label: '港澳台', children: [
+    { value: '香港', label: '香港' }, { value: '澳门', label: '澳门' }, { value: '台湾', label: '台湾' }
+  ]}
+];
+
+const flatRegions = regionOptions.flatMap(region => 
+  region.children.map(city => ({ value: city.value, label: city.label }))
+);
+
 const hotWords = ref(['雪', '旭', '信川', '煜晨']);
 
 const checkingNames = ref([
@@ -1439,6 +1518,29 @@ onMounted(() => {
   height: 49px;
   background: url('/images/logo.png') no-repeat;
   background-size: 160px auto;
+}
+
+.native-select {
+  width: 100%;
+  height: 46px;
+  border: none;
+  background: transparent;
+  font-size: 14px;
+  color: #696969;
+  padding-right: 30px;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  outline: none;
+}
+
+.select-arrow {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  z-index: 0;
 }
 
 .b-r-4 {
