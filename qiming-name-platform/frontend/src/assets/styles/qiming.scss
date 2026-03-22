@@ -794,3 +794,238 @@ a:hover {
     font-size: 12px;
   }
 }
+
+/* 页面开发中样式 */
+.dev-page {
+  min-height: 100vh;
+  background: #f0f2f5;
+  display: flex;
+  flex-direction: column;
+}
+
+.dev-page .page-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 24px;
+}
+
+.dev-page .dev-tip {
+  background: #fff;
+  padding: 60px 80px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+.dev-page .dev-tip h2 {
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.dev-page .dev-tip p {
+  font-size: 16px;
+  color: #999;
+}
+
+/* 搜索页面样式 */
+.search-page {
+  min-height: 100vh;
+  background: #f0f2f5;
+}
+
+.search-page .search-header {
+  background: #fff;
+  padding: 40px 0;
+  text-align: center;
+}
+
+.search-page .search-header h1 {
+  font-size: 28px;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.search-page .search-form {
+  max-width: 600px;
+  margin: 0 auto;
+  display: flex;
+  gap: 10px;
+}
+
+.search-page .search-form input {
+  flex: 1;
+  height: 48px;
+  border: 2px solid #edd5d2;
+  border-radius: 24px;
+  padding: 0 24px;
+  font-size: 16px;
+  outline: none;
+}
+
+.search-page .search-form input:focus {
+  border-color: #a93121;
+}
+
+.search-page .search-form button {
+  width: 100px;
+  height: 48px;
+  background: linear-gradient(90deg, #c92009, #e6614f);
+  color: #fff;
+  border: none;
+  border-radius: 24px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.search-page .search-results {
+  max-width: 1200px;
+  margin: 30px auto;
+  padding: 0 24px;
+}
+
+.search-page .result-item {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+.search-page .result-item h3 {
+  font-size: 18px;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.search-page .result-item h3 a {
+  color: #a93121;
+  text-decoration: none;
+}
+
+.search-page .result-item p {
+  font-size: 14px;
+  color: #666;
+}
+
+/* 关于我们等静态页面样式 */
+.static-page {
+  min-height: 100vh;
+  background: #f0f2f5;
+}
+
+.static-page .page-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 30px 24px;
+}
+
+.static-page .page-header {
+  background: #fff;
+  padding: 40px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.static-page .page-header h1 {
+  font-size: 28px;
+  color: #333;
+}
+
+.static-page .page-body {
+  background: #fff;
+  padding: 40px;
+  border-radius: 8px;
+}
+
+.static-page .page-body h2 {
+  font-size: 20px;
+  color: #333;
+  margin: 20px 0 10px;
+}
+
+.static-page .page-body p {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.8;
+  margin-bottom: 15px;
+}
+
+.static-page .page-body ul {
+  padding-left: 20px;
+  margin-bottom: 15px;
+}
+
+.static-page .page-body li {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.8;
+  margin-bottom: 5px;
+}
+
+/* 两列布局 */
+.two-column-layout {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 20px;
+}
+
+@media (max-width: 992px) {
+  .two-column-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 通用卡片样式 */
+.common-card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.common-card .card-title {
+  font-size: 18px;
+  color: #333;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.common-card .card-title i {
+  margin-right: 8px;
+  color: #a93121;
+}
+
+/* 分页样式 */
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 30px;
+}
+
+.pagination a, .pagination span {
+  display: inline-block;
+  padding: 8px 14px;
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 4px;
+  color: #333;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.pagination a:hover {
+  background: #a93121;
+  color: #fff;
+  border-color: #a93121;
+}
+
+.pagination .active {
+  background: #a93121;
+  color: #fff;
+  border-color: #a93121;
+}

@@ -22,6 +22,11 @@ const routes = [
     component: () => import('../pages/poetry-name/PoetryNamePage.vue')
   },
   {
+    path: '/gaimingzi',
+    name: 'AdultName',
+    component: () => import('../pages/adult-name/AdultNamePage.vue')
+  },
+  {
     path: '/xingmingceshi',
     name: 'NameTest',
     component: () => import('../pages/name-test/NameTestPage.vue')
@@ -30,6 +35,11 @@ const routes = [
     path: '/gongsiqiming',
     name: 'CompanyName',
     component: () => import('../pages/company-name/CompanyNamePage.vue')
+  },
+  {
+    path: '/zhouyi',
+    name: 'Zhouyi',
+    component: () => import('../pages/zhouyi/ZhouyiPage.vue')
   },
   {
     path: '/kxzd',
@@ -45,6 +55,71 @@ const routes = [
     path: '/zhishi/:category?',
     name: 'Articles',
     component: () => import('../pages/articles/ArticlesPage.vue')
+  },
+  {
+    path: '/nvhai',
+    name: 'GirlName',
+    component: () => import('../pages/girl-name/GirlNamePage.vue')
+  },
+  {
+    path: '/nanhai',
+    name: 'BoyName',
+    component: () => import('../pages/boy-name/BoyNamePage.vue')
+  },
+  {
+    path: '/xingmingpeidui',
+    name: 'NameMatch',
+    component: () => import('../pages/name-match/NameMatchPage.vue')
+  },
+  {
+    path: '/tangshi',
+    name: 'Tangshi',
+    component: () => import('../pages/tangshi/TangshiPage.vue')
+  },
+  {
+    path: '/shijing',
+    name: 'Shijing',
+    component: () => import('../pages/shijing/ShijingPage.vue')
+  },
+  {
+    path: '/songci',
+    name: 'Songci',
+    component: () => import('../pages/songci/SongciPage.vue')
+  },
+  {
+    path: '/chuci',
+    name: 'Chuci',
+    component: () => import('../pages/chuci/ChuciPage.vue')
+  },
+  {
+    path: '/dingzi',
+    name: 'Dingzi',
+    component: () => import('../pages/dingzi/DingziPage.vue')
+  },
+  {
+    path: '/search',
+    name: 'Search',
+    component: () => import('../pages/search/SearchPage.vue')
+  },
+  {
+    path: '/about',
+    name: 'About',
+    component: () => import('../pages/about/AboutPage.vue')
+  },
+  {
+    path: '/service',
+    name: 'Service',
+    component: () => import('../pages/service/ServicePage.vue')
+  },
+  {
+    path: '/copyright',
+    name: 'Copyright',
+    component: () => import('../pages/copyright/CopyrightPage.vue')
+  },
+  {
+    path: '/busine',
+    name: 'Busine',
+    component: () => import('../pages/busine/BusinePage.vue')
   }
 ];
 
