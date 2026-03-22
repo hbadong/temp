@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{$seo_title}</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Microsoft YaHei", Arial, sans-serif; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 15px; }
+        .page-header { background: linear-gradient(135deg, #ff6600, #ff8533); color: #fff; padding: 40px 0; text-align: center; }
+        .page-header h1 { font-size: 28px; }
+        
+        .search-box { max-width: 600px; margin: 30px auto 0; display: flex; gap: 10px; }
+        .search-box input { flex: 1; padding: 12px 15px; border: none; border-radius: 5px; font-size: 16px; }
+        .search-box button { padding: 12px 30px; background: #333; color: #fff; border: none; border-radius: 5px; cursor: pointer; }
+        
+        .main { padding: 40px 0; }
+        .filter-box { background: #fff; padding: 20px; border-radius: 8px; margin-bottom: 20px; display: flex; gap: 15px; flex-wrap: wrap; align-items: center; }
+        .filter-box a { padding: 8px 20px; background: #f5f5f5; border-radius: 5px; color: #333; }
+        .filter-box a.active { background: #ff6600; color: #fff; }
+        
+        .result-info { color: #666; margin-bottom: 20px; }
+        .char-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; }
+        .char-card { background: #fff; padding: 20px; border-radius: 8px; text-align: center; cursor: pointer; transition: transform 0.3s; }
+        .char-card:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .char-card .char { font-size: 48px; font-weight: bold; color: #ff6600; margin-bottom: 10px; }
+        .char-card .info { font-size: 14px; color: #666; }
+        .char-card .pinyin { color: #999; font-size: 12px; }
+        .empty { text-align: center; padding: 60px 0; color: #999; }
+    </style>
+</head>
+<body>
+    <div class="page-header">
+        <div class="container">
+            <h1>康熙字典</h1>
+            <form class="search-box" action="{U('qiming/kxzd/search')}" method="get">
+                <input type="text" name="keyword" placeholder="输入汉字或拼音搜索" value="{$keyword}">
+                <button type="submit">搜索</button>
+            </form>
+        </div>
+    </div>
+    
+    <div class="container main">
+        <div class="filter-box">
+            <a href="{U('qiming/kxzd/wuxing', 'wuxing=1')}">金</a>
+            <a href="{U('qiming/kxzd/wuxing', 'wuxing=2')}">木</a>
+            <a href="{U('qiming/kxzd/wuxing', 'wuxing=3')}">水</a>
+            <a href="{U('qiming/kxzd/wuxing', 'wuxing=4')}">火</a>
+            <a href="{U('qiming/kxzd/wuxing', 'wuxing=5')}">土</a>
+        </div>
+        
+        <div class="result-info">
+            共找到 <strong>{$total}</strong> 个汉字
+        </div>
+        
+        <?php if (!empty($list)): ?>
+        <div class="char-grid">
+            <?php foreach ($list as $v): ?>
+            <a href="{U('qiming/kxzd/show', 'char='.$v['char'])}" class="char-card">
+                <div class="char">{$v['char']}</div>
+                <div class="pinyin">{$v['pinyin']}</div>
+                <div class="info">
+                    笔画: {$v['bihua']} | 五行: <?php echo $wuxing_names[$v['wuxing']]; ?>
+                </div>
+            </a>
+            <?php endforeach; ?>
+        </div>
+        <?php else: ?>
+        <div class="empty">
+            <p>未找到相关汉字</p>
+            <p style="margin-top:10px;"><a href="{U('qiming/kxzd/index')}">重新搜索</a></p>
+        </div>
+        <?php endif; ?>
+    </div>
+</body>
+</html>
