@@ -2,23 +2,24 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>测试记录 - 起名系统后台</title>
+    <title>黄历管理 - 起名系统后台</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: "Microsoft YaHei", Arial, sans-serif; background: #f5f5f5; }
         .page-title { padding: 20px 30px; background: #fff; margin-bottom: 20px; border-radius: 8px; }
         .page-title h2 { color: #333; }
         .content { padding: 0 20px 20px; }
+        .filter-box { background: #fff; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        .filter-box input { padding: 8px 15px; border: 1px solid #ddd; border-radius: 4px; }
+        .filter-box button { padding: 8px 20px; background: #ff6600; color: #fff; border: none; border-radius: 4px; cursor: pointer; }
         .table-box { background: #fff; border-radius: 8px; overflow: hidden; }
         table { width: 100%; border-collapse: collapse; }
         th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #eee; }
         th { background: #f9f9f9; color: #666; font-weight: 500; }
         tr:hover { background: #fafafa; }
-        .name-cell { font-size: 18px; color: #ff6600; font-weight: bold; }
-        .score { font-size: 16px; font-weight: bold; }
-        .score-high { color: #4caf50; }
-        .score-mid { color: #ff9800; }
-        .score-low { color: #f44336; }
+        .date-cell { font-weight: 500; color: #333; }
+        .actions a { color: #ff6600; margin-right: 10px; }
+        .actions a.delete { color: #f44336; }
         .page { padding: 20px; text-align: center; }
         .page a { padding: 5px 12px; background: #f5f5f5; color: #666; border-radius: 4px; text-decoration: none; margin: 0 3px; }
         .page a:hover { background: #ff6600; color: #fff; }
@@ -27,34 +28,43 @@
 </head>
 <body>
     <div class="page-title">
-        <h2>姓名测试记录</h2>
+        <h2>黄历管理</h2>
     </div>
     <div class="content">
+        <div class="filter-box">
+            <form method="get" action="{U('qiming/horoscope')}" style="display: inline;">
+                <input type="hidden" name="m" value="admin">
+                <input type="hidden" name="c" value="qiming">
+                <input type="date" name="date" value="{$date}">
+                <button type="submit">查询</button>
+            </form>
+        </div>
+        
         <div class="table-box">
             <table>
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>姓名</th>
-                        <th>性别</th>
-                        <th>五格总分</th>
-                        <th>五行分析</th>
-                        <th>测试时间</th>
+                        <th>日期</th>
+                        <th>宜</th>
+                        <th>忌</th>
+                        <th>财神</th>
+                        <th>喜神</th>
+                        <th>操作</th>
                     </tr>
                 </thead>
                 <tbody>
                     {foreach name="list" item="vo"}
                     <tr>
                         <td>{$vo.id}</td>
-                        <td class="name-cell">{$vo.surname}{$vo.name}</td>
-                        <td>{if $vo.gender == 1}男{else}女{/if}</td>
-                        <td>
-                            <span class="score {if $vo.total_score >= 80}score-high{elseif $vo.total_score >= 60}score-mid{else}score-low{/if}">
-                                {$vo.total_score}分
-                            </span>
+                        <td class="date-cell">{$vo.date}</td>
+                        <td>{$vo.yi}</td>
+                        <td>{$vo.ji}</td>
+                        <td>{$vo.caishen}</td>
+                        <td>{$vo.xishen}</td>
+                        <td class="actions">
+                            <a href="{U('qiming/horoscope_edit', array('id'=>$vo['id']))}">编辑</a>
                         </td>
-                        <td>{$vo.wuxing_summary}</td>
-                        <td>{$vo.create_time}</td>
                     </tr>
                     {/foreach}
                 </tbody>

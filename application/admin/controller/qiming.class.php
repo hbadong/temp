@@ -218,4 +218,80 @@ class qiming extends common {
         
         include $this->admin_tpl('qiming/test_records');
     }
+    
+    /**
+     * 八卦管理
+     */
+    public function bagua() {
+        $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
+        $total = D('bagua')->total();
+        $page = new page($total, 20);
+        $list = D('bagua')->order('id ASC')->limit($page->limit())->select();
+        
+        include $this->admin_tpl('qiming/bagua');
+    }
+    
+    /**
+     * 八卦详情编辑
+     */
+    public function bagua_edit() {
+        $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+        
+        if (isset($_POST['dosubmit'])) {
+            $data = array(
+                'name' => trim($_POST['name']),
+                'gua_name' => trim($_POST['gua_name']),
+                'yao' => trim($_POST['yao']),
+                'guaci' => trim($_POST['guaci']),
+                'tuanci' => trim($_POST['tuanci']),
+                'xiangci' => trim($_POST['xiangci']),
+                'wuxing' => trim($_POST['wuxing']),
+            );
+            
+            D('bagua')->update($data, array('id' => intval($_POST['id'])));
+            showmsg('修改成功', U('qiming/bagua'));
+        }
+        
+        $data = D('bagua')->where(array('id' => $id))->find();
+        include $this->admin_tpl('qiming/bagua_form');
+    }
+    
+    /**
+     * 黄历管理
+     */
+    public function horoscope() {
+        $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
+        $date = isset($_GET['date']) ? trim($_GET['date']) : date('Y-m-d');
+        
+        $where = array('date' => $date);
+        $total = D('horoscope')->where($where)->total();
+        $page = new page($total, 20);
+        $list = D('horoscope')->where($where)->limit($page->limit())->select();
+        
+        include $this->admin_tpl('qiming/horoscope');
+    }
+    
+    /**
+     * 黄历编辑
+     */
+    public function horoscope_edit() {
+        $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+        
+        if (isset($_POST['dosubmit'])) {
+            $data = array(
+                'yi' => trim($_POST['yi']),
+                'ji' => trim($_POST['ji']),
+                'caishen' => trim($_POST['caishen']),
+                'xishen' => trim($_POST['xishen']),
+                'fushen' => trim($_POST['fushen']),
+                'jishi' => trim($_POST['jishi']),
+            );
+            
+            D('horoscope')->update($data, array('id' => intval($_POST['id'])));
+            showmsg('修改成功', U('qiming/horoscope'));
+        }
+        
+        $data = D('horoscope')->where(array('id' => $id))->find();
+        include $this->admin_tpl('qiming/horoscope_form');
+    }
 }

@@ -1,81 +1,92 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title><?php echo isset($data) ? '编辑汉字' : '添加汉字'; ?> - 起名系统</title>
-<style>
-body { font-family: "Microsoft YaHei", Arial; margin: 0; padding: 20px; background: #f5f5f5; }
-.page-title { background: #fff; padding: 15px 20px; border-radius: 5px; margin-bottom: 20px; }
-.page-title h1 { margin: 0; font-size: 18px; }
-.form-card { background: #fff; border-radius: 5px; padding: 20px; max-width: 600px; }
-.form-group { margin-bottom: 15px; }
-.form-group label { display: block; margin-bottom: 5px; color: #666; }
-.form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 3px; box-sizing: border-box; }
-.form-group textarea { height: 100px; }
-.btn { padding: 10px 30px; background: #ff6600; color: #fff; border: none; border-radius: 3px; cursor: pointer; }
-.btn:hover { background: #e55a00; }
-</style>
+    <meta charset="UTF-8">
+    <title>{if isset($data)}编辑汉字{else}添加汉字{/if} - 起名系统后台</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Microsoft YaHei", Arial, sans-serif; background: #f5f5f5; }
+        .page-title { padding: 20px 30px; background: #fff; margin-bottom: 20px; border-radius: 8px; }
+        .page-title h2 { color: #333; }
+        .form-box { background: #fff; padding: 30px; border-radius: 8px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; color: #666; font-weight: 500; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 15px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; }
+        .form-group textarea { height: 100px; resize: vertical; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #ff6600; }
+        .form-row { display: flex; gap: 20px; }
+        .form-row .form-group { flex: 1; }
+        .btn-submit { padding: 12px 30px; background: #ff6600; color: #fff; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; }
+        .btn-submit:hover { background: #e55a00; }
+        .btn-back { padding: 12px 30px; background: #999; color: #fff; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; text-decoration: none; display: inline-block; margin-left: 10px; }
+    </style>
 </head>
 <body>
-<div class="page-title">
-    <h1><?php echo isset($data) ? '编辑汉字' : '添加汉字'; ?></h1>
-</div>
-<div class="form-card">
-    <form method="post" action="">
-        <?php if (isset($data)): ?>
-        <input type="hidden" name="id" value="<?php echo $data['id']; ?>">
-        <?php endif; ?>
-        
-        <div class="form-group">
-            <label>汉字</label>
-            <input type="text" name="char" value="<?php echo isset($data) ? $data['char'] : ''; ?>" required>
-        </div>
-        
-        <div class="form-group">
-            <label>拼音</label>
-            <input type="text" name="pinyin" value="<?php echo isset($data) ? $data['pinyin'] : ''; ?>">
-        </div>
-        
-        <div class="form-group">
-            <label>注音</label>
-            <input type="text" name="zhuyin" value="<?php echo isset($data) ? $data['zhuyin'] : ''; ?>">
-        </div>
-        
-        <div class="form-group">
-            <label>部首</label>
-            <input type="text" name="bushou" value="<?php echo isset($data) ? $data['bushou'] : ''; ?>">
-        </div>
-        
-        <div class="form-group">
-            <label>笔画数</label>
-            <input type="number" name="bihua" value="<?php echo isset($data) ? $data['bihua'] : '7'; ?>">
-        </div>
-        
-        <div class="form-group">
-            <label>五行</label>
-            <select name="wuxing">
-                <option value="1" <?php if (isset($data) && $data['wuxing'] == 1) echo 'selected'; ?>>金</option>
-                <option value="2" <?php if (isset($data) && $data['wuxing'] == 2) echo 'selected'; ?>>木</option>
-                <option value="3" <?php if (isset($data) && $data['wuxing'] == 3) echo 'selected'; ?>>水</option>
-                <option value="4" <?php if (isset($data) && $data['wuxing'] == 4) echo 'selected'; ?>>火</option>
-                <option value="5" <?php if (!isset($data) || $data['wuxing'] == 5) echo 'selected'; ?>>土</option>
-            </select>
-        </div>
-        
-        <div class="form-group">
-            <label>康熙字典解释</label>
-            <textarea name="jx"><?php echo isset($data) ? $data['jx'] : ''; ?></textarea>
-        </div>
-        
-        <div class="form-group">
-            <label>起名寓意</label>
-            <textarea name="xmxy"><?php echo isset($data) ? $data['xmxy'] : ''; ?></textarea>
-        </div>
-        
-        <div class="form-group">
-            <button type="submit" name="dosubmit" class="btn">提交</button>
-        </div>
-    </form>
-</div>
+    <div class="page-title">
+        <h2>{if isset($data)}编辑汉字{else}添加汉字{/if}</h2>
+    </div>
+    <div class="form-box">
+        <form method="post" action="">
+            <input type="hidden" name="dosubmit" value="1">
+            {if isset($data)}
+            <input type="hidden" name="id" value="{$data.id}">
+            {/if}
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>汉字</label>
+                    <input type="text" name="char" value="{$data.char}" required maxlength="1" placeholder="请输入单个汉字">
+                </div>
+                <div class="form-group">
+                    <label>拼音</label>
+                    <input type="text" name="pinyin" value="{$data.pinyin}" required placeholder="例如：xīn">
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>注音</label>
+                    <input type="text" name="zhuyin" value="{$data.zhuyin}" placeholder="例如：ㄒㄧㄣ">
+                </div>
+                <div class="form-group">
+                    <label>部首</label>
+                    <input type="text" name="bushou" value="{$data.bushou}" placeholder="例如：金">
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>笔画数</label>
+                    <input type="number" name="bihua" value="{$data.bihua}" required placeholder="康熙笔画数">
+                </div>
+                <div class="form-group">
+                    <label>五行属性</label>
+                    <select name="wuxing" required>
+                        <option value="">请选择</option>
+                        <option value="1" {if isset($data) && $data.wuxing == 1}selected{/if}>金</option>
+                        <option value="2" {if isset($data) && $data.wuxing == 2}selected{/if}>木</option>
+                        <option value="3" {if isset($data) && $data.wuxing == 3}selected{/if}>水</option>
+                        <option value="4" {if isset($data) && $data.wuxing == 4}selected{/if}>火</option>
+                        <option value="5" {if isset($data) && $data.wuxing == 5}selected{/if}>土</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>康熙字典解释</label>
+                <textarea name="jx" placeholder="请输入康熙字典中的解释">{$data.jx}</textarea>
+            </div>
+            
+            <div class="form-group">
+                <label>起名寓意</label>
+                <textarea name="xmxy" placeholder="请输入该字用于起名时的寓意">{$data.xmxy}</textarea>
+            </div>
+            
+            <div class="form-group">
+                <button type="submit" class="btn-submit">提交</button>
+                <a href="{U('qiming/characters')}" class="btn-back">返回</a>
+            </div>
+        </form>
+    </div>
 </body>
 </html>

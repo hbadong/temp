@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>编辑黄历 - 起名系统后台</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Microsoft YaHei", Arial, sans-serif; background: #f5f5f5; }
+        .page-title { padding: 20px 30px; background: #fff; margin-bottom: 20px; border-radius: 8px; }
+        .page-title h2 { color: #333; }
+        .form-box { background: #fff; padding: 30px; border-radius: 8px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; color: #666; font-weight: 500; }
+        .form-group input, .form-group textarea { width: 100%; padding: 10px 15px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; }
+        .form-group textarea { height: 80px; resize: vertical; }
+        .form-group input:focus, .form-group textarea:focus { outline: none; border-color: #ff6600; }
+        .form-row { display: flex; gap: 20px; }
+        .form-row .form-group { flex: 1; }
+        .btn-submit { padding: 12px 30px; background: #ff6600; color: #fff; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; }
+        .btn-submit:hover { background: #e55a00; }
+        .btn-back { padding: 12px 30px; background: #999; color: #fff; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; text-decoration: none; display: inline-block; margin-left: 10px; }
+    </style>
+</head>
+<body>
+    <div class="page-title">
+        <h2>编辑黄历 - {$data.date}</h2>
+    </div>
+    <div class="form-box">
+        <form method="post" action="">
+            <input type="hidden" name="dosubmit" value="1">
+            <input type="hidden" name="id" value="{$data.id}">
+            
+            <div class="form-group">
+                <label>宜</label>
+                <textarea name="yi" placeholder="用英文逗号分隔，例如：嫁娶,祭祀,开光">{$data.yi}</textarea>
+            </div>
+            
+            <div class="form-group">
+                <label>忌</label>
+                <textarea name="ji" placeholder="用英文逗号分隔，例如：动土,伐木">{$data.ji}</textarea>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>财神方位</label>
+                    <input type="text" name="caishen" value="{$data.caishen}" placeholder="例如：东北">
+                </div>
+                <div class="form-group">
+                    <label>喜神方位</label>
+                    <input type="text" name="xishen" value="{$data.xishen}" placeholder="例如：西北">
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>福神方位</label>
+                    <input type="text" name="fushen" value="{$data.fushen}" placeholder="例如：西南">
+                </div>
+                <div class="form-group">
+                    <label>吉时</label>
+                    <input type="text" name="jishi" value="{$data.jishi}" placeholder="例如：子寅卯巳">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <button type="submit" class="btn-submit">提交</button>
+                <a href="{U('qiming/horoscope')}" class="btn-back">返回</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

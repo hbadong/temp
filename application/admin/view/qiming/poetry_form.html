@@ -1,69 +1,80 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title><?php echo isset($data) ? '编辑诗词' : '添加诗词'; ?> - 起名系统</title>
-<style>
-body { font-family: "Microsoft YaHei", Arial; margin: 0; padding: 20px; background: #f5f5f5; }
-.page-title { background: #fff; padding: 15px 20px; border-radius: 5px; margin-bottom: 20px; }
-.form-card { background: #fff; border-radius: 5px; padding: 20px; max-width: 800px; }
-.form-group { margin-bottom: 15px; }
-.form-group label { display: block; margin-bottom: 5px; color: #666; }
-.form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 3px; box-sizing: border-box; }
-.form-group textarea { height: 200px; }
-.btn { padding: 10px 30px; background: #ff6600; color: #fff; border: none; border-radius: 3px; cursor: pointer; }
-.btn:hover { background: #e55a00; }
-</style>
+    <meta charset="UTF-8">
+    <title>{if isset($data)}编辑诗词{else}添加诗词{/if} - 起名系统后台</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Microsoft YaHei", Arial, sans-serif; background: #f5f5f5; }
+        .page-title { padding: 20px 30px; background: #fff; margin-bottom: 20px; border-radius: 8px; }
+        .page-title h2 { color: #333; }
+        .form-box { background: #fff; padding: 30px; border-radius: 8px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; color: #666; font-weight: 500; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 15px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; }
+        .form-group textarea { height: 200px; resize: vertical; font-family: "KaiTi", "楷体", serif; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #ff6600; }
+        .form-row { display: flex; gap: 20px; }
+        .form-row .form-group { flex: 1; }
+        .btn-submit { padding: 12px 30px; background: #ff6600; color: #fff; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; }
+        .btn-submit:hover { background: #e55a00; }
+        .btn-back { padding: 12px 30px; background: #999; color: #fff; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; text-decoration: none; display: inline-block; margin-left: 10px; }
+    </style>
 </head>
 <body>
-<div class="page-title">
-    <h1><?php echo isset($data) ? '编辑诗词' : '添加诗词'; ?></h1>
-</div>
-<div class="form-card">
-    <form method="post" action="">
-        <?php if (isset($data)): ?>
-        <input type="hidden" name="id" value="<?php echo $data['id']; ?>">
-        <?php endif; ?>
-        
-        <div class="form-group">
-            <label>标题</label>
-            <input type="text" name="title" value="<?php echo isset($data) ? $data['title'] : ''; ?>" required>
-        </div>
-        
-        <div class="form-group">
-            <label>作者</label>
-            <input type="text" name="author" value="<?php echo isset($data) ? $data['author'] : ''; ?>">
-        </div>
-        
-        <div class="form-group">
-            <label>类型</label>
-            <select name="type">
-                <option value="1" <?php if (isset($data) && $data['type'] == 1) echo 'selected'; ?>>唐诗</option>
-                <option value="2" <?php if (isset($data) && $data['type'] == 2) echo 'selected'; ?>>宋词</option>
-                <option value="3" <?php if (isset($data) && $data['type'] == 3) echo 'selected'; ?>>诗经</option>
-                <option value="4" <?php if (isset($data) && $data['type'] == 4) echo 'selected'; ?>>楚辞</option>
-            </select>
-        </div>
-        
-        <div class="form-group">
-            <label>朝代</label>
-            <input type="text" name="dynasty" value="<?php echo isset($data) ? $data['dynasty'] : ''; ?>">
-        </div>
-        
-        <div class="form-group">
-            <label>主题</label>
-            <input type="text" name="theme" value="<?php echo isset($data) ? $data['theme'] : ''; ?>">
-        </div>
-        
-        <div class="form-group">
-            <label>内容</label>
-            <textarea name="content"><?php echo isset($data) ? $data['content'] : ''; ?></textarea>
-        </div>
-        
-        <div class="form-group">
-            <button type="submit" name="dosubmit" class="btn">提交</button>
-        </div>
-    </form>
-</div>
+    <div class="page-title">
+        <h2>{if isset($data)}编辑诗词{else}添加诗词{/if}</h2>
+    </div>
+    <div class="form-box">
+        <form method="post" action="">
+            <input type="hidden" name="dosubmit" value="1">
+            {if isset($data)}
+            <input type="hidden" name="id" value="{$data.id}">
+            {/if}
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>诗词标题</label>
+                    <input type="text" name="title" value="{$data.title}" required placeholder="例如：静夜思">
+                </div>
+                <div class="form-group">
+                    <label>作者</label>
+                    <input type="text" name="author" value="{$data.author}" required placeholder="例如：李白">
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>类型</label>
+                    <select name="type" required>
+                        <option value="">请选择</option>
+                        <option value="1" {if isset($data) && $data.type == 1}selected{/if}>唐诗</option>
+                        <option value="2" {if isset($data) && $data.type == 2}selected{/if}>宋词</option>
+                        <option value="3" {if isset($data) && $data.type == 3}selected{/if}>诗经</option>
+                        <option value="4" {if isset($data) && $data.type == 4}selected{/if}>楚辞</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>朝代</label>
+                    <input type="text" name="dynasty" value="{$data.dynasty}" placeholder="例如：唐">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>主题标签</label>
+                <input type="text" name="theme" value="{$data.theme}" placeholder="例如：思乡、月亮">
+            </div>
+            
+            <div class="form-group">
+                <label>诗词内容</label>
+                <textarea name="content" placeholder="请输入诗词原文">{$data.content}</textarea>
+            </div>
+            
+            <div class="form-group">
+                <button type="submit" class="btn-submit">提交</button>
+                <a href="{U('qiming/poetry')}" class="btn-back">返回</a>
+            </div>
+        </form>
+    </div>
 </body>
 </html>

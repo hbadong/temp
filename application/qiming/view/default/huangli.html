@@ -1,0 +1,69 @@
+<!-- Huangli Component -->
+<section class="huangli">
+    <div class="container">
+        <h2 class="section-title">今日黄历</h2>
+        <div class="huangli-grid">
+            <div class="huangli-card">
+                <h3>基本信息</h3>
+                <div class="huangli-item"><span>公历日期</span><span>{$huangli.date}</span></div>
+                <div class="huangli-item"><span>农历日期</span><span>{$huangli.lunar}</span></div>
+                <div class="huangli-item"><span>星期</span><span>{$huangli.weekday}</span></div>
+                <div class="huangli-item"><span>星座</span><span>{$huangli.constellation}</span></div>
+                <div class="huangli-item"><span>生肖</span><span>{$huangli.zodiac}</span></div>
+                <div class="huangli-item"><span>节气</span><span>{$huangli.solar_term}</span></div>
+            </div>
+            <div class="huangli-card">
+                <h3>宜忌事项</h3>
+                <div class="yi-ji">
+                    <div class="yi-list">
+                        <strong>宜</strong>
+                        <p>{$huangli.yi}</p>
+                    </div>
+                    <div class="ji-list">
+                        <strong>忌</strong>
+                        <p>{$huangli.ji}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="huangli-card">
+                <h3>吉凶方位</h3>
+                <div class="huangli-item"><span>财神方位</span><span class="caishen">{$huangli.caishen}</span></div>
+                <div class="huangli-item"><span>喜神方位</span><span class="xishen">{$huangli.xishen}</span></div>
+                <div class="huangli-item"><span>福神方位</span><span class="fushen">{$huangli.fushen}</span></div>
+                <div class="huangli-item"><span>吉时</span><span>{$huangli.jishi}</span></div>
+                <div class="huangli-item"><span>凶时</span><span>{$huangli.xiongshi}</span></div>
+            </div>
+            <div class="huangli-card">
+                <h3>今日冲煞</h3>
+                <div class="huangli-item"><span>冲</span><span>{$huangli.chong}</span></div>
+                <div class="huangli-item"><span>煞</span><span>{$huangli.sha}</span></div>
+                <div class="huangli-item"><span>彭祖百忌</span><span>{$huangli.pengzu}</span></div>
+                <div class="huangli-item"><span>吉神宜趋</span><span>{$huangli.jishen}</span></div>
+                <div class="huangli-item"><span>凶神宜忌</span><span>{$huangli.jishen}</span></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    /* Huangli Styles */
+    .huangli { padding: 60px 0; }
+    .section-title { text-align: center; font-size: 28px; margin-bottom: 40px; color: #333; }
+    .huangli-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
+    .huangli-card { background: #fff; border: 1px solid #eee; border-radius: 10px; padding: 25px; }
+    .huangli-card h3 { border-bottom: 2px solid #ff6600; padding-bottom: 10px; margin-bottom: 15px; font-size: 18px; }
+    .huangli-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed #eee; font-size: 14px; }
+    .huangli-item:last-child { border-bottom: none; }
+    .huangli-item span:first-child { color: #666; }
+    .huangli-item span:last-child { color: #333; font-weight: 500; }
+    .yi-ji { display: flex; gap: 20px; }
+    .yi-list, .ji-list { flex: 1; }
+    .yi-list { color: #ff6600; }
+    .ji-list { color: #999; }
+    .yi-list strong, .ji-list strong { display: block; margin-bottom: 10px; font-size: 16px; }
+    .yi-list p, .ji-list p { font-size: 14px; line-height: 1.6; }
+    
+    .caishen { color: #ff6600 !important; }
+    .xishen { color: #e91e63 !important; }
+    .fushen { color: #4caf50 !important; }
+</style>

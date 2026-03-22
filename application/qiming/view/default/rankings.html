@@ -1,0 +1,149 @@
+<!-- Rankings Component -->
+<section class="rankings">
+    <div class="container">
+        <h2 class="section-title">热门起名用字排行</h2>
+        <div class="rankings-tabs">
+            <button type="button" class="active" data-tab="boy-char" onclick="showRankTab(this, 'boy-char')">男孩用字</button>
+            <button type="button" data-tab="girl-char" onclick="showRankTab(this, 'girl-char')">女孩用字</button>
+            <button type="button" data-tab="boy-name" onclick="showRankTab(this, 'boy-name')">男孩名字</button>
+            <button type="button" data-tab="girl-name" onclick="showRankTab(this, 'girl-name')">女孩名字</button>
+        </div>
+        <div class="rankings-content">
+            <div class="rankings-list" id="rank-boy-char">
+                {foreach name="$rankings.boy_char" item="item"}
+                <div class="rank-item">
+                    <span class="rank-num">{$key+1}</span>
+                    <span class="char">{$item.char}</span>
+                    <div class="info">
+                        <div class="pinyin">{$item.pinyin}</div>
+                        <div class="meaning">{$item.meaning}</div>
+                    </div>
+                    <span class="wuxing" style="color: {switch name="$item.wuxing"}<case value="金">#ffc107</case><case value="木">#4caf50</case><case value="水">#2196f3</case><case value="火">#f44336</case><case value="土">#ff9800</case>{/switch};">{$item.wuxing}</span>
+                </div>
+                {/foreach}
+            </div>
+            <div class="rankings-list" id="rank-girl-char" style="display:none;">
+                {foreach name="$rankings.girl_char" item="item"}
+                <div class="rank-item">
+                    <span class="rank-num">{$key+1}</span>
+                    <span class="char">{$item.char}</span>
+                    <div class="info">
+                        <div class="pinyin">{$item.pinyin}</div>
+                        <div class="meaning">{$item.meaning}</div>
+                    </div>
+                    <span class="wuxing" style="color: {switch name="$item.wuxing"}<case value="金">#ffc107</case><case value="木">#4caf50</case><case value="水">#2196f3</case><case value="火">#f44336</case><case value="土">#ff9800</case>{/switch};">{$item.wuxing}</span>
+                </div>
+                {/foreach}
+            </div>
+            <div class="rankings-list" id="rank-boy-name" style="display:none;">
+                {foreach name="$rankings.boy_name" item="item"}
+                <div class="rank-item">
+                    <span class="rank-num">{$key+1}</span>
+                    <span class="char name-char">{$item.name}</span>
+                    <div class="info">
+                        <div class="pinyin">{$item.pinyin}</div>
+                        <div class="meaning">{$item.meaning}</div>
+                    </div>
+                    <span class="score">{$item.score}分</span>
+                </div>
+                {/foreach}
+            </div>
+            <div class="rankings-list" id="rank-girl-name" style="display:none;">
+                {foreach name="$rankings.girl_name" item="item"}
+                <div class="rank-item">
+                    <span class="rank-num">{$key+1}</span>
+                    <span class="char name-char">{$item.name}</span>
+                    <div class="info">
+                        <div class="pinyin">{$item.pinyin}</div>
+                        <div class="meaning">{$item.meaning}</div>
+                    </div>
+                    <span class="score">{$item.score}分</span>
+                </div>
+                {/foreach}
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    /* Rankings Styles */
+    .rankings { padding: 60px 0; background: #f9f9f9; }
+    .rankings-tabs { display: flex; justify-content: center; gap: 20px; margin-bottom: 30px; flex-wrap: wrap; }
+    .rankings-tabs button { padding: 10px 25px; border: 1px solid #ddd; background: #fff; border-radius: 25px; cursor: pointer; font-size: 14px; transition: all 0.3s; }
+    .rankings-tabs button:hover { border-color: #ff6600; color: #ff6600; }
+    .rankings-tabs button.active { background: #ff6600; color: #fff; border-color: #ff6600; }
+    .rankings-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; }
+    .rank-item { background: #fff; padding: 15px 20px; border-radius: 8px; display: flex; align-items: center; gap: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); transition: transform 0.3s; }
+    .rank-item:hover { transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .rank-item .rank-num { width: 24px; height: 24px; background: #ff6600; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; }
+    .rank-item .char { font-size: 28px; font-weight: bold; color: #ff6600; min-width: 40px; text-align: center; }
+    .rank-item .char.name-char { font-size: 22px; }
+    .rank-item .info { flex: 1; }
+    .rank-item .pinyin { color: #999; font-size: 12px; }
+    .rank-item .meaning { color: #666; font-size: 14px; margin-top: 4px; }
+    .rank-item .wuxing, .rank-item .score { font-size: 14px; font-weight: 500; }
+    .rank-item .score { color: #4caf50; }
+</style>
+
+<script>
+    function showRankTab(btn, tab) {
+        document.querySelectorAll('.rankings-tabs button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        document.querySelectorAll('.rankings-list').forEach(list => list.style.display = 'none');
+        document.getElementById('rank-' + tab).style.display = 'grid';
+    }
+    
+    // Load rankings data via AJAX
+    function loadRankings() {
+        var tabs = ['boy-char', 'girl-char', 'boy-name', 'girl-name'];
+        tabs.forEach(function(type) {
+            fetch('?m=qiming&c=api&a=ranking&type=' + type)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 1) {
+                        updateRankings(type, data.data);
+                    }
+                })
+                .catch(error => console.log('Load rankings error:', error));
+        });
+    }
+    
+    function updateRankings(type, data) {
+        var container = document.getElementById('rank-' + type);
+        if (!container) return;
+        
+        var html = '';
+        data.forEach(function(item, index) {
+            var charField = item.char || item.name || '';
+            var wuxingColor = '#999';
+            if (item.wuxing) {
+                switch(item.wuxing) {
+                    case '金': wuxingColor = '#ffc107'; break;
+                    case '木': wuxingColor = '#4caf50'; break;
+                    case '水': wuxingColor = '#2196f3'; break;
+                    case '火': wuxingColor = '#f44336'; break;
+                    case '土': wuxingColor = '#ff9800'; break;
+                }
+            }
+            html += '<div class="rank-item">' +
+                '<span class="rank-num">' + (index + 1) + '</span>' +
+                '<span class="char ' + (type.indexOf('name') > -1 ? 'name-char' : '') + '">' + charField + '</span>' +
+                '<div class="info">' +
+                '<div class="pinyin">' + (item.pinyin || '') + '</div>' +
+                '<div class="meaning">' + (item.meaning || '') + '</div>' +
+                '</div>';
+            if (item.wuxing) {
+                html += '<span class="wuxing" style="color:' + wuxingColor + ';">' + item.wuxing + '</span>';
+            }
+            if (item.score) {
+                html += '<span class="score">' + item.score + '分</span>';
+            }
+            html += '</div>';
+        });
+        container.innerHTML = html;
+    }
+    
+    // Load rankings on page load
+    // document.addEventListener('DOMContentLoaded', loadRankings);
+</script>

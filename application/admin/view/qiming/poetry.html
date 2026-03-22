@@ -1,61 +1,98 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>诗词管理 - 起名系统</title>
-<style>
-body { font-family: "Microsoft YaHei", Arial; margin: 0; padding: 20px; background: #f5f5f5; }
-.page-title { background: #fff; padding: 15px 20px; border-radius: 5px; margin-bottom: 20px; }
-.card { background: #fff; border-radius: 5px; padding: 20px; }
-.tabs { margin-bottom: 20px; }
-.tabs a { padding: 8px 20px; background: #eee; border-radius: 3px; text-decoration: none; color: #333; margin-right: 10px; }
-.tabs a.active { background: #ff6600; color: #fff; }
-.btn { padding: 6px 15px; background: #ff6600; color: #fff; border: none; border-radius: 3px; cursor: pointer; text-decoration: none; display: inline-block; }
-.btn-danger { background: #f44336; }
-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
-th { background: #f9f9f9; color: #666; }
-.page { margin-top: 15px; text-align: center; }
-</style>
+    <meta charset="UTF-8">
+    <title>诗词管理 - 起名系统后台</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Microsoft YaHei", Arial, sans-serif; background: #f5f5f5; }
+        .page-title { padding: 20px 30px; background: #fff; margin-bottom: 20px; border-radius: 8px; }
+        .page-title h2 { color: #333; }
+        .content { padding: 0 20px 20px; }
+        .filter-box { background: #fff; padding: 20px; border-radius: 8px; margin-bottom: 20px; display: flex; gap: 15px; align-items: center; }
+        .filter-box select { padding: 8px 15px; border: 1px solid #ddd; border-radius: 4px; }
+        .filter-box button { padding: 8px 20px; background: #ff6600; color: #fff; border: none; border-radius: 4px; cursor: pointer; }
+        .btn-add { padding: 10px 20px; background: #ff6600; color: #fff; border-radius: 4px; text-decoration: none; }
+        .table-box { background: #fff; border-radius: 8px; overflow: hidden; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background: #f9f9f9; color: #666; font-weight: 500; }
+        tr:hover { background: #fafafa; }
+        .title-cell { font-weight: 500; color: #333; }
+        .author { color: #999; font-size: 12px; }
+        .type-badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; color: #fff; }
+        .type-tang { background: #e91e63; }
+        .type-song { background: #9c27b0; }
+        .type-shijing { background: #673ab7; }
+        .type-chuci { background: #3f51b5; }
+        .actions a { color: #ff6600; margin-right: 10px; }
+        .actions a.delete { color: #f44336; }
+        .page { padding: 20px; text-align: center; }
+        .page a { padding: 5px 12px; background: #f5f5f5; color: #666; border-radius: 4px; text-decoration: none; margin: 0 3px; }
+        .page a:hover { background: #ff6600; color: #fff; }
+        .page .current { background: #ff6600; color: #fff; }
+    </style>
 </head>
 <body>
-<div class="page-title">
-    <h1>诗词管理</h1>
-</div>
-<div class="card">
-    <a href="<?php echo U('qiming/poetry_add'); ?>" class="btn">添加诗词</a>
-    
-    <div class="tabs">
-        <a href="<?php echo U('qiming/poetry', array('type'=>1)); ?>" class="<?php echo $type==1?'active':''; ?>">唐诗</a>
-        <a href="<?php echo U('qiming/poetry', array('type'=>2)); ?>" class="<?php echo $type==2?'active':''; ?>">宋词</a>
-        <a href="<?php echo U('qiming/poetry', array('type'=>3)); ?>" class="<?php echo $type==3?'active':''; ?>">诗经</a>
-        <a href="<?php echo U('qiming/poetry', array('type'=>4)); ?>" class="<?php echo $type==4?'active':''; ?>">楚辞</a>
+    <div class="page-title">
+        <h2>诗词管理</h2>
     </div>
-    
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>标题</th>
-                <th>作者</th>
-                <th>操作</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php if (!empty($list)): foreach($list as $v): ?>
-            <tr>
-                <td><?php echo $v['id']; ?></td>
-                <td><?php echo $v['title']; ?></td>
-                <td><?php echo $v['author']; ?></td>
-                <td>
-                    <a href="<?php echo U('qiming/poetry_edit', array('id'=>$v['id'])); ?>" class="btn" style="padding: 4px 10px; font-size: 12px;">编辑</a>
-                    <a href="<?php echo U('qiming/poetry_del', array('id'=>$v['id'])); ?>" class="btn btn-danger" style="padding: 4px 10px; font-size: 12px;" onclick="return confirm('确定删除?')">删除</a>
-                </td>
-            </tr>
-            <?php endforeach; endif; ?>
-        </tbody>
-    </table>
-    <div class="page"><?php echo $page->getfull(); ?></div>
-</div>
+    <div class="content">
+        <div class="filter-box">
+            <form method="get" action="{U('qiming/poetry')}" style="display: flex; gap: 15px; align-items: center;">
+                <input type="hidden" name="m" value="admin">
+                <input type="hidden" name="c" value="qiming">
+                <select name="type">
+                    <option value="1" {if $type == 1}selected{/if}>唐诗</option>
+                    <option value="2" {if $type == 2}selected{/if}>宋词</option>
+                    <option value="3" {if $type == 3}selected{/if}>诗经</option>
+                    <option value="4" {if $type == 4}selected{/if}>楚辞</option>
+                </select>
+                <button type="submit">筛选</button>
+            </form>
+            <a href="{U('qiming/poetry_add')}" class="btn-add" style="margin-left: auto;">添加诗词</a>
+        </div>
+        
+        <div class="table-box">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>标题</th>
+                        <th>作者</th>
+                        <th>类型</th>
+                        <th>朝代</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {foreach name="list" item="vo"}
+                    <tr>
+                        <td>{$vo.id}</td>
+                        <td class="title-cell">{$vo.title}</td>
+                        <td class="author">{$vo.author}</td>
+                        <td>
+                            {switch name="$vo.type"}
+                            <case value="1"><span class="type-badge type-tang">唐诗</span></case>
+                            <case value="2"><span class="type-badge type-song">宋词</span></case>
+                            <case value="3"><span class="type-badge type-shijing">诗经</span></case>
+                            <case value="4"><span class="type-badge type-chuci">楚辞</span></case>
+                            {/switch}
+                        </td>
+                        <td>{$vo.dynasty}</td>
+                        <td class="actions">
+                            <a href="{U('qiming/poetry_edit', array('id'=>$vo['id']))}">编辑</a>
+                            <a href="{U('qiming/poetry_del', array('id'=>$vo['id']))}" class="delete" onclick="return confirm('确定删除？')">删除</a>
+                        </td>
+                    </tr>
+                    {/foreach}
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="page">
+            {$page}
+        </div>
+    </div>
 </body>
 </html>

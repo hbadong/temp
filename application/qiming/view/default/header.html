@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{$seo_title}</title>
+    <meta name="keywords" content="{$keywords}">
+    <meta name="description" content="{$description}">
+    <link rel="stylesheet" href="https://static.qiming.cn/style/qiming/css/base.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Microsoft YaHei", Arial, sans-serif; color: #333; line-height: 1.6; }
+        a { text-decoration: none; color: inherit; }
+        a:hover { color: #ff6600; }
+        
+        /* Header */
+        .header { background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
+        .header-top { background: #f5f5f5; padding: 5px 0; font-size: 12px; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 15px; }
+        .header-main { padding: 15px 0; display: flex; align-items: center; justify-content: space-between; }
+        .logo { font-size: 28px; font-weight: bold; color: #ff6600; }
+        .logo span { color: #333; }
+        .nav { display: flex; gap: 30px; }
+        .nav a { font-size: 16px; padding: 5px 0; position: relative; }
+        .nav a:hover { color: #ff6600; }
+        .nav a.active { color: #ff6600; }
+        .nav a.active::after { content: ''; position: absolute; bottom: -5px; left: 0; right: 0; height: 2px; background: #ff6600; }
+        
+        .header-right { display: flex; align-items: center; gap: 20px; }
+        .header-search { display: flex; align-items: center; }
+        .header-search input { padding: 8px 12px; border: 1px solid #ddd; border-radius: 20px; width: 200px; font-size: 14px; }
+        .header-search button { background: none; border: none; cursor: pointer; padding: 5px; font-size: 16px; }
+        
+        .mobile-menu { display: none; cursor: pointer; font-size: 24px; }
+        
+        @media (max-width: 768px) {
+            .nav { display: none; gap: 15px; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0; background: #fff; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+            .nav.show { display: flex; }
+            .mobile-menu { display: block; }
+            .header-search { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-top">
+            <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
+                <span>起名网 - 专注科学智能宝宝起名</span>
+                <div>
+                    <a href="{U('qiming/index/init')}">登录</a>
+                    <span style="margin: 0 10px;">|</span>
+                    <a href="{U('qiming/index/init')}">注册</a>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="header-main">
+                <div class="logo"><a href="{U('qiming/index/init')}">起名网<span>-专注宝宝起名</span></a></div>
+                <nav class="nav" id="mainNav">
+                    <a href="{U('qiming/index/init')}" {if condition="$action eq 'init'"}class="active"{/if}>首页</a>
+                    <a href="{U('qiming/index/baobao')}" {if condition="$action eq 'baobao'"}class="active"{/if}>宝宝起名</a>
+                    <a href="{U('qiming/index/bazi')}" {if condition="$action eq 'bazi'"}class="active"{/if}>八字起名</a>
+                    <a href="{U('qiming/index/shici')}" {if condition="$action eq 'shici'"}class="active"{/if}>诗词起名</a>
+                    <a href="{U('qiming/index/ceshi')}" {if condition="$action eq 'ceshi'"}class="active"{/if}>姓名测试</a>
+                    <a href="{U('qiming/index/zhouyi')}" {if condition="$action eq 'zhouyi'"}class="active"{/if}>周易起名</a>
+                    <a href="{U('qiming/index/gongsi')}" {if condition="$action eq 'gongsi'"}class="active"{/if}>公司起名</a>
+                    <a href="{U('qiming/index/kxzd')}" {if condition="$action eq 'kxzd'"}class="active"{/if}>康熙字典</a>
+                </nav>
+                <div class="header-right">
+                    <div class="header-search">
+                        <input type="text" placeholder="搜索汉字、姓名..." id="searchInput">
+                        <button onclick="doSearch()">🔍</button>
+                    </div>
+                    <div class="mobile-menu" onclick="toggleMenu()">☰</div>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <script>
+        function toggleMenu() {
+            document.getElementById('mainNav').classList.toggle('show');
+        }
+        
+        function doSearch() {
+            var keyword = document.getElementById('searchInput').value;
+            if (keyword) {
+                window.location.href = '{U("qiming/index/kxzd")}&keyword=' + encodeURIComponent(keyword);
+            }
+        }
+        
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                doSearch();
+            }
+        });
+    </script>
