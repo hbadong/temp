@@ -113,27 +113,63 @@
                   >未知</span>
                 </div>
               </div>
-              <div class="list_bd date-bd">
-                <a-date-picker
-                  v-model:value="form.birthday"
-                  placeholder="请选择出生日期"
-                  format="YYYY-MM-DD"
-                  :allow-clear="true"
-                  :get-popup-container="trigger => trigger.parentNode"
-                />
+              <div class="list_bd">
+                <select
+                  v-model="form.birthday"
+                  class="native-select"
+                >
+                  <option
+                    value=""
+                    disabled
+                    selected
+                  >请选择出生日期</option>
+                  <option
+                    v-for="date in dateOptions"
+                    :key="date"
+                    :value="date"
+                  >
+                    {{ date }}
+                  </option>
+                </select>
+                <img
+                  src="/images/xl.png"
+                  alt=""
+                  class="select-arrow"
+                >
               </div>
             </div>
             <div
-              class="list_bd region-bd"
+              class="list_bd"
               style="width:100%;margin-right:0;margin-bottom:20px;"
             >
-              <a-cascader
-                v-model:value="form.birthAddress"
-                placeholder="请选择出生地"
-                :options="regionOptions"
-                change-on-select
-                :get-popup-container="trigger => trigger.parentNode"
-              />
+              <select
+                v-model="form.birthAddress"
+                class="native-select"
+              >
+                <option
+                  value=""
+                  disabled
+                  selected
+                >请选择出生地</option>
+                <optgroup
+                  v-for="region in regionOptions"
+                  :key="region.value"
+                  :label="region.label"
+                >
+                  <option
+                    v-for="city in region.children"
+                    :key="city.value"
+                    :value="city.value"
+                  >
+                    {{ city.label }}
+                  </option>
+                </optgroup>
+              </select>
+              <img
+                src="/images/xl.png"
+                alt=""
+                class="select-arrow"
+              >
             </div>
             <button
               type="button"
@@ -384,13 +420,29 @@ const route = useRoute();
 const form = reactive({
   surname: '',
   gender: 1,
-  birthday: null,
-  birthAddress: null
+  birthday: '',
+  birthAddress: ''
 });
 
 const showLunpan = ref(false);
 const showResults = ref(false);
 const nameResults = ref([]);
+
+const generateDateOptions = () => {
+  const dates = [];
+  const today = new Date();
+  for (let i = 0; i < 3650; i++) {
+    const date = new Date(today);
+    date.setDate(date.getDate() + i);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    dates.push(`${year}-${month}-${day}`);
+  }
+  return dates;
+};
+
+const dateOptions = generateDateOptions();
 
 const regionOptions = [
   {
@@ -559,37 +611,26 @@ onMounted(() => {
   background-size: 160px auto;
 }
 
-.date-bd {
-  :deep(.ant-picker) {
-    border: none;
-    background: transparent;
-    padding: 0;
-    width: 100%;
-    
-    .ant-picker-input {
-      input {
-        font-size: 14px;
-        color: #696969;
-      }
-    }
-  }
+.native-select {
+  width: 100%;
+  height: 46px;
+  border: none;
+  background: transparent;
+  font-size: 14px;
+  color: #696969;
+  padding-right: 30px;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  outline: none;
 }
 
-.region-bd {
-  :deep(.ant-cascader) {
-    border: none;
-    background: transparent;
-    padding: 0;
-    width: 100%;
-    
-    .ant-cascader-input {
-      background: transparent;
-      input {
-        font-size: 14px;
-        color: #696969;
-      }
-    }
-  }
+.select-arrow {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
 }
 
 .lunpan-overlay {
