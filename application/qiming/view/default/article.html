@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{$seo_title}</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Microsoft YaHei", Arial, sans-serif; background: #f5f5f5; }
+        .container { max-width: 900px; margin: 0 auto; padding: 0 15px; }
+        .page-header { background: linear-gradient(135deg, #ff7043, #ffab91); color: #fff; padding: 30px 0; text-align: center; }
+        .page-header h1 { font-size: 28px; margin-bottom: 10px; }
+        .page-header p { font-size: 14px; opacity: 0.9; }
+        
+        .main { padding: 40px 0; }
+        
+        .article-card { background: #fff; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); overflow: hidden; }
+        
+        .article-header { padding: 30px; border-bottom: 1px solid #eee; }
+        .article-header .cat { display: inline-block; padding: 4px 12px; background: #fff3e0; color: #ff7043; border-radius: 15px; font-size: 12px; margin-bottom: 15px; }
+        .article-header h1 { font-size: 26px; color: #333; line-height: 1.4; margin-bottom: 15px; }
+        .article-header .meta { display: flex; gap: 20px; font-size: 13px; color: #999; }
+        .article-header .meta span { display: flex; align-items: center; gap: 5px; }
+        
+        .article-content { padding: 40px 30px; }
+        .article-content h3 { font-size: 20px; color: #333; margin: 30px 0 15px; padding-left: 15px; border-left: 4px solid #ff7043; }
+        .article-content p { font-size: 15px; color: #444; line-height: 1.9; margin-bottom: 15px; }
+        .article-content strong { color: #333; font-weight: 600; }
+        .article-content ul, .article-content ol { margin: 15px 0 15px 30px; }
+        .article-content li { font-size: 15px; color: #444; line-height: 1.8; margin-bottom: 8px; }
+        
+        .article-footer { padding: 20px 30px; background: #fafafa; border-top: 1px solid #eee; }
+        .article-footer .tags { display: flex; gap: 10px; flex-wrap: wrap; }
+        .article-footer .tag { padding: 4px 12px; background: #fff; color: #666; border-radius: 15px; font-size: 12px; }
+        
+        .back-section { margin-top: 30px; text-align: center; }
+        .back-btn { display: inline-block; padding: 12px 30px; background: #ff7043; color: #fff; border-radius: 25px; text-decoration: none; transition: all 0.3s; }
+        .back-btn:hover { background: #f4511e; transform: translateY(-2px); }
+        
+        .related-section { background: #fff; border-radius: 10px; padding: 25px; margin-top: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .related-section h3 { font-size: 18px; color: #333; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #ff7043; }
+        .related-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; }
+        .related-item { padding: 15px; background: #f9f9f9; border-radius: 8px; text-decoration: none; transition: all 0.3s; }
+        .related-item:hover { background: #fff3e0; }
+        .related-item h4 { font-size: 14px; color: #333; font-weight: normal; margin-bottom: 5px; }
+        .related-item p { font-size: 12px; color: #999; }
+        
+        @media (max-width: 768px) {
+            .article-header h1 { font-size: 22px; }
+            .article-header .meta { flex-wrap: wrap; gap: 10px; }
+            .article-content { padding: 25px 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-header">
+        <div class="container">
+            <h1>起名知识</h1>
+            <p>了解起名文化 · 掌握起名技巧</p>
+        </div>
+    </div>
+    
+    <div class="main">
+        <div class="container">
+            <div class="article-card">
+                <div class="article-header">
+                    <span class="cat"><?php echo $article['cat_name']; ?></span>
+                    <h1><?php echo $article['title']; ?></h1>
+                    <div class="meta">
+                        <span>👤 <?php echo $article['author']; ?></span>
+                        <span>📅 <?php echo $article['date']; ?></span>
+                        <span>👁 <?php echo $article['views']; ?> 浏览</span>
+                    </div>
+                </div>
+                
+                <div class="article-content">
+                    <?php echo nl2br($article['content']); ?>
+                </div>
+                
+                <div class="article-footer">
+                    <div class="tags">
+                        <span class="tag">起名知识</span>
+                        <span class="tag"><?php echo $article['cat_name']; ?></span>
+                        <span class="tag">宝宝起名</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="related-section">
+                <h3>相关推荐</h3>
+                <div class="related-list">
+                    <a href="#" class="related-item">
+                        <h4>如何给宝宝起一个好名字</h4>
+                        <p>查看详情 →</p>
+                    </a>
+                    <a href="#" class="related-item">
+                        <h4>起名时最常见的十大误区</h4>
+                        <p>查看详情 →</p>
+                    </a>
+                    <a href="#" class="related-item">
+                        <h4>五行属金的汉字有哪些</h4>
+                        <p>查看详情 →</p>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="back-section">
+                <a href="<?php echo U('qiming/index/zhishi'); ?>" class="back-btn">返回列表</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
