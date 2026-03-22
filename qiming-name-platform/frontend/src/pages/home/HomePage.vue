@@ -169,13 +169,13 @@
                 class="select-arrow"
               >
             </div>
-            <button
-              type="button"
+            <a
+              href="javascript:void(0);"
               class="qmbtn"
               @click="handleSubmit"
             >
               立即起名
-            </button>
+            </a>
           </div>
         </div>
       </div>
