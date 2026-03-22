@@ -113,18 +113,18 @@
                   >未知</span>
                 </div>
               </div>
-              <div class="list_bd">
+              <div class="list_bd date-bd">
                 <a-date-picker
                   v-model:value="form.birthday"
                   placeholder="请选择出生日期"
                   format="YYYY-MM-DD"
                   :allow-clear="true"
-                  class="date-picker-input"
+                  :get-popup-container="trigger => trigger.parentNode"
                 />
               </div>
             </div>
             <div
-              class="list_bd"
+              class="list_bd region-bd"
               style="width:100%;margin-right:0;margin-bottom:20px;"
             >
               <a-cascader
@@ -132,7 +132,7 @@
                 placeholder="请选择出生地"
                 :options="regionOptions"
                 change-on-select
-                class="region-cascader"
+                :get-popup-container="trigger => trigger.parentNode"
               />
             </div>
             <button
@@ -559,34 +559,36 @@ onMounted(() => {
   background-size: 160px auto;
 }
 
-.date-picker-input {
-  width: 100%;
-  height: 46px;
-  border: none;
-  background: transparent;
-  
-  .ant-picker {
+.date-bd {
+  :deep(.ant-picker) {
     border: none;
     background: transparent;
+    padding: 0;
+    width: 100%;
     
-    input {
-      font-size: 14px;
-      color: #696969;
+    .ant-picker-input {
+      input {
+        font-size: 14px;
+        color: #696969;
+      }
     }
   }
 }
 
-.region-cascader {
-  width: 100%;
-  
-  .ant-cascader-input {
+.region-bd {
+  :deep(.ant-cascader) {
     border: none;
     background: transparent;
-  }
-  
-  input {
-    font-size: 14px;
-    color: #696969;
+    padding: 0;
+    width: 100%;
+    
+    .ant-cascader-input {
+      background: transparent;
+      input {
+        font-size: 14px;
+        color: #696969;
+      }
+    }
   }
 }
 
