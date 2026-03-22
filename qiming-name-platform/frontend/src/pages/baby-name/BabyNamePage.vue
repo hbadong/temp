@@ -122,7 +122,9 @@
                     value=""
                     disabled
                     selected
-                  >请选择出生日期</option>
+                  >
+                    请选择出生日期
+                  </option>
                   <option
                     v-for="date in dateOptions"
                     :key="date"
@@ -150,20 +152,16 @@
                   value=""
                   disabled
                   selected
-                >请选择出生地</option>
-                <optgroup
-                  v-for="region in regionOptions"
-                  :key="region.value"
-                  :label="region.label"
                 >
-                  <option
-                    v-for="city in region.children"
-                    :key="city.value"
-                    :value="city.value"
-                  >
-                    {{ city.label }}
-                  </option>
-                </optgroup>
+                  请选择出生地
+                </option>
+                <option
+                  v-for="region in flatRegions"
+                  :key="region.value"
+                  :value="region.value"
+                >
+                  {{ region.label }}
+                </option>
               </select>
               <img
                 src="/images/xl.png"
@@ -431,7 +429,7 @@ const nameResults = ref([]);
 const generateDateOptions = () => {
   const dates = [];
   const today = new Date();
-  for (let i = 0; i < 3650; i++) {
+  for (let i = 0; i < 365; i++) {
     const date = new Date(today);
     date.setDate(date.getDate() + i);
     const year = date.getFullYear();
@@ -528,6 +526,10 @@ const regionOptions = [
     ]
   }
 ];
+
+const flatRegions = regionOptions.flatMap(region => 
+  region.children.map(city => ({ value: city.value, label: city.label }))
+);
 
 const mockNames = [
   { pinyin: 'jun hao', total_score: 95, five_element: '金', meaning: '才智超群，豪迈大气' },
