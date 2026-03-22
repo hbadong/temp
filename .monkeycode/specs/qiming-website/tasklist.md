@@ -2,43 +2,43 @@
 
 ## 阶段一：项目基础搭建
 
-- [ ] 1. 创建起名系统模块目录结构
+- [x] 1. 创建起名系统模块目录结构
   - 在 `application/` 下创建 `qiming` 模块目录
   - 创建 controller、model、view 子目录
   - 配置文件和路由设置
 
-- [ ] 2. 创建数据库表结构
-  - [ ] 2.1 创建汉字表 `yzm_chinese_characters`
-  - [ ] 2.2 创建诗词表 `yzm_poetry`
-  - [ ] 2.3 创建八卦表 `yzm_bagua`
-  - [ ] 2.4 创建黄历表 `yzm_horoscope`
-  - [ ] 2.5 创建热门排行表 `yzm_name_rankings`
-  - [ ] 2.6 创建姓名测试结果表 `yzm_name_test_results`
+- [x] 2. 创建数据库表结构
+  - [x] 2.1 创建汉字表 `yzm_chinese_characters`
+  - [x] 2.2 创建诗词表 `yzm_poetry`
+  - [x] 2.3 创建八卦表 `yzm_bagua`
+  - [x] 2.4 创建黄历表 `yzm_horoscope`
+  - [x] 2.5 创建热门排行表 `yzm_name_rankings`
+  - [x] 2.6 创建姓名测试结果表 `yzm_name_test_results`
 
-- [ ] 3. 创建核心算法类文件
-  - [ ] 3.1 创建八字计算类 `yzmphp/core/class/bazi.class.php`
-  - [ ] 3.2 创建五格计算类 `yzmphp/core/class/wuge.class.php`
+- [x] 3. 创建核心算法类文件
+  - [x] 3.1 创建八字计算类 `yzmphp/core/class/bazi.class.php`
+  - [x] 3.2 创建五格计算类 `yzmphp/core/class/wuge.class.php`
   - [ ] 3.3 创建五行分析类 `yzmphp/core/class/wuxing.class.php`
   - [ ] 3.4 创建起名引擎类 `yzmphp/core/class/name_engine.class.php`
 
 ## 阶段二：核心算法实现
 
-- [ ] 4. 实现八字计算算法
-  - [ ] 4.1 实现天干地支常量表定义
-  - [ ] 4.2 实现年柱计算方法
-  - [ ] 4.3 实现月柱计算方法（含月令变换）
-  - [ ] 4.4 实现日柱计算（蔡勒公式）
-  - [ ] 4.5 实现时柱计算方法
-  - [ ] 4.6 实现八字五行分析方法
+- [x] 4. 实现八字计算算法
+  - [x] 4.1 实现天干地支常量表定义
+  - [x] 4.2 实现年柱计算方法
+  - [x] 4.3 实现月柱计算方法（含月令变换）
+  - [x] 4.4 实现日柱计算（蔡勒公式）
+  - [x] 4.5 实现时柱计算方法
+  - [x] 4.6 实现八字五行分析方法
 
-- [ ] 5. 实现五格数理算法
-  - [ ] 5.1 实现汉字笔画数查询方法
-  - [ ] 5.2 实现天格计算（单姓+1，复姓合并）
-  - [ ] 5.3 实现地格计算（名字笔画相加）
-  - [ ] 5.4 实现人格计算（姓笔画+名第一字笔画）
-  - [ ] 5.5 实现外格计算（总格-人格+1）
-  - [ ] 5.6 实现总格计算（所有笔画相加）
-  - [ ] 5.7 实现数理吉凶判定表
+- [x] 5. 实现五格数理算法
+  - [x] 5.1 实现汉字笔画数查询方法
+  - [x] 5.2 实现天格计算（单姓+1，复姓合并）
+  - [x] 5.3 实现地格计算（名字笔画相加）
+  - [x] 5.4 实现人格计算（姓笔画+名第一字笔画）
+  - [x] 5.5 实现外格计算（总格-人格+1）
+  - [x] 5.6 实现总格计算（所有笔画相加）
+  - [x] 5.7 实现数理吉凶判定表
 
 - [ ] 6. 实现五行分析算法
   - [ ] 6.1 实现汉字五行属性数据库查询
@@ -49,15 +49,15 @@
 
 ## 阶段三：控制器开发
 
-- [ ] 7. 创建前台控制器
-  - [ ] 7.1 创建首页控制器 `application/qiming/controller/index.class.php`
-  - [ ] 7.2 创建宝宝起名控制器 `application/qiming/controller/baobao.class.php`
-  - [ ] 7.3 创建八字起名控制器 `application/qiming/controller/bazi.class.php`
-  - [ ] 7.4 创建诗词起名控制器 `application/qiming/controller/shici.class.php`
-  - [ ] 7.5 创建姓名测试控制器 `application/qiming/controller/ceshi.class.php`
-  - [ ] 7.6 创建周易起名控制器 `application/qiming/controller/zhouyi.class.php`
-  - [ ] 7.7 创建公司起名控制器 `application/qiming/controller/gongsi.class.php`
-  - [ ] 7.8 创建康熙字典控制器 `application/qiming/controller/kxzd.class.php`
+- [x] 7. 创建前台控制器
+  - [x] 7.1 创建首页控制器 `application/qiming/controller/index.class.php`
+  - [x] 7.2 创建宝宝起名控制器 `application/qiming/controller/baobao.class.php`
+  - [x] 7.3 创建八字起名控制器 `application/qiming/controller/bazi.class.php`
+  - [x] 7.4 创建诗词起名控制器 `application/qiming/controller/shici.class.php`
+  - [x] 7.5 创建姓名测试控制器 `application/qiming/controller/ceshi.class.php`
+  - [x] 7.6 创建周易起名控制器 `application/qiming/controller/zhouyi.class.php`
+  - [x] 7.7 创建公司起名控制器 `application/qiming/controller/gongsi.class.php`
+  - [x] 7.8 创建康熙字典控制器 `application/qiming/controller/kxzd.class.php`
 
 - [ ] 8. 创建API接口控制器
   - [ ] 8.1 创建黄历API接口
@@ -75,15 +75,15 @@
 
 ## 阶段五：模板开发
 
-- [ ] 10. 创建前台模板
-  - [ ] 10.1 创建首页模板 `application/qiming/view/default/index.html`
-  - [ ] 10.2 创建宝宝起名模板 `application/qiming/view/default/baobao.html`
-  - [ ] 10.3 创建八字起名模板 `application/qiming/view/default/bazi.html`
-  - [ ] 10.4 创建诗词起名模板 `application/qiming/view/default/shici.html`
-  - [ ] 10.5 创建姓名测试模板 `application/qiming/view/default/ceshi.html`
-  - [ ] 10.6 创建周易起名模板 `application/qiming/view/default/zhouyi.html`
-  - [ ] 10.7 创建公司起名模板 `application/qiming/view/default/gongsi.html`
-  - [ ] 10.8 创建康熙字典模板 `application/qiming/view/default/kxzd.html`
+- [x] 10. 创建前台模板
+  - [x] 10.1 创建首页模板 `application/qiming/view/default/index.html`
+  - [x] 10.2 创建宝宝起名模板 `application/qiming/view/default/baobao.html`
+  - [x] 10.3 创建八字起名模板 `application/qiming/view/default/bazi.html`
+  - [x] 10.4 创建诗词起名模板 `application/qiming/view/default/shici.html`
+  - [x] 10.5 创建姓名测试模板 `application/qiming/view/default/ceshi.html`
+  - [x] 10.6 创建周易起名模板 `application/qiming/view/default/zhouyi.html`
+  - [x] 10.7 创建公司起名模板 `application/qiming/view/default/gongsi.html`
+  - [x] 10.8 创建康熙字典模板 `application/qiming/view/default/kxzd.html`
 
 - [ ] 11. 创建公共模板组件
   - [ ] 11.1 创建头部导航模板
