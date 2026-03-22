@@ -144,7 +144,9 @@
                 type="button"
                 class="qmbtn"
                 @click="handleSubmit"
-              >立即起名</button>
+              >
+                立即起名
+              </button>
             </form>
           </div>
         </div>
@@ -500,10 +502,9 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, watch } from 'vue';
+import { ref, reactive, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { message } from 'ant-design-vue';
-import request, { USE_MOCK } from '@/utils/request';
 
 const router = useRouter();
 const route = useRoute();
@@ -519,6 +520,17 @@ const loading = ref(false);
 const nameResults = ref([]);
 const showResults = ref(false);
 
+const mockNames = [
+  { full_name: '李俊豪', pinyin: 'li jun hao', total_score: 95, five_element: '金', meaning: '才智超群，豪迈大气' },
+  { full_name: '李梓涵', pinyin: 'li zi han', total_score: 92, five_element: '木', meaning: '生机勃勃，涵养深厚' },
+  { full_name: '李煜晨', pinyin: 'li yu chen', total_score: 94, five_element: '火', meaning: '光明照耀，晨曦微露' },
+  { full_name: '李思远', pinyin: 'li si yuan', total_score: 91, five_element: '土', meaning: '思虑周全，志向远大' },
+  { full_name: '李欣怡', pinyin: 'li xin yi', total_score: 93, five_element: '金', meaning: '心情愉悦，幸福美好' },
+  { full_name: '李雨桐', pinyin: 'li yu tong', total_score: 90, five_element: '水', meaning: '雨露滋润，梧桐栖凤' },
+  { full_name: '李诗涵', pinyin: 'li shi han', total_score: 94, five_element: '水', meaning: '诗情画意，含蓄内秀' },
+  { full_name: '李思琪', pinyin: 'li si qi', total_score: 92, five_element: '木', meaning: '思维敏捷，杰出不凡' }
+];
+
 const handleSubmit = () => {
   if (!form.surname) {
     message.warning('请输入姓氏');
@@ -527,16 +539,13 @@ const handleSubmit = () => {
   loading.value = true;
   showResults.value = true;
   
-  if (USE_MOCK) {
-    setTimeout(() => {
-      request.mockGet('/v1/names/recommend', { surname: form.surname, gender: form.gender }).then(res => {
-        if (res.data) {
-          nameResults.value = res.data.items || [];
-        }
-        loading.value = false;
-      });
-    }, 500);
-  }
+  setTimeout(() => {
+    nameResults.value = mockNames.map(n => ({
+      ...n,
+      full_name: form.surname + n.full_name.substring(1)
+    }));
+    loading.value = false;
+  }, 800);
 };
 
 const handleResultClick = (name) => {
@@ -550,14 +559,6 @@ onMounted(() => {
     handleSubmit();
   }
 });
-
-watch(() => route.query, (newQuery) => {
-  if (newQuery.surname) {
-    form.surname = newQuery.surname;
-    form.gender = parseInt(newQuery.gender) || 1;
-    handleSubmit();
-  }
-}, { immediate: true });
 </script>
 
 <style lang="scss">

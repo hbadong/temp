@@ -144,7 +144,9 @@
                 type="button"
                 class="qmbtn"
                 @click="handleSubmit"
-              >立即起名</button>
+              >
+                立即起名
+              </button>
             </form>
           </div>
         </div>
