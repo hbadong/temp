@@ -18,8 +18,8 @@
 - [x] 3. 创建核心算法类文件
   - [x] 3.1 创建八字计算类 `yzmphp/core/class/bazi.class.php`
   - [x] 3.2 创建五格计算类 `yzmphp/core/class/wuge.class.php`
-  - [ ] 3.3 创建五行分析类 `yzmphp/core/class/wuxing.class.php`
-  - [ ] 3.4 创建起名引擎类 `yzmphp/core/class/name_engine.class.php`
+  - [x] 3.3 创建五行分析类 `yzmphp/core/class/wuxing.class.php`
+  - [x] 3.4 创建起名引擎类 `yzmphp/core/class/name_engine.class.php`
 
 ## 阶段二：核心算法实现
 
@@ -40,12 +40,12 @@
   - [x] 5.6 实现总格计算（所有笔画相加）
   - [x] 5.7 实现数理吉凶判定表
 
-- [ ] 6. 实现五行分析算法
-  - [ ] 6.1 实现汉字五行属性数据库查询
-  - [ ] 6.2 实现根据偏旁部首判断五行
-  - [ ] 6.3 实现五行相生相克分析
-  - [ ] 6.4 实现五行强弱计算
-  - [ ] 6.5 实现用神喜神确定算法
+- [x] 6. 实现五行分析算法
+  - [x] 6.1 实现汉字五行属性数据库查询
+  - [x] 6.2 实现根据偏旁部首判断五行
+  - [x] 6.3 实现五行相生相克分析
+  - [x] 6.4 实现五行强弱计算
+  - [x] 6.5 实现用神喜神确定算法
 
 ## 阶段三：控制器开发
 
@@ -59,10 +59,10 @@
   - [x] 7.7 创建公司起名控制器 `application/qiming/controller/gongsi.class.php`
   - [x] 7.8 创建康熙字典控制器 `application/qiming/controller/kxzd.class.php`
 
-- [ ] 8. 创建API接口控制器
-  - [ ] 8.1 创建黄历API接口
-  - [ ] 8.2 创建热门排行API接口
-  - [ ] 8.3 创建搜索API接口
+- [x] 8. 创建API接口控制器
+  - [x] 8.1 创建黄历API接口
+  - [x] 8.2 创建热门排行API接口
+  - [x] 8.3 创建搜索API接口
 
 ## 阶段四：模型层开发
 
