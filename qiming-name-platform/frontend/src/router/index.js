@@ -45,6 +45,26 @@ const routes = [
     path: '/zhishi/:category?',
     name: 'Articles',
     component: () => import('../pages/articles/ArticlesPage.vue')
+  },
+  {
+    path: '/gaimingzi',
+    name: 'Gaiming',
+    component: () => import('../pages/gaiming/GaimingPage.vue')
+  },
+  {
+    path: '/zhouyi',
+    name: 'Zhouyi',
+    component: () => import('../pages/zhouyi/ZhouyiPage.vue')
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: () => import('../pages/auth/LoginPage.vue')
+  },
+  {
+    path: '/register',
+    name: 'Register',
+    component: () => import('../pages/auth/RegisterPage.vue')
   }
 ];
 
