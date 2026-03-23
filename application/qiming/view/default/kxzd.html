@@ -4,94 +4,204 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{$seo_title}</title>
+    <meta name="keywords" content="康熙字典,汉字查询,拼音查询,五行查询">
+    <meta name="description" content="康熙字典为您提供最全面的汉字查询服务，包括拼音、五行、笔画、解释等详细信息">
+    <link rel="stylesheet" href="https://static.qiming.cn/style/qiming/css/base.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: "Microsoft YaHei", Arial, sans-serif; background: #f5f5f5; }
+        body { font-family: "Microsoft YaHei", Arial, sans-serif; color: #333; line-height: 1.6; }
+        a { text-decoration: none; color: inherit; }
+        a:hover { color: #ff6600; }
         .container { max-width: 1200px; margin: 0 auto; padding: 0 15px; }
-        .page-header { background: linear-gradient(135deg, #ff6600, #ff8533); color: #fff; padding: 40px 0; text-align: center; }
-        .page-header h1 { font-size: 32px; margin-bottom: 10px; }
-        .page-header p { font-size: 16px; opacity: 0.9; }
         
-        .main { padding: 40px 0; }
-        .form-card { background: #fff; border-radius: 10px; padding: 40px; max-width: 800px; margin: 0 auto; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .form-title { font-size: 20px; margin-bottom: 30px; text-align: center; color: #333; }
+        .header { background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
+        .header-main { padding: 15px 0; display: flex; align-items: center; justify-content: space-between; }
+        .logo { font-size: 28px; font-weight: bold; color: #ff6600; }
+        .logo span { color: #333; }
+        .nav { display: flex; gap: 30px; }
+        .nav a { font-size: 16px; padding: 5px 0; }
         
-        .form-row { display: flex; gap: 20px; margin-bottom: 20px; flex-wrap: wrap; }
-        .form-group { flex: 1; min-width: 200px; }
-        .form-group label { display: block; margin-bottom: 8px; color: #666; font-size: 14px; }
-        .form-group input, .form-group select { width: 100%; padding: 12px 15px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px; }
-        .form-group input:focus, .form-group select:focus { outline: none; border-color: #ff6600; }
+        .page-header { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: #fff; padding: 60px 0; text-align: center; }
+        .page-header h1 { font-size: 36px; margin-bottom: 15px; }
+        .page-header p { font-size: 18px; opacity: 0.9; }
         
-        .btn-submit { width: 100%; padding: 15px; background: #ff6600; color: #fff; border: none; border-radius: 5px; font-size: 18px; cursor: pointer; margin-top: 20px; }
-        .btn-submit:hover { background: #e55a00; }
+        .search-section { padding: 60px 0; background: #f9f9f9; }
+        .search-box { background: #fff; border-radius: 10px; padding: 40px; max-width: 800px; margin: 0 auto; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .search-box h2 { font-size: 24px; text-align: center; margin-bottom: 20px; }
+        .search-form { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+        .search-form input { padding: 12px 20px; border: 1px solid #ddd; border-radius: 5px; font-size: 16px; width: 250px; }
+        .search-form input:focus { outline: none; border-color: #11998e; }
+        .search-form button { padding: 12px 30px; background: #11998e; color: #fff; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; }
+        .search-form button:hover { background: #0d7a6f; }
+        .search-tips { text-align: center; margin-top: 15px; font-size: 14px; color: #666; }
         
-        .info-section { margin-top: 40px; padding-top: 30px; border-top: 1px solid #eee; }
-        .info-section h3 { color: #333; margin-bottom: 15px; }
-        .info-section p { color: #666; line-height: 1.8; font-size: 14px; }
+        .wuxing-filter { display: flex; justify-content: center; gap: 15px; margin-top: 20px; flex-wrap: wrap; }
+        .wuxing-filter a { padding: 8px 20px; border: 1px solid #ddd; border-radius: 20px; font-size: 14px; transition: all 0.3s; }
+        .wuxing-filter a:hover, .wuxing-filter a.active { background: #11998e; color: #fff; border-color: #11998e; }
+        .wuxing-filter .metal { color: #ffd700; }
+        .wuxing-filter .wood { color: #228b22; }
+        .wuxing-filter .water { color: #1e90ff; }
+        .wuxing-filter .fire { color: #ff4500; }
+        .wuxing-filter .earth { color: #8b4513; }
+        
+        .result-section { padding: 60px 0; }
+        .result-section h2 { text-align: center; font-size: 28px; margin-bottom: 30px; }
+        .result-card { background: #fff; border-radius: 10px; padding: 30px; max-width: 600px; margin: 0 auto; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .char-display { text-align: center; margin-bottom: 30px; }
+        .char-display .char { font-size: 72px; font-weight: bold; color: #333; margin-bottom: 10px; }
+        .char-display .pinyin { font-size: 24px; color: #666; }
+        .char-display .zhuyin { font-size: 18px; color: #999; margin-top: 5px; }
+        
+        .char-info { border-top: 1px solid #eee; padding-top: 20px; }
+        .info-row { display: flex; padding: 10px 0; border-bottom: 1px dashed #eee; }
+        .info-row .label { width: 80px; color: #999; font-size: 14px; }
+        .info-row .value { flex: 1; color: #333; font-size: 14px; }
+        .info-row .value.gold { color: #ffd700; }
+        .info-row .value.wood { color: #228b22; }
+        .info-row .value.water { color: #1e90ff; }
+        .info-row .value.fire { color: #ff4500; }
+        .info-row .value.earth { color: #8b4513; }
+        
+        .char-meaning { margin-top: 20px; }
+        .char-meaning h4 { font-size: 16px; color: #333; margin-bottom: 10px; }
+        .char-meaning p { color: #666; font-size: 14px; line-height: 1.8; }
+        
+        .recent-section { padding: 60px 0; background: #f9f9f9; }
+        .recent-section h2 { text-align: center; font-size: 28px; margin-bottom: 30px; }
+        .char-grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 15px; }
+        .char-item { background: #fff; border-radius: 5px; padding: 15px 10px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: all 0.3s; cursor: pointer; }
+        .char-item:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .char-item .char { font-size: 28px; font-weight: bold; color: #333; display: block; }
+        .char-item .pinyin { font-size: 12px; color: #999; margin-top: 5px; }
+        
+        .footer { background: #333; color: #fff; padding: 50px 0 20px; }
+        .footer-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px; margin-bottom: 40px; }
+        .footer h4 { margin-bottom: 20px; font-size: 18px; color: #fff; }
+        .footer a { display: block; color: #ccc; padding: 5px 0; font-size: 14px; transition: color 0.3s; }
+        .footer a:hover { color: #ff6600; }
+        .footer-bottom { text-align: center; padding-top: 30px; border-top: 1px solid #444; color: #999; font-size: 14px; }
+        .footer-logo { font-size: 24px; color: #ff6600; font-weight: bold; margin-bottom: 15px; }
+        
+        @media (max-width: 768px) {
+            .header-main { flex-direction: column; gap: 15px; }
+            .nav { flex-wrap: wrap; justify-content: center; gap: 15px; }
+            .search-form input { width: 100%; }
+            .char-grid { grid-template-columns: repeat(5, 1fr); }
+            .footer-grid { grid-template-columns: repeat(2, 1fr); }
+        }
     </style>
 </head>
 <body>
-    <div class="page-header">
+    <header class="header">
+        <div class="container">
+            <div class="header-main">
+                <div class="logo">起名网<span>-专注宝宝起名</span></div>
+                <nav class="nav">
+                    <a href="{U('qiming/index/init')}">首页</a>
+                    <a href="{U('qiming/index/baobao')}">宝宝起名</a>
+                    <a href="{U('qiming/index/bazi')}">八字起名</a>
+                    <a href="{U('qiming/index/shici')}">诗词起名</a>
+                    <a href="{U('qiming/index/gaimingzi')}">成人改名</a>
+                    <a href="{U('qiming/index/ceshi')}">姓名测试</a>
+                    <a href="{U('qiming/index/gongsi')}">公司起名</a>
+                    <a href="{U('qiming/index/zhouyi')}">周易起名</a>
+                    <a href="{U('qiming/index/kxzd')}">康熙字典</a>
+                    <a href="{U('qiming/index/baijiaxing')}">百家姓</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+    
+    <section class="page-header">
         <div class="container">
             <h1>康熙字典</h1>
-            <p>查询汉字拼音、五行、笔画、解释</p>
+            <p>查询汉字拼音、五行、笔画、解释 - 起名好帮手</p>
         </div>
-    </div>
+    </section>
     
-    <div class="main">
+    <section class="search-section">
         <div class="container">
-            <div class="form-card">
-                <h2 class="form-title">请填写宝宝信息</h2>
-                <form action="{U('qiming/index/result')}" method="get">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>姓氏</label>
-                            <input type="text" name="surname" required maxlength="1" placeholder="请输入姓氏">
-                        </div>
-                        <div class="form-group">
-                            <label>性别</label>
-                            <select name="gender">
-                                <option value="1">男</option>
-                                <option value="2">女</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>出生日期</label>
-                            <input type="date" name="birthdate" required>
-                        </div>
-                        <div class="form-group">
-                            <label>出生时辰</label>
-                            <select name="birthtime">
-                                <option value="0">子时(23-01点)</option>
-                                <option value="1">丑时(01-03点)</option>
-                                <option value="2">寅时(03-05点)</option>
-                                <option value="3">卯时(05-07点)</option>
-                                <option value="4">辰时(07-09点)</option>
-                                <option value="5">巳时(09-11点)</option>
-                                <option value="6">午时(11-13点)</option>
-                                <option value="7">未时(13-15点)</option>
-                                <option value="8">申时(15-17点)</option>
-                                <option value="9">酉时(17-19点)</option>
-                                <option value="10">戌时(19-21点)</option>
-                                <option value="11">亥时(21-23点)</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <button type="submit" class="btn-submit">立即起名</button>
+            <div class="search-box">
+                <h2>汉字搜索</h2>
+                <form class="search-form" action="{U('qiming/index/kxzd')}" method="get">
+                    <input type="text" name="char" placeholder="输入汉字查询" maxlength="1">
+                    <button type="submit">搜索</button>
                 </form>
+                <p class="search-tips">支持汉字拼音、部首、笔画等多种查询方式</p>
                 
-                <div class="info-section">
-                    <h3>康熙字典简介</h3>
-                    <p>康熙字典是根据宝宝出生的年、月、日、时四个时间点，计算出对应的天干地支，形成生辰八字。通过分析八字中的五行属性，找出五行缺失，再结合姓氏、寓意等因素，从汉字数据库中筛选出最适合宝宝的吉祥汉字，组合成寓意美好、五行平衡的好名字。</p>
-                    <br>
-                    <p>本系统汇聚多位国内权威易学大师，以深厚经验精准解析八字，结合心理学，量身打造帮扶一生的优质好名。</p>
+                <div class="wuxing-filter">
+                    <a href="#" class="metal">金</a>
+                    <a href="#" class="wood">木</a>
+                    <a href="#" class="water">水</a>
+                    <a href="#" class="fire">火</a>
+                    <a href="#" class="earth">土</a>
+                    <a href="#">全部</a>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
+    
+    <section class="recent-section">
+        <div class="container">
+            <h2>热门查询汉字</h2>
+            <div class="char-grid">
+                <a href="{U('qiming/index/kxzd')}?char=雪" class="char-item"><span class="char">雪</span><span class="pinyin">xuě</span></a>
+                <a href="{U('qiming/index/kxzd')}?char=旭" class="char-item"><span class="char">旭</span><span class="pinyin">xù</span></a>
+                <a href="{U('qiming/index/kxzd')}?char=煜" class="char-item"><span class="char">煜</span><span class="pinyin">yù</span></a>
+                <a href="{U('qiming/index/kxzd')}?char=晨" class="char-item"><span class="char">晨</span><span class="pinyin">chén</span></a>
+                <a href="{U('qiming/index/kxzd')}?char=梓" class="char-item"><span class="char">梓</span><span class="pinyin">zǐ</span></a>
+                <a href="{U('qiming/index/kxzd')}?char=涵" class="char-item"><span class="char">涵</span><span class="pinyin">hán</span></a>
+                <a href="{U('qiming/index/kxzd')}?char=瑾" class="char-item"><span class="char">瑾</span><span class="pinyin">jǐn</span></a>
+                <a href="{U('qiming/index/kxzd')}?char=瑶" class="char-item"><span class="char">瑶</span><span class="pinyin">yáo</span></a>
+                <a href="{U('qiming/index/kxzd')}?char=泽" class="char-item"><span class="char">泽</span><span class="pinyin">zé</span></a>
+                <a href="{U('qiming/index/kxzd')}?char=轩" class="char-item"><span class="char">轩</span><span class="pinyin">xuān</span></a>
+                <a href="{U('qiming/index/kxzd')}?char=浩" class="char-item"><span class="char">浩</span><span class="pinyin">hào</span></a>
+                <a href="{U('qiming/index/kxzd')}?char=然" class="char-item"><span class="char">然</span><span class="pinyin">rán</span></a>
+                <a href="{U('qiming/index/kxzd')}?char=俊" class="char-item"><span class="char">俊</span><span class="pinyin">jùn</span></a>
+                <a href="{U('qiming/index/kxzd')}?char=杰" class="char-item"><span class="char">杰</span><span class="pinyin">jié</span></a>
+                <a href="{U('qiming/index/kxzd')}?char=博" class="char-item"><span class="char">博</span><span class="pinyin">bó</span></a>
+                <a href="{U('qiming/index/kxzd')}?char=雅" class="char-item"><span class="char">雅</span><span class="pinyin">yǎ</span></a>
+                <a href="{U('qiming/index/kxzd')}?char=欣" class="char-item"><span class="char">欣</span><span class="pinyin">xīn</span></a>
+                <a href="{U('qiming/index/kxzd')}?char=怡" class="char-item"><span class="char">怡</span><span class="pinyin">yí</span></a>
+                <a href="{U('qiming/index/kxzd')}?char=佳" class="char-item"><span class="char">佳</span><span class="pinyin">jiā</span></a>
+                <a href="{U('qiming/index/kxzd')}?char=宁" class="char-item"><span class="char">宁</span><span class="pinyin">níng</span></a>
+            </div>
+        </div>
+    </section>
+    
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <div class="footer-logo">起名网</div>
+                    <p style="color:#ccc; font-size:14px;">专注科学智能宝宝起名，测名字打分平台，结合传统国学文化的智能起名系统研发。</p>
+                </div>
+                <div>
+                    <h4>快捷导航</h4>
+                    <a href="{U('qiming/index/baobao')}">宝宝起名</a>
+                    <a href="{U('qiming/index/bazi')}">八字起名</a>
+                    <a href="{U('qiming/index/zhouyi')}">周易起名</a>
+                    <a href="{U('qiming/index/kxzd')}">康熙字典</a>
+                </div>
+                <div>
+                    <h4>关于我们</h4>
+                    <a href="#">关于我们</a>
+                    <a href="#">服务条款</a>
+                    <a href="#">版权声明</a>
+                    <a href="#">投诉建议</a>
+                </div>
+                <div>
+                    <h4>友情链接</h4>
+                    <a href="https://zidian.qiming.cn/" target="_blank">汉语字典</a>
+                    <a href="https://cidian.qiming.cn/" target="_blank">汉语词典</a>
+                    <a href="https://chengyu.qiming.cn/" target="_blank">成语大全</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2005-2025 www.qiming.cn & All rights reserved</p>
+                <p>皖公网安备34010402704531号 | 皖ICP备2024064902号</p>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>

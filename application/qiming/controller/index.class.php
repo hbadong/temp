@@ -75,6 +75,30 @@ class index {
     }
     
     /**
+     * 成人改名页面
+     */
+    public function gaimingzi() {
+        $seo_title = '成人改名 - 起名网';
+        include template('qiming', 'gaimingzi');
+    }
+    
+    /**
+     * 百家姓页面
+     */
+    public function baijiaxing() {
+        $seo_title = '百家姓 - 起名网';
+        include template('qiming', 'baijiaxing');
+    }
+    
+    /**
+     * 起名知识页面
+     */
+    public function zhishi() {
+        $seo_title = '起名知识 - 起名网';
+        include template('qiming', 'zhishi');
+    }
+    
+    /**
      * 起名结果页
      */
     public function result() {

@@ -4,52 +4,219 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{$seo_title}</title>
+    <meta name="keywords" content="姓名测试,姓名打分,名字测试,五格数理">
+    <meta name="description" content="姓名测试通过五格数理分析，全面了解您的姓名评分、五行属性、性格特点等详细信息">
+    <link rel="stylesheet" href="https://static.qiming.cn/style/qiming/css/base.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: "Microsoft YaHei", Arial, sans-serif; background: #f5f5f5; }
+        body { font-family: "Microsoft YaHei", Arial, sans-serif; color: #333; line-height: 1.6; }
+        a { text-decoration: none; color: inherit; }
+        a:hover { color: #ff6600; }
         .container { max-width: 1200px; margin: 0 auto; padding: 0 15px; }
-        .page-header { background: linear-gradient(135deg, #ff6600, #ff8533); color: #fff; padding: 40px 0; text-align: center; }
-        .page-header h1 { font-size: 32px; margin-bottom: 10px; }
-        .page-header p { font-size: 16px; opacity: 0.9; }
         
-        .main { padding: 40px 0; }
-        .form-card { background: #fff; border-radius: 10px; padding: 40px; max-width: 600px; margin: 0 auto; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .form-title { font-size: 20px; margin-bottom: 30px; text-align: center; color: #333; }
+        .header { background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
+        .header-main { padding: 15px 0; display: flex; align-items: center; justify-content: space-between; }
+        .logo { font-size: 28px; font-weight: bold; color: #ff6600; }
+        .logo span { color: #333; }
+        .nav { display: flex; gap: 30px; }
+        .nav a { font-size: 16px; padding: 5px 0; }
         
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; margin-bottom: 8px; color: #666; font-size: 14px; }
-        .form-group input { width: 100%; padding: 12px 15px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px; }
-        .form-group input:focus { outline: none; border-color: #ff6600; }
+        .page-banner { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 400px; display: flex; align-items: center; justify-content: center; color: #fff; text-align: center; }
+        .page-banner-content { position: relative; z-index: 2; }
+        .page-banner h1 { font-size: 42px; font-weight: bold; margin-bottom: 20px; }
+        .page-banner p { font-size: 18px; opacity: 0.95; margin-bottom: 30px; }
+        .banner-form { background: rgba(255,255,255,0.95); border-radius: 10px; padding: 30px; max-width: 500px; margin: 0 auto; }
+        .banner-form input { padding: 12px 15px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px; margin: 5px; width: calc(50% - 12px); }
+        .banner-form button { padding: 12px 30px; background: #ff6600; color: #fff; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; margin: 5px; }
+        .banner-form button:hover { background: #e55a00; }
         
-        .btn-submit { width: 100%; padding: 15px; background: #ff6600; color: #fff; border: none; border-radius: 5px; font-size: 18px; cursor: pointer; margin-top: 20px; }
-        .btn-submit:hover { background: #e55a00; }
+        .intro-section { padding: 60px 0; }
+        .intro-section h2 { text-align: center; font-size: 28px; margin-bottom: 20px; }
+        .intro-section .subtitle { text-align: center; color: #666; font-size: 16px; margin-bottom: 40px; }
+        .intro-text { max-width: 900px; margin: 0 auto; font-size: 16px; line-height: 2; color: #666; text-align: justify; }
+        .intro-text p { margin-bottom: 20px; }
+        
+        .analysis-section { padding: 60px 0; background: #f9f9f9; }
+        .analysis-section h2 { text-align: center; font-size: 28px; margin-bottom: 40px; }
+        .analysis-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; }
+        .analysis-item { background: #fff; border-radius: 10px; padding: 25px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .analysis-item img { width: 60px; height: 60px; margin-bottom: 15px; }
+        .analysis-item h3 { font-size: 16px; color: #333; margin-bottom: 8px; }
+        .analysis-item p { color: #666; font-size: 14px; }
+        
+        .knowledge-section { padding: 60px 0; }
+        .knowledge-section h2 { text-align: center; font-size: 28px; margin-bottom: 30px; }
+        .knowledge-list { max-width: 900px; margin: 0 auto; }
+        .knowledge-item { background: #fff; border-radius: 10px; padding: 20px; margin-bottom: 15px; display: flex; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .knowledge-item .num { font-size: 24px; color: #ff6600; font-weight: bold; margin-right: 20px; width: 40px; }
+        .knowledge-item .content { flex: 1; }
+        .knowledge-item h3 { font-size: 16px; color: #333; margin-bottom: 5px; }
+        .knowledge-item h3:hover { color: #ff6600; }
+        .knowledge-item .info { font-size: 12px; color: #999; }
+        
+        .footer { background: #333; color: #fff; padding: 50px 0 20px; }
+        .footer-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px; margin-bottom: 40px; }
+        .footer h4 { margin-bottom: 20px; font-size: 18px; color: #fff; }
+        .footer a { display: block; color: #ccc; padding: 5px 0; font-size: 14px; transition: color 0.3s; }
+        .footer a:hover { color: #ff6600; }
+        .footer-bottom { text-align: center; padding-top: 30px; border-top: 1px solid #444; color: #999; font-size: 14px; }
+        .footer-logo { font-size: 24px; color: #ff6600; font-weight: bold; margin-bottom: 15px; }
+        
+        @media (max-width: 768px) {
+            .header-main { flex-direction: column; gap: 15px; }
+            .nav { flex-wrap: wrap; justify-content: center; gap: 15px; }
+            .page-banner h1 { font-size: 28px; }
+            .page-banner { min-height: 300px; }
+            .banner-form input { width: 100%; }
+            .analysis-grid { grid-template-columns: repeat(2, 1fr); }
+            .footer-grid { grid-template-columns: repeat(2, 1fr); }
+        }
     </style>
 </head>
 <body>
-    <div class="page-header">
+    <header class="header">
         <div class="container">
-            <h1>姓名测试</h1>
-            <p>五格数理分析，全面了解您的姓名</p>
+            <div class="header-main">
+                <div class="logo">起名网<span>-专注宝宝起名</span></div>
+                <nav class="nav">
+                    <a href="{U('qiming/index/init')}">首页</a>
+                    <a href="{U('qiming/index/baobao')}">宝宝起名</a>
+                    <a href="{U('qiming/index/bazi')}">八字起名</a>
+                    <a href="{U('qiming/index/shici')}">诗词起名</a>
+                    <a href="{U('qiming/index/gaimingzi')}">成人改名</a>
+                    <a href="{U('qiming/index/ceshi')}">姓名测试</a>
+                    <a href="{U('qiming/index/gongsi')}">公司起名</a>
+                    <a href="{U('qiming/index/zhouyi')}">周易起名</a>
+                    <a href="{U('qiming/index/kxzd')}">康熙字典</a>
+                    <a href="{U('qiming/index/baijiaxing')}">百家姓</a>
+                </nav>
+            </div>
         </div>
-    </div>
+    </header>
     
-    <div class="main">
-        <div class="container">
-            <div class="form-card">
-                <h2 class="form-title">请输入您的姓名</h2>
+    <section class="page-banner">
+        <div class="page-banner-content">
+            <h1>姓名测试</h1>
+            <p>五格数理分析，全面了解您的姓名评分、五行属性、性格特点</p>
+            <div class="banner-form">
                 <form action="{U('qiming/index/test_result')}" method="get">
-                    <div class="form-group">
-                        <label>姓氏</label>
-                        <input type="text" name="surname" required maxlength="1" placeholder="请输入姓氏">
-                    </div>
-                    <div class="form-group">
-                        <label>名字</label>
-                        <input type="text" name="name" required maxlength="10" placeholder="请输入名字">
-                    </div>
-                    <button type="submit" class="btn-submit">立即测试</button>
+                    <input type="text" name="surname" placeholder="姓氏" required maxlength="1">
+                    <input type="text" name="name" placeholder="名字" required maxlength="10">
+                    <button type="submit">立即测试</button>
                 </form>
             </div>
         </div>
-    </div>
+    </section>
+    
+    <section class="intro-section">
+        <div class="container">
+            <h2>姓名测试：全面分析，揭示名字的秘密</h2>
+            <p class="subtitle">通过五格数理和五行分析，深入了解您的姓名</p>
+            <div class="intro-text">
+                <p>姓名测试是基于中国传统的五格数理理论，结合现代统计学方法，对姓名进行全面分析的服务。通过对姓名笔画数的计算，分析天格、地格、人格、外格、总格五大数值，评估其对人生命运的影响。</p>
+                <p>除了五格数理，本系统还结合汉字五行属性、姓名音韵学等综合分析，为您提供全面的姓名评分报告，包括性格分析、事业分析、感情分析、运势建议等多个维度。</p>
+                <p>通过姓名测试，您可以了解当前姓名与命理的契合度，发现潜在的优势和不足，为改名或起名提供专业参考依据。</p>
+            </div>
+        </div>
+    </section>
+    
+    <section class="analysis-section">
+        <div class="container">
+            <h2>姓名分析维度</h2>
+            <div class="analysis-grid">
+                <div class="analysis-item">
+                    <img src="https://static.qiming.cn/style/qiming/images/wd1.jpg" alt="五格分析">
+                    <h3>五格数理</h3>
+                    <p>分析天格、地格、人格、外格、总格的吉凶</p>
+                </div>
+                <div class="analysis-item">
+                    <img src="https://static.qiming.cn/style/qiming/images/wd2.jpg" alt="五行分析">
+                    <h3>五行属性</h3>
+                    <p>分析姓名汉字的五行属性与命理的匹配度</p>
+                </div>
+                <div class="analysis-item">
+                    <img src="https://static.qiming.cn/style/qiming/images/wd3.jpg" alt="性格分析">
+                    <h3>性格分析</h3>
+                    <p>揭示姓名所蕴含的性格特点和潜在特质</p>
+                </div>
+                <div class="analysis-item">
+                    <img src="https://static.qiming.cn/style/qiming/images/wd4.jpg" alt="运势分析">
+                    <h3>运势分析</h3>
+                    <p>分析姓名对事业、财运、感情的影响</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="knowledge-section">
+        <div class="container">
+            <h2>姓名测试知识</h2>
+            <div class="knowledge-list">
+                <div class="knowledge-item">
+                    <span class="num">1</span>
+                    <div class="content">
+                        <h3>什么是五格数理？五格计算方法详解</h3>
+                        <div class="info">姓名测试</div>
+                    </div>
+                </div>
+                <div class="knowledge-item">
+                    <span class="num">2</span>
+                    <div class="content">
+                        <h3>姓名与八字的关系，如何选择适合自己的名字</h3>
+                        <div class="info">姓名测试</div>
+                    </div>
+                </div>
+                <div class="knowledge-item">
+                    <span class="num">3</span>
+                    <div class="content">
+                        <h3>姓名打分准不准？姓名测试的原理是什么</h3>
+                        <div class="info">姓名测试</div>
+                    </div>
+                </div>
+                <div class="knowledge-item">
+                    <span class="num">4</span>
+                    <div class="content">
+                        <h3>好名字的标准是什么？姓名评分80分和100分有什么区别</h3>
+                        <div class="info">姓名测试</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <div class="footer-logo">起名网</div>
+                    <p style="color:#ccc; font-size:14px;">专注科学智能宝宝起名，测名字打分平台，结合传统国学文化的智能起名系统研发。</p>
+                </div>
+                <div>
+                    <h4>快捷导航</h4>
+                    <a href="{U('qiming/index/baobao')}">宝宝起名</a>
+                    <a href="{U('qiming/index/bazi')}">八字起名</a>
+                    <a href="{U('qiming/index/zhouyi')}">周易起名</a>
+                    <a href="{U('qiming/index/kxzd')}">康熙字典</a>
+                </div>
+                <div>
+                    <h4>关于我们</h4>
+                    <a href="#">关于我们</a>
+                    <a href="#">服务条款</a>
+                    <a href="#">版权声明</a>
+                    <a href="#">投诉建议</a>
+                </div>
+                <div>
+                    <h4>友情链接</h4>
+                    <a href="https://zidian.qiming.cn/" target="_blank">汉语字典</a>
+                    <a href="https://cidian.qiming.cn/" target="_blank">汉语词典</a>
+                    <a href="https://chengyu.qiming.cn/" target="_blank">成语大全</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2005-2025 www.qiming.cn & All rights reserved</p>
+                <p>皖公网安备34010402704531号 | 皖ICP备2024064902号</p>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>
