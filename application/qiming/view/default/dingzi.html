@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>定字起名 - 起名网</title>
+    <meta name="keywords" content="定字起名,指定用字起名,起名网">
+    <meta name="description" content="定字起名服务帮助您在起名时指定某个用字，系统将为您筛选包含该字的好名字">
+    <link rel="stylesheet" href="https://static.qiming.cn/style/qiming/css/base.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Microsoft YaHei", Arial, sans-serif; color: #333; line-height: 1.6; }
+        a { text-decoration: none; color: inherit; }
+        a:hover { color: #ff6600; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 15px; }
+        
+        .header { background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
+        .header-main { padding: 15px 0; display: flex; align-items: center; justify-content: space-between; }
+        .logo { font-size: 28px; font-weight: bold; color: #ff6600; }
+        .logo span { color: #333; }
+        .nav { display: flex; gap: 30px; }
+        .nav a { font-size: 16px; padding: 5px 0; }
+        
+        .page-banner { background: linear-gradient(135deg, #00bcd4 0%, #009688 100%); min-height: 400px; display: flex; align-items: center; justify-content: center; color: #fff; text-align: center; }
+        .page-banner-content { position: relative; z-index: 2; }
+        .page-banner h1 { font-size: 42px; font-weight: bold; margin-bottom: 20px; }
+        .page-banner p { font-size: 18px; opacity: 0.95; margin-bottom: 30px; }
+        .banner-form { background: rgba(255,255,255,0.95); border-radius: 10px; padding: 30px; max-width: 700px; margin: 0 auto; }
+        .banner-form select, .banner-form input { padding: 12px 15px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px; margin: 5px; }
+        .banner-form select { min-width: 140px; }
+        .banner-form .fixed-char { width: 80px; text-align: center; font-size: 24px; font-weight: bold; }
+        .banner-form button { padding: 12px 30px; background: #00bcd4; color: #fff; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; margin: 5px; }
+        .banner-form button:hover { background: #009688; }
+        
+        .intro-section { padding: 60px 0; }
+        .intro-section h2 { text-align: center; font-size: 28px; margin-bottom: 20px; }
+        .intro-text { max-width: 900px; margin: 0 auto; font-size: 16px; line-height: 2; color: #666; text-align: justify; }
+        .intro-text p { margin-bottom: 20px; }
+        
+        .features-section { padding: 60px 0; background: #f9f9f9; }
+        .features-section h2 { text-align: center; font-size: 28px; margin-bottom: 40px; }
+        .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+        .feature-item { background: #fff; border-radius: 10px; padding: 30px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .feature-item img { width: 80px; height: 80px; margin-bottom: 20px; }
+        .feature-item h3 { font-size: 18px; color: #333; margin-bottom: 10px; }
+        .feature-item p { color: #666; font-size: 14px; line-height: 1.6; }
+        
+        .examples-section { padding: 60px 0; }
+        .examples-section h2 { text-align: center; font-size: 28px; margin-bottom: 40px; }
+        .examples-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+        .example-item { background: #fff; border-radius: 10px; padding: 20px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .example-item .fixed { font-size: 24px; font-weight: bold; color: #00bcd4; }
+        .example-item .names { margin-top: 10px; font-size: 14px; color: #666; }
+        
+        .footer { background: #333; color: #fff; padding: 50px 0 20px; }
+        .footer-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px; margin-bottom: 40px; }
+        .footer h4 { margin-bottom: 20px; font-size: 18px; color: #fff; }
+        .footer a { display: block; color: #ccc; padding: 5px 0; font-size: 14px; transition: color 0.3s; }
+        .footer a:hover { color: #ff6600; }
+        .footer-bottom { text-align: center; padding-top: 30px; border-top: 1px solid #444; color: #999; font-size: 14px; }
+        .footer-logo { font-size: 24px; color: #ff6600; font-weight: bold; margin-bottom: 15px; }
+        
+        @media (max-width: 768px) {
+            .header-main { flex-direction: column; gap: 15px; }
+            .nav { flex-wrap: wrap; justify-content: center; gap: 15px; }
+            .page-banner h1 { font-size: 28px; }
+            .page-banner { min-height: 300px; }
+            .banner-form input, .banner-form select { width: 100%; }
+            .features-grid { grid-template-columns: 1fr; }
+            .examples-grid { grid-template-columns: repeat(2, 1fr); }
+            .footer-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-main">
+                <div class="logo">起名网<span>-专注宝宝起名</span></div>
+                <nav class="nav">
+                    <a href="{U('qiming/index/init')}">首页</a>
+                    <a href="{U('qiming/index/baobao')}">宝宝起名</a>
+                    <a href="{U('qiming/index/bazi')}">八字起名</a>
+                    <a href="{U('qiming/index/shici')}">诗词起名</a>
+                    <a href="{U('qiming/index/gaimingzi')}">成人改名</a>
+                    <a href="{U('qiming/index/ceshi')}">姓名测试</a>
+                    <a href="{U('qiming/index/gongsi')}">公司起名</a>
+                    <a href="{U('qiming/index/zhouyi')}">周易起名</a>
+                    <a href="{U('qiming/index/kxzd')}">康熙字典</a>
+                    <a href="{U('qiming/index/baijiaxing')}">百家姓</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+    
+    <section class="page-banner">
+        <div class="page-banner-content">
+            <h1>定字起名</h1>
+            <p>指定您喜欢的字，系统为您筛选包含该字的好名字</p>
+            <div class="banner-form">
+                <form action="{U('qiming/index/result')}" method="get">
+                    <input type="text" name="surname" placeholder="姓氏" required maxlength="1">
+                    <select name="gender">
+                        <option value="">男女</option>
+                        <option value="1">男</option>
+                        <option value="2">女</option>
+                    </select>
+                    <input type="text" name="fixed_char" class="fixed-char" placeholder="定" required maxlength="1">
+                    <input type="date" name="birthdate" required>
+                    <select name="birthtime">
+                        <option value="">时辰</option>
+                        <option value="0">子时(23-01)</option>
+                        <option value="1">丑时(01-03)</option>
+                        <option value="2">寅时(03-05)</option>
+                        <option value="3">卯时(05-07)</option>
+                        <option value="4">辰时(07-09)</option>
+                        <option value="5">巳时(09-11)</option>
+                        <option value="6">午时(11-13)</option>
+                        <option value="7">未时(13-15)</option>
+                        <option value="8">申时(15-17)</option>
+                        <option value="9">酉时(17-19)</option>
+                        <option value="10">戌时(19-21)</option>
+                        <option value="11">亥时(21-23)</option>
+                    </select>
+                    <button type="submit">立即起名</button>
+                </form>
+            </div>
+        </div>
+    </section>
+    
+    <section class="intro-section">
+        <div class="container">
+            <h2>定字起名：满足您的个性化需求</h2>
+            <div class="intro-text">
+                <p>定字起名是一种个性化的起名方式，当您对某个字有特殊情感或期望时，可以指定该字作为名字的一部分。我们的系统将根据您的要求，从海量汉字数据库中筛选出与该字搭配最佳的名字。</p>
+                <p>定字起名适用于多种场景：家族辈分用字、纪念意义用字、父母姓氏用字等。通过定字起名，您可以在满足传统文化要求的同时，也能确保名字的音形义俱佳。</p>
+                <p>本系统不仅考虑定字与姓氏的搭配，还综合分析八字五行、五格数理等因素，为您推荐最适合的名字组合。</p>
+            </div>
+        </div>
+    </section>
+    
+    <section class="features-section">
+        <div class="container">
+            <h2>定字起名特点</h2>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <img src="https://static.qiming.cn/style/qiming/images/wd1.jpg" alt="辈分用字">
+                    <h3>满足辈分</h3>
+                    <p>如果您家族有辈分要求，可以指定辈分用字，系统为您匹配最佳的名字组合</p>
+                </div>
+                <div class="feature-item">
+                    <img src="https://static.qiming.cn/style/qiming/images/wd2.jpg" alt="个性化">
+                    <h3>个性定制</h3>
+                    <p>根据您的喜好指定用字，如父母姓氏、特定意象等，打造独特的名字</p>
+                </div>
+                <div class="feature-item">
+                    <img src="https://static.qiming.cn/style/qiming/images/wd3.jpg" alt="专业分析">
+                    <h3>专业分析</h3>
+                    <p>结合八字五行和五格数理综合分析，确保定字名字符合命理要求</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="examples-section">
+        <div class="container">
+            <h2>定字起名示例</h2>
+            <div class="examples-grid">
+                <div class="example-item">
+                    <div class="fixed">梓</div>
+                    <div class="names">梓轩、梓涵、梓萱、梓琪</div>
+                </div>
+                <div class="example-item">
+                    <div class="fixed">浩</div>
+                    <div class="names">浩宇、浩然、浩轩、浩博</div>
+                </div>
+                <div class="example-item">
+                    <div class="fixed">瑾</div>
+                    <div class="names">瑾萱、瑾瑶、瑾琳、瑾妍</div>
+                </div>
+                <div class="example-item">
+                    <div class="fixed">晨</div>
+                    <div class="names">晨宇、晨轩、晨皓、晨熙</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <div class="footer-logo">起名网</div>
+                    <p style="color:#ccc; font-size:14px;">专注科学智能宝宝起名，测名字打分平台，结合传统国学文化的智能起名系统研发。</p>
+                </div>
+                <div>
+                    <h4>快捷导航</h4>
+                    <a href="{U('qiming/index/baobao')}">宝宝起名</a>
+                    <a href="{U('qiming/index/bazi')}">八字起名</a>
+                    <a href="{U('qiming/index/zhouyi')}">周易起名</a>
+                    <a href="{U('qiming/index/kxzd')}">康熙字典</a>
+                </div>
+                <div>
+                    <h4>关于我们</h4>
+                    <a href="#">关于我们</a>
+                    <a href="#">服务条款</a>
+                    <a href="#">版权声明</a>
+                    <a href="#">投诉建议</a>
+                </div>
+                <div>
+                    <h4>友情链接</h4>
+                    <a href="https://zidian.qiming.cn/" target="_blank">汉语字典</a>
+                    <a href="https://cidian.qiming.cn/" target="_blank">汉语词典</a>
+                    <a href="https://chengyu.qiming.cn/" target="_blank">成语大全</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2005-2025 www.qiming.cn & All rights reserved</p>
+                <p>皖公网安备34010402704531号 | 皖ICP备2024064902号</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

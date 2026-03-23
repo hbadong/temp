@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>唐诗起名 - 起名网</title>
+    <meta name="keywords" content="唐诗起名,唐诗取名,古诗词起名,起名网">
+    <meta name="description" content="唐诗起名从李白、杜甫等唐代名家诗篇中汲取灵感，为您提供诗意盎然的好名字">
+    <link rel="stylesheet" href="https://static.qiming.cn/style/qiming/css/base.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Microsoft YaHei", Arial, sans-serif; color: #333; line-height: 1.6; }
+        a { text-decoration: none; color: inherit; }
+        a:hover { color: #ff6600; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 15px; }
+        
+        .header { background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
+        .header-main { padding: 15px 0; display: flex; align-items: center; justify-content: space-between; }
+        .logo { font-size: 28px; font-weight: bold; color: #ff6600; }
+        .logo span { color: #333; }
+        .nav { display: flex; gap: 30px; }
+        .nav a { font-size: 16px; padding: 5px 0; }
+        
+        .page-header { background: linear-gradient(135deg, #ff6600 0%, #ff8533 100%); color: #fff; padding: 60px 0; text-align: center; }
+        .page-header h1 { font-size: 36px; margin-bottom: 15px; }
+        .page-header p { font-size: 18px; opacity: 0.9; }
+        
+        .poetry-types { padding: 40px 0; background: #f9f9f9; }
+        .poetry-types .container { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
+        .type-link { padding: 10px 25px; background: #fff; border-radius: 25px; font-size: 14px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); transition: all 0.3s; }
+        .type-link:hover, .type-link.active { background: #ff6600; color: #fff; }
+        
+        .intro-section { padding: 60px 0; }
+        .intro-section h2 { text-align: center; font-size: 28px; margin-bottom: 20px; }
+        .intro-text { max-width: 900px; margin: 0 auto; font-size: 16px; line-height: 2; color: #666; text-align: justify; }
+        .intro-text p { margin-bottom: 20px; }
+        
+        .poets-section { padding: 60px 0; background: #f9f9f9; }
+        .poets-section h2 { text-align: center; font-size: 28px; margin-bottom: 40px; }
+        .poets-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; }
+        .poet-item { background: #fff; border-radius: 10px; padding: 25px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .poet-item .name { font-size: 20px; font-weight: bold; color: #ff6600; margin-bottom: 5px; }
+        .poet-item .dynasty { font-size: 14px; color: #999; margin-bottom: 10px; }
+        .poet-item .desc { font-size: 14px; color: #666; line-height: 1.6; }
+        
+        .famous-section { padding: 60px 0; }
+        .famous-section h2 { text-align: center; font-size: 28px; margin-bottom: 40px; }
+        .famous-list { max-width: 800px; margin: 0 auto; }
+        .famous-item { background: #fff; border-radius: 10px; padding: 20px 25px; margin-bottom: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .famous-item .title { font-size: 18px; color: #333; margin-bottom: 8px; }
+        .famous-item .author { font-size: 14px; color: #ff6600; margin-bottom: 10px; }
+        .famous-item .content { font-size: 15px; color: #666; line-height: 1.8; font-style: italic; }
+        
+        .footer { background: #333; color: #fff; padding: 50px 0 20px; }
+        .footer-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px; margin-bottom: 40px; }
+        .footer h4 { margin-bottom: 20px; font-size: 18px; color: #fff; }
+        .footer a { display: block; color: #ccc; padding: 5px 0; font-size: 14px; transition: color 0.3s; }
+        .footer a:hover { color: #ff6600; }
+        .footer-bottom { text-align: center; padding-top: 30px; border-top: 1px solid #444; color: #999; font-size: 14px; }
+        .footer-logo { font-size: 24px; color: #ff6600; font-weight: bold; margin-bottom: 15px; }
+        
+        @media (max-width: 768px) {
+            .header-main { flex-direction: column; gap: 15px; }
+            .nav { flex-wrap: wrap; justify-content: center; gap: 15px; }
+            .poets-grid { grid-template-columns: repeat(2, 1fr); }
+            .footer-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-main">
+                <div class="logo">起名网<span>-专注宝宝起名</span></div>
+                <nav class="nav">
+                    <a href="{U('qiming/index/init')}">首页</a>
+                    <a href="{U('qiming/index/baobao')}">宝宝起名</a>
+                    <a href="{U('qiming/index/shici')}">诗词起名</a>
+                    <a href="{U('qiming/index/kxzd')}">康熙字典</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+    
+    <section class="page-header">
+        <div class="container">
+            <h1>唐诗起名</h1>
+            <p>从唐诗三百首中汲取灵感，为宝宝起一个诗意盎然的好名字</p>
+        </div>
+    </section>
+    
+    <section class="poetry-types">
+        <div class="container">
+            <a href="{U('qiming/index/tangshi')}" class="type-link active">唐诗起名</a>
+            <a href="{U('qiming/index/shijing')}" class="type-link">诗经起名</a>
+            <a href="{U('qiming/index/songci')}" class="type-link">宋词起名</a>
+            <a href="{U('qiming/index/chuci')}" class="type-link">楚辞起名</a>
+        </div>
+    </section>
+    
+    <section class="intro-section">
+        <div class="container">
+            <h2>唐诗起名：盛世华章，诗意盎然</h2>
+            <div class="intro-text">
+                <p>唐诗是中国文学史上一颗璀璨的明珠，以其优美的韵律、深邃的意境和丰富的情感而著称。从唐诗中汲取起名灵感，可以为宝宝起一个既有文化底蕴又优美动听的名字。</p>
+                <p>唐代诗人辈出，李白的豪放飘逸、杜甫的沉郁顿挫、王维的诗画合一、白居易的通俗易懂，都为起名提供了丰富的素材。"长风破浪会有时，直挂云帆济沧海"中的"长风"、"云帆"；"海上生明月，天涯共此时"中的"明月"、"天涯"；"春眠不觉晓，处处闻啼鸟"中的"春晓"、"啼鸟"，都是极佳的起名用字。</p>
+                <p>唐诗起名不仅注重字词的优美，更追求意境的深远。一个来自唐诗的好名字，能够伴随宝宝一生，传递着中华文化的精髓。</p>
+            </div>
+        </div>
+    </section>
+    
+    <section class="poets-section">
+        <div class="container">
+            <h2>唐诗名家</h2>
+            <div class="poets-grid">
+                <div class="poet-item">
+                    <div class="name">李白</div>
+                    <div class="dynasty">唐代</div>
+                    <div class="desc">诗仙，豪放飘逸，想象丰富，代表作《静夜思》《望庐山瀑布》</div>
+                </div>
+                <div class="poet-item">
+                    <div class="name">杜甫</div>
+                    <div class="dynasty">唐代</div>
+                    <div class="desc">诗圣，沉郁顿挫忧国忧民，代表作《春望》《茅屋为秋风所破歌》</div>
+                </div>
+                <div class="poet-item">
+                    <div class="name">王维</div>
+                    <div class="dynasty">唐代</div>
+                    <div class="desc">诗佛，诗画合一，代表作《山居秋暝》《相思》</div>
+                </div>
+                <div class="poet-item">
+                    <div class="name">白居易</div>
+                    <div class="dynasty">唐代</div>
+                    <div class="desc">诗魔，通俗易懂，代表作《赋得古原草送别》《琵琶行》</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="famous-section">
+        <div class="container">
+            <h2>唐诗名句精选</h2>
+            <div class="famous-list">
+                <div class="famous-item">
+                    <div class="title">《静夜思》</div>
+                    <div class="author">李白</div>
+                    <div class="content">床前明月光，疑是地上霜。举头望明月，低头思故乡。</div>
+                </div>
+                <div class="famous-item">
+                    <div class="title">《春晓》</div>
+                    <div class="author">孟浩然</div>
+                    <div class="content">春眠不觉晓，处处闻啼鸟。夜来风雨声，花落知多少。</div>
+                </div>
+                <div class="famous-item">
+                    <div class="title">《相思》</div>
+                    <div class="author">王维</div>
+                    <div class="content">红豆生南国，春来发几枝。愿君多采撷，此物最相思。</div>
+                </div>
+                <div class="famous-item">
+                    <div class="title">《登鹳雀楼》</div>
+                    <div class="author">王之涣</div>
+                    <div class="content">白日依山尽，黄河入海流。欲穷千里目，更上一层楼。</div>
+                </div>
+                <div class="famous-item">
+                    <div class="title">《出塞》</div>
+                    <div class="author">王昌龄</div>
+                    <div class="content">秦时明月汉时关，万里长征人未还。但使龙城飞将在，不教胡马度阴山。</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <div class="footer-logo">起名网</div>
+                    <p style="color:#ccc; font-size:14px;">专注科学智能宝宝起名，测名字打分平台。</p>
+                </div>
+                <div>
+                    <h4>快捷导航</h4>
+                    <a href="{U('qiming/index/baobao')}">宝宝起名</a>
+                    <a href="{U('qiming/index/bazi')}">八字起名</a>
+                    <a href="{U('qiming/index/kxzd')}">康熙字典</a>
+                </div>
+                <div>
+                    <h4>关于我们</h4>
+                    <a href="#">关于我们</a>
+                    <a href="#">服务条款</a>
+                    <a href="#">版权声明</a>
+                </div>
+                <div>
+                    <h4>友情链接</h4>
+                    <a href="https://zidian.qiming.cn/" target="_blank">汉语字典</a>
+                    <a href="https://cidian.qiming.cn/" target="_blank">汉语词典</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2005-2025 www.qiming.cn & All rights reserved</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

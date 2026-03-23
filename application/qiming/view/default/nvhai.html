@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>女孩起名 - 起名网</title>
+    <meta name="keywords" content="女孩起名,女宝宝起名,女孩名字大全,起名网">
+    <meta name="description" content="女孩起名页面为您提供最全面的女孩名字大全，结合八字五行为您提供最适合女宝宝的好名字">
+    <link rel="stylesheet" href="https://static.qiming.cn/style/qiming/css/base.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Microsoft YaHei", Arial, sans-serif; color: #333; line-height: 1.6; }
+        a { text-decoration: none; color: inherit; }
+        a:hover { color: #ff6600; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 15px; }
+        
+        .header { background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
+        .header-main { padding: 15px 0; display: flex; align-items: center; justify-content: space-between; }
+        .logo { font-size: 28px; font-weight: bold; color: #ff6600; }
+        .logo span { color: #333; }
+        .nav { display: flex; gap: 30px; }
+        .nav a { font-size: 16px; padding: 5px 0; }
+        
+        .page-banner { background: url('https://static.qiming.cn/style/qiming/images/nvhaiBanner.jpg') center top no-repeat; min-height: 400px; display: flex; align-items: center; justify-content: center; color: #fff; text-align: center; }
+        .page-banner-content { position: relative; z-index: 2; }
+        .page-banner h1 { font-size: 42px; font-weight: bold; margin-bottom: 20px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+        .page-banner p { font-size: 18px; opacity: 0.95; margin-bottom: 30px; }
+        .banner-form { background: rgba(255,255,255,0.95); border-radius: 10px; padding: 30px; max-width: 700px; margin: 0 auto; }
+        .banner-form select, .banner-form input { padding: 12px 15px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px; margin: 5px; }
+        .banner-form select { min-width: 140px; }
+        .banner-form button { padding: 12px 30px; background: #e91e63; color: #fff; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; margin: 5px; }
+        .banner-form button:hover { background: #c2185b; }
+        
+        .chars-section { padding: 60px 0; background: #f9f9f9; }
+        .chars-section h2 { text-align: center; font-size: 28px; margin-bottom: 40px; }
+        .chars-grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 15px; }
+        .char-item { background: #fff; border-radius: 10px; padding: 20px 15px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); transition: all 0.3s; }
+        .char-item:hover { transform: translateY(-5px); box-shadow: 0 5px 20px rgba(233,30,99,0.3); }
+        .char-item .char { font-size: 32px; font-weight: bold; color: #e91e63; display: block; margin-bottom: 8px; }
+        .char-item .pinyin { font-size: 12px; color: #999; }
+        .char-item .meaning { font-size: 12px; color: #666; margin-top: 5px; }
+        
+        .names-section { padding: 60px 0; }
+        .names-section h2 { text-align: center; font-size: 28px; margin-bottom: 40px; }
+        .names-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px; }
+        .name-item { background: #fff; border-radius: 10px; padding: 20px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); transition: all 0.3s; }
+        .name-item:hover { transform: translateY(-5px); box-shadow: 0 5px 20px rgba(233,30,99,0.3); }
+        .name-item .name { font-size: 28px; font-weight: bold; color: #333; margin-bottom: 8px; }
+        .name-item .pinyin { font-size: 14px; color: #e91e63; margin-bottom: 5px; }
+        .name-item .meaning { font-size: 13px; color: #666; }
+        
+        .surname-list { padding: 60px 0; background: #f9f9f9; }
+        .surname-list h2 { text-align: center; font-size: 28px; margin-bottom: 40px; }
+        .surname-grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 15px; }
+        .surname-item { background: #fff; border-radius: 8px; padding: 15px 10px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05); transition: all 0.3s; }
+        .surname-item:hover { background: #e91e63; color: #fff; }
+        .surname-item .char { font-size: 24px; font-weight: bold; }
+        
+        .footer { background: #333; color: #fff; padding: 50px 0 20px; }
+        .footer-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px; margin-bottom: 40px; }
+        .footer h4 { margin-bottom: 20px; font-size: 18px; color: #fff; }
+        .footer a { display: block; color: #ccc; padding: 5px 0; font-size: 14px; transition: color 0.3s; }
+        .footer a:hover { color: #ff6600; }
+        .footer-bottom { text-align: center; padding-top: 30px; border-top: 1px solid #444; color: #999; font-size: 14px; }
+        .footer-logo { font-size: 24px; color: #ff6600; font-weight: bold; margin-bottom: 15px; }
+        
+        @media (max-width: 768px) {
+            .header-main { flex-direction: column; gap: 15px; }
+            .nav { flex-wrap: wrap; justify-content: center; gap: 15px; }
+            .page-banner h1 { font-size: 28px; }
+            .page-banner { min-height: 300px; }
+            .chars-grid { grid-template-columns: repeat(5, 1fr); }
+            .names-grid { grid-template-columns: repeat(2, 1fr); }
+            .surname-grid { grid-template-columns: repeat(5, 1fr); }
+            .footer-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-main">
+                <div class="logo">起名网<span>-专注宝宝起名</span></div>
+                <nav class="nav">
+                    <a href="{U('qiming/index/init')}">首页</a>
+                    <a href="{U('qiming/index/baobao')}">宝宝起名</a>
+                    <a href="{U('qiming/index/bazi')}">八字起名</a>
+                    <a href="{U('qiming/index/shici')}">诗词起名</a>
+                    <a href="{U('qiming/index/gaimingzi')}">成人改名</a>
+                    <a href="{U('qiming/index/ceshi')}">姓名测试</a>
+                    <a href="{U('qiming/index/gongsi')}">公司起名</a>
+                    <a href="{U('qiming/index/zhouyi')}">周易起名</a>
+                    <a href="{U('qiming/index/kxzd')}">康熙字典</a>
+                    <a href="{U('qiming/index/baijiaxing')}">百家姓</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+    
+    <section class="page-banner">
+        <div class="page-banner-content">
+            <h1>女孩起名</h1>
+            <p>为女宝宝起一个优雅、甜美、有内涵的好名字</p>
+            <div class="banner-form">
+                <form action="{U('qiming/index/result')}" method="get">
+                    <input type="text" name="surname" placeholder="姓氏" required maxlength="1">
+                    <select name="gender">
+                        <option value="2">女</option>
+                    </select>
+                    <input type="date" name="birthdate" required>
+                    <select name="birthtime">
+                        <option value="">时辰</option>
+                        <option value="0">子时(23-01)</option>
+                        <option value="1">丑时(01-03)</option>
+                        <option value="2">寅时(03-05)</option>
+                        <option value="3">卯时(05-07)</option>
+                        <option value="4">辰时(07-09)</option>
+                        <option value="5">巳时(09-11)</option>
+                        <option value="6">午时(11-13)</option>
+                        <option value="7">未时(13-15)</option>
+                        <option value="8">申时(15-17)</option>
+                        <option value="9">酉时(17-19)</option>
+                        <option value="10">戌时(19-21)</option>
+                        <option value="11">亥时(21-23)</option>
+                    </select>
+                    <button type="submit">立即起名</button>
+                </form>
+            </div>
+        </div>
+    </section>
+    
+    <section class="chars-section">
+        <div class="container">
+            <h2>女孩起名常用字</h2>
+            <div class="chars-grid">
+                <a href="{U('qiming/index/kxzd')}?char=瑾" class="char-item"><span class="char">瑾</span><span class="pinyin">jǐn</span><span class="meaning">美德珍贵</span></a>
+                <a href="{U('qiming/index/kxzd')}?char=楠" class="char-item"><span class="char">楠</span><span class="pinyin">nán</span><span class="meaning">坚韧贵重</span></a>
+                <a href="{U('qiming/index/kxzd')}?char=莹" class="char-item"><span class="char">莹</span><span class="pinyin">yíng</span><span class="meaning">光洁透明</span></a>
+                <a href="{U('qiming/index/kxzd')}?char=雪" class="char-item"><span class="char">雪</span><span class="pinyin">xuě</span><span class="meaning">纯洁高雅</span></a>
+                <a href="{U('qiming/index/kxzd')}?char=晗" class="char-item"><span class="char">晗</span><span class="pinyin">hán</span><span class="meaning">天明期待</span></a>
+                <a href="{U('qiming/index/kxzd')}?char=琴" class="char-item"><span class="char">琴</span><span class="pinyin">qín</span><span class="meaning">才华美德</span></a>
+                <a href="{U('qiming/index/kxzd')}?char=晴" class="char-item"><span class="char">晴</span><span class="pinyin">qíng</span><span class="meaning">晴朗开朗</span></a>
+                <a href="{U('qiming/index/kxzd')}?char=婷" class="char-item"><span class="char">婷</span><span class="pinyin">tíng</span><span class="meaning">优美雅致</span></a>
+                <a href="{U('qiming/index/kxzd')}?char=瑶" class="char-item"><span class="char">瑶</span><span class="pinyin">yáo</span><span class="meaning">美玉珍贵</span></a>
+                <a href="{U('qiming/index/kxzd')}?char=薇" class="char-item"><span class="char">薇</span><span class="pinyin">wēi</span><span class="meaning">蔷薇坚强</span></a>
+                <a href="{U('qiming/index/kxzd')}?char=萱" class="char-item"><span class="char">萱</span><span class="pinyin">xuān</span><span class="meaning">忘忧美好</span></a>
+                <a href="{U('qiming/index/kxzd')}?char=雅" class="char-item"><span class="char">雅</span><span class="pinyin">yǎ</span><span class="meaning">高雅文雅</span></a>
+                <a href="{U('qiming/index/kxzd')}?char=欣" class="char-item"><span class="char">欣</span><span class="pinyin">xīn</span><span class="meaning">欣喜快乐</span></a>
+                <a href="{U('qiming/index/kxzd')}?char=怡" class="char-item"><span class="char">怡</span><span class="pinyin">yí</span><span class="meaning">和悦愉快</span></a>
+                <a href="{U('qiming/index/kxzd')}?char=琳" class="char-item"><span class="char">琳</span><span class="pinyin">lín</span><span class="meaning">美玉出众</span></a>
+                <a href="{U('qiming/index/kxzd')}?char=妍" class="char-item"><span class="char">妍</span><span class="pinyin">yán</span><span class="meaning">美丽聪慧</span></a>
+                <a href="{U('qiming/index/kxzd')}?char=汐" class="char-item"><span class="char">汐</span><span class="pinyin">xī</span><span class="meaning">潮汐温柔</span></a>
+                <a href="{U('qiming/index/kxzd')}?char=蕾" class="char-item"><span class="char">蕾</span><span class="pinyin">léi</span><span class="meaning">花蕾美好</span></a>
+                <a href="{U('qiming/index/kxzd')}?char=媛" class="char-item"><span class="char">媛</span><span class="pinyin">yuàn</span><span class="meaning">美女姿态</span></a>
+                <a href="{U('qiming/index/kxzd')}?char=沁" class="char-item"><span class="char">沁</span><span class="pinyin">qìn</span><span class="meaning">浸润美好</span></a>
+            </div>
+        </div>
+    </section>
+    
+    <section class="names-section">
+        <div class="container">
+            <h2>女孩热门名字</h2>
+            <div class="names-grid">
+                <a href="#" class="name-item"><div class="name">颜菲</div><div class="pinyin">yán fēi</div><div class="meaning">美丽、芳香</div></a>
+                <a href="#" class="name-item"><div class="name">孟馨</div><div class="pinyin">mèng xīn</div><div class="meaning">温馨、芳香</div></a>
+                <a href="#" class="name-item"><div class="name">宁丽</div><div class="pinyin">níng lì</div><div class="meaning">安宁、美丽</div></a>
+                <a href="#" class="name-item"><div class="name">宁萱</div><div class="pinyin">níng xuān</div><div class="meaning">安宁、忘忧</div></a>
+                <a href="#" class="name-item"><div class="name">宇妍</div><div class="pinyin">yǔ yán</div><div class="meaning">宇宙、美丽</div></a>
+                <a href="#" class="name-item"><div class="name">宇婷</div><div class="pinyin">yǔ tíng</div><div class="meaning">宇宙、优美</div></a>
+                <a href="#" class="name-item"><div class="name">梓怡</div><div class="pinyin">zǐ yí</div><div class="meaning">梓树、愉快</div></a>
+                <a href="#" class="name-item"><div class="name">熙媛</div><div class="pinyin">xī yuàn</div><div class="meaning">光明、媛女</div></a>
+                <a href="#" class="name-item"><div class="name">歆萌</div><div class="pinyin">xīn méng</div><div class="meaning">喜爱、萌芽</div></a>
+                <a href="#" class="name-item"><div class="name">芷佩</div><div class="pinyin">zhǐ pèi</div><div class="meaning">香草、佩戴</div></a>
+            </div>
+        </div>
+    </section>
+    
+    <section class="surname-list">
+        <div class="container">
+            <h2>女孩起名 - 百家姓</h2>
+            <div class="surname-grid">
+                <a href="{U('qiming/index/baijiaxing')}?surname=王" class="surname-item"><span class="char">王</span></a>
+                <a href="{U('qiming/index/baijiaxing')}?surname=李" class="surname-item"><span class="char">李</span></a>
+                <a href="{U('qiming/index/baijiaxing')}?surname=张" class="surname-item"><span class="char">张</span></a>
+                <a href="{U('qiming/index/baijiaxing')}?surname=刘" class="surname-item"><span class="char">刘</span></a>
+                <a href="{U('qiming/index/baijiaxing')}?surname=陈" class="surname-item"><span class="char">陈</span></a>
+                <a href="{U('qiming/index/baijiaxing')}?surname=杨" class="surname-item"><span class="char">杨</span></a>
+                <a href="{U('qiming/index/baijiaxing')}?surname=赵" class="surname-item"><span class="char">赵</span></a>
+                <a href="{U('qiming/index/baijiaxing')}?surname=黄" class="surname-item"><span class="char">黄</span></a>
+                <a href="{U('qiming/index/baijiaxing')}?surname=周" class="surname-item"><span class="char">周</span></a>
+                <a href="{U('qiming/index/baijiaxing')}?surname=吴" class="surname-item"><span class="char">吴</span></a>
+            </div>
+        </div>
+    </section>
+    
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <div class="footer-logo">起名网</div>
+                    <p style="color:#ccc; font-size:14px;">专注科学智能宝宝起名，测名字打分平台。</p>
+                </div>
+                <div>
+                    <h4>快捷导航</h4>
+                    <a href="{U('qiming/index/baobao')}">宝宝起名</a>
+                    <a href="{U('qiming/index/bazi')}">八字起名</a>
+                    <a href="{U('qiming/index/zhouyi')}">周易起名</a>
+                    <a href="{U('qiming/index/kxzd')}">康熙字典</a>
+                </div>
+                <div>
+                    <h4>关于我们</h4>
+                    <a href="#">关于我们</a>
+                    <a href="#">服务条款</a>
+                    <a href="#">版权声明</a>
+                    <a href="#">投诉建议</a>
+                </div>
+                <div>
+                    <h4>友情链接</h4>
+                    <a href="https://zidian.qiming.cn/" target="_blank">汉语字典</a>
+                    <a href="https://cidian.qiming.cn/" target="_blank">汉语词典</a>
+                    <a href="https://chengyu.qiming.cn/" target="_blank">成语大全</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2005-2025 www.qiming.cn & All rights reserved</p>
+                <p>皖公网安备34010402704531号 | 皖ICP备2024064902号</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

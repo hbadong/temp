@@ -99,6 +99,70 @@ class index {
     }
     
     /**
+     * 姓名配对页面
+     */
+    public function xingmingpeidui() {
+        $seo_title = '姓名配对 - 起名网';
+        include template('qiming', 'xingmingpeidui');
+    }
+    
+    /**
+     * 定字起名页面
+     */
+    public function dingzi() {
+        $seo_title = '定字起名 - 起名网';
+        include template('qiming', 'dingzi');
+    }
+    
+    /**
+     * 男孩起名页面
+     */
+    public function nanhai() {
+        $seo_title = '男孩起名 - 起名网';
+        include template('qiming', 'nanhai');
+    }
+    
+    /**
+     * 女孩起名页面
+     */
+    public function nvhai() {
+        $seo_title = '女孩起名 - 起名网';
+        include template('qiming', 'nvhai');
+    }
+    
+    /**
+     * 唐诗起名页面
+     */
+    public function tangshi() {
+        $seo_title = '唐诗起名 - 起名网';
+        include template('qiming', 'tangshi');
+    }
+    
+    /**
+     * 诗经起名页面
+     */
+    public function shijing() {
+        $seo_title = '诗经起名 - 起名网';
+        include template('qiming', 'shijing');
+    }
+    
+    /**
+     * 宋词起名页面
+     */
+    public function songci() {
+        $seo_title = '宋词起名 - 起名网';
+        include template('qiming', 'songci');
+    }
+    
+    /**
+     * 楚辞起名页面
+     */
+    public function chuci() {
+        $seo_title = '楚辞起名 - 起名网';
+        include template('qiming', 'chuci');
+    }
+    
+    /**
      * 起名结果页
      */
     public function result() {
