@@ -3,115 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>起名结果 - 起名网</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: "Microsoft YaHei", Arial, sans-serif; background: #f5f5f5; }
-        .container { max-width: 900px; margin: 0 auto; padding: 0 15px; }
-        .page-header { background: linear-gradient(135deg, #ff6600, #ff8533); color: #fff; padding: 40px 0; text-align: center; }
-        .page-header h1 { font-size: 32px; margin-bottom: 10px; }
-        
-        .main { padding: 40px 0; }
-        .result-card { background: #fff; border-radius: 10px; padding: 40px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        
-        .bazi-info { background: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 30px; }
-        .bazi-info h3 { color: #333; margin-bottom: 15px; }
-        .bazi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; text-align: center; }
-        .bazi-item { background: #fff; padding: 15px; border-radius: 5px; }
-        .bazi-item .label { color: #999; font-size: 12px; }
-        .bazi-item .value { font-size: 20px; font-weight: bold; color: #ff6600; margin-top: 5px; }
-        
-        .wuxing-bar { display: flex; height: 30px; border-radius: 5px; overflow: hidden; margin: 20px 0; }
-        .wuxing-bar .bar-item { display: flex; align-items: center; justify-content: center; color: #fff; font-size: 12px; }
-        
-        .names-section h3 { color: #333; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #ff6600; }
-        .names-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
-        .name-card { background: #f9f9f9; padding: 20px; border-radius: 8px; text-align: center; transition: transform 0.3s; cursor: pointer; }
-        .name-card:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        .name-card .name { font-size: 28px; font-weight: bold; color: #333; margin-bottom: 10px; }
-        .name-card .score { font-size: 24px; color: #ff6600; font-weight: bold; }
-        .name-card .level { display: inline-block; padding: 3px 15px; background: #ff6600; color: #fff; border-radius: 20px; font-size: 12px; margin-top: 8px; }
-        .name-card .info { font-size: 12px; color: #999; margin-top: 8px; }
-        
-        .btn-back { display: inline-block; padding: 12px 30px; background: #ff6600; color: #fff; border-radius: 5px; margin-top: 30px; }
-        .btn-back:hover { background: #e55a00; }
-    </style>
+    <title>{$seo_title}</title>
+    <link rel="stylesheet" href="https://static.qiming.cn/style/qiming/css/font/iconfont.css">
+    <link rel="stylesheet" href="https://static.qiming.cn/style/qiming/css/uikit.css">
+    <link rel="stylesheet" href="https://static.qiming.cn/style/qiming/css/diy.css">
+    <link rel="stylesheet" href="https://static.qiming.cn/style/qiming/css/qiming.css">
+    <script src="https://static.qiming.cn/style/qiming/js/jquery.min.js"></script>
+    <script src="https://static.qiming.cn/style/qiming/js/uikit.min.js"></script>
 </head>
-<body>
-    <div class="page-header">
-        <div class="container">
-            <h1>起名结果</h1>
+<body class="qiming-background-muted site qiming-zz-background">
+    <div class="qiming_vipbgs" style="background: linear-gradient(135deg, #ff6600, #ff8533); padding: 40px 0; text-align: center;">
+        <div class="qiming-container">
+            <h1 style="color: #fff; font-size: 32px;">起名结果</h1>
         </div>
     </div>
     
-    <div class="main">
-        <div class="container">
-            <div class="result-card">
-                <div class="bazi-info">
-                    <h3>八字分析</h3>
-                    <div class="bazi-grid">
-                        <div class="bazi-item">
-                            <div class="label">年柱</div>
-                            <div class="value"><?php echo $bazi_result['year_gz']; ?></div>
-                        </div>
-                        <div class="bazi-item">
-                            <div class="label">月柱</div>
-                            <div class="value"><?php echo $bazi_result['month_gz']; ?></div>
-                        </div>
-                        <div class="bazi-item">
-                            <div class="label">日柱</div>
-                            <div class="value"><?php echo $bazi_result['day_gz']; ?></div>
-                        </div>
-                        <div class="bazi-item">
-                            <div class="label">时柱</div>
-                            <div class="value"><?php echo $bazi_result['hour_gz']; ?></div>
-                        </div>
+    <div class="qiming-container qiming-margin-medium-top qiming-margin-medium-bottom">
+        <div class="qiming-background-default qiming-padding-app">
+            <div class="qiming-background-muted qiming-padding qiming-margin-medium-bottom" style="border-radius: 8px;">
+                <h3 class="qiming-h5 qiming-margin-bottom">八字分析</h3>
+                <div class="qiming-grid qiming-grid-collapse" style="grid-template-columns: repeat(4, 1fr); gap: 15px;">
+                    <div class="qiming-background-default qiming-padding-small qiming-text-center">
+                        <div class="qiming-text-small qiming-text-muted">年柱</div>
+                        <div class="qiming-text-large qiming-text-bold qiming-text-primary qiming-margin-top-small">{$bazi_result.year_gz}</div>
                     </div>
-                    <div class="wuxing-bar">
-                        <?php 
-                        $colors = array('#4caf50', '#8bc34a', '#2196f3', '#f44336', '#ffc107');
-                        $wuxing_names = array('木', '火', '土', '金', '水');
-                        foreach ($wuxing_count as $wx => $count): 
-                            $width = $count * 10;
-                            if ($count > 0):
-                        ?>
-                        <div class="bar-item" style="width: <?php echo $width; ?>%; background: <?php echo $colors[$wx-1]; ?>">
-                            <?php echo $wuxing_names[$wx-1]; ?><?php echo $count; ?>
-                        </div>
-                        <?php endif; endforeach; ?>
+                    <div class="qiming-background-default qiming-padding-small qiming-text-center">
+                        <div class="qiming-text-small qiming-text-muted">月柱</div>
+                        <div class="qiming-text-large qiming-text-bold qiming-text-primary qiming-margin-top-small">{$bazi_result.month_gz}</div>
+                    </div>
+                    <div class="qiming-background-default qiming-padding-small qiming-text-center">
+                        <div class="qiming-text-small qiming-text-muted">日柱</div>
+                        <div class="qiming-text-large qiming-text-bold qiming-text-primary qiming-margin-top-small">{$bazi_result.day_gz}</div>
+                    </div>
+                    <div class="qiming-background-default qiming-padding-small qiming-text-center">
+                        <div class="qiming-text-small qiming-text-muted">时柱</div>
+                        <div class="qiming-text-large qiming-text-bold qiming-text-primary qiming-margin-top-small">{$bazi_result.hour_gz}</div>
                     </div>
                 </div>
-                
-                <div class="names-section">
-                    <h3>推荐姓名</h3>
-                    <div class="names-grid">
-                        <?php 
-                        // 模拟生成的姓名数据
-                        $demo_names = array(
-                            array('name' => '浩然', 'score' => 92, 'level' => '大吉'),
-                            array('name' => '梓轩', 'score' => 88, 'level' => '吉'),
-                            array('name' => '晨宇', 'score' => 85, 'level' => '吉'),
-                            array('name' => '明哲', 'score' => 83, 'level' => '吉'),
-                            array('name' => '泽轩', 'score' => 81, 'level' => '中吉'),
-                            array('name' => '俊杰', 'score' => 80, 'level' => '中吉'),
-                        );
-                        foreach ($demo_names as $n): 
-                        ?>
-                        <div class="name-card">
-                            <div class="name"><?php echo $surname; ?><?php echo $n['name']; ?></div>
-                            <div class="score"><?php echo $n['score']; ?>分</div>
-                            <span class="level"><?php echo $n['level']; ?></span>
-                            <div class="info">五格评分 + 八字五行</div>
-                        </div>
-                        <?php endforeach; ?>
+                <div class="qiming-flex qiming-margin-top" style="height: 30px; border-radius: 5px; overflow: hidden;">
+                    <div class="qiming-flex qiming-flex-middle qiming-flex-center" style="width: 20%; background: #4caf50; color: #fff; font-size: 12px;">木</div>
+                    <div class="qiming-flex qiming-flex-middle qiming-flex-center" style="width: 20%; background: #8bc34a; color: #fff; font-size: 12px;">火</div>
+                    <div class="qiming-flex qiming-flex-middle qiming-flex-center" style="width: 20%; background: #2196f3; color: #fff; font-size: 12px;">土</div>
+                    <div class="qiming-flex qiming-flex-middle qiming-flex-center" style="width: 20%; background: #f44336; color: #fff; font-size: 12px;">金</div>
+                    <div class="qiming-flex qiming-flex-middle qiming-flex-center" style="width: 20%; background: #ffc107; color: #fff; font-size: 12px;">水</div>
+                </div>
+            </div>
+            
+            <div class="qiming-margin-medium-top">
+                <h3 class="qiming-h5 qiming-padding-bottom" style="border-bottom: 2px solid #ff6600;">推荐姓名</h3>
+                <div class="qiming-grid qiming-grid-collapse qiming-margin-top" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                    <div class="qiming-background-muted qiming-padding qiming-text-center qiming-dongtai">
+                        <div class="qiming-text-large qiming-text-bold qiming-margin-bottom-small">{$surname}浩然</div>
+                        <div class="qiming-text-large qiming-text-bold qiming-text-primary">92分</div>
+                        <span class="qiming-display-inline-block qiming-padding-small qiming-padding-left qiming-padding-right qiming-background-primary qiming-text-white qiming-margin-top-small" style="border-radius: 20px; font-size: 12px;">大吉</span>
+                        <div class="qiming-text-small qiming-text-muted qiming-margin-top-small">五格评分 + 八字五行</div>
+                    </div>
+                    <div class="qiming-background-muted qiming-padding qiming-text-center qiming-dongtai">
+                        <div class="qiming-text-large qiming-text-bold qiming-margin-bottom-small">{$surname}梓轩</div>
+                        <div class="qiming-text-large qiming-text-bold qiming-text-primary">88分</div>
+                        <span class="qiming-display-inline-block qiming-padding-small qiming-padding-left qiming-padding-right qiming-background-primary qiming-text-white qiming-margin-top-small" style="border-radius: 20px; font-size: 12px;">吉</span>
+                        <div class="qiming-text-small qiming-text-muted qiming-margin-top-small">五格评分 + 八字五行</div>
+                    </div>
+                    <div class="qiming-background-muted qiming-padding qiming-text-center qiming-dongtai">
+                        <div class="qiming-text-large qiming-text-bold qiming-margin-bottom-small">{$surname}晨宇</div>
+                        <div class="qiming-text-large qiming-text-bold qiming-text-primary">85分</div>
+                        <span class="qiming-display-inline-block qiming-padding-small qiming-padding-left qiming-padding-right qiming-background-primary qiming-text-white qiming-margin-top-small" style="border-radius: 20px; font-size: 12px;">吉</span>
+                        <div class="qiming-text-small qiming-text-muted qiming-margin-top-small">五格评分 + 八字五行</div>
+                    </div>
+                    <div class="qiming-background-muted qiming-padding qiming-text-center qiming-dongtai">
+                        <div class="qiming-text-large qiming-text-bold qiming-margin-bottom-small">{$surname}明哲</div>
+                        <div class="qiming-text-large qiming-text-bold qiming-text-primary">83分</div>
+                        <span class="qiming-display-inline-block qiming-padding-small qiming-padding-left qiming-padding-right qiming-background-primary qiming-text-white qiming-margin-top-small" style="border-radius: 20px; font-size: 12px;">吉</span>
+                        <div class="qiming-text-small qiming-text-muted qiming-margin-top-small">五格评分 + 八字五行</div>
+                    </div>
+                    <div class="qiming-background-muted qiming-padding qiming-text-center qiming-dongtai">
+                        <div class="qiming-text-large qiming-text-bold qiming-margin-bottom-small">{$surname}泽轩</div>
+                        <div class="qiming-text-large qiming-text-bold qiming-text-primary">81分</div>
+                        <span class="qiming-display-inline-block qiming-padding-small qiming-padding-left qiming-padding-right qiming-background-primary qiming-text-white qiming-margin-top-small" style="border-radius: 20px; font-size: 12px;">中吉</span>
+                        <div class="qiming-text-small qiming-text-muted qiming-margin-top-small">五格评分 + 八字五行</div>
+                    </div>
+                    <div class="qiming-background-muted qiming-padding qiming-text-center qiming-dongtai">
+                        <div class="qiming-text-large qiming-text-bold qiming-margin-bottom-small">{$surname}俊杰</div>
+                        <div class="qiming-text-large qiming-text-bold qiming-text-primary">80分</div>
+                        <span class="qiming-display-inline-block qiming-padding-small qiming-padding-left qiming-padding-right qiming-background-primary qiming-text-white qiming-margin-top-small" style="border-radius: 20px; font-size: 12px;">中吉</span>
+                        <div class="qiming-text-small qiming-text-muted qiming-margin-top-small">五格评分 + 八字五行</div>
                     </div>
                 </div>
-                
-                <div style="text-align:center;">
-                    <a href="<?php echo U('qiming/index/baobao'); ?>" class="btn-back">重新起名</a>
-                </div>
+            </div>
+            
+            <div class="qiming-text-center qiming-margin-top">
+                <a href="{U('qiming/index/baobao')}" class="qiming-button qiming-button-primary">重新起名</a>
             </div>
         </div>
     </div>
+    
+    <script src="https://static.qiming.cn/style/qiming/js/common.js"></script>
 </body>
 </html>

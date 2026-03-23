@@ -3,125 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>姓名测试结果 - 起名网</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: "Microsoft YaHei", Arial, sans-serif; background: #f5f5f5; }
-        .container { max-width: 900px; margin: 0 auto; padding: 0 15px; }
-        .page-header { background: linear-gradient(135deg, #ff6600, #ff8533); color: #fff; padding: 40px 0; text-align: center; }
-        .page-header h1 { font-size: 32px; }
-        
-        .main { padding: 40px 0; }
-        .result-card { background: #fff; border-radius: 10px; padding: 40px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        
-        .name-display { text-align: center; margin-bottom: 30px; padding-bottom: 30px; border-bottom: 2px solid #eee; }
-        .name-display h2 { font-size: 36px; color: #333; margin-bottom: 10px; }
-        .name-display .pinyin { color: #999; font-size: 18px; }
-        
-        .score-section { text-align: center; margin-bottom: 30px; }
-        .score-circle { width: 150px; height: 150px; border-radius: 50%; background: linear-gradient(135deg, #ff6600, #ff8533); color: #fff; display: inline-flex; flex-direction: column; align-items: center; justify-content: center; }
-        .score-circle .score { font-size: 48px; font-weight: bold; }
-        .score-circle .total { font-size: 14px; opacity: 0.9; }
-        
-        .level-badge { display: inline-block; padding: 8px 30px; background: #ff6600; color: #fff; border-radius: 20px; font-size: 18px; margin-top: 15px; }
-        
-        .wuge-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 30px; }
-        .wuge-item { background: #f9f9f9; padding: 20px; border-radius: 8px; text-align: center; }
-        .wuge-item .label { color: #999; font-size: 14px; margin-bottom: 5px; }
-        .wuge-item .value { font-size: 24px; font-weight: bold; color: #ff6600; }
-        .wuge-item .name { font-size: 12px; color: #666; margin-top: 5px; }
-        .wuge-item .good { color: #4caf50; }
-        .wuge-item .bad { color: #f44336; }
-        
-        .detail-section h3 { color: #333; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #ff6600; }
-        .detail-item { padding: 15px 0; border-bottom: 1px solid #eee; }
-        .detail-item:last-child { border-bottom: none; }
-        .detail-item .title { font-weight: bold; color: #333; margin-bottom: 5px; }
-        .detail-item .desc { color: #666; font-size: 14px; line-height: 1.6; }
-        
-        .btn-back { display: inline-block; padding: 12px 30px; background: #ff6600; color: #fff; border-radius: 5px; margin-top: 20px; }
-        .btn-back:hover { background: #e55a00; }
-    </style>
+    <title>{$seo_title}</title>
+    <link rel="stylesheet" href="https://static.qiming.cn/style/qiming/css/font/iconfont.css">
+    <link rel="stylesheet" href="https://static.qiming.cn/style/qiming/css/uikit.css">
+    <link rel="stylesheet" href="https://static.qiming.cn/style/qiming/css/diy.css">
+    <link rel="stylesheet" href="https://static.qiming.cn/style/qiming/css/qiming.css">
+    <script src="https://static.qiming.cn/style/qiming/js/jquery.min.js"></script>
+    <script src="https://static.qiming.cn/style/qiming/js/uikit.min.js"></script>
 </head>
-<body>
-    <div class="page-header">
-        <div class="container">
-            <h1>姓名测试结果</h1>
+<body class="qiming-background-muted site qiming-zz-background">
+    <div class="qiming_vipbgs" style="background: linear-gradient(135deg, #ff6600, #ff8533); padding: 40px 0; text-align: center;">
+        <div class="qiming-container">
+            <h1 style="color: #fff; font-size: 32px;">姓名测试结果</h1>
         </div>
     </div>
     
-    <div class="main">
-        <div class="container">
-            <div class="result-card">
-                <div class="name-display">
-                    <h2>{$result['surname']} {$result['name']}</h2>
+    <div class="qiming-container qiming-margin-medium-top qiming-margin-medium-bottom">
+        <div class="qiming-background-default qiming-padding-app">
+            <div class="qiming-text-center qiming-padding-bottom" style="border-bottom: 2px solid #eee; margin-bottom: 30px;">
+                <h2 class="qiming-h2 qiming-margin-bottom-small">{$result.surname} {$result.name}</h2>
+            </div>
+            
+            <div class="qiming-text-center qiming-margin-medium-bottom">
+                <div class="qiming-display-inline-block qiming-text-center" style="width: 150px; height: 150px; border-radius: 50%; background: linear-gradient(135deg, #ff6600, #ff8533); color: #fff; display: inline-flex; flex-direction: column; align-items: center; justify-content: center;">
+                    <div class="qiming-text-large qiming-text-bold" style="font-size: 48px;">{$result.total_score}</div>
+                    <div class="qiming-text-small" style="font-size: 14px; opacity: 0.9;">总分</div>
                 </div>
-                
-                <div class="score-section">
-                    <div class="score-circle">
-                        <span class="score">{$result['total_score']}</span>
-                        <span class="total">总分</span>
-                    </div>
-                    <div class="level-badge"><?php echo $level; ?></div>
+                <div class="qiming-margin-top">
+                    <span class="qiming-display-inline-block qiming-padding-small qiming-padding-left qiming-padding-right qiming-background-primary qiming-text-white" style="border-radius: 20px; font-size: 18px;">{$level}</span>
                 </div>
-                
-                <div class="wuge-grid">
-                    <div class="wuge-item">
-                        <div class="label">天格</div>
-                        <div class="value">{$result['tiange']}</div>
-                        <div class="name <?php echo $result['tiange_info']['good'] ? 'good' : 'bad'; ?>"><?php echo $result['tiange_info']['name']; ?></div>
-                    </div>
-                    <div class="wuge-item">
-                        <div class="label">人格</div>
-                        <div class="value">{$result['renge']}</div>
-                        <div class="name <?php echo $result['renge_info']['good'] ? 'good' : 'bad'; ?>"><?php echo $result['renge_info']['name']; ?></div>
-                    </div>
-                    <div class="wuge-item">
-                        <div class="label">地格</div>
-                        <div class="value">{$result['dige']}</div>
-                        <div class="name <?php echo $result['dige_info']['good'] ? 'good' : 'bad'; ?>"><?php echo $result['dige_info']['name']; ?></div>
-                    </div>
-                    <div class="wuge-item">
-                        <div class="label">外格</div>
-                        <div class="value">{$result['waige']}</div>
-                        <div class="name <?php echo $result['waige_info']['good'] ? 'good' : 'bad'; ?>"><?php echo $result['waige_info']['name']; ?></div>
-                    </div>
-                    <div class="wuge-item">
-                        <div class="label">总格</div>
-                        <div class="value">{$result['zongge']}</div>
-                        <div class="name <?php echo $result['zongge_info']['good'] ? 'good' : 'bad'; ?>"><?php echo $result['zongge_info']['name']; ?></div>
-                    </div>
+            </div>
+            
+            <div class="qiming-grid qiming-grid-collapse qiming-margin-medium-bottom" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px;">
+                <div class="qiming-background-muted qiming-padding qiming-text-center">
+                    <div class="qiming-text-small qiming-text-muted">天格</div>
+                    <div class="qiming-text-large qiming-text-bold qiming-text-primary qiming-margin-top-small">{$result.tiange}</div>
+                    <div class="qiming-text-small qiming-text-success qiming-margin-top-small">{$result.tiange_info.name}</div>
                 </div>
-                
-                <div class="detail-section">
-                    <h3>数理详解</h3>
-                    <div class="detail-item">
-                        <div class="title">天格（{$result['tiange']}）- <?php echo $result['tiange_info']['name']; ?></div>
-                        <div class="desc">{$result['tiange_info']['desc']}</div>
+                <div class="qiming-background-muted qiming-padding qiming-text-center">
+                    <div class="qiming-text-small qiming-text-muted">人格</div>
+                    <div class="qiming-text-large qiming-text-bold qiming-text-primary qiming-margin-top-small">{$result.renge}</div>
+                    <div class="qiming-text-small qiming-text-success qiming-margin-top-small">{$result.renge_info.name}</div>
+                </div>
+                <div class="qiming-background-muted qiming-padding qiming-text-center">
+                    <div class="qiming-text-small qiming-text-muted">地格</div>
+                    <div class="qiming-text-large qiming-text-bold qiming-text-primary qiming-margin-top-small">{$result.dige}</div>
+                    <div class="qiming-text-small qiming-text-success qiming-margin-top-small">{$result.dige_info.name}</div>
+                </div>
+                <div class="qiming-background-muted qiming-padding qiming-text-center">
+                    <div class="qiming-text-small qiming-text-muted">外格</div>
+                    <div class="qiming-text-large qiming-text-bold qiming-text-primary qiming-margin-top-small">{$result.waige}</div>
+                    <div class="qiming-text-small qiming-text-success qiming-margin-top-small">{$result.waige_info.name}</div>
+                </div>
+                <div class="qiming-background-muted qiming-padding qiming-text-center">
+                    <div class="qiming-text-small qiming-text-muted">总格</div>
+                    <div class="qiming-text-large qiming-text-bold qiming-text-primary qiming-margin-top-small">{$result.zongge}</div>
+                    <div class="qiming-text-small qiming-text-success qiming-margin-top-small">{$result.zongge_info.name}</div>
+                </div>
+            </div>
+            
+            <div class="qiming-margin-medium-top">
+                <h3 class="qiming-h5 qiming-padding-bottom" style="border-bottom: 2px solid #ff6600;">数理详解</h3>
+                <div class="qiming-margin-top">
+                    <div class="qiming-padding-small qiming-border-bottom">
+                        <div class="qiming-text-bold qiming-margin-bottom-small">天格（{$result.tiange}）- {$result.tiange_info.name}</div>
+                        <div class="qiming-text-small qiming-text-muted">{$result.tiange_info.desc}</div>
                     </div>
-                    <div class="detail-item">
-                        <div class="title">人格（{$result['renge']}）- <?php echo $result['renge_info']['name']; ?></div>
-                        <div class="desc">{$result['renge_info']['desc']}</div>
+                    <div class="qiming-padding-small qiming-border-bottom">
+                        <div class="qiming-text-bold qiming-margin-bottom-small">人格（{$result.renge}）- {$result.renge_info.name}</div>
+                        <div class="qiming-text-small qiming-text-muted">{$result.renge_info.desc}</div>
                     </div>
-                    <div class="detail-item">
-                        <div class="title">地格（{$result['dige']}）- <?php echo $result['dige_info']['name']; ?></div>
-                        <div class="desc">{$result['dige_info']['desc']}</div>
+                    <div class="qiming-padding-small qiming-border-bottom">
+                        <div class="qiming-text-bold qiming-margin-bottom-small">地格（{$result.dige}）- {$result.dige_info.name}</div>
+                        <div class="qiming-text-small qiming-text-muted">{$result.dige_info.desc}</div>
                     </div>
-                    <div class="detail-item">
-                        <div class="title">外格（{$result['waige']}）- <?php echo $result['waige_info']['name']; ?></div>
-                        <div class="desc">{$result['waige_info']['desc']}</div>
+                    <div class="qiming-padding-small qiming-border-bottom">
+                        <div class="qiming-text-bold qiming-margin-bottom-small">外格（{$result.waige}）- {$result.waige_info.name}</div>
+                        <div class="qiming-text-small qiming-text-muted">{$result.waige_info.desc}</div>
                     </div>
-                    <div class="detail-item">
-                        <div class="title">总格（{$result['zongge']}）- <?php echo $result['zongge_info']['name']; ?></div>
-                        <div class="desc">{$result['zongge_info']['desc']}</div>
+                    <div class="qiming-padding-small">
+                        <div class="qiming-text-bold qiming-margin-bottom-small">总格（{$result.zongge}）- {$result.zongge_info.name}</div>
+                        <div class="qiming-text-small qiming-text-muted">{$result.zongge_info.desc}</div>
                     </div>
                 </div>
-                
-                <div style="text-align:center;">
-                    <a href="<?php echo U('qiming/index/ceshi'); ?>" class="btn-back">重新测试</a>
-                </div>
+            </div>
+            
+            <div class="qiming-text-center qiming-margin-top">
+                <a href="{U('qiming/index/ceshi')}" class="qiming-button qiming-button-primary">重新测试</a>
             </div>
         </div>
     </div>
+    
+    <script src="https://static.qiming.cn/style/qiming/js/common.js"></script>
 </body>
 </html>

@@ -187,6 +187,22 @@
                         <h2>康熙字典</h2>
                     </div>
                 </a>
+                <a href="{U('qiming/index/zhouyi')}" class="aui-palace-grid">
+                    <div class="aui-palace-grid-icon">
+                        <img src="https://static.qiming.cn/style/qiming/images/xzyqm.jpg" alt="周易起名">
+                    </div>
+                    <div class="aui-palace-grid-text">
+                        <h2>周易起名</h2>
+                    </div>
+                </a>
+                <a href="{U('qiming/index/baijiaxing')}" class="aui-palace-grid">
+                    <div class="aui-palace-grid-icon">
+                        <img src="https://static.qiming.cn/style/qiming/images/xbjx.jpg" alt="百家姓">
+                    </div>
+                    <div class="aui-palace-grid-text">
+                        <h2>百家姓</h2>
+                    </div>
+                </a>
             </div>
         </section>
         
@@ -236,14 +252,14 @@
         <section class="switcher">
             <div class="qiming-container qiming-margin-medium-top qiming-margin-medium-bottom">
                 <ul class="qiming-cat-switcher cat-switcher qiming-switcher">
-                    <li class="section-title active"><h3>男孩起名用字排行</h3></li>
-                    <li class="section-title"><h3>女孩起名用字排行</h3></li>
-                    <li class="section-title"><h3>男孩热门名字排行</h3></li>
-                    <li class="section-title"><h3>女孩热门名字排行</h3></li>
+                    <li class="section-title active" data-tab="boy-char"><h3>男孩起名用字排行</h3></li>
+                    <li class="section-title" data-tab="girl-char"><h3>女孩起名用字排行</h3></li>
+                    <li class="section-title" data-tab="boy-name"><h3>男孩热门名字排行</h3></li>
+                    <li class="section-title" data-tab="girl-name"><h3>女孩热门名字排行</h3></li>
                 </ul>
                 <div class="qiming-switcher">
                     <!-- Boy Char Rankings -->
-                    <div class="card qiming-animation-slide-left-small">
+                    <div class="card qiming-animation-slide-left-small" data-content="boy-char">
                         <div class="qiming-grid-medium qiming-mmlist" qiming-grid>
                             <div class="fastlink-title b-b qiming-flex">
                                 <i class="iconfont icon-menu"></i>男孩起名用字排行
@@ -260,6 +276,72 @@
                                     <li><a href="{U('qiming/index/kxzd')}?char=磊"><span>lěi</span>磊</a></li>
                                     <li><a href="{U('qiming/index/kxzd')}?char=伟"><span>wěi</span>伟<span class="jixiong">吉</span></a></li>
                                     <li><a href="{U('qiming/index/kxzd')}?char=博"><span>bó</span>博<span class="jixiong">吉</span></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Girl Char Rankings -->
+                    <div class="card qiming-animation-slide-left-small" data-content="girl-char" style="display:none;">
+                        <div class="qiming-grid-medium qiming-mmlist" qiming-grid>
+                            <div class="fastlink-title b-b qiming-flex">
+                                <i class="iconfont icon-menu"></i>女孩起名用字排行
+                            </div>
+                            <div class="qiming-list qmlst tags-item">
+                                <ul class="btn w5 ">
+                                    <li><a href="{U('qiming/index/kxzd')}?char=怡"><span>yí</span>怡<span class="jixiong">吉</span></a></li>
+                                    <li><a href="{U('qiming/index/kxzd')}?char=涵"><span>hán</span>涵<span class="jixiong">吉</span></a></li>
+                                    <li><a href="{U('qiming/index/kxzd')}?char=梓"><span>zǐ</span>梓<span class="jixiong">吉</span></a></li>
+                                    <li><a href="{U('qiming/index/kxzd')}?char=欣"><span>xīn</span>欣<span class="jixiong">吉</span></a></li>
+                                    <li><a href="{U('qiming/index/kxzd')}?char=瑶"><span>yáo</span>瑶<span class="jixiong">吉</span></a></li>
+                                    <li><a href="{U('qiming/index/kxzd')}?char=瑾"><span>jǐn</span>瑾<span class="jixiong">吉</span></a></li>
+                                    <li><a href="{U('qiming/index/kxzd')}?char=雅"><span>yǎ</span>雅<span class="jixiong">吉</span></a></li>
+                                    <li><a href="{U('qiming/index/kxzd')}?char=婷"><span>tíng</span>婷</a></li>
+                                    <li><a href="{U('qiming/index/kxzd')}?char=慧"><span>huì</span>慧<span class="jixiong">吉</span></a></li>
+                                    <li><a href="{U('qiming/index/kxzd')}?char=琳"><span>lín</span>琳<span class="jixiong">吉</span></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Boy Name Rankings -->
+                    <div class="card qiming-animation-slide-left-small" data-content="boy-name" style="display:none;">
+                        <div class="qiming-grid-medium qiming-mmlist" qiming-grid>
+                            <div class="fastlink-title b-b qiming-flex">
+                                <i class="iconfont icon-menu"></i>男孩热门名字排行
+                            </div>
+                            <div class="qiming-list qmlst tags-item">
+                                <ul class="btn w5 ">
+                                    <li><a href="#">李浩然</a></li>
+                                    <li><a href="#">王梓轩</a></li>
+                                    <li><a href="#">张一鸣</a></li>
+                                    <li><a href="#">刘子轩</a></li>
+                                    <li><a href="#">陈浩然</a></li>
+                                    <li><a href="#">杨俊豪</a></li>
+                                    <li><a href="#">赵俊豪</a></li>
+                                    <li><a href="#">黄宇轩</a></li>
+                                    <li><a href="#">周子轩</a></li>
+                                    <li><a href="#">吴俊豪</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Girl Name Rankings -->
+                    <div class="card qiming-animation-slide-left-small" data-content="girl-name" style="display:none;">
+                        <div class="qiming-grid-medium qiming-mmlist" qiming-grid>
+                            <div class="fastlink-title b-b qiming-flex">
+                                <i class="iconfont icon-menu"></i>女孩热门名字排行
+                            </div>
+                            <div class="qiming-list qmlst tags-item">
+                                <ul class="btn w5 ">
+                                    <li><a href="#">李欣怡</a></li>
+                                    <li><a href="#">王梓涵</a></li>
+                                    <li><a href="#">张子涵</a></li>
+                                    <li><a href="#">刘欣怡</a></li>
+                                    <li><a href="#">陈梓涵</a></li>
+                                    <li><a href="#">杨子涵</a></li>
+                                    <li><a href="#">赵欣怡</a></li>
+                                    <li><a href="#">黄梓涵</a></li>
+                                    <li><a href="#">周欣怡</a></li>
+                                    <li><a href="#">吴子涵</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -436,11 +518,17 @@
             });
         });
         
-        // Tab switching for rankings
+        // Rankings tab switching
         document.querySelectorAll('.qiming-cat-switcher li').forEach(function(tab, index) {
             tab.addEventListener('click', function() {
                 document.querySelectorAll('.qiming-cat-switcher li').forEach(t => t.classList.remove('active'));
                 this.classList.add('active');
+                
+                var targetTab = this.getAttribute('data-tab');
+                document.querySelectorAll('.qiming-switcher .card').forEach(function(card) {
+                    card.style.display = 'none';
+                });
+                document.querySelector('.qiming-switcher .card[data-content="' + targetTab + '"]').style.display = 'block';
             });
         });
         
