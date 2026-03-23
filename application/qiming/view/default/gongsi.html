@@ -6,216 +6,369 @@
     <title>{$seo_title}</title>
     <meta name="keywords" content="公司起名,公司取名,品牌命名,企业起名">
     <meta name="description" content="公司起名资深命名专家与品牌策划大师联手打造，为企业量身定制独特专属好名，助力企业成为行业龙头">
-    <link rel="stylesheet" href="https://static.qiming.cn/style/qiming/css/base.css">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: "Microsoft YaHei", Arial, sans-serif; color: #333; line-height: 1.6; }
-        a { text-decoration: none; color: inherit; }
-        a:hover { color: #ff6600; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 15px; }
-        
-        .header { background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
-        .header-main { padding: 15px 0; display: flex; align-items: center; justify-content: space-between; }
-        .logo { font-size: 28px; font-weight: bold; color: #ff6600; }
-        .logo span { color: #333; }
-        .nav { display: flex; gap: 30px; }
-        .nav a { font-size: 16px; padding: 5px 0; }
-        
-        .page-banner { background: url('https://static.qiming.cn/style/qiming/images/gsqmBanner.jpg') center top no-repeat; min-height: 400px; display: flex; align-items: center; justify-content: center; color: #fff; text-align: center; }
-        .page-banner-content { position: relative; z-index: 2; }
-        .page-banner h1 { font-size: 42px; font-weight: bold; margin-bottom: 20px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
-        .page-banner p { font-size: 18px; opacity: 0.95; margin-bottom: 30px; }
-        .banner-form { background: rgba(255,255,255,0.95); border-radius: 10px; padding: 30px; max-width: 700px; margin: 0 auto; }
-        .banner-form select, .banner-form input { padding: 12px 15px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px; margin: 5px; }
-        .banner-form select { min-width: 140px; }
-        .banner-form button { padding: 12px 30px; background: #ff6600; color: #fff; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; margin: 5px; }
-        .banner-form button:hover { background: #e55a00; }
-        
-        .intro-section { padding: 60px 0; }
-        .intro-section h2 { text-align: center; font-size: 28px; margin-bottom: 20px; }
-        .intro-section .subtitle { text-align: center; color: #666; font-size: 16px; margin-bottom: 40px; }
-        .intro-text { max-width: 900px; margin: 0 auto; font-size: 16px; line-height: 2; color: #666; text-align: justify; }
-        .intro-text p { margin-bottom: 20px; }
-        
-        .industries-section { padding: 60px 0; background: #f9f9f9; }
-        .industries-section h2 { text-align: center; font-size: 28px; margin-bottom: 40px; }
-        .industries-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px; }
-        .industry-item { background: #fff; border-radius: 10px; padding: 20px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); transition: all 0.3s; }
-        .industry-item:hover { transform: translateY(-5px); box-shadow: 0 5px 20px rgba(255,102,0,0.2); }
-        .industry-item h3 { font-size: 16px; color: #333; }
-        
-        .knowledge-section { padding: 60px 0; }
-        .knowledge-section h2 { text-align: center; font-size: 28px; margin-bottom: 30px; }
-        .knowledge-list { max-width: 900px; margin: 0 auto; }
-        .knowledge-item { background: #fff; border-radius: 10px; padding: 20px; margin-bottom: 15px; display: flex; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-        .knowledge-item .num { font-size: 24px; color: #ff6600; font-weight: bold; margin-right: 20px; width: 40px; }
-        .knowledge-item .content { flex: 1; }
-        .knowledge-item h3 { font-size: 16px; color: #333; margin-bottom: 5px; }
-        .knowledge-item h3:hover { color: #ff6600; }
-        .knowledge-item .info { font-size: 12px; color: #999; }
-        
-        .footer { background: #333; color: #fff; padding: 50px 0 20px; }
-        .footer-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px; margin-bottom: 40px; }
-        .footer h4 { margin-bottom: 20px; font-size: 18px; color: #fff; }
-        .footer a { display: block; color: #ccc; padding: 5px 0; font-size: 14px; transition: color 0.3s; }
-        .footer a:hover { color: #ff6600; }
-        .footer-bottom { text-align: center; padding-top: 30px; border-top: 1px solid #444; color: #999; font-size: 14px; }
-        .footer-logo { font-size: 24px; color: #ff6600; font-weight: bold; margin-bottom: 15px; }
-        
-        @media (max-width: 768px) {
-            .header-main { flex-direction: column; gap: 15px; }
-            .nav { flex-wrap: wrap; justify-content: center; gap: 15px; }
-            .page-banner h1 { font-size: 28px; }
-            .page-banner { min-height: 300px; }
-            .industries-grid { grid-template-columns: repeat(2, 1fr); }
-            .footer-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-    </style>
+    <link rel="stylesheet" href="https://static.qiming.cn/style/qiming/css/font/iconfont.css">
+    <link rel="stylesheet" href="https://static.qiming.cn/style/qiming/css/uikit.css">
+    <link rel="stylesheet" href="https://static.qiming.cn/style/qiming/css/diy.css">
+    <link rel="stylesheet" href="https://static.qiming.cn/style/qiming/css/qiming.css">
+    <script src="https://static.qiming.cn/style/qiming/js/jquery.min.js"></script>
+    <script src="https://static.qiming.cn/style/qiming/js/uikit.min.js"></script>
 </head>
-<body>
-    <header class="header">
-        <div class="container">
-            <div class="header-main">
-                <div class="logo">起名网<span>-专注宝宝起名</span></div>
-                <nav class="nav">
-                    <a href="{U('qiming/index/init')}">首页</a>
-                    <a href="{U('qiming/index/baobao')}">宝宝起名</a>
-                    <a href="{U('qiming/index/bazi')}">八字起名</a>
-                    <a href="{U('qiming/index/shici')}">诗词起名</a>
-                    <a href="{U('qiming/index/gaimingzi')}">成人改名</a>
-                    <a href="{U('qiming/index/ceshi')}">姓名测试</a>
-                    <a href="{U('qiming/index/gongsi')}">公司起名</a>
-                    <a href="{U('qiming/index/zhouyi')}">周易起名</a>
-                    <a href="{U('qiming/index/kxzd')}">康熙字典</a>
-                    <a href="{U('qiming/index/baijiaxing')}">百家姓</a>
+<body class="qiming-background-muted site qiming-zz-background">
+    <!-- Header -->
+    <header class="header qiming-background-default">
+        <div class="navbar qiming-position-relative">
+            <div class="qiming-container qiming-flex qiming-flex-middle qiming-position-relative qiming-logo-shou">
+                <a href="{U('qiming/index/init')}" class="logo qiming-display-inline-block" alt="起名网">
+                    <div class="logo-nav-night logobg qiming-visible@m"></div>
+                </a>
+                <nav class="nav qiming-flex-1 qiming-position-relative">
+                    <ul class="nav qiming-flex-1 qiming-margin-remove">
+                        <li class="menu-item menu-item-type-custom">
+                            <a href="{U('qiming/index/init')}">首页</a>
+                        </li>
+                        <li class="menu-item menu-item-type-custom">
+                            <a href="{U('qiming/index/baobao')}">宝宝起名</a>
+                        </li>
+                        <li class="menu-item menu-item-type-custom">
+                            <a href="{U('qiming/index/bazi')}">八字起名</a>
+                        </li>
+                        <li class="menu-item menu-item-type-custom">
+                            <a href="{U('qiming/index/shici')}">诗词起名</a>
+                        </li>
+                        <li class="menu-item menu-item-type-custom">
+                            <a href="{U('qiming/index/gaimingzi')}">成人改名</a>
+                        </li>
+                        <li class="menu-item menu-item-type-custom">
+                            <a href="{U('qiming/index/ceshi')}">姓名测试</a>
+                        </li>
+                        <li class="menu-item menu-item-type-custom current-menu-item">
+                            <a href="{U('qiming/index/gongsi')}">公司起名</a>
+                        </li>
+                        <li class="menu-item menu-item-type-custom">
+                            <a href="{U('qiming/index/zhouyi')}">周易起名</a>
+                        </li>
+                        <li class="menu-item menu-item-type-custom">
+                            <a href="{U('qiming/index/kxzd')}">康熙字典</a>
+                        </li>
+                        <li class="menu-item menu-item-type-custom">
+                            <a href="{U('qiming/index/baijiaxing')}">百家姓</a>
+                        </li>
+                    </ul>
                 </nav>
+                <div class="header-info qiming-flex qiming-flex-middle">
+                    <a href="javascript:;" class="qiming-toggle" id="header-search">
+                        <i class="iconfont icon-search qiming-text-bolder"></i>
+                    </a>
+                </div>
             </div>
         </div>
     </header>
     
-    <section class="page-banner">
-        <div class="page-banner-content">
-            <h1>公司起名</h1>
-            <p>资深命名专家与品牌策划大师联手打造，为企业量身定制独特专属好名，助力企业成为行业龙头</p>
-            <div class="banner-form">
-                <form action="{U('qiming/index/result')}" method="get">
-                    <input type="text" name="company" placeholder="公司名称" required>
-                    <select name="industry">
-                        <option value="">所属行业</option>
-                        <option value="1">科技互联网</option>
-                        <option value="2">金融投资</option>
-                        <option value="3">教育培训</option>
-                        <option value="4">医疗健康</option>
-                        <option value="5">餐饮美食</option>
-                        <option value="6">零售电商</option>
-                        <option value="7">房地产</option>
-                        <option value="8">其他</option>
-                    </select>
-                    <button type="submit">立即起名</button>
-                </form>
-            </div>
-        </div>
-    </section>
+    <!-- Banner -->
+    <div class="qiming_vipbgs">
+        <img src="https://static.qiming.cn/style/qiming/images/gsqmBanner.jpg" style="width: 100%;">
+    </div>
     
-    <section class="intro-section">
-        <div class="container">
-            <h2>公司起名：量身定制，塑造品牌价值</h2>
-            <p class="subtitle">专业团队打造独特企业名称，助力商业成功</p>
-            <div class="intro-text">
-                <p>公司名称不仅是企业的标识，更是品牌价值的重要组成部分。一个好的公司名称应当简洁易记、寓意深远、符合行业特点，并且能够传达企业的核心价值理念。</p>
-                <p>本系统汇聚多位资深命名专家与品牌策划大师，根据您的企业定位、行业属性和发展愿景，融合中国传统文化中的五行数理，为您量身定制独特专属的好名称。</p>
-                <p>我们提供从名称策划、商标查询到品牌定位的一站式服务，帮助您的企业在激烈的市场竞争中脱颖而出，成为行业龙头。</p>
-            </div>
-        </div>
-    </section>
-    
-    <section class="industries-section">
-        <div class="container">
-            <h2>热门行业起名</h2>
-            <div class="industries-grid">
-                <a href="#" class="industry-item"><h3>科技公司</h3></a>
-                <a href="#" class="industry-item"><h3>贸易公司</h3></a>
-                <a href="#" class="industry-item"><h3>餐饮公司</h3></a>
-                <a href="#" class="industry-item"><h3>教育咨询</h3></a>
-                <a href="#" class="industry-item"><h3>医疗健康</h3></a>
-                <a href="#" class="industry-item"><h3>金融服务</h3></a>
-                <a href="#" class="industry-item"><h3>房产中介</h3></a>
-                <a href="#" class="industry-item"><h3>物流运输</h3></a>
-                <a href="#" class="industry-item"><h3>文化传媒</h3></a>
-                <a href="#" class="industry-item"><h3>美容健身</h3></a>
-            </div>
-        </div>
-    </section>
-    
-    <section class="knowledge-section">
-        <div class="container">
-            <h2>公司起名知识</h2>
-            <div class="knowledge-list">
-                <div class="knowledge-item">
-                    <span class="num">1</span>
-                    <div class="content">
-                        <h3>公司起名应该注意哪些问题</h3>
-                        <div class="info">公司起名</div>
-                    </div>
-                </div>
-                <div class="knowledge-item">
-                    <span class="num">2</span>
-                    <div class="content">
-                        <h3>如何给公司起一个响亮的名字</h3>
-                        <div class="info">公司起名</div>
-                    </div>
-                </div>
-                <div class="knowledge-item">
-                    <span class="num">3</span>
-                    <div class="content">
-                        <h3>公司名称与五行属性的关系</h3>
-                        <div class="info">公司起名</div>
-                    </div>
-                </div>
-                <div class="knowledge-item">
-                    <span class="num">4</span>
-                    <div class="content">
-                        <h3>品牌命名的十大原则</h3>
-                        <div class="info">公司起名</div>
-                    </div>
+    <!-- Main Content -->
+    <div class="qiming-container" id="page-content">
+        <!-- Form Section -->
+        <div class="qiming-pages-vip">
+            <div class="qiming_portal_block_summary">
+                <div class="formGsQm">
+                    <h1>公司起名</h1>
+                    <p>资深命名专家与品牌策划大师联手打造，为企业量身定制独特专属好名，助力企业成为行业龙头</p>
+                    <form method="get" action="{U('qiming/index/result')}">
+                        <div class="two_bd flex spb dsbl">
+                            <div class="list_bd">
+                                <input type="text" name="company" placeholder="请输入公司名称" required>
+                            </div>
+                            <div class="list_bd">
+                                <select name="industry" class="input-birthday">
+                                    <option value="">所属行业</option>
+                                    <option value="1">科技互联网</option>
+                                    <option value="2">金融投资</option>
+                                    <option value="3">教育培训</option>
+                                    <option value="4">医疗健康</option>
+                                    <option value="5">餐饮美食</option>
+                                    <option value="6">零售电商</option>
+                                    <option value="7">房地产</option>
+                                    <option value="8">其他</option>
+                                </select>
+                                <img src="https://static.qiming.cn/style/qiming/images/xl.png" alt="">
+                            </div>
+                        </div>
+                        <input type="hidden" name="type" value="gongsi">
+                        <a class="qmbtn" href="javascript:;" onclick="this.parentElement.submit();">立即起名</a>
+                    </form>
                 </div>
             </div>
         </div>
-    </section>
-    
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-grid">
-                <div>
-                    <div class="footer-logo">起名网</div>
-                    <p style="color:#ccc; font-size:14px;">专注科学智能宝宝起名，测名字打分平台，结合传统国学文化的智能起名系统研发。</p>
-                </div>
-                <div>
-                    <h4>快捷导航</h4>
-                    <a href="{U('qiming/index/baobao')}">宝宝起名</a>
-                    <a href="{U('qiming/index/bazi')}">八字起名</a>
-                    <a href="{U('qiming/index/zhouyi')}">周易起名</a>
-                    <a href="{U('qiming/index/kxzd')}">康熙字典</a>
-                </div>
-                <div>
-                    <h4>关于我们</h4>
-                    <a href="#">关于我们</a>
-                    <a href="#">服务条款</a>
-                    <a href="#">版权声明</a>
-                    <a href="#">投诉建议</a>
-                </div>
-                <div>
-                    <h4>友情链接</h4>
-                    <a href="https://zidian.qiming.cn/" target="_blank">汉语字典</a>
-                    <a href="https://cidian.qiming.cn/" target="_blank">汉语词典</a>
-                    <a href="https://chengyu.qiming.cn/" target="_blank">成语大全</a>
+        
+        <!-- Introduction -->
+        <section class="qiming-container qiming-margin-medium-bottom qiming-margin-top-20 qiming-qqqun-row">
+            <div class="qiming-container">
+                <div class="qiming-background-default qiming-padding-app qiming-margin-medium-bottom qiming-margin-top-20">
+                    <h2 class="apply">公司起名：量身定制，塑造品牌价值</h2>
+                    <blockquote>
+                        <p>公司名称不仅是企业的标识，更是品牌价值的重要组成部分。一个好的公司名称应当简洁易记、寓意深远、符合行业特点，并且能够传达企业的核心价值理念。</p>
+                        <p>本系统汇聚多位资深命名专家与品牌策划大师，根据您的企业定位、行业属性和发展愿景，融合中国传统文化中的五行数理，为您量身定制独特专属的好名称。</p>
+                        <p>我们提供从名称策划、商标查询到品牌定位的一站式服务，帮助您的企业在激烈的市场竞争中脱颖而出，成为行业龙头。</p>
+                    </blockquote>
                 </div>
             </div>
-            <div class="footer-bottom">
-                <p>&copy; 2005-2025 www.qiming.cn & All rights reserved</p>
-                <p>皖公网安备34010402704531号 | 皖ICP备2024064902号</p>
+        </section>
+        
+        <!-- Industries -->
+        <div class="yuvip_serve_father">
+            <h3 class="yuvip_title">热门行业起名</h3>
+            <div class="yuvip_serve">
+                <ul>
+                    <li>
+                        <div>
+                            <img src="https://static.qiming.cn/style/qiming/images/wd1.jpg" alt="科技公司">
+                            <p>科技公司</p>
+                            <em>创新科技，引领未来</em>
+                        </div>
+                    </li>
+                    <li>
+                        <div>
+                            <img src="https://static.qiming.cn/style/qiming/images/wd2.jpg" alt="贸易公司">
+                            <p>贸易公司</p>
+                            <em>诚信经营，贸易繁荣</em>
+                        </div>
+                    </li>
+                    <li>
+                        <div>
+                            <img src="https://static.qiming.cn/style/qiming/images/wd3.jpg" alt="餐饮公司">
+                            <p>餐饮公司</p>
+                            <em>美食文化，品味生活</em>
+                        </div>
+                    </li>
+                    <li>
+                        <div>
+                            <img src="https://static.qiming.cn/style/qiming/images/wd4.jpg" alt="教育培训">
+                            <p>教育培训</p>
+                            <em>教育为本，成就未来</em>
+                        </div>
+                    </li>
+                    <li>
+                        <div>
+                            <img src="https://static.qiming.cn/style/qiming/images/wd5.jpg" alt="医疗健康">
+                            <p>医疗健康</p>
+                            <em>健康人生，医疗服务</em>
+                        </div>
+                    </li>
+                    <li>
+                        <div>
+                            <img src="https://static.qiming.cn/style/qiming/images/wd6.jpg" alt="金融服务">
+                            <p>金融服务</p>
+                            <em>金融服务，财富管理</em>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Advantages -->
+        <div class="qiming-pages-web-yw-box qiming-background-default">
+            <div class="qiming-container">
+                <div class="web-yw-box-title">
+                    <span>公司起名优势</span>
+                </div>
+                <div qiming-grid>
+                    <div class="qiming-width-1-2 qiming-width-1-4@l qiming-width-1-6@xl">
+                        <div class="web-yw-box-con-li qiming-dongtai">
+                            <span><img src="https://static.qiming.cn/style/qiming/images/mh1.jpg" alt="专业团队"></span>
+                            <p>专业团队</p>
+                            <em>资深命名专家与品牌策划大师</em>
+                        </div>
+                    </div>
+                    <div class="qiming-width-1-2 qiming-width-1-4@l qiming-width-1-6@xl">
+                        <div class="web-yw-box-con-li qiming-dongtai">
+                            <span><img src="https://static.qiming.cn/style/qiming/images/mh2.jpg" alt="量身定制"></span>
+                            <p>量身定制</p>
+                            <em>根据企业定位和愿景专属打造</em>
+                        </div>
+                    </div>
+                    <div class="qiming-width-1-2 qiming-width-1-4@l qiming-width-1-6@xl">
+                        <div class="web-yw-box-con-li qiming-dongtai">
+                            <span><img src="https://static.qiming.cn/style/qiming/images/mh3.jpg" alt="五行数理"></span>
+                            <p>五行数理</p>
+                            <em>融合传统文化，吉祥寓意</em>
+                        </div>
+                    </div>
+                    <div class="qiming-width-1-2 qiming-width-1-4@l qiming-width-1-6@xl">
+                        <div class="web-yw-box-con-li qiming-dongtai">
+                            <span><img src="https://static.qiming.cn/style/qiming/images/mh4.jpg" alt="品牌价值"></span>
+                            <p>品牌价值</p>
+                            <em>塑造品牌价值，助力商业成功</em>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Articles -->
+        <section class="blog">
+            <div class="qiming-container qiming-margin-medium-top qiming-margin-bottom-40">
+                <div class="section-title qiming-flex qiming-flex-middle">
+                    <i class="iconfont icon-file-common qiming-icon-index"></i>
+                    <h3 class="qiming-display-inline-block qiming-margin-remove">公司起名知识</h3>
+                </div>
+                <div class="qiming-grid qiming-margin-top-30" qiming-grid>
+                    <div class="qiming-width-1-1@s qiming-width-1-2@m qiming-width-1-2@l qiming-width-1-2@xl">
+                        <div class="blog-item b-r-4 qiming-padding-small qiming-background-default qiming-overflow-hidden">
+                            <div class="qiming-grid-collapse" qiming-grid>
+                                <div class="qiming-width-1-1@s qiming-width-2-5@m qiming-width-2-5@l qiming-width-2-5@xl qiming-vip-icons">
+                                    <a href="#" class="cover b-r-4 qiming-display-block qiming-overflow-hidden">
+                                        <img src="https://static.qiming.cn/upload/upimg/0919/1758256277595861.jpg" alt="公司起名注意">
+                                    </a>
+                                </div>
+                                <div class="qiming-width-1-1@s qiming-width-3-5@m qiming-width-3-5@l qiming-width-3-5@xl">
+                                    <div class="qiming-cat-blog blog-item-content">
+                                        <div class="qiming-blog-items">
+                                            <h3 class="qiming-text-truncate">
+                                                <a href="#" class="title qiming-h4">公司起名应该注意哪些问题</a>
+                                            </h3>
+                                            <p class="qiming-text-small">公司名称不仅是企业的标识，更是品牌价值的重要组成部分。</p>
+                                        </div>
+                                        <div class="item-foot">
+                                            <div class="cat qiming-margin-bottom-10 qiming-margin-top-10 qiming-text-truncate">
+                                                <a href="#"><i class="iconfont icon-menu qiming-right-3 arttag"></i>公司起名</a>
+                                            </div>
+                                            <div class="qiming-flex qiming-flex-middle">
+                                                <div class="avatar qiming-flex-1 qiming-flex qiming-flex-middle">
+                                                    <img src='https://static.qiming.cn/style/qiming/images/avatar.jpg' class='avatar avatar-20 photo' height='20' width='20'>
+                                                    <span class="qiming-text-small qiming-display-block qiming-margin-small-left">清飞扬</span>
+                                                </div>
+                                                <div class="qiming-text-small qiming-text-right">
+                                                    <span class="qiming-display-inline-block qiming-flex qiming-flex-middle qiming-margin-right-6">
+                                                        <i class="iconfont icon-time"></i>09-19
+                                                    </span>
+                                                    <span class="qiming-display-inline-block qiming-flex qiming-flex-middle">
+                                                        <i class="iconfont icon-browse"></i>186
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="qiming-width-1-1@s qiming-width-1-2@m qiming-width-1-2@l qiming-width-1-2@xl">
+                        <div class="blog-item b-r-4 qiming-padding-small qiming-background-default qiming-overflow-hidden">
+                            <div class="qiming-grid-collapse" qiming-grid>
+                                <div class="qiming-width-1-1@s qiming-width-2-5@m qiming-width-2-5@l qiming-width-2-5@xl qiming-vip-icons">
+                                    <a href="#" class="cover b-r-4 qiming-display-block qiming-overflow-hidden">
+                                        <img src="https://static.qiming.cn/upload/upimg/0919/1758244202109391.jpg" alt="如何给公司起名">
+                                    </a>
+                                </div>
+                                <div class="qiming-width-1-1@s qiming-width-3-5@m qiming-width-3-5@l qiming-width-3-5@xl">
+                                    <div class="qiming-cat-blog blog-item-content">
+                                        <div class="qiming-blog-items">
+                                            <h3 class="qiming-text-truncate">
+                                                <a href="#" class="title qiming-h4">如何给公司起一个响亮的名字</a>
+                                            </h3>
+                                            <p class="qiming-text-small">一个好的公司名称应当简洁易记、寓意深远、符合行业特点。</p>
+                                        </div>
+                                        <div class="item-foot">
+                                            <div class="cat qiming-margin-bottom-10 qiming-margin-top-10 qiming-text-truncate">
+                                                <a href="#"><i class="iconfont icon-menu qiming-right-3 arttag"></i>公司起名</a>
+                                            </div>
+                                            <div class="qiming-flex qiming-flex-middle">
+                                                <div class="avatar qiming-flex-1 qiming-flex qiming-flex-middle">
+                                                    <img src='https://static.qiming.cn/style/qiming/images/avatar.jpg' class='avatar avatar-20 photo' height='20' width='20'>
+                                                    <span class="qiming-text-small qiming-display-block qiming-margin-small-left">清飞扬</span>
+                                                </div>
+                                                <div class="qiming-text-small qiming-text-right">
+                                                    <span class="qiming-display-inline-block qiming-flex qiming-flex-middle qiming-margin-right-6">
+                                                        <i class="iconfont icon-time"></i>09-19
+                                                    </span>
+                                                    <span class="qiming-display-inline-block qiming-flex qiming-flex-middle">
+                                                        <i class="iconfont icon-browse"></i>156
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="footer qiming-background-secondary">
+        <div class="foot qiming-container qiming-padding">
+            <div class="qiming-grid" qiming-grid>
+                <div class="qiming-width-1-1@s qiming-width-1-3@xl">
+                    <div class="foot-item foot-item-first qiming-position-relative qiming-flex">
+                        <a href="{U('qiming/index/init')}" target="_blank" class="foot-logo qiming-display-block">
+                            <img src="https://static.qiming.cn/style/qiming/images/logo_foot.png" alt="起名网">
+                        </a>
+                        <p class="qiming-text-small" style="color: #ccc; line-height: 1.8;">起名网专注科学智能宝宝起名，测名字打分平台，结合传统国学文化的智能起名系统研发和起名学术探索交流，以"只为一个好名字"为宗旨，潜心研发，百次升级，千万级大数据分析，助您轻松起好名。</p>
+                    </div>
+                </div>
+                <div class="qiming-width-2-3 qiming-visible@">
+                    <div class="qiming-grid" qiming-grid>
+                        <div class="qiming-width-1-3">
+                            <div class="foot-item">
+                                <div class="foot-item-title"><i class="iconfont icon-security"></i>快捷导航</div>
+                                <ul class="qiming-padding-remove">
+                                    <li><a href="{U('qiming/index/baobao')}">宝宝起名</a></li>
+                                    <li><a href="{U('qiming/index/bazi')}">八字起名</a></li>
+                                    <li><a href="{U('qiming/index/zhouyi')}">周易起名</a></li>
+                                    <li><a href="{U('qiming/index/kxzd')}">康熙字典</a></li>
+                                    <li><a href="{U('qiming/index/gongsi')}">公司起名</a></li>
+                                    <li><a href="{U('qiming/index/ceshi')}">姓名测试</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="qiming-width-1-3">
+                            <div class="foot-item">
+                                <div class="foot-item-title"><i class="iconfont icon-security"></i>关于我们</div>
+                                <ul class="qiming-padding-remove">
+                                    <li><a href="#">关于我们</a></li>
+                                    <li><a href="#">服务条款</a></li>
+                                    <li><a href="#">版权声明</a></li>
+                                    <li><a href="#">投诉建议</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="qiming-width-1-3">
+                            <div class="foot-item">
+                                <div class="foot-item-title"><i class="iconfont icon-link"></i>友情链接</div>
+                                <ul class="qiming-padding-remove">
+                                    <li><a href="https://zidian.qiming.cn/" target="_blank">汉语字典</a></li>
+                                    <li><a href="https://cidian.qiming.cn/" target="_blank">汉语词典</a></li>
+                                    <li><a href="https://chengyu.qiming.cn/" target="_blank">成语大全</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="foot-cop">
+            <div class="qiming-container qiming-padding-small qiming-clearfix">
+                <div class="qiming-float-left">
+                    <span>&copy; 2005-2025 <a href="https://www.qiming.cn" target="_blank">www.qiming.cn</a> & All rights reserved</span>
+                    <span class="qiming-margin-small-right qiming-gongan">
+                        <img src="https://static.qiming.cn/style/qiming/images/qiming-110.png" alt="公安备案" style="height: 20px; vertical-align: middle;">
+                        <a href="https://beian.miit.gov.cn/" target="_blank" rel="nofollow">皖ICP备2024064902号</a>
+                    </span>
+                </div>
+                <div class="qiming-float-right qiming-visible@">
+                    <span><a href="https://www.qiming.cn" target="_blank">起名网</a></span>
+                </div>
             </div>
         </div>
     </footer>
+    
+    <script src="https://static.qiming.cn/style/qiming/js/common.js"></script>
 </body>
 </html>
