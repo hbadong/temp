@@ -1,81 +1,68 @@
 <!DOCTYPE HTML>
 <html>
-
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, maximum-scale=1.0, initial-scale=1.0, user-scalable=no">
     <title>{$seo_title}</title>
-    <meta name="author" content="YzmCMS内容管理系统">
-    <meta name="keywords" content="{$keywords}" />
-    <meta name="description" content="{$description}" />
-    <link href="{STATIC_URL}css/yzm-mobile-index.css?v=yzmcms" rel="stylesheet" type="text/css" />
-    <script type="text/javascript" src="{STATIC_URL}js/jquery-1.8.2.min.js"></script>
-    <script type="text/javascript" src="{STATIC_URL}js/yzm-mobile-simpler-sidebar.min.js"></script>
-    <script type="text/javascript" src="{STATIC_URL}js/yzm-mobile-scroll.js"></script>
-    <script type="text/javascript" src="{STATIC_URL}js/yzm-mobile-scrollload.js"></script>
+    <meta name="keywords" content="{$keywords}">
+    <meta name="description" content="{$description}">
+    <link rel="stylesheet" href="https://static.qiming.cn/style/qiming/css/font/iconfont.css">
+    <link rel="stylesheet" href="https://static.qiming.cn/style/qiming/css/uikit.css">
+    <link rel="stylesheet" href="https://static.qiming.cn/style/qiming/css/diy.css">
+    <link rel="stylesheet" href="https://static.qiming.cn/style/qiming/css/qiming.css">
+    <script src="https://static.qiming.cn/style/qiming/js/jquery.min.js"></script>
+    <script src="https://static.qiming.cn/style/qiming/js/uikit.min.js"></script>
+    <script src="https://static.qiming.cn/style/layer/layer.js" charset="utf-8"></script>
+    <script src="https://static.qiming.cn/style/qiming/js/common.js"></script>
 </head>
-
 <body>
-    <!--网站容器-->
     <div class="yzm-container">
-        {m:include "mobile","header"}
-        <div class="clearfix"></div>
-        <!--焦点图-->
-        <div class="yzm-toppic">
-            <div class="yzm-imgslidemain">
-                <div id="imgSlide" class="yzm-imgslide">
-                    <ul>
-                    	<!-- 此处为功能演示，调取模型id为1的且有缩略图的内容 -->
-                        {m:lists field="id,catid,title,thumb" modelid="1" thumb="1" limit="3"}
-                        {loop $data $v}
-                        <li>
-                        	<a href="{mobile_url($v['catid'], $v['id'])}"><img src="{$v[thumb]}" alt="{$v[title]}" title="{$v[title]}"></a>
-                            <p>{$v[title]}</p>
-                        </li>
-                        {/loop}
-                    </ul>
+        <div class="yzm-header-box">
+            <div class="yzm-header-top">
+                <div class="yzm-logo">
+                    <a href="{U('qiming/index/init')}"><img src="https://static.qiming.cn/style/qiming/images/logo_foot.png" alt="起名网"></a>
                 </div>
-                <ul class="yzm-navslide">
-                    <li class="i_point active">
-                    <li class="i_point">
-                    <li class="i_point">
-                </ul>
             </div>
         </div>
-        <!--主要内容-->
-        <div id="main">
-            <div class="yzm-news-list">
-                <h3 class="yzm-title">【最近更新】</h3>
-                <ul>
-                    {m:all field="id,catid,title,url,inputtime" limit="10"}
-                    {loop $data $v}
-                    <li><a href="{mobile_url($v['catid'], $v['id'])}" title="{$v[title]}">{$v[title]}</a></li>
-                    {/loop}
-                </ul>
-            </div>
-            <div class="yzm-news-list">
-                <h3 class="yzm-title">【推荐文章】</h3>
-                <ul>
-                    <!-- 此处为功能演示，调取内容属性为“推荐”的内容 -->
-                    {m:lists field="id,catid,title,color" modelid="1" flag="4" limit="10"}
-                    {loop $data $v}
-                    <li><a href="{mobile_url($v['catid'], $v['id'])}" title="{$v[title]}">{title_color($v['title'], $v['color'])}</a></li>
-                    {/loop}
-                </ul>
-            </div>
-            <div class="yzm-news-img">
-                <h3 class="yzm-title">【图文资讯】</h3>
-                <ul>
-                    <!-- 此处仅为功能演示，调用模型ID为1且有缩略图的内容 -->
-                    {m:lists field="id,catid,title,thumb" modelid="1" thumb="1" limit="6"}
-                    {loop $data $v}
-                    <li>
-                    	<a href="{mobile_url($v['catid'], $v['id'])}"><img src="{$v[thumb]}" alt="{$v[title]}" title="{$v[title]}">
-                            <p>{$v[title]}</p>
-                        </a>
-                    </li>
-                    {/loop}
-                </ul>
-            </div>
+        <div class="yzm-palace-grid">
+            <a href="{U('qiming/index/baobao')}" class="yzm-palace-grid-icon">
+                <img src="https://static.qiming.cn/style/qiming/images/xbbqm.jpg" alt="宝宝起名">
+                <span>宝宝起名</span>
+            </a>
+            <a href="{U('qiming/index/bazi')}" class="yzm-palace-grid-icon">
+                <img src="https://static.qiming.cn/style/qiming/images/xbzqm.jpg" alt="八字起名">
+                <span>八字起名</span>
+            </a>
+            <a href="{U('qiming/index/shici')}" class="yzm-palace-grid-icon">
+                <img src="https://static.qiming.cn/style/qiming/images/xscqm.jpg" alt="诗词起名">
+                <span>诗词起名</span>
+            </a>
+            <a href="{U('qiming/index/ceshi')}" class="yzm-palace-grid-icon">
+                <img src="https://static.qiming.cn/style/qiming/images/xxmcs.jpg" alt="姓名测试">
+                <span>姓名测试</span>
+            </a>
+            <a href="{U('qiming/index/gongsi')}" class="yzm-palace-grid-icon">
+                <img src="https://static.qiming.cn/style/qiming/images/xgsqm.jpg" alt="公司起名">
+                <span>公司起名</span>
+            </a>
+            <a href="{U('qiming/index/kxzd')}" class="yzm-palace-grid-icon">
+                <img src="https://static.qiming.cn/style/qiming/images/xkxzd.jpg" alt="康熙字典">
+                <span>康熙字典</span>
+            </a>
         </div>
-        {m:include "mobile","footer"}
+        <div class="yzm-news-list">
+            <h3 class="yzm-title">快捷服务</h3>
+            <ul>
+                <li><a href="{U('qiming/index/gaimingzi')}">成人改名</a></li>
+                <li><a href="{U('qiming/index/zhouyi')}">周易起名</a></li>
+                <li><a href="{U('qiming/index/baijiaxing')}">百家姓</a></li>
+                <li><a href="{U('qiming/index/zhishi')}">起名知识</a></li>
+            </ul>
+        </div>
+        <div class="yzm-footer">
+            <p>&copy; 2005-2025 <a href="https://www.qiming.cn/">起名网</a></p>
+            <p><a href="https://beian.miit.gov.cn/" target="_blank">皖ICP备2024064902号</a></p>
+        </div>
+    </div>
+</body>
+</html>

@@ -12,27 +12,26 @@
 defined('IN_YZMPHP') or exit('Access Denied');
 yzm_base::load_model('content', 'index', 0);
 
-class index{
+	class index{
 
 	public $page = 0;
 	
 	public function __construct() {
 		if(!get_config('site_wap_open')) showmsg('手机站点已关闭！', 'stop');
-		set_module_theme(get_config('site_wap_theme'));
 		isset($_GET['page']) && $this->page = intval($_GET['page']);
 	}
 	
 	
-	/**
-	 * 首页
-	 */
-	public function init() {
-		$site = get_config();
-		$seo_title = $site['site_name'];
-		$keywords = $site['site_keyword'];
-		$description = $site['site_description'];
-		include template('mobile', 'index');
-	}
+    /**
+     * 首页
+     */
+    public function init() {
+        $seo_title = '起名网 - 专注宝宝起名取名测名字平台';
+        $keywords = '起名,宝宝起名,八字起名,诗词起名,姓名测试,公司起名,周易起名,康熙字典';
+        $description = '起名网专注科学智能宝宝起名，测名字打分平台，结合传统国学文化的智能起名系统研发和起名学术探索交流';
+        if(!defined('MODULE_THEME')) define('MODULE_THEME', 'qiming');
+        include template('mobile', 'index');
+    }
 	
 	
 	/**
