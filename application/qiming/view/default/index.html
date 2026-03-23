@@ -11,51 +11,74 @@
     <link rel="stylesheet" href="https://static.qiming.cn/style/qiming/css/indexhl.css">
 </head>
 <body>
-    <!-- Header -->
+     <!-- Header -->
     <header class="header qiming-background-default">
         <div class="navbar qiming-position-relative">
             <div class="qiming-container qiming-flex qiming-flex-middle qiming-position-relative qiming-logo-shou">
-                <a href="{U('qiming/index/init')}" class="logo qiming-display-inline-block" alt="起名网">
-                    <div class="logo-nav-night logobg"></div>
+                <a href="{U('qiming/index/init')}" class="header-home" qiming-toggle><i class="iconfont icon-menu qiming-text-bolder"></i></a>
+                <a href="{U('qiming/index/init')}" class="logo qiming-logo qiming-display-inline-block" alt="起名网">
+                    <div class="qiming-logo-nav-night logobg qiming-visible@m"></div>
+                    <div class="qiming-app-logo2 logobg2"></div>
                 </a>
                 <nav class="nav qiming-flex-1 qiming-position-relative">
                     <ul class="nav qiming-flex-1 qiming-margin-remove">
-                        <li class="menu-item menu-item-type-custom current-menu-item">
+                        <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home current-menu-item">
                             <a href="{U('qiming/index/init')}">首页</a>
                         </li>
-                        <li class="menu-item menu-item-type-custom">
+                        <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children">
                             <a href="{U('qiming/index/baobao')}">宝宝起名</a>
                         </li>
-                        <li class="menu-item menu-item-type-custom">
+                        <li class="menu-item menu-item-type-custom menu-item-object-custom current-menu-ancestor current-menu-parent menu-item-has-children">
                             <a href="{U('qiming/index/bazi')}">八字起名</a>
                         </li>
-                        <li class="menu-item menu-item-type-custom">
+                        <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children">
                             <a href="{U('qiming/index/shici')}">诗词起名</a>
                         </li>
-                        <li class="menu-item menu-item-type-custom">
+                        <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children">
                             <a href="{U('qiming/index/gaimingzi')}">成人改名</a>
                         </li>
-                        <li class="menu-item menu-item-type-custom">
+                        <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children">
                             <a href="{U('qiming/index/ceshi')}">姓名测试</a>
                         </li>
-                        <li class="menu-item menu-item-type-custom">
+                        <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children">
                             <a href="{U('qiming/index/gongsi')}">公司起名</a>
                         </li>
-                        <li class="menu-item menu-item-type-custom">
+                        <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children">
                             <a href="{U('qiming/index/zhouyi')}">周易起名</a>
                         </li>
-                        <li class="menu-item menu-item-type-custom">
+                        <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children">
                             <a href="{U('qiming/index/kxzd')}">康熙字典</a>
                         </li>
-                        <li class="menu-item menu-item-type-custom">
+                        <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children">
                             <a href="{U('qiming/index/baijiaxing')}">百家姓</a>
                         </li>
                     </ul>
                 </nav>
                 <div class="header-info qiming-flex qiming-flex-middle">
-                    <a href="javascript:;" class="qiming-toggle" id="header-search">
-                        <i class="iconfont icon-sousuo"></i>
-                    </a>
+                    <a href="#header-search" class="header-search qiming-navbar-s" qiming-toggle><i class="iconfont icon-search qiming-text-bolder"></i></a>
+                    <div id="header-search" qiming-modal>
+                        <div class="qiming-tan qiming-modal-dialog qiming-modal-body home-modal qiming-padding-remove qiming-margin-auto-vertical">
+                            <button class="qiming-modal-close-default" type="button" qiming-close></button>
+                            <div class="b-r-12 qiming-background-default qiming-overflow-hidden qiming-position-relative qiming-padding-30px">
+                                <h3>搜索</h3>
+                                <div class="search search-navbar">
+                                    <form method="get" class="b-r-4 b-a qiming-form qiming-flex qiming-overflow-hidden search-form" action="{U('qiming/index/search')}">
+                                        <input type="search" placeholder="查询字、名字或姓名" autocomplete="off" id="k" value="" name="k" required="required" class="qiming-input qiming-flex-1 qiming-text-small">
+                                        <i class="iconfont icon-search qiming-text-search"></i>
+                                        <input type="hidden" name="formType" id="searchType" value="header">
+                                    </form>
+                                </div>
+                                <div class="header-btn-search">
+                                    <div class="header-btn-search-s qiming-dt change-color btn-search-all">立即搜索</div>
+                                </div>
+                                <div class="tags-item qiming-margin-top">
+                                    <p class="qiming-margin-small-bottom qiming-text-small">搜索最多的：</p>
+                                    <a href="{U('qiming/index/kxzd')}?char=雪" class="tag-cloud-link tag-link-128 tag-link-position-1">雪</a>
+                                    <a href="{U('qiming/index/kxzd')}?char=旭" class="tag-cloud-link tag-link-128 tag-link-position-1">旭</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -443,6 +466,22 @@
         </section>
     </main>
     
+    <div class="wapnone qiming_follow_service" style="top:75%">
+        <ul>
+            <li class="qiming_follow_service_box qiming_follow_service_ax goTop qiming_footer_s">
+                <a href="#header" class="qiming-display-block" qiming-scroll><i class="iconfont icon-direction-up"></i>
+                    <div class="qiming_follow_service_ax_cont">
+                        <span class="qiming_follow_service_triangle"></span>
+                        <span>返回顶部</span>
+                    </div>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="qiming-app-gotop gotops qiming-hidden@" id="gotops">
+        <a href="#header" class="qiming-display-block" qiming-scroll><i class="iconfont icon-arrow-up-bold icontop"></i></a>
+    </div>
+    
     <!-- Footer -->
     <footer class="footer qiming-background-secondary">
         <div class="foot qiming-container qiming-padding">
@@ -474,10 +513,10 @@
                             <div class="foot-item">
                                 <div class="foot-item-title"><i class="iconfont icon-security"></i>关于我们</div>
                                 <ul class="qiming-padding-remove">
-                                    <li><a href="#">关于我们</a></li>
-                                    <li><a href="#">服务条款</a></li>
-                                    <li><a href="#">版权声明</a></li>
-                                    <li><a href="#">投诉建议</a></li>
+                                <li><a href="https://www.qiming.cn/about.html" target="_blank">关于我们</a></li>
+                                <li><a href="https://www.qiming.cn/service.html" target="_blank">服务条款</a></li>
+                                <li><a href="https://www.qiming.cn/copyright.html" target="_blank">版权声明</a></li>
+                                <li><a href="https://www.qiming.cn/busine.html" target="_blank">投诉建议</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -499,8 +538,14 @@
             <div class="qiming-container qiming-padding-small qiming-clearfix">
                 <div class="qiming-float-left">
                     <span>&copy; 2005-2025 <a href="https://www.qiming.cn/" target="_blank">www.qiming.cn</a> & All rights reserved</span>
-                    <a href="#"><img src="https://static.qiming.cn/style/qiming/images/qiming-110.png" alt="公安备案" style="height: 20px; vertical-align: middle; margin-left: 10px;"></a>
-                    <a href="https://beian.miit.gov.cn/" target="_blank" style="margin-left: 5px;">皖ICP备2024064902号</a>
+                    <a class="qiming-margin-small-right" href="#"><i class="iconfont icon-map-filling" aria-hidden="true"></i>网站地图</a>
+                    <span class="qiming-margin-small-right qiming-gongan">
+                        <img src="https://static.qiming.cn/style/qiming/images/qiming-110.png" height="6">皖公网安备34010402704531号
+                    </span>
+                    <span class="qiming-margin-small-right"><a href="https://beian.miit.gov.cn/" target="_blank" rel="noreferrer nofollow">皖ICP备2024064902号</a></span>
+                </div>
+                <div class="qiming-float-right qiming-visible@">
+                    <span><a href="https://www.qiming.cn/" target="_blank">起名网</a></span>
                 </div>
             </div>
         </div>
