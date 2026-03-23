@@ -69,12 +69,61 @@
         </nav>
         <div class="header-info">
           <a
-            href="#header-search"
-            @click.prevent
-          ><i class="iconfont icon-search" /></a>
+            href="javascript:;"
+            @click="showSearch = true"
+          >
+            <i class="iconfont icon-search" />
+          </a>
+          <a
+            href="javascript:;"
+            class="mobile-menu-btn"
+            @click="showMobileMenu = true"
+          >
+            <i class="iconfont icon-menu" />
+          </a>
         </div>
       </div>
     </header>
+
+    <div
+      class="mobile-menu-overlay"
+      :class="{ active: showMobileMenu }"
+      @click="showMobileMenu = false"
+    />
+    <div
+      class="mobile-menu"
+      :class="{ active: showMobileMenu }"
+    >
+      <div class="mobile-menu-header">
+        <img
+          src="/images/logo.png"
+          alt="起名网"
+        >
+        <a
+          href="javascript:;"
+          @click="showMobileMenu = false"
+        >
+          <i class="iconfont icon-close" />
+        </a>
+      </div>
+      <ul class="mobile-menu-list">
+        <li><router-link to="/">首页</router-link></li>
+        <li><router-link to="/baobao">宝宝起名</router-link></li>
+        <li><router-link to="/bazi">八字起名</router-link></li>
+        <li><router-link to="/shici">诗词起名</router-link></li>
+        <li><router-link to="/gaimingzi">成人改名</router-link></li>
+        <li><router-link to="/xingmingceshi">姓名测试</router-link></li>
+        <li><router-link to="/gongsiqiming">公司起名</router-link></li>
+        <li><router-link to="/zhouyi">周易起名</router-link></li>
+        <li><router-link to="/zhishi">起名知识</router-link></li>
+        <li><router-link to="/kxzd">康熙字典</router-link></li>
+        <li><router-link to="/baijiaxing">百家姓</router-link></li>
+      </ul>
+      <div class="mobile-menu-footer">
+        <router-link to="/login">登录</router-link>
+        <router-link to="/register">注册</router-link>
+      </div>
+    </div>
 
     <div class="qiming_vipbgs">
       <img
@@ -334,6 +383,8 @@ import { useRouter } from 'vue-router';
 import { message } from 'ant-design-vue';
 
 const router = useRouter();
+const showSearch = ref(false);
+const showMobileMenu = ref(false);
 
 const form = reactive({
   city: '',
@@ -366,5 +417,104 @@ const handleSubmit = () => {
   height: 49px;
   background: url('/images/logo.png') no-repeat;
   background-size: 160px auto;
+}
+
+.mobile-menu-btn {
+  display: none;
+  margin-left: 15px;
+  @media (max-width: 767px) {
+    display: inline-block;
+  }
+}
+
+.mobile-menu-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 998;
+  opacity: 0;
+  transition: opacity 0.3s;
+  &.active {
+    display: block;
+    opacity: 1;
+  }
+}
+
+.mobile-menu {
+  display: none;
+  position: fixed;
+  top: 0;
+  right: -280px;
+  width: 280px;
+  height: 100%;
+  background: #fff;
+  z-index: 999;
+  transition: right 0.3s ease;
+  overflow-y: auto;
+  &.active {
+    right: 0;
+  }
+  @media (max-width: 767px) {
+    display: block;
+  }
+}
+
+.mobile-menu-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 20px;
+  border-bottom: 1px solid #eee;
+  img {
+    height: 40px;
+  }
+  a {
+    color: #666;
+    font-size: 24px;
+  }
+}
+
+.mobile-menu-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  li {
+    border-bottom: 1px solid #f5f5f5;
+    a {
+      display: block;
+      padding: 15px 20px;
+      color: #333;
+      font-size: 15px;
+      &:hover {
+        color: #a93121;
+        background: #fafafa;
+      }
+    }
+  }
+}
+
+.mobile-menu-footer {
+  display: flex;
+  padding: 20px;
+  gap: 15px;
+  a {
+    flex: 1;
+    text-align: center;
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 14px;
+    &:first-child {
+      background: #f0f0f0;
+      color: #333;
+    }
+    &:last-child {
+      background: linear-gradient(90deg, #c92009, #e6614f);
+      color: #fff;
+    }
+  }
 }
 </style>
