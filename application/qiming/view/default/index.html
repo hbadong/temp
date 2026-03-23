@@ -6,17 +6,25 @@
     <title>{$seo_title}</title>
     <meta name="keywords" content="{$keywords}">
     <meta name="description" content="{$description}">
-    <link rel="stylesheet" href="https://static.qiming.cn/style/qiming/css/base.css">
+    <link rel="stylesheet" href="https://static.qiming.cn/style/qiming/css/font/iconfont.css">
+    <link rel="stylesheet" href="https://static.qiming.cn/style/qiming/css/uikit.css">
+    <link rel="stylesheet" href="https://static.qiming.cn/style/qiming/css/diy.css">
     <link rel="stylesheet" href="https://static.qiming.cn/style/qiming/css/qiming.css">
     <link rel="stylesheet" href="https://static.qiming.cn/style/qiming/css/indexhl.css">
+    <script src="https://static.qiming.cn/style/qiming/js/jquery.min.js"></script>
+    <script src="https://static.qiming.cn/style/qiming/js/uikit.min.js"></script>
 </head>
-<body>
+<body class="qiming-background-muted site qiming-zz-background">
     <!-- Header -->
     <header class="header qiming-background-default">
         <div class="navbar qiming-position-relative">
             <div class="qiming-container qiming-flex qiming-flex-middle qiming-position-relative qiming-logo-shou">
-                <a href="{U('qiming/index/init')}" class="logo qiming-display-inline-block" alt="起名网">
-                    <div class="logo-nav-night logobg"></div>
+                <a href="{U('qiming/index/init')}" class="header-home" qiming-toggle>
+                    <i class="iconfont icon-menu qiming-text-bolder"></i>
+                </a>
+                <a href="{U('qiming/index/init')}" class="logo qiming-logo qiming-display-inline-block" alt="起名网">
+                    <div class="qiming-logo-nav-night logobg qiming-visible@m"></div>
+                    <div class="qiming-app-logo2 logobg2"></div>
                 </a>
                 <nav class="nav qiming-flex-1 qiming-position-relative">
                     <ul class="nav qiming-flex-1 qiming-margin-remove">
@@ -45,6 +53,9 @@
                             <a href="{U('qiming/index/zhouyi')}">周易起名</a>
                         </li>
                         <li class="menu-item menu-item-type-custom">
+                            <a href="{U('qiming/index/zhishi')}">起名知识</a>
+                        </li>
+                        <li class="menu-item menu-item-type-custom">
                             <a href="{U('qiming/index/kxzd')}">康熙字典</a>
                         </li>
                         <li class="menu-item menu-item-type-custom">
@@ -53,9 +64,40 @@
                     </ul>
                 </nav>
                 <div class="header-info qiming-flex qiming-flex-middle">
-                    <a href="javascript:;" class="qiming-toggle" id="header-search">
-                        <i class="iconfont icon-sousuo"></i>
+                    <a href="#header-search" class="header-search qiming-navbar-s" qiming-toggle>
+                        <i class="iconfont icon-search qiming-text-bolder"></i>
                     </a>
+                    <div id="header-search" qiming-modal>
+                        <div class="qiming-tan qiming-modal-dialog qiming-modal-body home-modal qiming-padding-remove qiming-margin-auto-vertical">
+                            <button class="qiming-modal-close-default" type="button" qiming-close></button>
+                            <div class="b-r-12 qiming-background-default qiming-overflow-hidden qiming-position-relative qiming-padding-30px">
+                                <h3>搜索</h3>
+                                <div class="search search-navbar">
+                                    <form method="get" class="b-r-4 b-a qiming-form qiming-flex qiming-overflow-hidden search-form" action="{U('qiming/index/search')}">
+                                        <input type="search" placeholder="查询字、名字或姓名" autocomplete="off" id="k" value="" name="k" required="required" class="qiming-input qiming-flex-1 qiming-text-small">
+                                        <i class="iconfont icon-search qiming-text-search"></i>
+                                        <input type="hidden" name="formType" id="searchType" value="header">
+                                    </form>
+                                </div>
+                                <div class="header-btn-search">
+                                    <div class="header-btn-search-s qiming-dt change-color btn-search-all">立即搜索</div>
+                                </div>
+                                <div class="tags-item qiming-margin-top">
+                                    <p class="qiming-margin-small-bottom qiming-text-small">搜索最多的：</p>
+                                    <a href="{U('qiming/index/kxzd')}?char=雪" class="tag-cloud-link tag-link-128 tag-link-position-1">雪</a>
+                                    <a href="{U('qiming/index/kxzd')}?char=旭" class="tag-cloud-link tag-link-128 tag-link-position-1">旭</a>
+                                    <a href="#" class="tag-cloud-link tag-link-128 tag-link-position-1">信川</a>
+                                    <a href="#" class="tag-cloud-link tag-link-128 tag-link-position-1">煜晨</a>
+                                </div>
+                            </div>
+                            <div class="home-modal-bottom">
+                                <ul>
+                                    <li></li>
+                                    <li></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -63,62 +105,52 @@
     
     <main>
         <!-- Home Banner with Form -->
-        <div class="home_img1 qiming-container-index">
-            <div class="qiming-cm">
-                <div class="formHostName listForm mt30">
-                    <div class="listNavTab flex spb">
-                        <a href="javascript:;" class="active th">宝宝起名</a>
-                        <a href="javascript:;" class="th">姓名测试</a>
-                        <a href="javascript:;" class="th">姓名打分</a>
-                    </div>
-                    <div class="xmBodyTab">
-                        <form method="get" autocomplete="off" action="{U('qiming/index/result')}">
-                            <div class="formNameBg">
-                                <div class="formNameBody flex spb">
-                                    <div class="inputFormItemLmw">
-                                        <input type="text" id="xing" name="surname" placeholder="请输入您的姓氏" maxlength="1" required>
-                                        <div class="over_hidden sexSelect radio">
-                                            <label class="active">
-                                                <input name="gender" type="radio" value="1" checked>
-                                                <i></i>男
-                                            </label>
-                                            <label>
-                                                <input name="gender" type="radio" value="2">
-                                                <i></i>女
-                                            </label>
-                                        </div>
+        <div class="qiming_vipbgs">
+            <img src="https://static.qiming.cn/style/qiming/images/homeBanner.jpg" style="width: 100%;">
+        </div>
+        
+        <div class="qiming-container" id="page-content" style="max-width: 1200px;">
+            <div class="qiming-pages-vip">
+                <div class="qiming_portal_block_summary">
+                    <div class="formGsQm">
+                        <h1>科学智能宝宝起名</h1>
+                        <p>以先进AI技术和大数据融合千年传统起名智慧，为您提供独一无二、寓意深远的宝宝名字方案</p>
+                        <form method="get" action="{U('qiming/index/result')}">
+                            <div class="two_bd flex spb dsbl">
+                                <div class="list_bd">
+                                    <input type="text" id="xing" name="surname" size="6" placeholder="请输入您的姓氏" maxlength="1" required>
+                                    <div class="sexSelect">
+                                        <span class="active">男</span>
+                                        <span class="">女</span>
+                                        <span class="wcs">未知</span>
                                     </div>
-                                    <div class="inputFormItemLmw">
-                                        <input type="date" id="birthday" name="birthdate" class="J_datepicker input-birthday" required>
-                                    </div>
-                                    <div class="inputFormItemLmw">
-                                        <select name="birthtime" class="input-birthday">
-                                            <option value="0">子时(23-01点)</option>
-                                            <option value="1">丑时(01-03点)</option>
-                                            <option value="2">寅时(03-05点)</option>
-                                            <option value="3">卯时(05-07点)</option>
-                                            <option value="4">辰时(07-09点)</option>
-                                            <option value="5">巳时(09-11点)</option>
-                                            <option value="6">午时(11-13点)</option>
-                                            <option value="7">未时(13-15点)</option>
-                                            <option value="8">申时(15-17点)</option>
-                                            <option value="9">酉时(17-19点)</option>
-                                            <option value="10">戌时(19-21点)</option>
-                                            <option value="11">亥时(21-23点)</option>
-                                        </select>
-                                    </div>
+                                    <input class="sexInput" id="sex" name="gender" type="hidden" value="1">
                                 </div>
-                                <a class="tabSubmit" href="javascript:;" onclick="this.parentElement.parentElement.submit();">立即宝宝起名</a>
+                                <div class="list_bd">
+                                    <input type="text" id="birthday" class="J_datepicker input-birthday" name="birth_time" readonly placeholder="请选择出生日期" required>
+                                    <input type="hidden" name="birthday" id="b_input" value="">
+                                    <input type="hidden" name="hour" id="h_input" value="">
+                                    <img src="https://static.qiming.cn/style/qiming/images/xl.png" alt="">
+                                </div>
+                            </div>
+                            <div class="list_bd bfb">
+                                <input type="text" name="birth_address" id="cs" class="cs" placeholder="请选择出生地" readonly>
+                                <input type="hidden" name="city_code" id="harea" value="">
+                                <img src="https://static.qiming.cn/style/qiming/images/xl.png" alt="">
+                            </div>
+                            <input type="hidden" name="type" id="type" value="bbqm">
+                            <a class="qmbtn" href="javascript:;" onclick="this.parentElement.submit();">立即起名</a>
+                            <div class="lunpan_box">
+                                <div class="lunpan">
+                                    <img src="https://static.qiming.cn/style/qiming/images/luopan.png">
+                                    <img src="https://static.qiming.cn/style/qiming/images/zhizheng.png">
+                                </div>
+                                <div class="lunpan_color"></div>
                             </div>
                         </form>
                     </div>
                 </div>
-                <div class="lunpan_box" style="display:none;">
-                    <img src="https://static.qiming.cn/style/qiming/images/luopan.png" alt="">
-                    <img src="https://static.qiming.cn/style/qiming/images/zhizheng.png" alt="">
-                </div>
             </div>
-        </div>
         
         <!-- Service Icon Grid -->
         <section class="aui-scrollView">
@@ -359,6 +391,24 @@
                 </div>
             </div>
         </section>
+        <div class="wapnone qiming_follow_service" style="top:75%">
+            <ul>
+                <li class="qiming_follow_service_box qiming_follow_service_ax goTop qiming_footer_s">
+                    <a href="#header" class="qiming-display-block" qiming-scroll>
+                        <i class="iconfont icon-direction-up"></i>
+                        <div class="qiming_follow_service_ax_cont">
+                            <span class="qiming_follow_service_triangle"></span>
+                            <span>返回顶部</span>
+                        </div>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="qiming-app-gotop gotops qiming-hidden@s" id="gotops">
+            <a href="#header" class="qiming-display-block" qiming-scroll>
+                <i class="iconfont icon-arrow-up-bold icontop"></i>
+            </a>
+        </div>
     </main>
     
     <!-- Footer -->
@@ -370,21 +420,21 @@
                         <a href="{U('qiming/index/init')}" target="_blank" class="foot-logo qiming-display-block">
                             <img src="https://static.qiming.cn/style/qiming/images/logo_foot.png" alt="起名网">
                         </a>
-                        <p class="qiming-text-small" style="color: #ccc; line-height: 1.8;">起名网专注科学智能宝宝起名，测名字打分平台，结合传统国学文化的智能起名系统研发和起名学术探索交流，以"只为一个好名字"为宗旨，潜心研发，百次升级，千万级大数据分析，助您轻松起好名。</p>
+                        <p class="qiming-text-small">起名网专注科学智能宝宝起名，测名字打分平台，结合传统国学文化的智能起名系统研发和起名学术探索交流，以"只为一个好名字"为宗旨，潜心研发，百次升级，千万级大数据分析，助您轻松起好名。</p>
                     </div>
                 </div>
-                <div class="qiming-width-2-3 qiming-visible@">
+                <div class="qiming-width-2-3 qiming-visible@s">
                     <div class="qiming-grid" qiming-grid>
                         <div class="qiming-width-1-3">
                             <div class="foot-item">
                                 <div class="foot-item-title"><i class="iconfont icon-security"></i>快捷导航</div>
                                 <ul class="qiming-padding-remove">
-                                    <li><a href="{U('qiming/index/baobao')}">宝宝起名</a></li>
-                                    <li><a href="{U('qiming/index/bazi')}">八字起名</a></li>
-                                    <li><a href="{U('qiming/index/zhouyi')}">周易起名</a></li>
-                                    <li><a href="{U('qiming/index/kxzd')}">康熙字典</a></li>
-                                    <li><a href="{U('qiming/index/gongsi')}">公司起名</a></li>
-                                    <li><a href="{U('qiming/index/ceshi')}">姓名测试</a></li>
+                                    <li><a href="{U('qiming/index/baobao')}" target="_blank">宝宝起名</a></li>
+                                    <li><a href="{U('qiming/index/bazi')}" target="_blank">八字起名</a></li>
+                                    <li><a href="{U('qiming/index/zhouyi')}" target="_blank">周易起名</a></li>
+                                    <li><a href="{U('qiming/index/kxzd')}" target="_blank">康熙字典</a></li>
+                                    <li><a href="{U('qiming/index/gongsi')}" target="_blank">公司起名</a></li>
+                                    <li><a href="{U('qiming/index/ceshi')}" target="_blank">姓名测试</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -392,16 +442,16 @@
                             <div class="foot-item">
                                 <div class="foot-item-title"><i class="iconfont icon-security"></i>关于我们</div>
                                 <ul class="qiming-padding-remove">
-                                    <li><a href="#">关于我们</a></li>
-                                    <li><a href="#">服务条款</a></li>
-                                    <li><a href="#">版权声明</a></li>
-                                    <li><a href="#">投诉建议</a></li>
+                                    <li><a href="#" target="_blank">关于我们</a></li>
+                                    <li><a href="#" target="_blank">服务条款</a></li>
+                                    <li><a href="#" target="_blank">版权声明</a></li>
+                                    <li><a href="#" target="_blank">投诉建议</a></li>
                                 </ul>
                             </div>
                         </div>
                         <div class="qiming-width-1-3">
                             <div class="foot-item">
-                                <div class="foot-item-title"><i class="iconfont icon-link"></i>友情链接</div>
+                                <div class="foot-item-title"><i class="iconfont icon-security"></i>友情链接</div>
                                 <ul class="qiming-padding-remove">
                                     <li><a href="https://zidian.qiming.cn/" target="_blank">汉语字典</a></li>
                                     <li><a href="https://cidian.qiming.cn/" target="_blank">汉语词典</a></li>
@@ -416,42 +466,18 @@
         <div class="foot-cop">
             <div class="qiming-container qiming-padding-small qiming-clearfix">
                 <div class="qiming-float-left">
-                    <span>&copy; 2005-2025 <a href="https://www.qiming.cn/" target="_blank">www.qiming.cn</a> & All rights reserved</span>
-                    <a href="#"><img src="https://static.qiming.cn/style/qiming/images/qiming-110.png" alt="公安备案" style="height: 20px; vertical-align: middle; margin-left: 10px;"></a>
-                    <a href="https://beian.miit.gov.cn/" target="_blank" style="margin-left: 5px;">皖ICP备2024064902号</a>
+                    <span>&copy; 2005-2025 <a href="https://www.qiming.cn/" title="起名网" target="_blank">www.qiming.cn</a> & All rights reserved</span>
+                    <a class="qiming-margin-small-right" href="#" target="_blank"><i class="iconfont icon-map-filling" aria-hidden="true"></i>网站地图</a>
+                    <span class="qiming-margin-small-right qiming-gongan"><img src="https://static.qiming.cn/style/qiming/images/qiming-110.png" height="6">皖公网安备34010402704531号</span>
+                    <span class="qiming-margin-small-right"><a href="https://beian.miit.gov.cn/" target="_blank" rel="noreferrer nofollow">皖ICP备2024064902号</a></span>
+                </div>
+                <div class="qiming-float-right qiming-visible@s">
+                    <span><a href="https://www.qiming.cn/" target="_blank">起名网</a></span>
                 </div>
             </div>
         </div>
     </footer>
     
-    <script src="https://static.qiming.cn/style/qiming/js/jquery.min.js"></script>
-    <script src="https://static.qiming.cn/style/qiming/js/uikit.min.js"></script>
     <script src="https://static.qiming.cn/style/qiming/js/common.js"></script>
-    <script>
-        // Tab switching for form
-        document.querySelectorAll('.listNavTab .th').forEach(function(tab, index) {
-            tab.addEventListener('click', function() {
-                document.querySelectorAll('.listNavTab .th').forEach(t => t.classList.remove('active'));
-                this.classList.add('active');
-            });
-        });
-        
-        // Tab switching for rankings
-        document.querySelectorAll('.qiming-cat-switcher li').forEach(function(tab, index) {
-            tab.addEventListener('click', function() {
-                document.querySelectorAll('.qiming-cat-switcher li').forEach(t => t.classList.remove('active'));
-                this.classList.add('active');
-            });
-        });
-        
-        // Sex radio button
-        document.querySelectorAll('.sexSelect label').forEach(function(label) {
-            label.addEventListener('click', function() {
-                document.querySelectorAll('.sexSelect label').forEach(l => l.classList.remove('active'));
-                this.classList.add('active');
-                this.querySelector('input').checked = true;
-            });
-        });
-    </script>
 </body>
 </html>

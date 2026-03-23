@@ -3,201 +3,329 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>百家姓 - 起名网</title>
+    <title>{$seo_title}</title>
     <meta name="keywords" content="百家姓,姓氏查询,姓氏来源,起名网">
     <meta name="description" content="百家姓为您提供最全面的姓氏查询服务，包括姓氏来源、姓氏排名、姓氏名人等信息">
-    <link rel="stylesheet" href="https://static.qiming.cn/style/qiming/css/base.css">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: "Microsoft YaHei", Arial, sans-serif; color: #333; line-height: 1.6; }
-        a { text-decoration: none; color: inherit; }
-        a:hover { color: #ff6600; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 15px; }
-        
-        .header { background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
-        .header-main { padding: 15px 0; display: flex; align-items: center; justify-content: space-between; }
-        .logo { font-size: 28px; font-weight: bold; color: #ff6600; }
-        .logo span { color: #333; }
-        .nav { display: flex; gap: 30px; }
-        .nav a { font-size: 16px; padding: 5px 0; }
-        
-        .page-header { background: linear-gradient(135deg, #ff6600, #ff8533); color: #fff; padding: 60px 0; text-align: center; }
-        .page-header h1 { font-size: 36px; margin-bottom: 15px; }
-        .page-header p { font-size: 18px; opacity: 0.9; }
-        
-        .search-section { padding: 60px 0; background: #f9f9f9; }
-        .search-box { background: #fff; border-radius: 10px; padding: 40px; max-width: 600px; margin: 0 auto; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .search-box h2 { font-size: 24px; margin-bottom: 20px; }
-        .search-form { display: flex; gap: 10px; justify-content: center; }
-        .search-form input { padding: 12px 20px; border: 1px solid #ddd; border-radius: 5px; font-size: 16px; width: 300px; }
-        .search-form button { padding: 12px 30px; background: #ff6600; color: #fff; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; }
-        .search-form button:hover { background: #e55a00; }
-        
-        .surname-section { padding: 60px 0; }
-        .surname-section h2 { text-align: center; font-size: 28px; margin-bottom: 30px; }
-        .surname-grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 15px; }
-        .surname-item { background: #fff; border: 1px solid #eee; border-radius: 5px; padding: 15px 10px; text-align: center; transition: all 0.3s; }
-        .surname-item:hover { background: #ff6600; color: #fff; transform: translateY(-3px); box-shadow: 0 3px 10px rgba(255,102,0,0.3); }
-        .surname-item .char { font-size: 24px; font-weight: bold; display: block; }
-        .surname-item .count { font-size: 12px; color: #999; margin-top: 5px; }
-        .surname-item:hover .count { color: rgba(255,255,255,0.8); }
-        
-        .ranking-section { padding: 60px 0; background: #f9f9f9; }
-        .ranking-section h2 { text-align: center; font-size: 28px; margin-bottom: 30px; }
-        .ranking-table { background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.05); max-width: 800px; margin: 0 auto; }
-        .ranking-table table { width: 100%; border-collapse: collapse; }
-        .ranking-table th { background: #ff6600; color: #fff; padding: 15px; text-align: left; }
-        .ranking-table td { padding: 12px 15px; border-bottom: 1px solid #eee; }
-        .ranking-table tr:hover { background: #fff3e6; }
-        .ranking-table .rank { font-weight: bold; color: #ff6600; }
-        
-        .footer { background: #333; color: #fff; padding: 50px 0 20px; }
-        .footer-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px; margin-bottom: 40px; }
-        .footer h4 { margin-bottom: 20px; font-size: 18px; color: #fff; }
-        .footer a { display: block; color: #ccc; padding: 5px 0; font-size: 14px; transition: color 0.3s; }
-        .footer a:hover { color: #ff6600; }
-        .footer-bottom { text-align: center; padding-top: 30px; border-top: 1px solid #444; color: #999; font-size: 14px; }
-        .footer-logo { font-size: 24px; color: #ff6600; font-weight: bold; margin-bottom: 15px; }
-        
-        @media (max-width: 768px) {
-            .header-main { flex-direction: column; gap: 15px; }
-            .nav { flex-wrap: wrap; justify-content: center; gap: 15px; }
-            .surname-grid { grid-template-columns: repeat(5, 1fr); }
-            .footer-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-    </style>
+    <link rel="stylesheet" href="https://static.qiming.cn/style/qiming/css/font/iconfont.css">
+    <link rel="stylesheet" href="https://static.qiming.cn/style/qiming/css/uikit.css">
+    <link rel="stylesheet" href="https://static.qiming.cn/style/qiming/css/diy.css">
+    <link rel="stylesheet" href="https://static.qiming.cn/style/qiming/css/qiming.css">
+    <script src="https://static.qiming.cn/style/qiming/js/jquery.min.js"></script>
+    <script src="https://static.qiming.cn/style/qiming/js/uikit.min.js"></script>
 </head>
-<body>
-    <header class="header">
-        <div class="container">
-            <div class="header-main">
-                <div class="logo">起名网<span>-专注宝宝起名</span></div>
-                <nav class="nav">
-                    <a href="{U('qiming/index/init')}">首页</a>
-                    <a href="{U('qiming/index/baobao')}">宝宝起名</a>
-                    <a href="{U('qiming/index/bazi')}">八字起名</a>
-                    <a href="{U('qiming/index/shici')}">诗词起名</a>
-                    <a href="{U('qiming/index/gaimingzi')}">成人改名</a>
-                    <a href="{U('qiming/index/ceshi')}">姓名测试</a>
-                    <a href="{U('qiming/index/gongsi')}">公司起名</a>
-                    <a href="{U('qiming/index/zhouyi')}">周易起名</a>
-                    <a href="{U('qiming/index/kxzd')}">康熙字典</a>
-                    <a href="{U('qiming/index/baijiaxing')}">百家姓</a>
+<body class="qiming-background-muted site qiming-zz-background">
+    <!-- Header -->
+    <header class="header qiming-background-default">
+        <div class="navbar qiming-position-relative">
+            <div class="qiming-container qiming-flex qiming-flex-middle qiming-position-relative qiming-logo-shou">
+                <a href="{U('qiming/index/init')}" class="header-home" qiming-toggle>
+                    <i class="iconfont icon-menu qiming-text-bolder"></i>
+                </a>
+                <a href="{U('qiming/index/init')}" class="logo qiming-logo qiming-display-inline-block" alt="起名网">
+                    <div class="qiming-logo-nav-night logobg qiming-visible@m"></div>
+                    <div class="qiming-app-logo2 logobg2"></div>
+                </a>
+                <nav class="nav qiming-flex-1 qiming-position-relative">
+                    <ul class="nav qiming-flex-1 qiming-margin-remove">
+                        <li class="menu-item menu-item-type-custom">
+                            <a href="{U('qiming/index/init')}">首页</a>
+                        </li>
+                        <li class="menu-item menu-item-type-custom">
+                            <a href="{U('qiming/index/baobao')}">宝宝起名</a>
+                        </li>
+                        <li class="menu-item menu-item-type-custom">
+                            <a href="{U('qiming/index/bazi')}">八字起名</a>
+                        </li>
+                        <li class="menu-item menu-item-type-custom">
+                            <a href="{U('qiming/index/shici')}">诗词起名</a>
+                        </li>
+                        <li class="menu-item menu-item-type-custom">
+                            <a href="{U('qiming/index/gaimingzi')}">成人改名</a>
+                        </li>
+                        <li class="menu-item menu-item-type-custom">
+                            <a href="{U('qiming/index/ceshi')}">姓名测试</a>
+                        </li>
+                        <li class="menu-item menu-item-type-custom">
+                            <a href="{U('qiming/index/gongsi')}">公司起名</a>
+                        </li>
+                        <li class="menu-item menu-item-type-custom">
+                            <a href="{U('qiming/index/zhouyi')}">周易起名</a>
+                        </li>
+                        <li class="menu-item menu-item-type-custom">
+                            <a href="{U('qiming/index/zhishi')}">起名知识</a>
+                        </li>
+                        <li class="menu-item menu-item-type-custom">
+                            <a href="{U('qiming/index/kxzd')}">康熙字典</a>
+                        </li>
+                        <li class="menu-item menu-item-type-custom current-menu-item">
+                            <a href="{U('qiming/index/baijiaxing')}">百家姓</a>
+                        </li>
+                    </ul>
                 </nav>
+                <div class="header-info qiming-flex qiming-flex-middle">
+                    <a href="#header-search" class="header-search qiming-navbar-s" qiming-toggle>
+                        <i class="iconfont icon-search qiming-text-bolder"></i>
+                    </a>
+                    <div id="header-search" qiming-modal>
+                        <div class="qiming-tan qiming-modal-dialog qiming-modal-body home-modal qiming-padding-remove qiming-margin-auto-vertical">
+                            <button class="qiming-modal-close-default" type="button" qiming-close></button>
+                            <div class="b-r-12 qiming-background-default qiming-overflow-hidden qiming-position-relative qiming-padding-30px">
+                                <h3>搜索</h3>
+                                <div class="search search-navbar">
+                                    <form method="get" class="b-r-4 b-a qiming-form qiming-flex qiming-overflow-hidden search-form" action="{U('qiming/index/search')}">
+                                        <input type="search" placeholder="查询字、名字或姓名" autocomplete="off" id="k" value="" name="k" required="required" class="qiming-input qiming-flex-1 qiming-text-small">
+                                        <i class="iconfont icon-search qiming-text-search"></i>
+                                        <input type="hidden" name="formType" id="searchType" value="header">
+                                    </form>
+                                </div>
+                                <div class="header-btn-search">
+                                    <div class="header-btn-search-s qiming-dt change-color btn-search-all">立即搜索</div>
+                                </div>
+                                <div class="tags-item qiming-margin-top">
+                                    <p class="qiming-margin-small-bottom qiming-text-small">搜索最多的：</p>
+                                    <a href="{U('qiming/index/kxzd')}?char=雪" class="tag-cloud-link tag-link-128 tag-link-position-1">雪</a>
+                                    <a href="{U('qiming/index/kxzd')}?char=旭" class="tag-cloud-link tag-link-128 tag-link-position-1">旭</a>
+                                    <a href="#" class="tag-cloud-link tag-link-128 tag-link-position-1">信川</a>
+                                    <a href="#" class="tag-cloud-link tag-link-128 tag-link-position-1">煜晨</a>
+                                </div>
+                            </div>
+                            <div class="home-modal-bottom">
+                                <ul>
+                                    <li></li>
+                                    <li></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </header>
     
-    <section class="page-header">
-        <div class="container">
-            <h1>百家姓</h1>
-            <p>最全面的姓氏查询服务，了解姓氏来源、传承家族文化</p>
-        </div>
-    </section>
+    <div class="qiming_vipbgs">
+        <img src="https://static.qiming.cn/style/qiming/images/bjxBanner.jpg" style="width: 100%;">
+    </div>
     
-    <section class="search-section">
-        <div class="container">
-            <div class="search-box">
-                <h2>搜索姓氏</h2>
-                <form class="search-form" action="{U('qiming/index/baijiaxing')}" method="get">
-                    <input type="text" name="surname" placeholder="请输入姓氏" maxlength="1">
-                    <button type="submit">搜索</button>
-                </form>
-            </div>
-        </div>
-    </section>
-    
-    <section class="surname-section">
-        <div class="container">
-            <h2>常见姓氏</h2>
-            <div class="surname-grid">
-                <a href="#" class="surname-item"><span class="char">王</span><span class="count">约1000万</span></a>
-                <a href="#" class="surname-item"><span class="char">李</span><span class="count">约950万</span></a>
-                <a href="#" class="surname-item"><span class="char">张</span><span class="count">约900万</span></a>
-                <a href="#" class="surname-item"><span class="char">刘</span><span class="count">约750万</span></a>
-                <a href="#" class="surname-item"><span class="char">陈</span><span class="count">约600万</span></a>
-                <a href="#" class="surname-item"><span class="char">杨</span><span class="count">约450万</span></a>
-                <a href="#" class="surname-item"><span class="char">赵</span><span class="count">约400万</span></a>
-                <a href="#" class="surname-item"><span class="char">黄</span><span class="count">约350万</span></a>
-                <a href="#" class="surname-item"><span class="char">周</span><span class="count">约300万</span></a>
-                <a href="#" class="surname-item"><span class="char">吴</span><span class="count">约280万</span></a>
-                <a href="#" class="surname-item"><span class="char">徐</span><span class="count">约250万</span></a>
-                <a href="#" class="surname-item"><span class="char">孙</span><span class="count">约220万</span></a>
-                <a href="#" class="surname-item"><span class="char">胡</span><span class="count">约200万</span></a>
-                <a href="#" class="surname-item"><span class="char">朱</span><span class="count">约180万</span></a>
-                <a href="#" class="surname-item"><span class="char">高</span><span class="count">约170万</span></a>
-                <a href="#" class="surname-item"><span class="char">林</span><span class="count">约160万</span></a>
-                <a href="#" class="surname-item"><span class="char">何</span><span class="count">约150万</span></a>
-                <a href="#" class="surname-item"><span class="char">郭</span><span class="count">约140万</span></a>
-                <a href="#" class="surname-item"><span class="char">马</span><span class="count">约130万</span></a>
-                <a href="#" class="surname-item"><span class="char">罗</span><span class="count">约120万</span></a>
-            </div>
-        </div>
-    </section>
-    
-    <section class="ranking-section">
-        <div class="container">
-            <h2>百家姓排名</h2>
-            <div class="ranking-table">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>排名</th>
-                            <th>姓氏</th>
-                            <th>人口约数</th>
-                            <th>占比</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td class="rank">1</td><td>王</td><td>约1000万</td><td>7.4%</td></tr>
-                        <tr><td class="rank">2</td><td>李</td><td>约950万</td><td>7.1%</td></tr>
-                        <tr><td class="rank">3</td><td>张</td><td>约900万</td><td>6.7%</td></tr>
-                        <tr><td class="rank">4</td><td>刘</td><td>约750万</td><td>5.6%</td></tr>
-                        <tr><td class="rank">5</td><td>陈</td><td>约600万</td><td>4.5%</td></tr>
-                        <tr><td class="rank">6</td><td>杨</td><td>约450万</td><td>3.4%</td></tr>
-                        <tr><td class="rank">7</td><td>赵</td><td>约400万</td><td>3.0%</td></tr>
-                        <tr><td class="rank">8</td><td>黄</td><td>约350万</td><td>2.6%</td></tr>
-                        <tr><td class="rank">9</td><td>周</td><td>约300万</td><td>2.2%</td></tr>
-                        <tr><td class="rank">10</td><td>吴</td><td>约280万</td><td>2.1%</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </section>
-    
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-grid">
-                <div>
-                    <div class="footer-logo">起名网</div>
-                    <p style="color:#ccc; font-size:14px;">专注科学智能宝宝起名，测名字打分平台，结合传统国学文化的智能起名系统研发。</p>
-                </div>
-                <div>
-                    <h4>快捷导航</h4>
-                    <a href="{U('qiming/index/baobao')}">宝宝起名</a>
-                    <a href="{U('qiming/index/bazi')}">八字起名</a>
-                    <a href="{U('qiming/index/zhouyi')}">周易起名</a>
-                    <a href="{U('qiming/index/kxzd')}">康熙字典</a>
-                </div>
-                <div>
-                    <h4>关于我们</h4>
-                    <a href="#">关于我们</a>
-                    <a href="#">服务条款</a>
-                    <a href="#">版权声明</a>
-                    <a href="#">投诉建议</a>
-                </div>
-                <div>
-                    <h4>友情链接</h4>
-                    <a href="https://zidian.qiming.cn/" target="_blank">汉语字典</a>
-                    <a href="https://cidian.qiming.cn/" target="_blank">汉语词典</a>
-                    <a href="https://chengyu.qiming.cn/" target="_blank">成语大全</a>
+    <div class="qiming-container" id="page-content">
+        <div class="qiming-pages-vip">
+            <div class="qiming_portal_block_summary">
+                <div class="formGsQm">
+                    <h1>百家姓</h1>
+                    <p>最全面的姓氏查询服务，了解姓氏来源、传承家族文化</p>
+                    <form method="get" action="{U('qiming/index/baijiaxing')}">
+                        <div class="two_bd flex spb dsbl">
+                            <div class="list_bd">
+                                <input type="text" name="surname" placeholder="请输入姓氏" maxlength="1" required>
+                            </div>
+                        </div>
+                        <a class="qmbtn" href="javascript:;" onclick="this.parentElement.submit();">搜索</a>
+                    </form>
                 </div>
             </div>
-            <div class="footer-bottom">
-                <p>&copy; 2005-2025 www.qiming.cn & All rights reserved</p>
-                <p>皖公网安备34010402704531号 | 皖ICP备2024064902号</p>
+        </div>
+        
+        <div class="qiming-container qiming-margin-top-30">
+            <div class="qiming-background-default qiming-padding-app qiming-margin-medium-bottom">
+                <h2 class="qiming-text-center qiming-margin-bottom-20">常见姓氏</h2>
+                <div qiming-grid>
+                    <div class="qiming-width-1-5@m qiming-width-1-10@l">
+                        <a href="#" class="qiming-display-block qiming-text-center qiming-padding-small qiming-background-default qiming-margin-bottom-10 qiming-border">
+                            <span class="qiming-display-block qiming-h4">王</span>
+                            <span class="qiming-text-small qiming-text-muted">约1000万</span>
+                        </a>
+                    </div>
+                    <div class="qiming-width-1-5@m qiming-width-1-10@l">
+                        <a href="#" class="qiming-display-block qiming-text-center qiming-padding-small qiming-background-default qiming-margin-bottom-10 qiming-border">
+                            <span class="qiming-display-block qiming-h4">李</span>
+                            <span class="qiming-text-small qiming-text-muted">约950万</span>
+                        </a>
+                    </div>
+                    <div class="qiming-width-1-5@m qiming-width-1-10@l">
+                        <a href="#" class="qiming-display-block qiming-text-center qiming-padding-small qiming-background-default qiming-margin-bottom-10 qiming-border">
+                            <span class="qiming-display-block qiming-h4">张</span>
+                            <span class="qiming-text-small qiming-text-muted">约900万</span>
+                        </a>
+                    </div>
+                    <div class="qiming-width-1-5@m qiming-width-1-10@l">
+                        <a href="#" class="qiming-display-block qiming-text-center qiming-padding-small qiming-background-default qiming-margin-bottom-10 qiming-border">
+                            <span class="qiming-display-block qiming-h4">刘</span>
+                            <span class="qiming-text-small qiming-text-muted">约750万</span>
+                        </a>
+                    </div>
+                    <div class="qiming-width-1-5@m qiming-width-1-10@l">
+                        <a href="#" class="qiming-display-block qiming-text-center qiming-padding-small qiming-background-default qiming-margin-bottom-10 qiming-border">
+                            <span class="qiming-display-block qiming-h4">陈</span>
+                            <span class="qiming-text-small qiming-text-muted">约600万</span>
+                        </a>
+                    </div>
+                    <div class="qiming-width-1-5@m qiming-width-1-10@l">
+                        <a href="#" class="qiming-display-block qiming-text-center qiming-padding-small qiming-background-default qiming-margin-bottom-10 qiming-border">
+                            <span class="qiming-display-block qiming-h4">杨</span>
+                            <span class="qiming-text-small qiming-text-muted">约450万</span>
+                        </a>
+                    </div>
+                    <div class="qiming-width-1-5@m qiming-width-1-10@l">
+                        <a href="#" class="qiming-display-block qiming-text-center qiming-padding-small qiming-background-default qiming-margin-bottom-10 qiming-border">
+                            <span class="qiming-display-block qiming-h4">赵</span>
+                            <span class="qiming-text-small qiming-text-muted">约400万</span>
+                        </a>
+                    </div>
+                    <div class="qiming-width-1-5@m qiming-width-1-10@l">
+                        <a href="#" class="qiming-display-block qiming-text-center qiming-padding-small qiming-background-default qiming-margin-bottom-10 qiming-border">
+                            <span class="qiming-display-block qiming-h4">黄</span>
+                            <span class="qiming-text-small qiming-text-muted">约350万</span>
+                        </a>
+                    </div>
+                    <div class="qiming-width-1-5@m qiming-width-1-10@l">
+                        <a href="#" class="qiming-display-block qiming-text-center qiming-padding-small qiming-background-default qiming-margin-bottom-10 qiming-border">
+                            <span class="qiming-display-block qiming-h4">周</span>
+                            <span class="qiming-text-small qiming-text-muted">约300万</span>
+                        </a>
+                    </div>
+                    <div class="qiming-width-1-5@m qiming-width-1-10@l">
+                        <a href="#" class="qiming-display-block qiming-text-center qiming-padding-small qiming-background-default qiming-margin-bottom-10 qiming-border">
+                            <span class="qiming-display-block qiming-h4">吴</span>
+                            <span class="qiming-text-small qiming-text-muted">约280万</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="qiming-pages-web-yw-box qiming-background-default">
+            <div class="qiming-container">
+                <div class="web-yw-box-title">
+                    <span>百家姓排名</span>
+                    <p>"了解姓氏排名，传承家族文化"</p>
+                </div>
+                <div class="qiming-margin-top-30">
+                    <div class="qiming-flex qiming-flex-middle qiming-padding-small qiming-border-bottom">
+                        <span class="qiming-margin-right qiming-text-muted" style="width:50px;">排名</span>
+                        <span class="qiming-margin-right qiming-flex-1">姓氏</span>
+                        <span class="qiming-margin-right">人口约数</span>
+                        <span>占比</span>
+                    </div>
+                    <div class="qiming-flex qiming-flex-middle qiming-padding-small qiming-background-default qiming-border-bottom">
+                        <span class="qiming-margin-right qiming-text-muted" style="width:50px;">1</span>
+                        <span class="qiming-margin-right qiming-flex-1">王</span>
+                        <span class="qiming-margin-right">约1000万</span>
+                        <span>7.4%</span>
+                    </div>
+                    <div class="qiming-flex qiming-flex-middle qiming-padding-small qiming-background-default qiming-border-bottom">
+                        <span class="qiming-margin-right qiming-text-muted" style="width:50px;">2</span>
+                        <span class="qiming-margin-right qiming-flex-1">李</span>
+                        <span class="qiming-margin-right">约950万</span>
+                        <span>7.1%</span>
+                    </div>
+                    <div class="qiming-flex qiming-flex-middle qiming-padding-small qiming-background-default qiming-border-bottom">
+                        <span class="qiming-margin-right qiming-text-muted" style="width:50px;">3</span>
+                        <span class="qiming-margin-right qiming-flex-1">张</span>
+                        <span class="qiming-margin-right">约900万</span>
+                        <span>6.7%</span>
+                    </div>
+                    <div class="qiming-flex qiming-flex-middle qiming-padding-small qiming-background-default qiming-border-bottom">
+                        <span class="qiming-margin-right qiming-text-muted" style="width:50px;">4</span>
+                        <span class="qiming-margin-right qiming-flex-1">刘</span>
+                        <span class="qiming-margin-right">约750万</span>
+                        <span>5.6%</span>
+                    </div>
+                    <div class="qiming-flex qiming-flex-middle qiming-padding-small qiming-background-default qiming-border-bottom">
+                        <span class="qiming-margin-right qiming-text-muted" style="width:50px;">5</span>
+                        <span class="qiming-margin-right qiming-flex-1">陈</span>
+                        <span class="qiming-margin-right">约600万</span>
+                        <span>4.5%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="wapnone qiming_follow_service" style="top:75%">
+        <ul>
+            <li class="qiming_follow_service_box qiming_follow_service_ax goTop qiming_footer_s">
+                <a href="#header" class="qiming-display-block" qiming-scroll>
+                    <i class="iconfont icon-direction-up"></i>
+                    <div class="qiming_follow_service_ax_cont">
+                        <span class="qiming_follow_service_triangle"></span>
+                        <span>返回顶部</span>
+                    </div>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="qiming-app-gotop gotops qiming-hidden@s" id="gotops">
+        <a href="#header" class="qiming-display-block" qiming-scroll>
+            <i class="iconfont icon-arrow-up-bold icontop"></i>
+        </a>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="footer qiming-background-secondary">
+        <div class="foot qiming-container qiming-padding">
+            <div class="qiming-grid" qiming-grid>
+                <div class="qiming-width-1-1@s qiming-width-1-3@xl">
+                    <div class="foot-item foot-item-first qiming-position-relative qiming-flex">
+                        <a href="{U('qiming/index/init')}" target="_blank" class="foot-logo qiming-display-block">
+                            <img src="https://static.qiming.cn/style/qiming/images/logo_foot.png">
+                        </a>
+                        <p class="qiming-text-small">起名网专注科学智能宝宝起名，测名字打分平台，结合传统国学文化的智能起名系统研发和起名学术探索交流，以"只为一个好名字"为宗旨，潜心研发，百次升级，千万级大数据分析，助您轻松起好名。</p>
+                    </div>
+                </div>
+                <div class="qiming-width-2-3 qiming-visible@s">
+                    <div class="qiming-grid" qiming-grid>
+                        <div class="qiming-width-1-3">
+                            <div class="foot-item">
+                                <div class="foot-item-title"><i class="iconfont icon-security"></i>快捷导航</div>
+                                <ul class="qiming-padding-remove">
+                                    <li><a href="{U('qiming/index/baobao')}" target="_blank">宝宝起名</a></li>
+                                    <li><a href="{U('qiming/index/bazi')}" target="_blank">八字起名</a></li>
+                                    <li><a href="{U('qiming/index/zhouyi')}" target="_blank">周易起名</a></li>
+                                    <li><a href="{U('qiming/index/kxzd')}" target="_blank">康熙字典</a></li>
+                                    <li><a href="{U('qiming/index/gongsi')}" target="_blank">公司起名</a></li>
+                                    <li><a href="{U('qiming/index/ceshi')}" target="_blank">姓名测试</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="qiming-width-1-3">
+                            <div class="foot-item">
+                                <div class="foot-item-title"><i class="iconfont icon-security"></i>关于我们</div>
+                                <ul class="qiming-padding-remove">
+                                    <li><a href="#" target="_blank">关于我们</a></li>
+                                    <li><a href="#" target="_blank">服务条款</a></li>
+                                    <li><a href="#" target="_blank">版权声明</a></li>
+                                    <li><a href="#" target="_blank">投诉建议</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="qiming-width-1-3">
+                            <div class="foot-item">
+                                <div class="foot-item-title"><i class="iconfont icon-security"></i>友情链接</div>
+                                <ul class="qiming-padding-remove">
+                                    <li><a href="https://zidian.qiming.cn/" target="_blank">汉语字典</a></li>
+                                    <li><a href="https://cidian.qiming.cn/" target="_blank">汉语词典</a></li>
+                                    <li><a href="https://chengyu.qiming.cn/" target="_blank">成语大全</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="foot-cop">
+            <div class="qiming-container qiming-padding-small qiming-clearfix">
+                <div class="qiming-float-left">
+                    <span>&copy; 2005-2025 <a href="https://www.qiming.cn/" title="起名网" target="_blank">www.qiming.cn</a> &amp; All rights reserved</span>
+                    <a class="qiming-margin-small-right" href="#" target="_blank"><i class="iconfont icon-map-filling" aria-hidden="true"></i>网站地图</a>
+                    <span class="qiming-margin-small-right qiming-gongan"><img src="https://static.qiming.cn/style/qiming/images/qiming-110.png" height="6">皖公网安备34010402704531号</span>
+                    <span class="qiming-margin-small-right"><a href="https://beian.miit.gov.cn/" target="_blank" rel="noreferrer nofollow">皖ICP备2024064902号</a></span>
+                </div>
+                <div class="qiming-float-right qiming-visible@s">
+                    <span><a href="https://www.qiming.cn/" target="_blank">起名网</a></span>
+                </div>
             </div>
         </div>
     </footer>
+    
+    <script src="https://static.qiming.cn/style/qiming/js/common.js"></script>
 </body>
 </html>
