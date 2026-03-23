@@ -13,13 +13,15 @@
     <script src="https://static.qiming.cn/style/qiming/js/jquery.min.js"></script>
     <script src="https://static.qiming.cn/style/qiming/js/uikit.min.js"></script>
 </head>
-<body class="qiming-background-muted site qiming-zz-background">
+<body>
     <!-- Header -->
     <header class="header qiming-background-default">
         <div class="navbar qiming-position-relative">
             <div class="qiming-container qiming-flex qiming-flex-middle qiming-position-relative qiming-logo-shou">
-                <a href="{U('qiming/index/init')}" class="logo qiming-display-inline-block" alt="起名网">
-                    <div class="logo-nav-night logobg qiming-visible@m"></div>
+                <a href="{U('qiming/index/init')}" class="header-home" qiming-toggle><i class="iconfont icon-menu qiming-text-bolder"></i></a>
+                <a href="{U('qiming/index/init')}" class="logo qiming-logo qiming-display-inline-block" alt="起名网">
+                    <div class="qiming-logo-nav-night logobg qiming-visible@m"></div>
+                    <div class="qiming-app-logo2 logobg2"></div>
                 </a>
                 <nav class="nav qiming-flex-1 qiming-position-relative">
                     <ul class="nav qiming-flex-1 qiming-margin-remove">
@@ -323,6 +325,22 @@
         </section>
     </div>
     
+    <div class="qiming_follow_service" style="top:75%">
+        <ul>
+            <li class="qiming_follow_service_box qiming_follow_service_ax goTop qiming_footer_s">
+                <a href="#header" class="qiming-display-block" qiming-scroll><i class="iconfont icon-direction-up"></i>
+                    <div class="qiming_follow_service_ax_cont">
+                        <span class="qiming_follow_service_triangle"></span>
+                        <span>返回顶部</span>
+                    </div>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="qiming-app-gotop gotops qiming-hidden@s" id="gotops">
+        <a href="#header" class="qiming-display-block" qiming-scroll><i class="iconfont icon-arrow-up-bold icontop"></i></a>
+    </div>
+    
     <!-- Footer -->
     <footer class="footer qiming-background-secondary">
         <div class="foot qiming-container qiming-padding">
@@ -379,10 +397,11 @@
             <div class="qiming-container qiming-padding-small qiming-clearfix">
                 <div class="qiming-float-left">
                     <span>&copy; 2005-2025 <a href="https://www.qiming.cn" target="_blank">www.qiming.cn</a> & All rights reserved</span>
+                    <a class="qiming-margin-small-right" href="{U('qiming/index/sitemap')}" target="_blank"><i class="iconfont icon-map-filling" aria-hidden="true"></i>网站地图</a>
                     <span class="qiming-margin-small-right qiming-gongan">
-                        <img src="https://static.qiming.cn/style/qiming/images/qiming-110.png" alt="公安备案" style="height: 20px; vertical-align: middle;">
-                        <a href="https://beian.miit.gov.cn/" target="_blank" rel="nofollow">皖ICP备2024064902号</a>
+                        <img src="https://static.qiming.cn/style/qiming/images/qiming-110.png" height="6">皖公网安备34010402704531号
                     </span>
+                    <span class="qiming-margin-small-right"><a href="https://beian.miit.gov.cn/" target="_blank" rel="noreferrer nofollow">皖ICP备2024064902号</a></span>
                 </div>
                 <div class="qiming-float-right qiming-visible@">
                     <span><a href="https://www.qiming.cn" target="_blank">起名网</a></span>
