@@ -13,12 +13,11 @@
     <link rel="stylesheet" href="https://static.qiming.cn/style/qiming/css/indexhl.css">
 </head>
 <body>
-     <!-- Header -->
+    <!-- Header -->
     <header class="header qiming-background-default">
         <div class="navbar qiming-position-relative">
             <div class="qiming-container qiming-flex qiming-flex-middle qiming-position-relative qiming-logo-shou">
-                <a href="{U('qiming/index/init')}" class="header-home" qiming-toggle><i class="iconfont icon-menu qiming-text-bolder"></i></a>
-                <a href="{U('qiming/index/init')}" class="header-home" qiming-toggle><i class="iconfont icon-menu qiming-text-bolder"></i></a>
+                <a href="javascript:;" class="header-home qiming-hidden@m" qiming-toggle><i class="iconfont icon-menu qiming-text-bolder"></i></a>
                 <a href="{U('qiming/index/init')}" class="logo qiming-logo qiming-display-inline-block" alt="起名网">
                     <div class="qiming-logo-nav-night logobg qiming-visible@m"></div>
                     <div class="qiming-app-logo2 logobg2"></div>
@@ -78,6 +77,7 @@
                                     <p class="qiming-margin-small-bottom qiming-text-small">搜索最多的：</p>
                                     <a href="{U('qiming/index/kxzd')}?char=雪" class="tag-cloud-link tag-link-128 tag-link-position-1">雪</a>
                                     <a href="{U('qiming/index/kxzd')}?char=旭" class="tag-cloud-link tag-link-128 tag-link-position-1">旭</a>
+                                    <a href="{U('qiming/index/kxzd')}?char=煜晨" class="tag-cloud-link tag-link-128 tag-link-position-1">煜晨</a>
                                 </div>
                             </div>
                         </div>
@@ -93,50 +93,95 @@
             <div class="qiming-cm">
                 <div class="formHostName listForm mt30">
                     <div class="listNavTab flex spb">
-                        <a href="javascript:;" class="active th">宝宝起名</a>
-                        <a href="javascript:;" class="th">姓名测试</a>
-                        <a href="javascript:;" class="th">姓名打分</a>
+                        <a href="javascript:;" class="active th" data-tab="baobao">宝宝起名</a>
+                        <a href="javascript:;" class="th" data-tab="ceshi">姓名测试</a>
+                        <a href="javascript:;" class="th" data-tab="dafen">姓名打分</a>
                     </div>
                     <div class="xmBodyTab">
-                        <form method="get" autocomplete="off" action="{U('qiming/index/result')}">
-                            <div class="formNameBg">
-                                <div class="formNameBody flex spb">
-                                    <div class="inputFormItemLmw">
-                                        <input type="text" id="xing" name="surname" placeholder="请输入您的姓氏" maxlength="1" required>
-                                        <div class="over_hidden sexSelect radio">
-                                            <label class="active">
-                                                <input name="gender" type="radio" value="1" checked>
-                                                <i></i>男
-                                            </label>
-                                            <label>
-                                                <input name="gender" type="radio" value="2">
-                                                <i></i>女
-                                            </label>
+                        <!-- 宝宝起名表单 -->
+                        <div class="tabContent active" data-content="baobao">
+                            <form method="get" autocomplete="off" action="{U('qiming/index/result')}">
+                                <div class="formNameBg">
+                                    <div class="formNameBody flex spb">
+                                        <div class="inputFormItemLmw">
+                                            <input type="text" id="xing" name="surname" placeholder="请输入您的姓氏" maxlength="1" required>
+                                            <div class="over_hidden sexSelect radio">
+                                                <label class="active">
+                                                    <input name="gender" type="radio" value="1" checked>
+                                                    <i></i>男
+                                                </label>
+                                                <label>
+                                                    <input name="gender" type="radio" value="2">
+                                                    <i></i>女
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="inputFormItemLmw">
+                                            <input type="date" id="birthday" name="birthdate" class="J_datepicker input-birthday" required>
+                                        </div>
+                                        <div class="inputFormItemLmw">
+                                            <select name="birthtime" class="input-birthday">
+                                                <option value="0">子时(23-01点)</option>
+                                                <option value="1">丑时(01-03点)</option>
+                                                <option value="2">寅时(03-05点)</option>
+                                                <option value="3">卯时(05-07点)</option>
+                                                <option value="4">辰时(07-09点)</option>
+                                                <option value="5">巳时(09-11点)</option>
+                                                <option value="6">午时(11-13点)</option>
+                                                <option value="7">未时(13-15点)</option>
+                                                <option value="8">申时(15-17点)</option>
+                                                <option value="9">酉时(17-19点)</option>
+                                                <option value="10">戌时(19-21点)</option>
+                                                <option value="11">亥时(21-23点)</option>
+                                            </select>
                                         </div>
                                     </div>
-                                    <div class="inputFormItemLmw">
-                                        <input type="date" id="birthday" name="birthdate" class="J_datepicker input-birthday" required>
-                                    </div>
-                                    <div class="inputFormItemLmw">
-                                        <select name="birthtime" class="input-birthday">
-                                            <option value="0">子时(23-01点)</option>
-                                            <option value="1">丑时(01-03点)</option>
-                                            <option value="2">寅时(03-05点)</option>
-                                            <option value="3">卯时(05-07点)</option>
-                                            <option value="4">辰时(07-09点)</option>
-                                            <option value="5">巳时(09-11点)</option>
-                                            <option value="6">午时(11-13点)</option>
-                                            <option value="7">未时(13-15点)</option>
-                                            <option value="8">申时(15-17点)</option>
-                                            <option value="9">酉时(17-19点)</option>
-                                            <option value="10">戌时(19-21点)</option>
-                                            <option value="11">亥时(21-23点)</option>
-                                        </select>
-                                    </div>
+                                    <a class="tabSubmit" href="javascript:;" onclick="this.parentElement.parentElement.parentElement.submit();">立即宝宝起名</a>
                                 </div>
-                                <a class="tabSubmit" href="javascript:;" onclick="this.parentElement.parentElement.submit();">立即宝宝起名</a>
-                            </div>
-                        </form>
+                            </form>
+                        </div>
+                        <!-- 姓名测试表单 -->
+                        <div class="tabContent" data-content="ceshi" style="display:none;">
+                            <form method="get" autocomplete="off" action="{U('qiming/index/test_result')}">
+                                <div class="formNameBg">
+                                    <div class="formNameBody flex spb">
+                                        <div class="inputFormItemLmw">
+                                            <input type="text" name="surname" placeholder="请输入您的姓氏" maxlength="1" required>
+                                            <div class="over_hidden sexSelect radio">
+                                                <label class="active">
+                                                    <input name="gender" type="radio" value="1" checked>
+                                                    <i></i>男
+                                                </label>
+                                                <label>
+                                                    <input name="gender" type="radio" value="2">
+                                                    <i></i>女
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="inputFormItemLmw">
+                                            <input type="text" name="name" placeholder="请输入您的名字" maxlength="2" required>
+                                        </div>
+                                    </div>
+                                    <a class="tabSubmit" href="javascript:;" onclick="this.parentElement.parentElement.parentElement.submit();">立即姓名测试</a>
+                                </div>
+                            </form>
+                        </div>
+                        <!-- 姓名打分表单 -->
+                        <div class="tabContent" data-content="dafen" style="display:none;">
+                            <form method="get" autocomplete="off" action="{U('qiming/index/test_result')}">
+                                <div class="formNameBg">
+                                    <div class="formNameBody flex spb">
+                                        <div class="inputFormItemLmw">
+                                            <input type="text" name="surname" placeholder="请输入您的姓氏" maxlength="1" required>
+                                        </div>
+                                        <div class="inputFormItemLmw">
+                                            <input type="text" name="name" placeholder="请输入您的名字" maxlength="2" required>
+                                        </div>
+                                    </div>
+                                    <a class="tabSubmit" href="javascript:;" onclick="this.parentElement.parentElement.parentElement.submit();">立即查看</a>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
                 <div class="lunpan_box" style="display:none;">
@@ -304,6 +349,14 @@
                                     <li><a href="{U('qiming/index/kxzd')}?char=博"><span>bó</span>博<span class="jixiong">吉</span></a></li>
                                 </ul>
                             </div>
+                            <div class="wuxing-filter qiming-margin-top">
+                                <span class="qiming-text-small qiming-text-muted">五行分类：</span>
+                                <a href="{U('qiming/index/kxzd')}?wuxing=1" class="qiming-margin-small-right">金</a>
+                                <a href="{U('qiming/index/kxzd')}?wuxing=2" class="qiming-margin-small-right">木</a>
+                                <a href="{U('qiming/index/kxzd')}?wuxing=3" class="qiming-margin-small-right">水</a>
+                                <a href="{U('qiming/index/kxzd')}?wuxing=4" class="qiming-margin-small-right">火</a>
+                                <a href="{U('qiming/index/kxzd')}?wuxing=5">土</a>
+                            </div>
                         </div>
                     </div>
                     <!-- Girl Char Rankings -->
@@ -314,17 +367,25 @@
                             </div>
                             <div class="qiming-list qmlst tags-item">
                                 <ul class="btn w5 ">
-                                    <li><a href="{U('qiming/index/kxzd')}?char=怡"><span>yí</span>怡<span class="jixiong">吉</span></a></li>
-                                    <li><a href="{U('qiming/index/kxzd')}?char=涵"><span>hán</span>涵<span class="jixiong">吉</span></a></li>
-                                    <li><a href="{U('qiming/index/kxzd')}?char=梓"><span>zǐ</span>梓<span class="jixiong">吉</span></a></li>
-                                    <li><a href="{U('qiming/index/kxzd')}?char=欣"><span>xīn</span>欣<span class="jixiong">吉</span></a></li>
-                                    <li><a href="{U('qiming/index/kxzd')}?char=瑶"><span>yáo</span>瑶<span class="jixiong">吉</span></a></li>
                                     <li><a href="{U('qiming/index/kxzd')}?char=瑾"><span>jǐn</span>瑾<span class="jixiong">吉</span></a></li>
-                                    <li><a href="{U('qiming/index/kxzd')}?char=雅"><span>yǎ</span>雅<span class="jixiong">吉</span></a></li>
-                                    <li><a href="{U('qiming/index/kxzd')}?char=婷"><span>tíng</span>婷</a></li>
-                                    <li><a href="{U('qiming/index/kxzd')}?char=慧"><span>huì</span>慧<span class="jixiong">吉</span></a></li>
-                                    <li><a href="{U('qiming/index/kxzd')}?char=琳"><span>lín</span>琳<span class="jixiong">吉</span></a></li>
+                                    <li><a href="{U('qiming/index/kxzd')}?char=楠"><span>nán</span>楠<span class="jixiong">吉</span></a></li>
+                                    <li><a href="{U('qiming/index/kxzd')}?char=莹"><span>yíng</span>莹<span class="jixiong">吉</span></a></li>
+                                    <li><a href="{U('qiming/index/kxzd')}?char=雪"><span>xuě</span>雪<span class="jixiong">吉</span></a></li>
+                                    <li><a href="{U('qiming/index/kxzd')}?char=晗"><span>hán</span>晗<span class="jixiong">吉</span></a></li>
+                                    <li><a href="{U('qiming/index/kxzd')}?char=琴"><span>qín</span>琴<span class="jixiong">吉</span></a></li>
+                                    <li><a href="{U('qiming/index/kxzd')}?char=晴"><span>qíng</span>晴<span class="jixiong">吉</span></a></li>
+                                    <li><a href="{U('qiming/index/kxzd')}?char=丽"><span>lì,lí</span>丽<span class="jixiong">吉</span></a></li>
+                                    <li><a href="{U('qiming/index/kxzd')}?char=瑶"><span>yáo</span>瑶<span class="jixiong">吉</span></a></li>
+                                    <li><a href="{U('qiming/index/kxzd')}?char=茜"><span>qiàn,xī</span>茜<span class="jixiong">吉</span></a></li>
                                 </ul>
+                            </div>
+                            <div class="wuxing-filter qiming-margin-top">
+                                <span class="qiming-text-small qiming-text-muted">五行分类：</span>
+                                <a href="{U('qiming/index/kxzd')}?wuxing=6" class="qiming-margin-small-right">金</a>
+                                <a href="{U('qiming/index/kxzd')}?wuxing=7" class="qiming-margin-small-right">木</a>
+                                <a href="{U('qiming/index/kxzd')}?wuxing=8" class="qiming-margin-small-right">水</a>
+                                <a href="{U('qiming/index/kxzd')}?wuxing=9" class="qiming-margin-small-right">火</a>
+                                <a href="{U('qiming/index/kxzd')}?wuxing=10">土</a>
                             </div>
                         </div>
                     </div>
@@ -336,16 +397,16 @@
                             </div>
                             <div class="qiming-list qmlst tags-item">
                                 <ul class="btn w5 ">
-                                    <li><a href="#">李浩然</a></li>
-                                    <li><a href="#">王梓轩</a></li>
-                                    <li><a href="#">张一鸣</a></li>
-                                    <li><a href="#">刘子轩</a></li>
-                                    <li><a href="#">陈浩然</a></li>
-                                    <li><a href="#">杨俊豪</a></li>
-                                    <li><a href="#">赵俊豪</a></li>
-                                    <li><a href="#">黄宇轩</a></li>
-                                    <li><a href="#">周子轩</a></li>
-                                    <li><a href="#">吴俊豪</a></li>
+                                    <li><a href="#">颜豪</a></li>
+                                    <li><a href="#">颢凯</a></li>
+                                    <li><a href="#">颢哲</a></li>
+                                    <li><a href="#">颢宁</a></li>
+                                    <li><a href="#">颢宸</a></li>
+                                    <li><a href="#">璟桓</a></li>
+                                    <li><a href="#">璟霆</a></li>
+                                    <li><a href="#">翔士</a></li>
+                                    <li><a href="#">名浩</a></li>
+                                    <li><a href="#">淳皓</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -358,16 +419,16 @@
                             </div>
                             <div class="qiming-list qmlst tags-item">
                                 <ul class="btn w5 ">
-                                    <li><a href="#">李欣怡</a></li>
-                                    <li><a href="#">王梓涵</a></li>
-                                    <li><a href="#">张子涵</a></li>
-                                    <li><a href="#">刘欣怡</a></li>
-                                    <li><a href="#">陈梓涵</a></li>
-                                    <li><a href="#">杨子涵</a></li>
-                                    <li><a href="#">赵欣怡</a></li>
-                                    <li><a href="#">黄梓涵</a></li>
-                                    <li><a href="#">周欣怡</a></li>
-                                    <li><a href="#">吴子涵</a></li>
+                                    <li><a href="#">颜菲</a></li>
+                                    <li><a href="#">孟馨</a></li>
+                                    <li><a href="#">宁丽</a></li>
+                                    <li><a href="#">宁俪</a></li>
+                                    <li><a href="#">宁娟</a></li>
+                                    <li><a href="#">宁婕</a></li>
+                                    <li><a href="#">宁汐</a></li>
+                                    <li><a href="#">宁萱</a></li>
+                                    <li><a href="#">宇妃</a></li>
+                                    <li><a href="#">宇妍</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -405,15 +466,15 @@
                         </div>
                         <div class="hpx bg-white rounded-lg shadow-md">
                             <div class="info-panel bg-lunar-primary text-white p-4 rounded-t-lg">
-                                <div class="text-sm">2026年3月23日 星期一</div>
+                                <div class="text-sm">{php} echo date('Y年m月d日');{/php} {php} echo $weekday = array('星期日','星期一','星期二','星期三','星期四','星期五','星期六')[date('w')]; {/php}</div>
                                 <div class="text-lg font-bold mt-1">白羊座</div>
                             </div>
                             <div class="p-4">
                                 <div class="flex items-center justify-between text-sm mb-2">
-                                    <span class="text-lunar-dark">农历二月初五</span>
+                                    <span class="text-lunar-dark">农历二月初六</span>
                                     <span class="text-lunar-light">丙午年【马】</span>
                                 </div>
-                                <div class="text-sm text-lunar-muted">辛卯月·丙申日</div>
+                                <div class="text-sm text-lunar-muted">辛卯月·丁酉日</div>
                             </div>
                         </div>
                     </div>
@@ -424,11 +485,11 @@
                         <div class="yi-ji">
                             <div class="yi-list">
                                 <strong>宜</strong>
-                                <p>嫁娶 祭祀 开光 祈福 求嗣 出行</p>
+                                <p>破屋 坏垣 求医 治病 馀事勿取</p>
                             </div>
                             <div class="ji-list">
                                 <strong>忌</strong>
-                                <p>动土 伐木 安葬 行丧</p>
+                                <p>开光 嫁娶</p>
                             </div>
                         </div>
                     </div>
@@ -437,9 +498,9 @@
                             <i class="iconfont icon-position"></i>吉凶方位
                         </div>
                         <div class="huangli-item"><span>财神方位</span><span>西南</span></div>
-                        <div class="huangli-item"><span>喜神方位</span><span>西北</span></div>
-                        <div class="huangli-item"><span>福神方位</span><span>西南</span></div>
-                        <div class="huangli-item"><span>吉时</span><span>子寅卯巳申亥</span></div>
+                        <div class="huangli-item"><span>喜神方位</span><span>正南</span></div>
+                        <div class="huangli-item"><span>福神方位</span><span>东南</span></div>
+                        <div class="huangli-item"><span>吉时</span><span>子丑卯午酉戌</span></div>
                     </div>
                 </div>
             </div>
@@ -452,18 +513,84 @@
                     <h3>别人正在查的姓名</h3>
                 </div>
                 <div class="qmlist" style="justify-content: center;">
-                    <a href="#" class="name-tag">么梓月</a>
-                    <a href="#" class="name-tag">宋瑾沐</a>
-                    <a href="#" class="name-tag">杨祥欣</a>
-                    <a href="#" class="name-tag">宁锦兰</a>
-                    <a href="#" class="name-tag">李梦桐</a>
-                    <a href="#" class="name-tag">马研力</a>
-                    <a href="#" class="name-tag">肖瑜宣</a>
-                    <a href="#" class="name-tag">余惠欣</a>
-                    <a href="#" class="name-tag">夏承勋</a>
-                    <a href="#" class="name-tag">席沐宸</a>
-                    <a href="#" class="name-tag">房楷俊</a>
-                    <a href="#" class="name-tag">刘心月</a>
+                    <a href="#" class="name-tag">凤雨贞</a>
+                    <a href="#" class="name-tag">陈林校</a>
+                    <a href="#" class="name-tag">李贶炜</a>
+                    <a href="#" class="name-tag">梁志尧</a>
+                    <a href="#" class="name-tag">司若萱</a>
+                    <a href="#" class="name-tag">黄锦山</a>
+                    <a href="#" class="name-tag">吴星琳</a>
+                    <a href="#" class="name-tag">吴俊炎</a>
+                    <a href="#" class="name-tag">马雪迪</a>
+                    <a href="#" class="name-tag">朱恒宇</a>
+                    <a href="#" class="name-tag">梁诗敬</a>
+                    <a href="#" class="name-tag">谢婉林</a>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Poetry Section -->
+        <section class="poetry-section qiming-margin-medium-top qiming-margin-medium-bottom">
+            <div class="qiming-container">
+                <div class="section-title">
+                    <h3>唐诗宋词传承千年的诗意起名艺术</h3>
+                </div>
+                <div class="qiming-grid qiming-grid-match qiming-flex-middle" qiming-grid>
+                    <div class="qiming-width-1-4@m qiming-width-1-2">
+                        <a href="{U('qiming/index/tangshi')}" class="poetry-item">
+                            <div class="poetry-icon">
+                                <img src="https://static.qiming.cn/style/qiming/images/tang.png" alt="唐诗起名">
+                            </div>
+                            <h4>唐诗起名</h4>
+                        </a>
+                    </div>
+                    <div class="qiming-width-1-4@m qiming-width-1-2">
+                        <a href="{U('qiming/index/shijing')}" class="poetry-item">
+                            <div class="poetry-icon">
+                                <img src="https://static.qiming.cn/style/qiming/images/shi.png" alt="诗经起名">
+                            </div>
+                            <h4>诗经起名</h4>
+                        </a>
+                    </div>
+                    <div class="qiming-width-1-4@m qiming-width-1-2">
+                        <a href="{U('qiming/index/songci')}" class="poetry-item">
+                            <div class="poetry-icon">
+                                <img src="https://static.qiming.cn/style/qiming/images/song.png" alt="宋词起名">
+                            </div>
+                            <h4>宋词起名</h4>
+                        </a>
+                    </div>
+                    <div class="qiming-width-1-4@m qiming-width-1-2">
+                        <a href="{U('qiming/index/chuci')}" class="poetry-item">
+                            <div class="poetry-icon">
+                                <img src="https://static.qiming.cn/style/qiming/images/ci.png" alt="楚辞起名">
+                            </div>
+                            <h4>楚辞起名</h4>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Latest Articles Section -->
+        <section class="latest-articles qiming-background-secondary" style="padding: 50px 0;">
+            <div class="qiming-container">
+                <div class="section-title">
+                    <h3>最新更新起名</h3>
+                </div>
+                <div class="qiming-grid qiming-grid-match" qiming-grid>
+                    <div class="qiming-width-1-2@xl qiming-width-1-1">
+                        <div class="article-card">
+                            <h4><a href="#">有哪些出自《易经》且有寓意的名字？</a></h4>
+                            <p class="qiming-text-small qiming-text-muted">出自易经小众名字，大气且吉利</p>
+                        </div>
+                    </div>
+                    <div class="qiming-width-1-2@xl qiming-width-1-1">
+                        <div class="article-card">
+                            <h4><a href="#">《周易》经典取名赏析，周易起名</a></h4>
+                            <p class="qiming-text-small qiming-text-muted">周易起名，来自周易里的内涵的好名欣赏</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -540,7 +667,7 @@
         <div class="foot-cop">
             <div class="qiming-container qiming-padding-small qiming-clearfix">
                 <div class="qiming-float-left">
-                    <span>&copy; 2005-2025 <a href="https://www.qiming.cn/" target="_blank">www.qiming.cn</a> & All rights reserved</span>
+                    <span>&copy; 2005-2026 <a href="https://www.qiming.cn/" target="_blank">www.qiming.cn</a> & All rights reserved</span>
                     <a class="qiming-margin-small-right" href="#"><i class="iconfont icon-map-filling" aria-hidden="true"></i>网站地图</a>
                     <span class="qiming-margin-small-right qiming-gongan">
                         <img src="https://static.qiming.cn/style/qiming/images/qiming-110.png" height="6">皖公网安备34010402704531号
@@ -561,18 +688,22 @@
     <script src="https://static.qiming.cn/style/city/jquery.popcity.js" type="text/javascript"></script>
     <script src="https://static.qiming.cn/style/qiming/js/common.js"></script>
     <script>
-        // Tab switching for form
-        document.querySelectorAll('.listNavTab .th').forEach(function(tab, index) {
+        document.querySelectorAll('.listNavTab .th').forEach(function(tab) {
             tab.addEventListener('click', function() {
-                document.querySelectorAll('.listNavTab .th').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.listNavTab .th').forEach(function(t) { t.classList.remove('active'); });
                 this.classList.add('active');
+                
+                var targetTab = this.getAttribute('data-tab');
+                document.querySelectorAll('.xmBodyTab .tabContent').forEach(function(content) {
+                    content.style.display = 'none';
+                });
+                document.querySelector('.xmBodyTab .tabContent[data-content="' + targetTab + '"]').style.display = 'block';
             });
         });
         
-        // Rankings tab switching
-        document.querySelectorAll('.qiming-cat-switcher li').forEach(function(tab, index) {
+        document.querySelectorAll('.qiming-cat-switcher li').forEach(function(tab) {
             tab.addEventListener('click', function() {
-                document.querySelectorAll('.qiming-cat-switcher li').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.qiming-cat-switcher li').forEach(function(t) { t.classList.remove('active'); });
                 this.classList.add('active');
                 
                 var targetTab = this.getAttribute('data-tab');
@@ -583,12 +714,18 @@
             });
         });
         
-        // Sex radio button
         document.querySelectorAll('.sexSelect label').forEach(function(label) {
             label.addEventListener('click', function() {
-                document.querySelectorAll('.sexSelect label').forEach(l => l.classList.remove('active'));
+                document.querySelectorAll('.sexSelect label').forEach(function(l) { l.classList.remove('active'); });
                 this.classList.add('active');
                 this.querySelector('input').checked = true;
+            });
+        });
+        
+        document.querySelectorAll('.btn-search-all').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var form = document.querySelector('.search-navbar form');
+                if (form) form.submit();
             });
         });
     </script>

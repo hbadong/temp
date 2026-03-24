@@ -271,3 +271,201 @@ input, button, select { font-family: inherit; font-size: inherit; border: none; 
     .page-banner { padding: 50px 0; min-height: auto; }
     .page-banner h1 { font-size: 28px; }
 }
+
+/* ========== 手机端适配 (max-width: 480px) ========== */
+@media (max-width: 480px) {
+    /* 基础调整 */
+    html { font-size: 14px; }
+    body { line-height: 1.5; }
+    
+    /* 容器 */
+    .qiming-container { padding: 0 10px; }
+    
+    /* Header */
+    .header { position: relative; }
+    .navbar { min-height: 50px; padding: 8px 0; }
+    .logo-nav-night { width: 120px; height: 35px; }
+    .logo img { height: 35px; }
+    .nav { 
+        display: none; 
+        position: absolute; 
+        top: 100%; 
+        left: 0; 
+        right: 0; 
+        background: #fff; 
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        z-index: 100;
+        flex-direction: column;
+        padding: 10px;
+    }
+    .nav.active { display: flex; }
+    .nav li { width: 100%; border-bottom: 1px solid #f0f0f0; }
+    .nav li:last-child { border-bottom: none; }
+    .nav a { padding: 12px 15px; }
+    .header-home { display: block !important; }
+    
+    /* 首页表单 */
+    .home_img1 { padding: 20px 0; min-height: auto; }
+    .formHostName { padding: 15px; border-radius: 12px; }
+    .listNavTab { padding-bottom: 10px; margin-bottom: 15px; }
+    .listNavTab a { padding: 8px 15px; font-size: 14px; }
+    .formNameBg { padding: 15px; }
+    .inputFormItemLmw { min-width: 100%; margin-bottom: 10px; }
+    .inputFormItemLmw input { padding: 10px 12px; font-size: 14px; }
+    .sexSelect { gap: 15px; }
+    .sexSelect label { font-size: 14px; }
+    .tabSubmit { padding: 12px; font-size: 16px; }
+    
+    /* 服务图标网格 */
+    .aui-palace { grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 15px 0; }
+    .aui-palace-one { grid-template-columns: repeat(2, 1fr); }
+    .aui-palace-grid { padding: 15px 5px; }
+    .aui-palace-grid-icon { width: 50px; height: 50px; margin-bottom: 8px; }
+    .aui-palace-grid-text h2 { font-size: 13px; }
+    
+    /* 专题横幅 */
+    .zhuanti { padding: 30px 0; }
+    .section-title { margin-bottom: 20px; padding-bottom: 10px; }
+    .section-title h3 { font-size: 18px; }
+    .qiming-zhuanti-wrap { padding: 10px; border-radius: 10px; }
+    .qiming-zhuanti-item { margin-bottom: 15px; }
+    .qiming-zhuanti-item-thumb { height: 120px; }
+    .qiming-zhuanti-item h2 { font-size: 15px; padding: 10px 10px 5px; }
+    .qiming-zhuanti-item .entry { font-size: 12px; padding: 0 10px; }
+    .qiming-zhuanti-item .btns { padding: 10px; }
+    .qiming-zhuanti-item .btn { padding: 6px 15px; font-size: 12px; }
+    
+    /* 排行榜 */
+    .switcher { padding: 30px 0; }
+    .qiming-cat-switcher { gap: 15px; overflow-x: auto; white-space: nowrap; }
+    .qiming-cat-switcher li { font-size: 14px; padding: 8px 0; }
+    .qiming-cat-switcher h3 { font-size: 16px; }
+    .card { padding: 15px; border-radius: 10px; }
+    .qmlist a { padding: 6px 10px; font-size: 12px; }
+    .qmlist a span { font-size: 10px; }
+    .jixiong { padding: 1px 5px; font-size: 10px; }
+    
+    /* 统计横幅 */
+    .cloud-banner { padding: 40px 0; }
+    .cloud-bubble-one, .cloud-bubble-two, .cloud-bubble-three { display: none; }
+    .qiming-clearfix-t { gap: 15px; }
+    .qiming-clearfix-t li { flex: 1 0 calc(33.333% - 15px); }
+    .qiming-clearfix-t b { font-size: 22px; }
+    .qiming-clearfix-t sup { font-size: 16px; }
+    .qiming-clearfix-t p { font-size: 12px; margin-top: 5px; }
+    
+    /* 黄历 */
+    .huangli-section { padding: 30px 0; }
+    .huangli-section .qiming-grid { grid-template-columns: 1fr !important; gap: 15px !important; }
+    .huangli-card { padding: 15px; border-radius: 10px; }
+    .huangli-title { font-size: 15px; padding-bottom: 10px; margin-bottom: 10px; }
+    .huangli-item { padding: 8px 0; font-size: 13px; }
+    
+    /* 别人正在查 */
+    .switcher[style*="padding: 50px 0"] { padding: 30px 0 !important; }
+    .switcher[style*="background: #f9f9f9"] .name-tag { padding: 6px 12px; font-size: 12px; }
+    
+    /* 诗词区块 */
+    .poetry-section { padding: 30px 0; }
+    .poetry-section .qiming-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 10px !important; }
+    .poetry-item { padding: 15px 10px; text-align: center; }
+    .poetry-icon { width: 40px; height: 40px; margin: 0 auto 8px; }
+    .poetry-icon img { width: 100%; height: 100%; }
+    .poetry-item h4 { font-size: 13px; }
+    
+    /* Footer */
+    .footer { padding: 30px 0 15px; }
+    .foot { padding: 20px 0; }
+    .foot-item { margin-bottom: 20px; }
+    .foot-item-title { font-size: 15px; margin-bottom: 12px; }
+    .foot-item li { margin-bottom: 8px; }
+    .foot-item a { font-size: 13px; }
+    .foot-logo img { height: 35px; }
+    .foot-cop { font-size: 12px; padding-top: 15px; margin-top: 15px; }
+    .foot-cop .qiming-float-left { flex-direction: column; align-items: center; gap: 5px; }
+    .foot-cop .qiming-float-right { display: none; }
+    
+    /* 返回顶部 */
+    .qiming_follow_service { display: none !important; }
+    .qiming-app-gotop { 
+        display: block !important; 
+        position: fixed; 
+        bottom: 20px; 
+        right: 20px; 
+        width: 40px; 
+        height: 40px; 
+        background: rgba(255,102,0,0.9); 
+        border-radius: 50%; 
+        text-align: center; 
+        line-height: 40px; 
+        z-index: 999;
+    }
+    .qiming-app-gotop a { color: #fff; display: block; }
+    .qiming-app-gotop i { font-size: 18px; }
+    
+    /* 页面Banner */
+    .qiming_vipbgs img { height: auto !important; min-height: 150px; object-fit: cover; }
+    
+    /* 六大维度 */
+    .yuvip_serve_father { padding: 30px 0; }
+    .yuvip_title { font-size: 18px; padding: 0 10px 15px; }
+    .yuvip_serve ul { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 0 10px; }
+    .yuvip_serve li { margin-bottom: 0; }
+    .yuvip_serve li div { padding: 15px 10px; }
+    .yuvip_serve li img { width: 50px; height: 50px; margin: 0 auto 10px; }
+    .yuvip_serve li p { font-size: 14px; }
+    .yuvip_serve li em { font-size: 11px; display: none; }
+    
+    /* 文章列表 */
+    .blog { padding: 30px 0; }
+    .blog-item { padding: 10px; }
+    .qiming-vip-icons { margin-bottom: 10px; }
+    .qiming-vip-icons img { height: 120px !important; }
+    .qiming-blog-items h3 { font-size: 14px; }
+    .qiming-blog-items p { font-size: 12px; display: none; }
+    
+    /* 搜索结果页 */
+    .search-header h1 { font-size: 18px; }
+    .char-list .qiming-width-1-3\@xl { width: 50%; }
+    .char-big { font-size: 28px; }
+    
+    /* 起名结果页 */
+    .qiming-pages-vip { padding: 20px 0; }
+    .qiming_portal_block_summary { padding: 15px; }
+    .formGsQm h1 { font-size: 22px; }
+    .formGsQm p { font-size: 13px; }
+    
+    /* 姓名测试页 */
+    .qiming-pages-web-yw-box { padding: 30px 0; }
+    .web-yw-box-title span { font-size: 18px; }
+    .web-yw-box-title p { font-size: 14px; }
+    .web-yw-box-con-li { margin-bottom: 20px; }
+    .web-yw-box-con-li span { width: 50px; height: 50px; margin: 0 auto 10px; }
+    .web-yw-box-con-li span img { width: 100%; height: 100%; }
+    .web-yw-box-con-li p { font-size: 14px; }
+    .web-yw-box-con-li em { font-size: 11px; }
+}
+
+/* ========== 平板适配 (481px - 768px) ========== */
+@media (min-width: 481px) and (max-width: 768px) {
+    .aui-palace { grid-template-columns: repeat(3, 1fr); }
+    .aui-palace-one { grid-template-columns: repeat(3, 1fr); }
+    .huangli-section .qiming-grid { grid-template-columns: repeat(2, 1fr) !important; }
+    .qiming-zhuanti-wrap .content { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+    .qiming-clearfix-t li { flex: 1 0 calc(33.333% - 20px); }
+    .poetry-section .qiming-grid { grid-template-columns: repeat(4, 1fr) !important; }
+}
+
+/* ========== 大屏幕优化 ========== */
+@media (min-width: 1400px) {
+    .qiming-container { max-width: 1320px; }
+    .qiming-container-index { max-width: 1500px; }
+    .aui-palace { grid-template-columns: repeat(10, 1fr); }
+    .aui-palace-one { grid-template-columns: repeat(10, 1fr); }
+}
+
+/* ========== 隐藏元素 ========== */
+@media (max-width: 768px) {
+    .qiming-hidden\@s { display: none !important; }
+    .lunpan_box { display: none !important; }
+}

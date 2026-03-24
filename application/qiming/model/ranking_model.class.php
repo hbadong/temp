@@ -19,6 +19,22 @@ class ranking_model {
     }
     
     /**
+     * 获取排行列表（按类型）
+     * @param string $type 类型(boy-char/girl-char/boy-name/girl-name)
+     * @param int $limit 返回数量
+     */
+    public function get_by_type($type, $limit = 30) {
+        $current_month = date('Y-m');
+        $data = D($this->table)->where(array('type' => $type, 'month' => $current_month))->order('ranking ASC')->limit($limit)->select();
+        
+        if (empty($data)) {
+            $data = D($this->table)->where(array('type' => $type))->order('ranking ASC')->limit($limit)->select();
+        }
+        
+        return $data;
+    }
+    
+    /**
      * 获取热门男孩用字
      */
     public function get_boy_chars($limit = 30) {
