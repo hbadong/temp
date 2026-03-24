@@ -218,4 +218,135 @@ class qiming extends common {
         
         include $this->admin_tpl('qiming/test_records');
     }
+    
+    /**
+     * 八卦管理
+     */
+    public function bagua() {
+        $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
+        $total = D('bagua')->total();
+        $page = new page($total, 20);
+        $list = D('bagua')->order('id ASC')->limit($page->limit())->select();
+        
+        include $this->admin_tpl('qiming/bagua');
+    }
+    
+    /**
+     * 添加卦象
+     */
+    public function bagua_add() {
+        if (isset($_POST['dosubmit'])) {
+            $data = array(
+                'gua_name' => trim($_POST['gua_name']),
+                'gua_ci' => trim($_POST['gua_ci']),
+                'tuan_ci' => trim($_POST['tuan_ci']),
+                'xiang_ci' => trim($_POST['xiang_ci']),
+                'yao_ci' => trim($_POST['yao_ci']),
+                'wuxing' => trim($_POST['wuxing']),
+            );
+            
+            $id = D('bagua')->insert($data);
+            if ($id) {
+                showmsg('添加成功', U('qiming/bagua'));
+            } else {
+                showmsg('添加失败', 'stop');
+            }
+        }
+        
+        include $this->admin_tpl('qiming/bagua_form');
+    }
+    
+    /**
+     * 编辑卦象
+     */
+    public function bagua_edit() {
+        $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+        
+        if (isset($_POST['dosubmit'])) {
+            $data = array(
+                'gua_name' => trim($_POST['gua_name']),
+                'gua_ci' => trim($_POST['gua_ci']),
+                'tuan_ci' => trim($_POST['tuan_ci']),
+                'xiang_ci' => trim($_POST['xiang_ci']),
+                'yao_ci' => trim($_POST['yao_ci']),
+                'wuxing' => trim($_POST['wuxing']),
+            );
+            
+            D('bagua')->update($data, array('id' => intval($_POST['id'])));
+            showmsg('修改成功', U('qiming/bagua'));
+        }
+        
+        $data = D('bagua')->where(array('id' => $id))->find();
+        include $this->admin_tpl('qiming/bagua_form');
+    }
+    
+    /**
+     * 删除卦象
+     */
+    public function bagua_del() {
+        $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+        D('bagua')->delete(array('id' => $id));
+        showmsg('删除成功', U('qiming/bagua'));
+    }
+    
+    /**
+     * 黄历管理
+     */
+    public function horoscope() {
+        $date = isset($_GET['date']) ? trim($_GET['date']) : date('Y-m-d');
+        $data = D('horoscope')->where(array('date' => $date))->find();
+        
+        if (!$data) {
+            $data = array(
+                'date' => $date,
+                'lunar_date' => '',
+                'zodiac' => '',
+                'zodiac_year' => '',
+                'zodiac_month' => '',
+                'zodiac_day' => '',
+                'yi' => '',
+                'ji' => '',
+                'jishi' => '',
+                'caishen' => '',
+                'xishen' => '',
+                'fushen' => '',
+                'chongsha' => '',
+            );
+        }
+        
+        include $this->admin_tpl('qiming/horoscope');
+    }
+    
+    /**
+     * 更新黄历
+     */
+    public function horoscope_update() {
+        if (isset($_POST['dosubmit'])) {
+            $date = trim($_POST['date']);
+            $data = array(
+                'lunar_date' => trim($_POST['lunar_date']),
+                'zodiac' => trim($_POST['zodiac']),
+                'zodiac_year' => trim($_POST['zodiac_year']),
+                'zodiac_month' => trim($_POST['zodiac_month']),
+                'zodiac_day' => trim($_POST['zodiac_day']),
+                'yi' => trim($_POST['yi']),
+                'ji' => trim($_POST['ji']),
+                'jishi' => trim($_POST['jishi']),
+                'caishen' => trim($_POST['caishen']),
+                'xishen' => trim($_POST['xishen']),
+                'fushen' => trim($_POST['fushen']),
+                'chongsha' => trim($_POST['chongsha']),
+            );
+            
+            $exists = D('horoscope')->where(array('date' => $date))->find();
+            if ($exists) {
+                D('horoscope')->update($data, array('date' => $date));
+            } else {
+                $data['date'] = $date;
+                D('horoscope')->insert($data);
+            }
+            
+            showmsg('更新成功', U('qiming/horoscope', array('date' => $date)));
+        }
+    }
 }
