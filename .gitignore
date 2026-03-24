@@ -100,9 +100,10 @@
 **/vendor/bundle
 **/.byebug_history
 
-# Logs
-*.log
-**/logs/
+# YzmCMS
+cache/
+*.cache.php
+error_log.php
 
 # Environment and secrets
 **/.env
