@@ -3,7 +3,7 @@
  * 起名系统首页控制器
  */
 
-defined('IN_YZMPHP') or exit('Access Den Den');
+defined('IN_YZMPHP') or exit('Access Denied');
 
 class index {
     
@@ -16,48 +16,26 @@ class index {
         $description = '起名网专注科学智能宝宝起名，测名字打分平台，结合传统国学文化的智能起名系统研发和起名学术探索交流，以"只为一个好名字"为宗旨，潜心研发，百次升级，千万级大数据分析，助您轻松起好名。';
         
         $today = date('Y-m-d');
-        $horoscope = $this->get_horoscope($today);
-        $rankings = $this->get_rankings();
-        $recent_searches = $this->get_recent_searches();
         
-        include template('qiming', 'index');
-    }
-    
-    /**
-     * 获取当日黄历
-     */
-    public function get_horoscope($date = '') {
-        if (empty($date)) {
-            $date = date('Y-m-d');
-        }
+        require_once APP_PATH . 'qiming/model/horoscope_model.class.php';
+        require_once APP_PATH . 'qiming/model/ranking_model.class.php';
+        require_once APP_PATH . 'qiming/model/character_model.class.php';
         
-        yzm_base::load_model('horoscope', 'qiming', 0);
         $horoscope_model = new horoscope_model();
-        return $horoscope_model->get_by_date($date);
-    }
-    
-    /**
-     * 获取热门排行
-     */
-    public function get_rankings() {
-        yzm_base::load_model('ranking_model', 'qiming', 0);
-        $ranking_model = new ranking_model();
+        $horoscope = $horoscope_model->get_by_date($today);
         
-        return array(
+        $ranking_model = new ranking_model();
+        $rankings = array(
             'boy_chars' => $ranking_model->get_by_type('boy-char', 30),
             'girl_chars' => $ranking_model->get_by_type('girl-char', 30),
             'boy_names' => $ranking_model->get_by_type('boy-name', 30),
             'girl_names' => $ranking_model->get_by_type('girl-name', 30),
         );
-    }
-    
-    /**
-     * 获取最近搜索的姓名
-     */
-    public function get_recent_searches($limit = 12) {
-        yzm_base::load_model('character_model', 'qiming', 0);
+        
         $character_model = new character_model();
-        return $character_model->get_recent_searches($limit);
+        $recent_searches = $character_model->get_recent_searches(12);
+        
+        include template('qiming', 'index');
     }
     
     /**
@@ -71,7 +49,7 @@ class index {
         
         $results = array();
         if (!empty($k)) {
-            yzm_base::load_model('character_model', 'qiming', 0);
+            require_once APP_PATH . 'qiming/model/character_model.class.php';
             $character_model = new character_model();
             
             if ($search_type == 'char' || $search_type == 'all') {
@@ -94,7 +72,6 @@ class index {
         $keywords = '宝宝起名,婴儿起名,取名大全';
         $description = '专业宝宝起名服务，基于AI技术和大数据，为您的宝宝取一个吉祥好听的名字';
         
-        $recent_articles = $this->get_articles_by_cat('baobao', 6);
         include template('qiming', 'baobao');
     }
     
@@ -106,7 +83,6 @@ class index {
         $keywords = '八字起名,生辰八字起名';
         $description = '汇聚多位国内权威易学大师，以深厚经验精准解析八字，量身打造帮扶一生的优质好名';
         
-        $recent_articles = $this->get_articles_by_cat('bazi', 6);
         include template('qiming', 'bazi');
     }
     
@@ -118,7 +94,6 @@ class index {
         $keywords = '诗词起名,唐诗起名,宋词起名,诗经起名';
         $description = '结合孩子出生信息和父母期盼，从二十多万诗词古文中取字，确保每个名字意蕴优美、诗情画意';
         
-        $recent_articles = $this->get_articles_by_cat('shici', 6);
         include template('qiming', 'shici');
     }
     
@@ -141,7 +116,6 @@ class index {
         $keywords = '周易起名,易经起名';
         $description = '汲取千年国学智慧，融汇《周易》精髓，为您提供文化深厚、寓意吉祥的好名字';
         
-        $recent_articles = $this->get_articles_by_cat('zhouyi', 6);
         include template('qiming', 'zhouyi');
     }
     
@@ -165,11 +139,9 @@ class index {
         $description = '在线康熙字典，支持拼音、部首、笔画等多种查询方式，帮您了解汉字的五行属性和起名寓意';
         
         $char = isset($_GET['char']) ? trim($_GET['char']) : '';
-        $wuxing = isset($_GET['wuxing']) ? intval($_GET['wuxing']) : 0;
-        $bihua = isset($_GET['bihua']) ? intval($_GET['bihua']) : 0;
         
         if (!empty($char)) {
-            yzm_base::load_model('character_model', 'qiming', 0);
+            require_once APP_PATH . 'qiming/model/character_model.class.php';
             $character_model = new character_model();
             $char_info = $character_model->get_by_char($char);
         } else {
@@ -187,7 +159,6 @@ class index {
         $keywords = '成人改名,改名';
         $description = '专业改名服务，帮助成年人找到更适合自己的名字，开启新人生';
         
-        $recent_articles = $this->get_articles_by_cat('gaimingzi', 6);
         include template('qiming', 'gaimingzi');
     }
     
@@ -214,77 +185,6 @@ class index {
     }
     
     /**
-     * 获取指定栏目的文章
-     */
-    private function get_articles_by_cat($cat, $limit = 6) {
-        return array();
-    }
-    
-    /**
-     * 姓名配对页面
-     */
-    public function xingmingpeidui() {
-        $seo_title = '姓名配对 - 起名网';
-        include template('qiming', 'xingmingpeidui');
-    }
-    
-    /**
-     * 定字起名页面
-     */
-    public function dingzi() {
-        $seo_title = '定字起名 - 起名网';
-        include template('qiming', 'dingzi');
-    }
-    
-    /**
-     * 男孩起名页面
-     */
-    public function nanhai() {
-        $seo_title = '男孩起名 - 起名网';
-        include template('qiming', 'nanhai');
-    }
-    
-    /**
-     * 女孩起名页面
-     */
-    public function nvhai() {
-        $seo_title = '女孩起名 - 起名网';
-        include template('qiming', 'nvhai');
-    }
-    
-    /**
-     * 唐诗起名页面
-     */
-    public function tangshi() {
-        $seo_title = '唐诗起名 - 起名网';
-        include template('qiming', 'tangshi');
-    }
-    
-    /**
-     * 诗经起名页面
-     */
-    public function shijing() {
-        $seo_title = '诗经起名 - 起名网';
-        include template('qiming', 'shijing');
-    }
-    
-    /**
-     * 宋词起名页面
-     */
-    public function songci() {
-        $seo_title = '宋词起名 - 起名网';
-        include template('qiming', 'songci');
-    }
-    
-    /**
-     * 楚辞起名页面
-     */
-    public function chuci() {
-        $seo_title = '楚辞起名 - 起名网';
-        include template('qiming', 'chuci');
-    }
-    
-    /**
      * 起名结果页
      */
     public function result() {
@@ -297,7 +197,6 @@ class index {
             showmsg('缺少必要参数', 'stop');
         }
         
-        // 计算八字
         $birth_year = date('Y', strtotime($birthdate));
         $birth_month = date('n', strtotime($birthdate));
         $birth_day = date('j', strtotime($birthdate));
@@ -307,7 +206,6 @@ class index {
         $bazi_result = $bazi->calculate($birth_year, $birth_month, $birth_day, $birthtime);
         $wuxing_count = $bazi->analyzeWuxing();
         
-        // 计算五格
         $name = isset($_GET['name']) ? trim($_GET['name']) : '';
         if (!empty($name)) {
             yzm_base::load_sys_class('wuge', '', 0);
@@ -329,7 +227,6 @@ class index {
             showmsg('请输入姓名', 'stop');
         }
         
-        // 计算五格
         yzm_base::load_sys_class('wuge', '', 0);
         $wuge = new wuge();
         $result = $wuge->calculate($surname, $name);

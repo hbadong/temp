@@ -22,7 +22,7 @@ return array(
     
     //路由配置
     'route_config'       => array (
-        'default'        => array('m'=>'index', 'c'=>'index', 'a'=>'init')
+        'default'        => array('m'=>'qiming', 'c'=>'index', 'a'=>'init')
     ),
     'route_mapping'      => true,         //是否开启路由映射
     //路由映射规则
