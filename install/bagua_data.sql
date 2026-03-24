@@ -2,10 +2,10 @@
 -- 包含周易64卦完整数据
 
 -- 清空现有数据
-TRUNCATE TABLE yzm_bagua;
+TRUNCATE TABLE yzmcms_bagua;
 
 -- 插入64卦数据
-INSERT INTO yzm_bagua (gua_name, gua_ci, tuan_ci, xiang_ci, yao_ci, wuxing) VALUES
+INSERT INTO yzmcms_bagua (gua_name, gua_ci, tuan_ci, xiang_ci, yao_ci, wuxing) VALUES
 ('乾', '乾，元亨利贞。', '大通必将得志，然不可乱也。', '天行健，君子以自强不息。', '初九：潜龙勿用。
 九二：见龙在田，利见大人。
 九三：君子终日乾乾，夕惕若厉，无咎。

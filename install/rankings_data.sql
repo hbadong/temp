@@ -2,10 +2,10 @@
 -- 每月更新，请根据实际情况调整
 
 -- 清空现有排行数据
-TRUNCATE TABLE yzm_name_rankings;
+TRUNCATE TABLE yzmcms_name_rankings;
 
 -- 插入男孩起名用字排行（2026年3月）
-INSERT INTO yzm_name_rankings (char_or_name, type, ranking, month, search_count) VALUES
+INSERT INTO yzmcms_name_rankings (char_or_name, type, ranking, month, search_count) VALUES
 ('圣', 'boy-char', 1, '2026-03', 1520),
 ('杰', 'boy-char', 2, '2026-03', 1480),
 ('浩', 'boy-char', 3, '2026-03', 1350),
@@ -38,7 +38,7 @@ INSERT INTO yzm_name_rankings (char_or_name, type, ranking, month, search_count)
 ('瑞', 'boy-char', 30, '2026-03', 300);
 
 -- 插入女孩起名用字排行（2026年3月）
-INSERT INTO yzm_name_rankings (char_or_name, type, ranking, month, search_count) VALUES
+INSERT INTO yzmcms_name_rankings (char_or_name, type, ranking, month, search_count) VALUES
 ('瑾', 'girl-char', 1, '2026-03', 1680),
 ('楠', 'girl-char', 2, '2026-03', 1520),
 ('莹', 'girl-char', 3, '2026-03', 1380),
@@ -71,7 +71,7 @@ INSERT INTO yzm_name_rankings (char_or_name, type, ranking, month, search_count)
 ('莺', 'girl-char', 30, '2026-03', 190);
 
 -- 插入男孩热门名字排行（2026年3月）
-INSERT INTO yzm_name_rankings (char_or_name, type, ranking, month, search_count) VALUES
+INSERT INTO yzmcms_name_rankings (char_or_name, type, ranking, month, search_count) VALUES
 ('颜豪', 'boy-name', 1, '2026-03', 5800),
 ('颢凯', 'boy-name', 2, '2026-03', 5200),
 ('颢哲', 'boy-name', 3, '2026-03', 4800),
@@ -104,7 +104,7 @@ INSERT INTO yzm_name_rankings (char_or_name, type, ranking, month, search_count)
 ('家辰', 'boy-name', 30, '2026-03', 600);
 
 -- 插入女孩热门名字排行（2026年3月）
-INSERT INTO yzm_name_rankings (char_or_name, type, ranking, month, search_count) VALUES
+INSERT INTO yzmcms_name_rankings (char_or_name, type, ranking, month, search_count) VALUES
 ('颜菲', 'girl-name', 1, '2026-03', 6200),
 ('孟馨', 'girl-name', 2, '2026-03', 5600),
 ('宁丽', 'girl-name', 3, '2026-03', 5100),
