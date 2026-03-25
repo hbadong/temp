@@ -13,6 +13,10 @@
     <link href="https://static.qiming.cn/style/date_c/rui-datepicker.min.css" rel="stylesheet" type="text/css">
     <script src="https://static.qiming.cn/style/qiming/js/jquery.min.js"></script>
     <script src="https://static.qiming.cn/style/qiming/js/uikit.min.js"></script>
+    <script src="https://static.qiming.cn/style/layer/layer.js" charset="utf-8"></script>
+    <script src="https://static.qiming.cn/style/date_c/rui-datepicker.min.js" charset="utf-8"></script>
+    <script src="https://static.qiming.cn/style/city/jquery.popcity.js" type="text/javascript"></script>
+    <link href="https://static.qiming.cn/style/city/city.css" rel="stylesheet" type="text/css">
 </head>
 <body class="qiming-background-muted site qiming-zz-background">
     <!-- Header -->
@@ -111,7 +115,9 @@
                                 <input class="sexInput" id="sex" name="gender" type="hidden" value="1">
                             </div>
                             <div class="list_bd">
-                                <input type="date" id="birthday" name="birthdate" class="J_datepicker input-birthday" placeholder="请选择出生日期" required>
+                                <input type="text" id="birthday" class="J_datepicker input-birthday" placeholder="请选择出生日期" readonly>
+                                <input type="hidden" name="birthdate" id="b_input" value="">
+                                <input type="hidden" name="birthtime" id="h_input" value="">
                                 <img src="https://static.qiming.cn/style/qiming/images/xl.png" alt="">
                             </div>
                             <div class="list_bd bfb">
