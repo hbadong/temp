@@ -7,7 +7,7 @@ defined('IN_YZMPHP') or exit('Access Denied');
 
 class poetry_model {
     
-    private $table = 'poetry';
+    private $table = 'yzm_poetry';
     
     /**
      * 获取诗词列表
@@ -23,6 +23,15 @@ class poetry_model {
      */
     public function get_random($type = 1, $limit = 10) {
         return D($this->table)->where(array('type' => $type))->order('RAND()')->limit($limit)->select();
+    }
+    
+    /**
+     * 获取诗词列表（按类型）
+     * @param int $type 类型(1唐诗2宋词3诗经4楚辞)
+     * @param int $limit 返回数量
+     */
+    public function get_by_type($type, $limit = 20) {
+        return D($this->table)->where(array('type' => $type))->limit($limit)->select();
     }
     
     /**

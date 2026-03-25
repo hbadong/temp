@@ -7,7 +7,7 @@ defined('IN_YZMPHP') or exit('Access Denied');
 
 class horoscope_model {
     
-    private $table = 'horoscope';
+    private $table = 'yzm_horoscope';
     
     /**
      * 获取指定日期的黄历

@@ -3,7 +3,7 @@
  * 起名系统API接口控制器
  */
 
-defined('IN_YZMPHP') or exit('Access Denied');
+defined('IN_YZMPHP') or exit('Access Denecd');
 
 class api {
     
@@ -13,18 +13,13 @@ class api {
     public function huangli() {
         $date = isset($_GET['date']) ? trim($_GET['date']) : date('Y-m-d');
         
-        // 示例黄历数据（实际项目中应从数据库获取）
-        $data = array(
-            'date' => $date,
-            'lunar' => '农历' . $this->get_lunar_date($date),
-            'zodiac' => $this->get_zodiac($date),
-            'yi' => '嫁娶,祭祀,开光,祈福,求嗣,出行',
-            'ji' => '动土,伐木,安葬,行丧',
-            'caishen' => '东北',
-            'xishen' => '西北',
-            'fushen' => '西南',
-            'jishi' => '子寅卯巳申亥',
-        );
+        require_once APP_PATH . 'qiming/model/horoscope_model.class.php';
+        $horoscope_model = new horoscope_model();
+        $data = $horoscope_model->get_by_date($date);
+        
+        if (!$data) {
+            $data = $horoscope_model->get_today();
+        }
         
         echo json_encode(array('status' => 1, 'data' => $data));
     }
@@ -34,22 +29,11 @@ class api {
      */
     public function ranking() {
         $type = isset($_GET['type']) ? trim($_GET['type']) : 'boy-char';
+        $limit = isset($_GET['limit']) ? intval($_GET['limit']) : 30;
         
-        $data = array();
-        switch ($type) {
-            case 'boy-char':
-                $data = $this->get_boy_char_ranking();
-                break;
-            case 'girl-char':
-                $data = $this->get_girl_char_ranking();
-                break;
-            case 'boy-name':
-                $data = $this->get_boy_name_ranking();
-                break;
-            case 'girl-name':
-                $data = $this->get_girl_name_ranking();
-                break;
-        }
+        require_once APP_PATH . 'qiming/model/ranking_model.class.php';
+        $ranking_model = new ranking_model();
+        $data = $ranking_model->get_by_type($type, $limit);
         
         echo json_encode(array('status' => 1, 'data' => $data));
     }
@@ -65,14 +49,29 @@ class api {
             return;
         }
         
-        // 示例数据（实际项目中应从数据库搜索）
-        $data = array(
-            array('char' => '鑫', 'pinyin' => 'xīn', 'bihua' => 24, 'wuxing' => '金', 'meaning' => '财富兴盛'),
-            array('char' => '森', 'pinyin' => 'sēn', 'bihua' => 12, 'wuxing' => '木', 'meaning' => '树木众多'),
-            array('char' => '淼', 'pinyin' => 'miǎo', 'bihua' => 12, 'wuxing' => '水', 'meaning' => '水大'),
-        );
+        require_once APP_PATH . 'qiming/model/character_model.class.php';
+        $character_model = new character_model();
+        $chars = $character_model->search_chars($keyword, 20);
         
-        echo json_encode(array('status' => 1, 'data' => $data));
+        echo json_encode(array('status' => 1, 'data' => $chars));
+    }
+    
+    /**
+     * 搜索姓名
+     */
+    public function search_name() {
+        $keyword = isset($_GET['keyword']) ? trim($_GET['keyword']) : '';
+        
+        if (empty($keyword)) {
+            echo json_encode(array('status' => 0, 'message' => '关键词不能为空'));
+            return;
+        }
+        
+        require_once APP_PATH . 'qiming/model/character_model.class.php';
+        $character_model = new character_model();
+        $names = $character_model->search_names($keyword, 20);
+        
+        echo json_encode(array('status' => 1, 'data' => $names));
     }
     
     /**
@@ -115,57 +114,150 @@ class api {
         echo json_encode(array('status' => 1, 'data' => $result));
     }
     
-    // ==================== 私有方法 ====================
-    
-    private function get_lunar_date($date) {
-        return '二月初四';
+    /**
+     * 获取汉字信息
+     */
+    public function get_char() {
+        $char = isset($_GET['char']) ? trim($_GET['char']) : '';
+        
+        if (empty($char)) {
+            echo json_encode(array('status' => 0, 'message' => '汉字不能为空'));
+            return;
+        }
+        
+        require_once APP_PATH . 'qiming/model/character_model.class.php';
+        $character_model = new character_model();
+        $data = $character_model->get_by_char($char);
+        
+        if ($data) {
+            echo json_encode(array('status' => 1, 'data' => $data));
+        } else {
+            echo json_encode(array('status' => 0, 'message' => '未找到该汉字'));
+        }
     }
     
-    private function get_zodiac($date) {
-        $year = date('Y', strtotime($date));
-        $zodiac = array('鼠', '牛', '虎', '兔', '龙', '蛇', '马', '羊', '猴', '鸡', '狗', '猪');
-        return $zodiac[($year - 1900) % 12];
+    /**
+     * 根据五行获取汉字
+     */
+    public function get_by_wuxing() {
+        $wuxing = isset($_GET['wuxing']) ? intval($_GET['wuxing']) : 0;
+        $limit = isset($_GET['limit']) ? intval($_GET['limit']) : 50;
+        
+        if ($wuxing < 1 || $wuxing > 5) {
+            echo json_encode(array('status' => 0, 'message' => '五行参数错误'));
+            return;
+        }
+        
+        require_once APP_PATH . 'qiming/model/character_model.class.php';
+        $character_model = new character_model();
+        $data = $character_model->search_by_wuxing($wuxing, $limit);
+        
+        echo json_encode(array('status' => 1, 'data' => $data));
     }
     
-    private function get_boy_char_ranking() {
-        return array(
-            array('char' => '圣', 'pinyin' => 'shèng', 'meaning' => '吉祥、智慧'),
-            array('char' => '杰', 'pinyin' => 'jié', 'meaning' => '杰出、才能'),
-            array('char' => '浩', 'pinyin' => 'hào', 'meaning' => '浩大、广阔'),
-            array('char' => '旭', 'pinyin' => 'xù', 'meaning' => '旭日、朝阳'),
-            array('char' => '尧', 'pinyin' => 'yáo', 'meaning' => '高远、圣明'),
-            array('char' => '俊', 'pinyin' => 'jùn', 'meaning' => '俊秀、美好'),
-        );
+    /**
+     * 获取诗词列表
+     */
+    public function poetry_list() {
+        $type = isset($_GET['type']) ? intval($_GET['type']) : 1;
+        $limit = isset($_GET['limit']) ? intval($_GET['limit']) : 20;
+        
+        require_once APP_PATH . 'qiming/model/poetry_model.class.php';
+        $poetry_model = new poetry_model();
+        $data = $poetry_model->get_list($type, $limit);
+        
+        echo json_encode(array('status' => 1, 'data' => $data));
     }
     
-    private function get_girl_char_ranking() {
-        return array(
-            array('char' => '瑾', 'pinyin' => 'jǐn', 'meaning' => '美德、美玉'),
-            array('char' => '楠', 'pinyin' => 'nán', 'meaning' => '木材、温暖'),
-            array('char' => '莹', 'pinyin' => 'yíng', 'meaning' => '光洁、透明'),
-            array('char' => '雪', 'pinyin' => 'xuě', 'meaning' => '纯洁、雪花'),
-            array('char' => '晗', 'pinyin' => 'hán', 'meaning' => '天将明'),
-            array('char' => '琴', 'pinyin' => 'qín', 'meaning' => '乐器、优雅'),
-        );
+    /**
+     * 获取随机诗词
+     */
+    public function poetry_random() {
+        $type = isset($_GET['type']) ? intval($_GET['type']) : 1;
+        $limit = isset($_GET['limit']) ? intval($_GET['limit']) : 10;
+        
+        require_once APP_PATH . 'qiming/model/poetry_model.class.php';
+        $poetry_model = new poetry_model();
+        $data = $poetry_model->get_random($type, $limit);
+        
+        echo json_encode(array('status' => 1, 'data' => $data));
     }
     
-    private function get_boy_name_ranking() {
-        return array(
-            array('name' => '颜豪', 'pinyin' => 'yán háo'),
-            array('name' => '颢宁', 'pinyin' => 'hào níng'),
-            array('name' => '璟霆', 'pinyin' => 'jǐng tíng'),
-            array('name' => '梓翔', 'pinyin' => 'zǐ xiáng'),
-            array('name' => '铭轩', 'pinyin' => 'míng xuān'),
-        );
+    /**
+     * 搜索诗词
+     */
+    public function poetry_search() {
+        $keyword = isset($_GET['keyword']) ? trim($_GET['keyword']) : '';
+        
+        if (empty($keyword)) {
+            echo json_encode(array('status' => 0, 'message' => '关键词不能为空'));
+            return;
+        }
+        
+        require_once APP_PATH . 'qiming/model/poetry_model.class.php';
+        $poetry_model = new poetry_model();
+        $data = $poetry_model->search($keyword, 20);
+        
+        echo json_encode(array('status' => 1, 'data' => $data));
     }
     
-    private function get_girl_name_ranking() {
-        return array(
-            array('name' => '颜菲', 'pinyin' => 'yán fēi'),
-            array('name' => '宁汐', 'pinyin' => 'níng xī'),
-            array('name' => '宇婷', 'pinyin' => 'yǔ tíng'),
-            array('name' => '梓怡', 'pinyin' => 'zǐ yí'),
-            array('name' => '熙媛', 'pinyin' => 'xī yuán'),
-        );
+    /**
+     * 起名推荐
+     */
+    public function recommend() {
+        $surname = isset($_GET['surname']) ? trim($_GET['surname']) : '';
+        $gender = isset($_GET['gender']) ? intval($_GET['gender']) : 1;
+        $birthdate = isset($_GET['birthdate']) ? trim($_GET['birthdate']) : '';
+        
+        if (empty($surname) || empty($birthdate)) {
+            echo json_encode(array('status' => 0, 'message' => '参数不完整'));
+            return;
+        }
+        
+        $birth_year = date('Y', strtotime($birthdate));
+        $birth_month = date('n', strtotime($birthdate));
+        $birth_day = date('j', strtotime($birthdate));
+        $birthtime = isset($_GET['birthtime']) ? intval($_GET['birthtime']) : 0;
+        
+        yzm_base::load_sys_class('bazi', '', 0);
+        $bazi = new bazi();
+        $bazi_result = $bazi->calculate($birth_year, $birth_month, $birth_day, $birthtime);
+        $wuxing_count = $bazi->analyzeWuxing();
+        
+        require_once APP_PATH . 'qiming/model/character_model.class.php';
+        $character_model = new character_model();
+        
+        $names = array();
+        $chars = $character_model->search_by_wuxing($wuxing_count['need_wuxing'], 20);
+        
+        foreach ($chars as $char) {
+            $full_name = $surname . $char['char'];
+            yzm_base::load_sys_class('wuge', '', 0);
+            $wuge = new wuge();
+            $wuge_result = $wuge->calculate($surname, $char['char']);
+            
+            $names[] = array(
+                'name' => $full_name,
+                'char' => $char['char'],
+                'pinyin' => $char['pinyin'],
+                'wuge_score' => $wuge_result['total_score'],
+                'wuxing' => $char['wuxing'],
+            );
+        }
+        
+        usort($names, function($a, $b) {
+            return $b['wuge_score'] - $a['wuge_score'];
+        });
+        
+        $names = array_slice($names, 0, 20);
+        
+        echo json_encode(array(
+            'status' => 1, 
+            'data' => array(
+                'names' => $names,
+                'bazi' => $bazi_result,
+                'wuxing' => $wuxing_count,
+            )
+        ));
     }
 }

@@ -7,7 +7,7 @@ defined('IN_YZMPHP') or exit('Access Denied');
 
 class character_model {
     
-    private $table = 'chinese_characters';
+    private $table = 'yzm_character';
     
     /**
      * 获取汉字信息
@@ -27,6 +27,10 @@ class character_model {
      * 根据五行搜索
      */
     public function search_by_wuxing($wuxing, $limit = 50) {
+        $wuxing = intval($wuxing);
+        if ($wuxing < 1 || $wuxing > 5) {
+            return array();
+        }
         return D($this->table)->where(array('wuxing' => $wuxing))->limit($limit)->select();
     }
     

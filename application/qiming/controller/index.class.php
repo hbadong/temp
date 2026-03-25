@@ -16,6 +16,7 @@ class index {
         $description = '起名网专注科学智能宝宝起名，测名字打分平台，结合传统国学文化的智能起名系统研发和起名学术探索交流，以"只为一个好名字"为宗旨，潜心研发，百次升级，千万级大数据分析，助您轻松起好名。';
         
         $today = date('Y-m-d');
+        $current_month = date('Y-m');
         
         require_once APP_PATH . 'qiming/model/horoscope_model.class.php';
         require_once APP_PATH . 'qiming/model/ranking_model.class.php';
@@ -23,6 +24,9 @@ class index {
         
         $horoscope_model = new horoscope_model();
         $horoscope = $horoscope_model->get_by_date($today);
+        if (!$horoscope) {
+            $horoscope = $horoscope_model->get_today();
+        }
         
         $ranking_model = new ranking_model();
         $rankings = array(
@@ -34,6 +38,8 @@ class index {
         
         $character_model = new character_model();
         $recent_searches = $character_model->get_recent_searches(12);
+        
+        $wuxing_names = array('', '金', '木', '水', '火', '土');
         
         include template('qiming', 'index');
     }
@@ -93,6 +99,14 @@ class index {
         $seo_title = '诗词起名 - 起名网';
         $keywords = '诗词起名,唐诗起名,宋词起名,诗经起名';
         $description = '结合孩子出生信息和父母期盼，从二十多万诗词古文中取字，确保每个名字意蕴优美、诗情画意';
+        
+        require_once APP_PATH . 'qiming/model/poetry_model.class.php';
+        $poetry_model = new poetry_model();
+        
+        $tangshi = $poetry_model->get_list(1, 6);
+        $shijing = $poetry_model->get_list(3, 6);
+        $songci = $poetry_model->get_list(2, 6);
+        $chuci = $poetry_model->get_list(4, 6);
         
         include template('qiming', 'shici');
     }
@@ -182,6 +196,66 @@ class index {
         $description = '专业的起名知识栏目，为您提供八字起名、诗词起名、周易起名等各类起名知识的详细介绍';
         
         include template('qiming', 'zhishi');
+    }
+    
+    /**
+     * 唐诗起名页面
+     */
+    public function tangshi() {
+        $seo_title = '唐诗起名 - 起名网';
+        $keywords = '唐诗起名,唐诗三百首';
+        $description = '从李白、杜甫等唐代名家诗篇中汲取灵感，为您提供诗意盎然的好名字';
+        
+        require_once APP_PATH . 'qiming/model/poetry_model.class.php';
+        $poetry_model = new poetry_model();
+        $poetry_list = $poetry_model->get_list(1, 30);
+        
+        include template('qiming', 'tangshi');
+    }
+    
+    /**
+     * 诗经起名页面
+     */
+    public function shijing() {
+        $seo_title = '诗经起名 - 起名网';
+        $keywords = '诗经起名,诗经取名';
+        $description = '从诗经中寻找富有诗意的好名字，传承中华文化精髓';
+        
+        require_once APP_PATH . 'qiming/model/poetry_model.class.php';
+        $poetry_model = new poetry_model();
+        $poetry_list = $poetry_model->get_list(3, 30);
+        
+        include template('qiming', 'shijing');
+    }
+    
+    /**
+     * 宋词起名页面
+     */
+    public function songci() {
+        $seo_title = '宋词起名 - 起名网';
+        $keywords = '宋词起名,宋词取名';
+        $description = '从苏轼、李清照等宋代名家词作中汲取灵感，为您提供优美动人的好名字';
+        
+        require_once APP_PATH . 'qiming/model/poetry_model.class.php';
+        $poetry_model = new poetry_model();
+        $poetry_list = $poetry_model->get_list(2, 30);
+        
+        include template('qiming', 'songci');
+    }
+    
+    /**
+     * 楚辞起名页面
+     */
+    public function chuci() {
+        $seo_title = '楚辞起名 - 起名网';
+        $keywords = '楚辞起名,楚辞取名';
+        $description = '从屈原离骚等楚辞名篇中汲取灵感，为您提供大气厚重的好名字';
+        
+        require_once APP_PATH . 'qiming/model/poetry_model.class.php';
+        $poetry_model = new poetry_model();
+        $poetry_list = $poetry_model->get_list(4, 30);
+        
+        include template('qiming', 'chuci');
     }
     
     /**
