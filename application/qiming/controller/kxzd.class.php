@@ -31,6 +31,8 @@ class kxzd {
             showmsg('未找到该汉字', 'stop');
         }
         
+        $wuxing_names = array(1 => '金', 2 => '木', 3 => '水', 4 => '火', 5 => '土');
+        
         $seo_title = '汉字' . $char . ' - 康熙字典 - 起名网';
         include template('qiming', 'kxzd_show');
     }
@@ -42,6 +44,9 @@ class kxzd {
         $keyword = isset($_GET['keyword']) ? trim($_GET['keyword']) : '';
         $wuxing = isset($_GET['wuxing']) ? intval($_GET['wuxing']) : 0;
         $list = array();
+        $total = 0;
+        
+        $wuxing_names = array(1 => '金', 2 => '木', 3 => '水', 4 => '火', 5 => '土');
         
         if (!empty($keyword) || !empty($wuxing)) {
             require_once APP_PATH . 'qiming/model/character_model.class.php';
@@ -49,8 +54,10 @@ class kxzd {
             
             if (!empty($keyword)) {
                 $list = $character_model->search_by_pinyin($keyword);
+                $total = count($list);
             } elseif (!empty($wuxing)) {
                 $list = $character_model->search_by_wuxing($wuxing);
+                $total = count($list);
             }
         }
         

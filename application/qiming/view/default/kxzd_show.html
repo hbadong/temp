@@ -30,7 +30,7 @@
     <div class="page-header">
         <div class="container">
             <div class="char-display">{$data['char']}</div>
-            <div class="pinyin">{$data['pinyin']} {$data['zhuyin']}</div>
+            <div class="pinyin">{php echo $data['pinyin'] . ' ' . $data['zhuyin'];}</div>
         </div>
     </div>
     
@@ -44,7 +44,7 @@
                 </div>
                 <div class="info-item">
                     <div class="label">五行</div>
-                    <div class="value">{$data['wuxing']}</div>
+                    <div class="value">{php echo $wuxing_names[$data['wuxing']];}</div>
                 </div>
                 <div class="info-item">
                     <div class="label">部首</div>
@@ -53,26 +53,19 @@
             </div>
         </div>
         
-        <?php if (!empty($data['jx'])): ?>
+        {if !empty($data['jx'])}
         <div class="info-card">
             <h3 class="info-title">康熙字典解释</h3>
             <div class="meaning">{$data['jx']}</div>
         </div>
-        <?php endif; ?>
+        {/if}
         
-        <?php if (!empty($data['xmxy'])): ?>
+        {if !empty($data['xmxy'])}
         <div class="info-card">
             <h3 class="info-title">起名寓意</h3>
             <div class="meaning">{$data['xmxy']}</div>
         </div>
-        <?php endif; ?>
-        
-        <?php if (!empty($data['cy'])): ?>
-        <div class="info-card">
-            <h3 class="info-title">词语解释</h3>
-            <div class="meaning">{$data['cy']}</div>
-        </div>
-        <?php endif; ?>
+        {/if}
         
         <div style="text-align:center;">
             <a href="javascript:history.back();" class="btn-back">返回上一页</a>
