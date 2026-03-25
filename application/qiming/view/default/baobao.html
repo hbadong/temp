@@ -84,7 +84,7 @@
                 <div class="formGsQm">
                     <h1>宝宝起名</h1>
                     <p>以先进AI技术和大数据融合千年传统起名智慧，为您提供独一无二、寓意深远的宝宝名字方案</p>
-                    <form method="get" action="/index.php?qiming/index/result">
+                    <form method="get" action="/index.php?qiming/index/result" id="qmform">
                         <div class="two_bd flex spb dsbl">
                             <div class="list_bd">
                                 <input type="text" id="xing" name="surname" size="6" placeholder="请输入宝宝的姓氏" maxlength="1" required>
@@ -108,7 +108,22 @@
                             </div>
                         </div>
                         <input type="hidden" name="type" id="type" value="bbqm">
-                        <a class="qmbtn" href="javascript:;" onclick="this.parentElement.submit();">立即起名</a>
+                        <a class="qmbtn" href="javascript:;" onclick="doSubmit()">立即起名</a>
+                        <script>
+                        function doSubmit() {
+                            var surname = document.getElementById('xing').value;
+                            var birthday = document.getElementById('b_input').value;
+                            if (!surname) {
+                                alert('请输入姓氏');
+                                return;
+                            }
+                            if (!birthday) {
+                                alert('请选择出生日期');
+                                return;
+                            }
+                            document.getElementById('qmform').submit();
+                        }
+                        </script>
                         <div class="lunpan_box">
                             <div class="lunpan">
                                 <img src="https://static.qiming.cn/style/qiming/images/luopan.png">
