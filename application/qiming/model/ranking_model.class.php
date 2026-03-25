@@ -7,7 +7,7 @@ defined('IN_YZMPHP') or exit('Access Denied');
 
 class ranking_model {
     
-    private $table = 'yzm_name_rankings';
+    private $table = 'name_rankings';
     
     /**
      * 获取排行列表

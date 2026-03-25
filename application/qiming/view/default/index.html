@@ -666,7 +666,7 @@
 {loop $rankings['boy_chars'] $v}
 <li>
 <a href="{U('qiming/kxzd/show', 'char='.$v['char'])}" target="_blank" class="b-r-4">
-<span>{$v.pinyin}</span>{$v['char']}<span class="{php echo $v['is_lucky']?'jixiong':''}">{php echo $v['is_lucky']?'吉':''}</span>
+<span>{$v.pinyin}</span>{$v['char']}<span class="<?php echo $v['is_lucky']?'jixiong':''; ?>"><?php echo $v['is_lucky']?'吉':''; ?></span>
 </a>
 </li>
 {/loop}
@@ -710,7 +710,7 @@
 {loop $rankings['girl_chars'] $v}
 <li>
 <a href="{U('qiming/kxzd/show', 'char='.$v['char'])}" target="_blank" class="b-r-4">
-<span>{$v.pinyin}</span>{$v['char']}<span class="{php echo $v['is_lucky']?'jixiong':''}">{php echo $v['is_lucky']?'吉':''}</span>
+<span>{$v.pinyin}</span>{$v['char']}<span class="<?php echo $v['is_lucky']?'jixiong':''; ?>"><?php echo $v['is_lucky']?'吉':''; ?></span>
 </a>
 </li>
 {/loop}

@@ -7,7 +7,7 @@ defined('IN_YZMPHP') or exit('Access Denied');
 
 class character_model {
     
-    private $table = 'yzm_character';
+    private $table = 'character';
     
     /**
      * 获取汉字信息

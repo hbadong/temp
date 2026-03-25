@@ -7,7 +7,7 @@ defined('IN_YZMPHP') or exit('Access Denied');
 
 class poetry_model {
     
-    private $table = 'yzm_poetry';
+    private $table = 'poetry';
     
     /**
      * 获取诗词列表
