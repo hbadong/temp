@@ -16,7 +16,14 @@ class qiming extends common {
             'total_chars' => D('character_model')->total(),
             'total_poetry' => D('poetry_model')->total(),
             'total_tests' => D('name_test_results')->total(),
+            'total_bagua' => D('bagua_model')->total(),
+            'total_users' => D('member')->total(),
+            'today_tests' => D('name_test_results')->where("DATE(created_at) = CURDATE()")->total(),
         );
+        
+        $recent_tests = D('name_test_results')->order('id DESC')->limit(10)->select();
+        $hot_chars = D('name_rankings')->where(array('type' => 'boy-char'))->order('search_count DESC')->limit(10)->select();
+        
         include $this->admin_tpl('qiming/dashboard');
     }
     
