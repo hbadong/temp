@@ -51,7 +51,7 @@ function block_list_by_tagid($conf) {
     $table = isset($table_arr[$mid]) ? $table_arr[$mid] : 'article';
     //过滤单页模型
     if($table == 'page'){
-        return array();
+        return array('tag_name'=>'', 'tag_url'=>'', 'list'=> array());
     }
 
     $run->cms_content_tag->table = 'cms_'.$table.'_tag';

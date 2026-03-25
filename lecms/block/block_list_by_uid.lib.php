@@ -49,11 +49,14 @@ function block_list_by_uid($conf) {
         }
     }
 
+    // 初始化返回数组
+    $ret = array('username'=>'', 'author'=>'', 'list'=>array());
+
     $table_arr = &$run->_cfg['table_arr'];
     $table = isset($table_arr[$mid]) ? $table_arr[$mid] : 'article';
     //过滤单页模型
     if($table == 'page'){
-        return array();
+        return $ret;
     }
 
     $run->cms_content->table = 'cms_'.$table;
@@ -68,13 +71,13 @@ function block_list_by_uid($conf) {
         global $_show;
         $uid = isset($_show['uid']) ? $_show['uid'] : 0;
         if( empty($uid) ){
-            return array('username'=>'', 'author'=>'', 'list'=>array());
+            return $ret;
         }
     }
 
     $user = $run->user->get($uid);
     if( empty($user) ){
-        return array('username'=>'', 'author'=>'', 'list'=>array());
+        return $ret;
     }
 
     $author = empty($user['author']) ? $user['username'] : $user['author'];

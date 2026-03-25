@@ -51,11 +51,14 @@ function block_list_rand($conf) {
         }
     }
 
+    // 初始化返回数组
+    $ret = array('list'=> array());
+
     $table_arr = &$run->_cfg['table_arr'];
     $table = isset($table_arr[$mid]) ? $table_arr[$mid] : 'article';
     //过滤单页模型
     if($table == 'page'){
-        return array();
+        return $ret;
     }
     $table_prefix = $_ENV['_config']['db']['master']['tablepre'];
     $table_full = $table_prefix.'cms_'.$table;

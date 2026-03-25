@@ -47,6 +47,9 @@ function block_list_top($conf) {
         }
     }
 
+    // 初始化返回数组
+    $ret = array('list'=> array());
+
 	if($cid == 0) {
 		// 当cid为0时，根据mid确定table
 		$table_arr = &$run->_cfg['table_arr'];
@@ -64,7 +67,7 @@ function block_list_top($conf) {
 	}
     //过滤单页模型
     if($table == 'page'){
-        return array();
+        return $ret;
     }
 
     if($showcate){

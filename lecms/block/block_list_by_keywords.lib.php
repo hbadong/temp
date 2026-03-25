@@ -46,8 +46,11 @@ function block_list_by_keywords($conf) {
     $cache_params = array($keywords, $cid, $mid, $dateformat, $titlenum, $intronum, $orderby, $orderway, $start, $limit, $showcate, $showviews, $field_format);
     // hook block_list_by_keywords_conf_after.php
 
+    // 初始化返回数组
+    $ret = array('cate_name'=> '', 'cate_url'=> '', 'list'=> array());
+
     if($keywords == ''){
-        return array();
+        return $ret;
     }
 
     //优先从缓存表读取。加前缀，避免不同的block，相同的cache_params，导致缓存数据错乱
@@ -83,7 +86,7 @@ function block_list_by_keywords($conf) {
 
     //过滤单页模型
     if($table == 'page'){
-        return array();
+        return $ret;
     }
 
     $run->cms_content->table = 'cms_'.$table;

@@ -40,8 +40,11 @@ function block_list_flag($conf) {
     $cache_params = array($flag, $cid, $mid, $dateformat, $titlenum, $intronum, $orderway, $start, $limit, $showcate, $showviews, $field_format);
     // hook block_list_flag_conf_after.php
 
+    // 初始化返回数组
+    $ret = array('list'=> array());
+
     if($flag == 0){
-        return array('list'=> array());
+        return $ret;
     }
 
     //优先从缓存表读取。加前缀，避免不同的block，相同的cache_params，导致缓存数据错乱
@@ -72,7 +75,7 @@ function block_list_flag($conf) {
 	}
     //过滤单页模型
     if($table == 'page'){
-        return array();
+        return $ret;
     }
     // hook block_list_flag_where_after.php
 

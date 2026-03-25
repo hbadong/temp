@@ -36,8 +36,11 @@ function block_list_by_tagname($conf) {
     $cache_params = array($tagname, $mid, $dateformat, $titlenum, $intronum, $orderway, $start, $limit, $showcate, $showviews);
     // hook block_list_by_tagname_conf_after.php
 
+    // 初始化返回数组
+    $ret = array('tag_name'=>'', 'tag_url'=>'', 'list'=> array());
+
     if($tagname == ''){
-        return array();
+        return $ret;
     }
 
     //优先从缓存表读取。加前缀，避免不同的block，相同的cache_params，导致缓存数据错乱
@@ -53,7 +56,7 @@ function block_list_by_tagname($conf) {
     $table = isset($table_arr[$mid]) ? $table_arr[$mid] : 'article';
     //过滤单页模型
     if($table == 'page'){
-        return array();
+        return $ret;
     }
 
     $run->cms_content_tag->table = 'cms_'.$table.'_tag';

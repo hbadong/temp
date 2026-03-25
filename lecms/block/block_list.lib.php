@@ -53,6 +53,9 @@ function block_list($conf) {
         }
     }
 
+    // 初始化返回数组
+    $ret = array('cate_name'=> '', 'cate_url'=> '', 'list'=> array());
+
 	// 读取分类内容
     if ($cids){
         $cid_arr = explode(',', $cids);
@@ -74,7 +77,7 @@ function block_list($conf) {
             $where = array();
         }else{
             $cate_arr = $run->category->get_cache($cid);
-            if(empty($cate_arr)) return;
+            if(empty($cate_arr)) return $ret;
             $cate_name = $cate_arr['name'];
             $cate_url = $run->category->category_url($cate_arr);
             $table = &$cate_arr['table'];
@@ -98,7 +101,7 @@ function block_list($conf) {
     }
     //过滤单页模型
     if($table == 'page'){
-        return array();
+        return $ret;
     }
 
     // hook block_list_where_after.php
