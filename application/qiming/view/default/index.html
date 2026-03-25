@@ -128,7 +128,7 @@
 <a href="JavaScript:;" class="th">姓名打分</a>
 </div>
 <div class="xmBodyTab">
-<form method="get" autocomplete="off" target="_blank" action="/index.php?qiming/index/result" id="homeForm">
+<form method="get" autocomplete="off" target="_blank" action="/index.php?qiming/index/result&surname=&gender=&birthdate=" id="homeForm">
 <div class="formNameBg">
 <div class="formNameBody flex spb">
 <div class="inputFormItemLmw">
@@ -1227,8 +1227,7 @@ function qiming() {
         return;
     }
     var form = document.getElementById('homeForm');
-    form.method = 'GET';
-    form.action = '/?m=qiming&c=index&a=result';
+    form.action = '/index.php?qiming/index/result&surname=' + encodeURIComponent(surname) + '&gender=' + sex + '&birthdate=' + birthday;
     form.submit();
 }
 </script>
