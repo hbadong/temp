@@ -16,100 +16,7 @@
     <script src="https://static.qiming.cn/style/layer/layer.js" charset="utf-8"></script>
     <script src="https://static.qiming.cn/style/date_c/rui-datepicker.min.js" charset="utf-8"></script>
     <script src="https://static.qiming.cn/style/city/jquery.popcity.js" type="text/javascript"></script>
-    <link href="https://static.qiming.cn/style/city/city.css" rel="stylesheet" type="text/css">
 </head>
-<body>
-    <!-- Header -->
-    <header class="header qiming-background-default">
-        <div class="navbar qiming-position-relative">
-            <div class="qiming-container qiming-flex qiming-flex-middle qiming-position-relative qiming-logo-shou">
-                <a href="{U('qiming/index/init')}" class="header-home" qiming-toggle><i class="iconfont icon-menu qiming-text-bolder"></i></a>
-                <a href="{U('qiming/index/init')}" class="logo qiming-logo qiming-display-inline-block" alt="起名网">
-                    <div class="qiming-logo-nav-night logobg qiming-visible@m"></div>
-                    <div class="qiming-app-logo2 logobg2"></div>
-                </a>
-                <nav class="nav qiming-flex-1 qiming-position-relative">
-                    <ul class="nav qiming-flex-1 qiming-margin-remove">
-                        <li class="menu-item menu-item-type-custom">
-                            <a href="{U('qiming/index/init')}">首页</a>
-                        </li>
-                        <li class="menu-item menu-item-type-custom current-menu-item">
-                            <a href="{U('qiming/index/baobao')}">宝宝起名</a>
-                        </li>
-                        <li class="menu-item menu-item-type-custom">
-                            <a href="{U('qiming/index/bazi')}">八字起名</a>
-                        </li>
-                        <li class="menu-item menu-item-type-custom">
-                            <a href="{U('qiming/index/shici')}">诗词起名</a>
-                        </li>
-                        <li class="menu-item menu-item-type-custom">
-                            <a href="{U('qiming/index/gaimingzi')}">成人改名</a>
-                        </li>
-                        <li class="menu-item menu-item-type-custom">
-                            <a href="{U('qiming/index/ceshi')}">姓名测试</a>
-                        </li>
-                        <li class="menu-item menu-item-type-custom">
-                            <a href="{U('qiming/index/gongsi')}">公司起名</a>
-                        </li>
-                        <li class="menu-item menu-item-type-custom">
-                            <a href="{U('qiming/index/zhouyi')}">周易起名</a>
-                        </li>
-                        <li class="menu-item menu-item-type-custom">
-                            <a href="{U('qiming/index/kxzd')}">康熙字典</a>
-                        </li>
-                        <li class="menu-item menu-item-type-custom">
-                            <a href="{U('qiming/index/baijiaxing')}">百家姓</a>
-                        </li>
-                    </ul>
-                </nav>
-                <div class="header-info qiming-flex qiming-flex-middle">
-                    <a href="javascript:;" class="qiming-toggle" id="header-search">
-                        <i class="iconfont icon-search qiming-text-bolder"></i>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </header>
-    
-    <!-- Banner -->
-    <div class="qiming_vipbgs">
-        <img src="https://static.qiming.cn/style/qiming/images/bbqmBanner.jpg" style="width: 100%;">
-    </div>
-    
-    <!-- Main Content -->
-    <div class="qiming-container" id="page-content">
-        <!-- Form Section -->
-        <div class="qiming-pages-vip">
-            <div class="qiming_portal_block_summary">
-                <div class="formGsQm">
-                    <h1>宝宝起名</h1>
-                    <p>以先进AI技术和大数据融合千年传统起名智慧，为您提供独一无二、寓意深远的宝宝名字方案</p>
-                    <form method="get" action="/index.php?qiming/index/result" id="qmform">
-                        <div class="two_bd flex spb dsbl">
-                            <div class="list_bd">
-                                <input type="text" id="xing" name="surname" size="6" placeholder="请输入宝宝的姓氏" maxlength="1" required>
-                                <div class="sexSelect">
-                                    <span class="active">男</span>
-                                    <span class="">女</span>
-                                    <span class="wcs">未知</span>
-                                </div>
-                                <input class="sexInput" id="sex" name="gender" type="hidden" value="1">
-                            </div>
-                            <div class="list_bd">
-                                <input type="text" id="birthday" class="J_datepicker input-birthday" name="birth_time" readonly placeholder="请选择出生日期" data-toid-date="b_input" data-toid-hour="h_input">
-                                <input type="hidden" name="birthdate" id="b_input" value="">
-                                <input type="hidden" name="birthtime" id="h_input" value="">
-                                <img src="https://static.qiming.cn/style/qiming/images/xl.png" alt="">
-                            </div>
-                            <div class="list_bd bfb">
-                                <input type="text" name="birth_address" id="cs" class="cs" placeholder="选择出生地" readonly>
-                                <input type="hidden" name="city_code" id="harea" value="">
-                                <img src="https://static.qiming.cn/style/qiming/images/xl.png" alt="">
-                            </div>
-                        </div>
-                        <input type="hidden" name="type" id="type" value="bbqm">
-                        <a class="qmbtn" href="javascript:;" onclick="doSubmit()">立即起名</a>
-                        <script>
                         function doSubmit() {
                             var surname = document.getElementById('xing').value;
                             var birthday = document.getElementById('b_input').value;
@@ -433,7 +340,6 @@
         </div>
     </footer>
     
-    <script src="https://static.qiming.cn/style/qiming/js/common.js"></script>
     <script>
         // Sex selection
         document.querySelectorAll('.sexSelect span').forEach(function(span) {
