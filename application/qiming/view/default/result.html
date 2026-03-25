@@ -124,42 +124,14 @@
             <div class="qiming-margin-medium-top">
                 <h3 class="qiming-h5 qiming-padding-bottom" style="border-bottom: 2px solid #ff6600;">推荐姓名</h3>
                 <div class="qiming-grid qiming-grid-collapse qiming-margin-top" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                    {loop $recommended_names $v}
                     <div class="qiming-background-muted qiming-padding qiming-text-center qiming-dongtai">
-                        <div class="qiming-text-large qiming-text-bold qiming-margin-bottom-small">{$surname}浩然</div>
-                        <div class="qiming-text-large qiming-text-bold qiming-text-primary">92分</div>
-                        <span class="qiming-display-inline-block qiming-padding-small qiming-padding-left qiming-padding-right qiming-background-primary qiming-text-white qiming-margin-top-small" style="border-radius: 20px; font-size: 12px;">大吉</span>
+                        <div class="qiming-text-large qiming-text-bold qiming-margin-bottom-small">{$surname}{$v['char']}</div>
+                        <div class="qiming-text-large qiming-text-bold qiming-text-primary">{$v['wuge_score']}分</div>
+                        <span class="qiming-display-inline-block qiming-padding-small qiming-padding-left qiming-padding-right qiming-background-primary qiming-text-white qiming-margin-top-small" style="border-radius: 20px; font-size: 12px;">{$v['level']}</span>
                         <div class="qiming-text-small qiming-text-muted qiming-margin-top-small">五格评分 + 八字五行</div>
                     </div>
-                    <div class="qiming-background-muted qiming-padding qiming-text-center qiming-dongtai">
-                        <div class="qiming-text-large qiming-text-bold qiming-margin-bottom-small">{$surname}梓轩</div>
-                        <div class="qiming-text-large qiming-text-bold qiming-text-primary">88分</div>
-                        <span class="qiming-display-inline-block qiming-padding-small qiming-padding-left qiming-padding-right qiming-background-primary qiming-text-white qiming-margin-top-small" style="border-radius: 20px; font-size: 12px;">吉</span>
-                        <div class="qiming-text-small qiming-text-muted qiming-margin-top-small">五格评分 + 八字五行</div>
-                    </div>
-                    <div class="qiming-background-muted qiming-padding qiming-text-center qiming-dongtai">
-                        <div class="qiming-text-large qiming-text-bold qiming-margin-bottom-small">{$surname}晨宇</div>
-                        <div class="qiming-text-large qiming-text-bold qiming-text-primary">85分</div>
-                        <span class="qiming-display-inline-block qiming-padding-small qiming-padding-left qiming-padding-right qiming-background-primary qiming-text-white qiming-margin-top-small" style="border-radius: 20px; font-size: 12px;">吉</span>
-                        <div class="qiming-text-small qiming-text-muted qiming-margin-top-small">五格评分 + 八字五行</div>
-                    </div>
-                    <div class="qiming-background-muted qiming-padding qiming-text-center qiming-dongtai">
-                        <div class="qiming-text-large qiming-text-bold qiming-margin-bottom-small">{$surname}明哲</div>
-                        <div class="qiming-text-large qiming-text-bold qiming-text-primary">83分</div>
-                        <span class="qiming-display-inline-block qiming-padding-small qiming-padding-left qiming-padding-right qiming-background-primary qiming-text-white qiming-margin-top-small" style="border-radius: 20px; font-size: 12px;">吉</span>
-                        <div class="qiming-text-small qiming-text-muted qiming-margin-top-small">五格评分 + 八字五行</div>
-                    </div>
-                    <div class="qiming-background-muted qiming-padding qiming-text-center qiming-dongtai">
-                        <div class="qiming-text-large qiming-text-bold qiming-margin-bottom-small">{$surname}泽轩</div>
-                        <div class="qiming-text-large qiming-text-bold qiming-text-primary">81分</div>
-                        <span class="qiming-display-inline-block qiming-padding-small qiming-padding-left qiming-padding-right qiming-background-primary qiming-text-white qiming-margin-top-small" style="border-radius: 20px; font-size: 12px;">中吉</span>
-                        <div class="qiming-text-small qiming-text-muted qiming-margin-top-small">五格评分 + 八字五行</div>
-                    </div>
-                    <div class="qiming-background-muted qiming-padding qiming-text-center qiming-dongtai">
-                        <div class="qiming-text-large qiming-text-bold qiming-margin-bottom-small">{$surname}俊杰</div>
-                        <div class="qiming-text-large qiming-text-bold qiming-text-primary">80分</div>
-                        <span class="qiming-display-inline-block qiming-padding-small qiming-padding-left qiming-padding-right qiming-background-primary qiming-text-white qiming-margin-top-small" style="border-radius: 20px; font-size: 12px;">中吉</span>
-                        <div class="qiming-text-small qiming-text-muted qiming-margin-top-small">五格评分 + 八字五行</div>
-                    </div>
+                    {/loop}
                 </div>
             </div>
             

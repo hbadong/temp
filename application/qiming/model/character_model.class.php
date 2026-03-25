@@ -35,6 +35,33 @@ class character_model {
     }
     
     /**
+     * 根据五行和性别获取适合起名的汉字
+     */
+    public function get_chars_by_wuxing($wuxing, $limit = 50, $gender = 1) {
+        $wuxing = intval($wuxing);
+        if ($wuxing < 1 || $wuxing > 5) {
+            $wuxing = 0;
+        }
+        
+        if ($gender == 2) {
+            $where = array('wuxing' => $wuxing, 'is_girl' => 1, 'is_lucky' => 1);
+        } else {
+            $where = array('wuxing' => $wuxing, 'is_boy' => 1, 'is_lucky' => 1);
+        }
+        
+        if ($wuxing == 0) {
+            unset($where['wuxing']);
+            if ($gender == 2) {
+                $where = array('is_girl' => 1, 'is_lucky' => 1);
+            } else {
+                $where = array('is_boy' => 1, 'is_lucky' => 1);
+            }
+        }
+        
+        return D($this->table)->where($where)->limit($limit)->select();
+    }
+    
+    /**
      * 根据笔画搜索
      */
     public function search_by_bihua($bihua, $limit = 50) {

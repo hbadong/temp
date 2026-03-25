@@ -227,21 +227,26 @@ class api {
         require_once APP_PATH . 'qiming/model/character_model.class.php';
         $character_model = new character_model();
         
+        $wuxing_names = array('', '金', '木', '水', '火', '土');
         $names = array();
-        $chars = $character_model->search_by_wuxing($wuxing_count['need_wuxing'], 20);
+        $chars = $character_model->get_chars_by_wuxing($wuxing_count['need_wuxing'], 50, $gender);
+        
+        yzm_base::load_sys_class('wuge', '', 0);
+        $wuge = new wuge();
         
         foreach ($chars as $char) {
             $full_name = $surname . $char['char'];
-            yzm_base::load_sys_class('wuge', '', 0);
-            $wuge = new wuge();
             $wuge_result = $wuge->calculate($surname, $char['char']);
+            $total_score = $wuge_result['total_score'];
+            $level = $this->get_score_level($total_score);
             
             $names[] = array(
                 'name' => $full_name,
                 'char' => $char['char'],
                 'pinyin' => $char['pinyin'],
-                'wuge_score' => $wuge_result['total_score'],
-                'wuxing' => $char['wuxing'],
+                'wuge_score' => $total_score,
+                'level' => $level,
+                'wuxing' => $wuxing_names[$char['wuxing']],
             );
         }
         
@@ -259,5 +264,17 @@ class api {
                 'wuxing' => $wuxing_count,
             )
         ));
+    }
+    
+    /**
+     * 根据评分获取等级
+     */
+    private function get_score_level($score) {
+        if ($score >= 95) return '大吉';
+        if ($score >= 90) return '吉';
+        if ($score >= 80) return '中吉';
+        if ($score >= 70) return '小吉';
+        if ($score >= 60) return '半吉';
+        return '凶';
     }
 }

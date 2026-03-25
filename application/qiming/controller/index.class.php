@@ -280,14 +280,60 @@ class index {
         $bazi_result = $bazi->calculate($birth_year, $birth_month, $birth_day, $birthtime);
         $wuxing_count = $bazi->analyzeWuxing();
         
-        $name = isset($_GET['name']) ? trim($_GET['name']) : '';
-        if (!empty($name)) {
-            yzm_base::load_sys_class('wuge', '', 0);
-            $wuge = new wuge();
-            $wuge_result = $wuge->calculate($surname, $name);
+        $wuge_result = array();
+        $recommended_names = array();
+        
+        require_once APP_PATH . 'qiming/model/character_model.class.php';
+        $character_model = new character_model();
+        
+        $wuxing_names = array('', '金', '木', '水', '火', '土');
+        $gender_filter = ($gender == 2) ? 'is_girl' : 'is_boy';
+        
+        $chars = $character_model->get_chars_by_wuxing($wuxing_count['need_wuxing'], 50, $gender);
+        
+        yzm_base::load_sys_class('wuge', '', 0);
+        $wuge = new wuge();
+        $wuge_result = array();
+        
+        foreach ($chars as $char) {
+            $full_name = $surname . $char['char'];
+            $wuge_result = $wuge->calculate($surname, $char['char']);
+            $total_score = $wuge_result['total_score'];
+            $level = $this->get_score_level($total_score);
+            
+            $recommended_names[] = array(
+                'name' => $full_name,
+                'char' => $char['char'],
+                'pinyin' => $char['pinyin'],
+                'wuge_score' => $total_score,
+                'level' => $level,
+                'wuxing' => $wuxing_names[$char['wuxing']],
+            );
+        }
+        
+        usort($recommended_names, function($a, $b) {
+            return $b['wuge_score'] - $a['wuge_score'];
+        });
+        
+        $recommended_names = array_slice($recommended_names, 0, 20);
+        
+        if (!empty($recommended_names)) {
+            $wuge_result = $wuge->calculate($surname, $recommended_names[0]['char']);
         }
         
         include template('qiming', 'result');
+    }
+    
+    /**
+     * 根据评分获取等级
+     */
+    private function get_score_level($score) {
+        if ($score >= 95) return '大吉';
+        if ($score >= 90) return '吉';
+        if ($score >= 80) return '中吉';
+        if ($score >= 70) return '小吉';
+        if ($score >= 60) return '半吉';
+        return '凶';
     }
     
     /**
