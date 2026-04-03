@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{$seo_title}</title>
-    <meta name="keywords" content="康熙字典,五行属{$wuxing_name},汉字五行,起名用字">
-    <meta name="description" content="起名网康熙字典提供五行属{$wuxing_name}的汉字查询，包含汉字拼音、笔画、五行、解释等详细信息。">
+    <meta name="keywords" content="康熙字典,拼音{$letter}开头,汉字拼音,起名用字">
+    <meta name="description" content="起名网康熙字典提供拼音{$letter}开头的汉字查询，包含汉字拼音、笔画、五行、解释等详细信息。">
     <link rel="stylesheet" href="https://static.qiming.cn/style/qiming/css/font/iconfont.css">
     <link rel="stylesheet" href="https://static.qiming.cn/style/qiming/css/uikit.css">
     <link rel="stylesheet" href="https://static.qiming.cn/style/qiming/css/diy.css">
@@ -57,9 +57,6 @@
                             <a href="{U('qiming/index/bazi')}">八字起名</a>
                         </li>
                         <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children">
-                            <a href="{U('qiming/index/shici')}">诗词起名</a>
-                        </li>
-                        <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children">
                             <a href="{U('qiming/index/kxzd')}">康熙字典</a>
                         </li>
                         <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children">
@@ -72,7 +69,7 @@
     </header>
     
     <div class="kxzd-header">
-        <h1>五行属{$wuxing_name}的汉字</h1>
+        <h1>拼音{$letter}开头的汉字</h1>
         <p>共找到 {count($chars_list)} 个汉字</p>
     </div>
     

@@ -109,6 +109,29 @@ class character_model {
     }
     
     /**
+     * 根据笔画获取汉字列表
+     */
+    public function get_chars_by_bihua($bihua, $limit = 100) {
+        $bihua = intval($bihua);
+        if ($bihua <= 0) {
+            return array();
+        }
+        return D($this->table)->where(array('bihua' => $bihua))->limit($limit)->select();
+    }
+    
+    /**
+     * 根据拼音首字母获取汉字
+     */
+    public function get_chars_by_letter($letter, $limit = 100) {
+        $letter = strtoupper(trim($letter));
+        if (empty($letter)) {
+            return array();
+        }
+        $where = "pinyin LIKE '{$letter}%' OR pinyin_index LIKE '{$letter}%'";
+        return D($this->table)->where($where)->limit($limit)->select();
+    }
+    
+    /**
      * 获取最近搜索的姓名
      */
     public function get_recent_searches($limit = 12) {

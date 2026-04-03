@@ -148,21 +148,62 @@ class index {
      * 康熙字典页面
      */
     public function kxzd() {
+        $char = isset($_GET['char']) ? trim($_GET['char']) : '';
+        $wuxing = isset($_GET['wuxing']) ? intval($_GET['wuxing']) : 0;
+        $letter = isset($_GET['letter']) ? strtoupper(trim($_GET['letter'])) : '';
+        $bihua = isset($_GET['bihua']) ? intval($_GET['bihua']) : 0;
+        $bushou = isset($_GET['bushou']) ? trim($_GET['bushou']) : '';
+        
+        require_once APP_PATH . 'qiming/model/character_model.class.php';
+        $character_model = new character_model();
+        
         $seo_title = '康熙字典 - 起名网';
         $keywords = '康熙字典,汉字查询,拼音查字';
         $description = '在线康熙字典，支持拼音、部首、笔画等多种查询方式，帮您了解汉字的五行属性和起名寓意';
         
-        $char = isset($_GET['char']) ? trim($_GET['char']) : '';
+        $char_info = null;
+        $chars_list = array();
         
         if (!empty($char)) {
-            require_once APP_PATH . 'qiming/model/character_model.class.php';
-            $character_model = new character_model();
             $char_info = $character_model->get_by_char($char);
-        } else {
-            $char_info = null;
+            if ($char_info) {
+                $seo_title = '汉字' . $char . ' - 康熙字典 - 起名网';
+                include template('qiming', 'kxzd_show');
+                return;
+            }
         }
         
-        include template('qiming', 'kxzd');
+        if ($wuxing > 0) {
+            $wuxing_name = $this->get_wuxing_name($wuxing);
+            $seo_title = '五行属' . $wuxing_name . '的汉字 - 康熙字典 - 起名网';
+            $chars_list = $character_model->get_chars_by_wuxing($wuxing, 100);
+            include template('qiming', 'kxzd_wuxing');
+            return;
+        }
+        
+        if (!empty($letter)) {
+            $seo_title = '拼音' . $letter . '开头的汉字 - 康熙字典 - 起名网';
+            $chars_list = $character_model->get_chars_by_letter($letter, 100);
+            include template('qiming', 'kxzd_letter');
+            return;
+        }
+        
+        if ($bihua > 0) {
+            $seo_title = $bihua . '画的汉字 - 康熙字典 - 起名网';
+            $chars_list = $character_model->get_chars_by_bihua($bihua, 100);
+            include template('qiming', 'kxzd_bihua');
+            return;
+        }
+        
+        include template('qiming', 'kxzd_index');
+    }
+    
+    /**
+     * 获取五行名称
+     */
+    private function get_wuxing_name($wuxing) {
+        $names = array('', '金', '木', '水', '火', '土');
+        return isset($names[$wuxing]) ? $names[$wuxing] : '';
     }
     
     /**
