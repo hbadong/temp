@@ -34,7 +34,7 @@
     <div class="page-header">
         <div class="container">
             <h1>康熙字典</h1>
-            <form class="search-box" action="{U('qiming/kxzd/search')}" method="get">
+            <form class="search-box" action="{U('qiming/index/kxzd')}" method="get">
                 <input type="text" name="keyword" placeholder="输入汉字或拼音搜索" value="{$keyword}">
                 <button type="submit">搜索</button>
             </form>
@@ -43,11 +43,11 @@
     
     <div class="container main">
         <div class="filter-box">
-            <a href="{U('qiming/kxzd/wuxing', 'wuxing=1')}">金</a>
-            <a href="{U('qiming/kxzd/wuxing', 'wuxing=2')}">木</a>
-            <a href="{U('qiming/kxzd/wuxing', 'wuxing=3')}">水</a>
-            <a href="{U('qiming/kxzd/wuxing', 'wuxing=4')}">火</a>
-            <a href="{U('qiming/kxzd/wuxing', 'wuxing=5')}">土</a>
+            <a href="{U('qiming/index/kxzd', 'wuxing=1')}">金</a>
+            <a href="{U('qiming/index/kxzd', 'wuxing=2')}">木</a>
+            <a href="{U('qiming/index/kxzd', 'wuxing=3')}">水</a>
+            <a href="{U('qiming/index/kxzd', 'wuxing=4')}">火</a>
+            <a href="{U('qiming/index/kxzd', 'wuxing=5')}">土</a>
         </div>
         
         <div class="result-info">
@@ -57,7 +57,7 @@
         <?php if (!empty($list)): ?>
         <div class="char-grid">
             <?php foreach ($list as $v): ?>
-            <a href="{U('qiming/kxzd/show', 'char='.$v['char'])}" class="char-card">
+            <a href="{U('qiming/index/kxzd', 'char='.$v['char'])}" class="char-card">
                 <div class="char">{$v['char']}</div>
                 <div class="pinyin">{$v['pinyin']}</div>
                 <div class="info">
