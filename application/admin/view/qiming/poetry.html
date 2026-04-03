@@ -4,58 +4,196 @@
 <meta charset="UTF-8">
 <title>诗词管理 - 起名系统</title>
 <style>
-body { font-family: "Microsoft YaHei", Arial; margin: 0; padding: 20px; background: #f5f5f5; }
-.page-title { background: #fff; padding: 15px 20px; border-radius: 5px; margin-bottom: 20px; }
-.card { background: #fff; border-radius: 5px; padding: 20px; }
-.tabs { margin-bottom: 20px; }
-.tabs a { padding: 8px 20px; background: #eee; border-radius: 3px; text-decoration: none; color: #333; margin-right: 10px; }
-.tabs a.active { background: #ff6600; color: #fff; }
-.btn { padding: 6px 15px; background: #ff6600; color: #fff; border: none; border-radius: 3px; cursor: pointer; text-decoration: none; display: inline-block; }
-.btn-danger { background: #f44336; }
+* { box-sizing: border-box; }
+body { font-family: "Microsoft YaHei", Arial; margin: 0; padding: 0; background: #f5f7fa; }
+.header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; padding: 15px 25px; }
+.header h1 { margin: 0; font-size: 20px; font-weight: 500; }
+.main { padding: 25px; max-width: 1400px; margin: 0 auto; }
+.card { background: #fff; border-radius: 10px; padding: 25px; margin-bottom: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.05); }
+.card h2 { margin: 0 0 20px; font-size: 16px; color: #333; font-weight: 600; border-left: 4px solid #ff6600; padding-left: 12px; }
+.flex { display: flex; gap: 15px; flex-wrap: wrap; align-items: center; justify-content: space-between; }
+.btn { padding: 10px 20px; background: linear-gradient(135deg, #ff6600 0%, #ff8533 100%); color: #fff; border: none; border-radius: 6px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; font-size: 14px; transition: all 0.3s; }
+.btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(255,102,0,0.3); }
+.btn-secondary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+.btn-secondary:hover { box-shadow: 0 4px 12px rgba(102,126,234,0.3); }
+.btn-outline { background: #fff; color: #666; border: 1px solid #ddd; }
+.btn-outline:hover { border-color: #ff6600; color: #ff6600; }
+.btn-danger { background: linear-gradient(135deg, #f44336 0%, #e57373 100%); }
+.btn-small { padding: 6px 12px; font-size: 12px; }
+.tabs { display: flex; gap: 10px; margin: 20px 0; flex-wrap: wrap; }
+.tabs a { padding: 10px 24px; background: #f5f5f5; border-radius: 6px; text-decoration: none; color: #666; font-size: 14px; transition: all 0.3s; display: flex; align-items: center; gap: 8px; }
+.tabs a:hover { background: #eee; }
+.tabs a.active { background: linear-gradient(135deg, #ff6600 0%, #ff8533 100%); color: #fff; }
+.tabs a .icon { font-size: 18px; }
+.search-box { display: flex; gap: 15px; flex-wrap: wrap; align-items: center; margin-bottom: 20px; padding: 20px; background: #f9f9f9; border-radius: 8px; }
+.search-item { display: flex; align-items: center; gap: 8px; }
+.search-item label { font-size: 13px; color: #666; }
+.search-item input { padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; min-width: 150px; }
+.search-item input:focus { outline: none; border-color: #ff6600; }
+.search-btn { padding: 8px 20px; background: #ff6600; color: #fff; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; }
+.search-btn:hover { background: #e55a00; }
+.stats-row { display: flex; gap: 20px; margin-bottom: 20px; flex-wrap: wrap; }
+.stat-card { flex: 1; min-width: 120px; background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%); padding: 20px; border-radius: 8px; text-align: center; }
+.stat-card .num { font-size: 28px; font-weight: bold; color: #ff6600; }
+.stat-card .label { font-size: 13px; color: #666; margin-top: 5px; }
+.stat-card.tang { background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%); }
+.stat-card.tang .num { color: #ff9800; }
+.stat-card.song { background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); }
+.stat-card.song .num { color: #2196f3; }
+.stat-card.sj { background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%); }
+.stat-card.sj .num { color: #9c27b0; }
+.stat-card.cc { background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); }
+.stat-card.cc .num { color: #4caf50; }
 table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
-th { background: #f9f9f9; color: #666; }
-.page { margin-top: 15px; text-align: center; }
+th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #eee; }
+th { background: #f9f9f9; font-weight: 600; color: #333; font-size: 13px; }
+tr:hover { background: #fafafa; }
+.title-cell { font-weight: 600; color: #333; }
+.author-cell { color: #667eea; }
+.dynasty-cell { font-size: 12px; color: #999; }
+.content-preview { max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #666; font-size: 13px; }
+.action-btns { display: flex; gap: 8px; }
+.action-btn { padding: 6px 12px; border-radius: 4px; font-size: 12px; cursor: pointer; border: none; transition: all 0.3s; text-decoration: none; }
+.action-btn.edit { background: #e3f2fd; color: #2196f3; }
+.action-btn.delete { background: #ffebee; color: #f44336; }
+.action-btn:hover { opacity: 0.8; }
+.page { margin-top: 20px; text-align: center; }
+.page a { padding: 8px 12px; background: #fff; border: 1px solid #ddd; border-radius: 4px; color: #666; text-decoration: none; margin: 0 3px; }
+.page a:hover { border-color: #ff6600; color: #ff6600; }
+.page .current { background: #ff6600; color: #fff; border-color: #ff6600; }
+.type-badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 500; }
+.type-1 { background: #fff3e0; color: #ff9800; } /* 唐诗 */
+.type-2 { background: #e3f2fd; color: #2196f3; } /* 宋词 */
+.type-3 { background: #f3e5f5; color: #9c27b0; } /* 诗经 */
+.type-4 { background: #e8f5e9; color: #4caf50; } /* 楚辞 */
+@media (max-width: 768px) {
+    .search-box { flex-direction: column; align-items: stretch; }
+    .tabs { flex-direction: column; }
+    table { font-size: 12px; }
+    th, td { padding: 8px; }
+    .content-preview { max-width: 150px; }
+}
 </style>
 </head>
 <body>
-<div class="page-title">
-    <h1>诗词管理</h1>
+<div class="header">
+    <h1>&#128221; 诗词管理</h1>
 </div>
-<div class="card">
-    <a href="<?php echo U('qiming/poetry_add'); ?>" class="btn">添加诗词</a>
-    
-    <div class="tabs">
-        <a href="<?php echo U('qiming/poetry', array('type'=>1)); ?>" class="<?php echo $type==1?'active':''; ?>">唐诗</a>
-        <a href="<?php echo U('qiming/poetry', array('type'=>2)); ?>" class="<?php echo $type==2?'active':''; ?>">宋词</a>
-        <a href="<?php echo U('qiming/poetry', array('type'=>3)); ?>" class="<?php echo $type==3?'active':''; ?>">诗经</a>
-        <a href="<?php echo U('qiming/poetry', array('type'=>4)); ?>" class="<?php echo $type==4?'active':''; ?>">楚辞</a>
+<div class="main">
+    <div class="card">
+        <div class="flex">
+            <div class="flex">
+                <a href="<?php echo U('qiming/poetry_add'); ?>" class="btn">
+                    <span>+</span> 添加诗词
+                </a>
+                <a href="#" class="btn btn-outline">
+                    <span>&#128229;</span> 批量导入
+                </a>
+                <a href="#" class="btn btn-secondary">
+                    <span>&#128226;</span> 导出数据
+                </a>
+            </div>
+        </div>
     </div>
     
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>标题</th>
-                <th>作者</th>
-                <th>操作</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php if (!empty($list)): foreach($list as $v): ?>
-            <tr>
-                <td><?php echo $v['id']; ?></td>
-                <td><?php echo $v['title']; ?></td>
-                <td><?php echo $v['author']; ?></td>
-                <td>
-                    <a href="<?php echo U('qiming/poetry_edit', array('id'=>$v['id'])); ?>" class="btn" style="padding: 4px 10px; font-size: 12px;">编辑</a>
-                    <a href="<?php echo U('qiming/poetry_del', array('id'=>$v['id'])); ?>" class="btn btn-danger" style="padding: 4px 10px; font-size: 12px;" onclick="return confirm('确定删除?')">删除</a>
-                </td>
-            </tr>
-            <?php endforeach; endif; ?>
-        </tbody>
-    </table>
-    <div class="page"><?php echo $page->getfull(); ?></div>
+    <div class="card">
+        <h2>分类统计</h2>
+        <div class="stats-row">
+            <div class="stat-card tang">
+                <div class="num"><?php echo isset($stats['tang']) ? $stats['tang'] : 0; ?></div>
+                <div class="label">唐诗</div>
+            </div>
+            <div class="stat-card song">
+                <div class="num"><?php echo isset($stats['song']) ? $stats['song'] : 0; ?></div>
+                <div class="label">宋词</div>
+            </div>
+            <div class="stat-card sj">
+                <div class="num"><?php echo isset($stats['shijing']) ? $stats['shijing'] : 0; ?></div>
+                <div class="label">诗经</div>
+            </div>
+            <div class="stat-card cc">
+                <div class="num"><?php echo isset($stats['chuci']) ? $stats['chuci'] : 0; ?></div>
+                <div class="label">楚辞</div>
+            </div>
+        </div>
+        
+        <div class="tabs">
+            <a href="<?php echo U('qiming/poetry', array('type'=>1)); ?>" class="<?php echo $type==1?'active':''; ?>">
+                <span class="icon">&#127881;</span> 唐诗
+            </a>
+            <a href="<?php echo U('qiming/poetry', array('type'=>2)); ?>" class="<?php echo $type==2?'active':''; ?>">
+                <span class="icon">&#127834;</span> 宋词
+            </a>
+            <a href="<?php echo U('qiming/poetry', array('type'=>3)); ?>" class="<?php echo $type==3?'active':''; ?>">
+                <span class="icon">&#127993;</span> 诗经
+            </a>
+            <a href="<?php echo U('qiming/poetry', array('type'=>4)); ?>" class="<?php echo $type==4?'active':''; ?>">
+                <span class="icon">&#127807;</span> 楚辞
+            </a>
+        </div>
+        
+        <form method="get" action="<?php echo U('qiming/poetry'); ?>" class="search-box">
+            <input type="hidden" name="type" value="<?php echo $type; ?>">
+            <div class="search-item">
+                <label>搜索:</label>
+                <input type="text" name="keyword" value="<?php echo isset($_GET['keyword']) ? htmlspecialchars($_GET['keyword']) : ''; ?>" placeholder="标题、作者或内容">
+            </div>
+            <div class="search-item">
+                <label>朝代:</label>
+                <input type="text" name="dynasty" value="<?php echo isset($_GET['dynasty']) ? htmlspecialchars($_GET['dynasty']) : ''; ?>" placeholder="如：唐代、宋代">
+            </div>
+            <button type="submit" class="search-btn">搜索</button>
+            <a href="<?php echo U('qiming/poetry', array('type'=>$type)); ?>" class="btn btn-outline btn-small">重置</a>
+        </form>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>类型</th>
+                    <th>标题</th>
+                    <th>作者</th>
+                    <th>朝代</th>
+                    <th>内容预览</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php if (!empty($list)): foreach($list as $v): ?>
+                <tr>
+                    <td><?php echo $v['id']; ?></td>
+                    <td>
+                        <?php 
+                        $type_names = array('', '唐诗', '宋词', '诗经', '楚辞');
+                        $type_class = array('', 'type-1', 'type-2', 'type-3', 'type-4');
+                        $t = isset($v['type']) ? intval($v['type']) : 1;
+                        echo '<span class="type-badge ' . $type_class[$t] . '">' . $type_names[$t] . '</span>';
+                        ?>
+                    </td>
+                    <td class="title-cell"><?php echo htmlspecialchars($v['title']); ?></td>
+                    <td class="author-cell"><?php echo htmlspecialchars($v['author']); ?></td>
+                    <td class="dynasty-cell"><?php echo htmlspecialchars($v['dynasty']); ?></td>
+                    <td class="content-preview" title="<?php echo htmlspecialchars($v['content']); ?>">
+                        <?php echo htmlspecialchars(mb_substr($v['content'], 0, 30, 'utf-8')); ?>...
+                    </td>
+                    <td>
+                        <div class="action-btns">
+                            <a href="<?php echo U('qiming/poetry_edit', array('id'=>$v['id'])); ?>" class="action-btn edit">编辑</a>
+                            <a href="<?php echo U('qiming/poetry_del', array('id'=>$v['id'])); ?>" class="action-btn delete" onclick="return confirm('确定删除该诗词吗？')">删除</a>
+                        </div>
+                    </td>
+                </tr>
+                <?php endforeach; else: ?>
+                <tr>
+                    <td colspan="7" style="text-align: center; padding: 40px; color: #999;">
+                        暂无诗词数据，请先添加
+                    </td>
+                </tr>
+                <?php endif; ?>
+            </tbody>
+        </table>
+        <div class="page"><?php echo isset($page) ? $page->getfull() : ''; ?></div>
+    </div>
 </div>
 </body>
 </html>

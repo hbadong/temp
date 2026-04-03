@@ -4,56 +4,182 @@
 <meta charset="UTF-8">
 <title>汉字管理 - 起名系统</title>
 <style>
-body { font-family: "Microsoft YaHei", Arial; margin: 0; padding: 20px; background: #f5f5f5; }
-.page-title { background: #fff; padding: 15px 20px; border-radius: 5px; margin-bottom: 20px; }
-.page-title h1 { margin: 0; font-size: 18px; }
-.card { background: #fff; border-radius: 5px; padding: 20px; }
-.btn { padding: 6px 15px; background: #ff6600; color: #fff; border: none; border-radius: 3px; cursor: pointer; text-decoration: none; display: inline-block; }
-.btn:hover { background: #e55a00; }
-.btn-danger { background: #f44336; }
-.btn-small { padding: 4px 10px; font-size: 12px; }
+* { box-sizing: border-box; }
+body { font-family: "Microsoft YaHei", Arial; margin: 0; padding: 0; background: #f5f7fa; }
+.header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; padding: 15px 25px; }
+.header h1 { margin: 0; font-size: 20px; font-weight: 500; }
+.main { padding: 25px; max-width: 1400px; margin: 0 auto; }
+.card { background: #fff; border-radius: 10px; padding: 25px; margin-bottom: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.05); }
+.card h2 { margin: 0 0 20px; font-size: 16px; color: #333; font-weight: 600; border-left: 4px solid #ff6600; padding-left: 12px; }
+.flex { display: flex; gap: 15px; flex-wrap: wrap; align-items: center; }
+.flex-1 { flex: 1; }
+.btn { padding: 10px 20px; background: linear-gradient(135deg, #ff6600 0%, #ff8533 100%); color: #fff; border: none; border-radius: 6px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; font-size: 14px; transition: all 0.3s; }
+.btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(255,102,0,0.3); }
+.btn-secondary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+.btn-outline { background: #fff; color: #666; border: 1px solid #ddd; }
+.btn-outline:hover { border-color: #ff6600; color: #ff6600; }
+.btn-danger { background: linear-gradient(135deg, #f44336 0%, #e57373 100%); }
+.btn-small { padding: 6px 12px; font-size: 12px; }
+.search-box { display: flex; gap: 15px; flex-wrap: wrap; align-items: center; margin-bottom: 20px; padding: 20px; background: #f9f9f9; border-radius: 8px; }
+.search-item { display: flex; align-items: center; gap: 8px; }
+.search-item label { font-size: 13px; color: #666; }
+.search-item input, .search-item select { padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; min-width: 120px; }
+.search-item input:focus, .search-item select:focus { outline: none; border-color: #ff6600; }
+.search-btn { padding: 8px 20px; background: #ff6600; color: #fff; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; }
+.search-btn:hover { background: #e55a00; }
 table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
-th { background: #f9f9f9; font-weight: normal; color: #666; }
-.page { margin-top: 15px; text-align: center; }
+th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #eee; }
+th { background: #f9f9f9; font-weight: 600; color: #333; font-size: 13px; }
+tr:hover { background: #fafafa; }
+tr td:first-child { font-weight: 600; }
+.char-cell { font-size: 24px; font-weight: bold; color: #ff6600; }
+.pinyin-cell { color: #667eea; font-weight: 500; }
+.wuxing-cell { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 500; }
+.wuxing-1 { background: #fff3e0; color: #ff9800; } /* 金 */
+.wuxing-2 { background: #e8f5e9; color: #4caf50; } /* 木 */
+.wuxing-3 { background: #e3f2fd; color: #2196f3; } /* 水 */
+.wuxing-4 { background: #ffebee; color: #f44336; } /* 火 */
+.wuxing-5 { background: #efebe9; color: #795548; } /* 土 */
+.action-btns { display: flex; gap: 8px; }
+.action-btn { padding: 6px 12px; border-radius: 4px; font-size: 12px; cursor: pointer; border: none; transition: all 0.3s; text-decoration: none; }
+.action-btn.edit { background: #e3f2fd; color: #2196f3; }
+.action-btn.delete { background: #ffebee; color: #f44336; }
+.action-btn:hover { opacity: 0.8; }
+.page { margin-top: 20px; text-align: center; }
+.page a { padding: 8px 12px; background: #fff; border: 1px solid #ddd; border-radius: 4px; color: #666; text-decoration: none; margin: 0 3px; }
+.page a:hover { border-color: #ff6600; color: #ff6600; }
+.page .current { background: #ff6600; color: #fff; border-color: #ff6600; }
+.stat-bar { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
+.stat-item { display: flex; align-items: center; gap: 6px; font-size: 13px; }
+.stat-color { width: 12px; height: 12px; border-radius: 2px; }
+.badge { padding: 3px 8px; border-radius: 10px; font-size: 11px; }
+.badge-info { background: #e3f2fd; color: #2196f3; }
+.tips { background: #e3f2fd; padding: 15px; border-radius: 6px; margin-bottom: 20px; font-size: 13px; color: #1565c0; }
+.tips strong { display: block; margin-bottom: 5px; }
+@media (max-width: 768px) {
+    .search-box { flex-direction: column; align-items: stretch; }
+    .flex { flex-direction: column; }
+    table { font-size: 12px; }
+    th, td { padding: 8px; }
+}
 </style>
 </head>
 <body>
-<div class="page-title">
-    <h1>汉字管理</h1>
+<div class="header">
+    <h1>&#128218; 汉字管理</h1>
 </div>
-<div class="card">
-    <a href="<?php echo U('qiming/char_add'); ?>" class="btn">添加汉字</a>
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>汉字</th>
-                <th>拼音</th>
-                <th>笔画</th>
-                <th>五行</th>
-                <th>部首</th>
-                <th>操作</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php if (!empty($list)): foreach($list as $v): ?>
-            <tr>
-                <td><?php echo $v['id']; ?></td>
-                <td><?php echo $v['char']; ?></td>
-                <td><?php echo $v['pinyin']; ?></td>
-                <td><?php echo $v['bihua']; ?></td>
-                <td><?php echo $v['wuxing']; ?></td>
-                <td><?php echo $v['bushou']; ?></td>
-                <td>
-                    <a href="<?php echo U('qiming/char_edit', array('id'=>$v['id'])); ?>" class="btn btn-small">编辑</a>
-                    <a href="<?php echo U('qiming/char_del', array('id'=>$v['id'])); ?>" class="btn btn-small btn-danger" onclick="return confirm('确定删除?')">删除</a>
-                </td>
-            </tr>
-            <?php endforeach; endif; ?>
-        </tbody>
-    </table>
-    <div class="page"><?php echo $page->getfull(); ?></div>
+<div class="main">
+    <div class="card">
+        <div class="tips">
+            <strong>&#9432; 温馨提示</strong>
+            汉字数据是起名系统的核心数据，包含拼音、笔画、五行属性等信息。建议定期更新和补充数据以提高起名服务质量。
+        </div>
+        
+        <div class="flex">
+            <a href="<?php echo U('qiming/char_add'); ?>" class="btn">
+                <span>+</span> 添加汉字
+            </a>
+            <a href="#" class="btn btn-outline">
+                <span>&#128229;</span> 批量导入
+            </a>
+            <a href="#" class="btn btn-secondary">
+                <span>&#128226;</span> 导出数据
+            </a>
+        </div>
+    </div>
+    
+    <div class="card">
+        <h2>筛选查询</h2>
+        <form method="get" action="<?php echo U('qiming/characters'); ?>" class="search-box">
+            <div class="search-item">
+                <label>搜索:</label>
+                <input type="text" name="search" value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>" placeholder="汉字或拼音">
+            </div>
+            <div class="search-item">
+                <label>五行:</label>
+                <select name="wuxing">
+                    <option value="">全部</option>
+                    <option value="1" <?php echo (isset($_GET['wuxing']) && $_GET['wuxing'] == 1) ? 'selected' : ''; ?>>金</option>
+                    <option value="2" <?php echo (isset($_GET['wuxing']) && $_GET['wuxing'] == 2) ? 'selected' : ''; ?>>木</option>
+                    <option value="3" <?php echo (isset($_GET['wuxing']) && $_GET['wuxing'] == 3) ? 'selected' : ''; ?>>水</option>
+                    <option value="4" <?php echo (isset($_GET['wuxing']) && $_GET['wuxing'] == 4) ? 'selected' : ''; ?>>火</option>
+                    <option value="5" <?php echo (isset($_GET['wuxing']) && $_GET['wuxing'] == 5) ? 'selected' : ''; ?>>土</option>
+                </select>
+            </div>
+            <div class="search-item">
+                <label>笔画:</label>
+                <select name="bihua">
+                    <option value="">全部</option>
+                    <?php for ($i = 1; $i <= 30; $i++): ?>
+                    <option value="<?php echo $i; ?>" <?php echo (isset($_GET['bihua']) && $_GET['bihua'] == $i) ? 'selected' : ''; ?>><?php echo $i; ?>画</option>
+                    <?php endfor; ?>
+                </select>
+            </div>
+            <button type="submit" class="search-btn">搜索</button>
+            <a href="<?php echo U('qiming/characters'); ?>" class="btn btn-outline btn-small">重置</a>
+        </form>
+        
+        <div class="stat-bar">
+            <span style="color: #666; font-size: 13px;">快速筛选:</span>
+            <div class="stat-item"><div class="stat-color" style="background: #ff9800;"></div>金</div>
+            <div class="stat-item"><div class="stat-color" style="background: #4caf50;"></div>木</div>
+            <div class="stat-item"><div class="stat-color" style="background: #2196f3;"></div>水</div>
+            <div class="stat-item"><div class="stat-color" style="background: #f44336;"></div>火</div>
+            <div class="stat-item"><div class="stat-color" style="background: #795548;"></div>土</div>
+        </div>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>汉字</th>
+                    <th>拼音</th>
+                    <th>注音</th>
+                    <th>笔画</th>
+                    <th>五行</th>
+                    <th>部首</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php if (!empty($list)): foreach($list as $v): ?>
+                <tr>
+                    <td><?php echo $v['id']; ?></td>
+                    <td class="char-cell"><?php echo htmlspecialchars($v['char']); ?></td>
+                    <td class="pinyin-cell"><?php echo htmlspecialchars($v['pinyin']); ?></td>
+                    <td><?php echo htmlspecialchars($v['zhuyin']); ?></td>
+                    <td><?php echo $v['bihua']; ?></td>
+                    <td>
+                        <?php 
+                        $wuxing_names = array('', '金', '木', '水', '火', '土');
+                        $wuxing_class = array('', 'wuxing-1', 'wuxing-2', 'wuxing-3', 'wuxing-4', 'wuxing-5');
+                        $wx = isset($v['wuxing']) ? intval($v['wuxing']) : 0;
+                        if ($wx > 0 && $wx <= 5) {
+                            echo '<span class="wuxing-cell ' . $wuxing_class[$wx] . '">' . $wuxing_names[$wx] . '</span>';
+                        } else {
+                            echo '-';
+                        }
+                        ?>
+                    </td>
+                    <td><?php echo htmlspecialchars($v['bushou']); ?></td>
+                    <td>
+                        <div class="action-btns">
+                            <a href="<?php echo U('qiming/char_edit', array('id'=>$v['id'])); ?>" class="action-btn edit">编辑</a>
+                            <a href="<?php echo U('qiming/char_del', array('id'=>$v['id'])); ?>" class="action-btn delete" onclick="return confirm('确定删除该汉字吗？')">删除</a>
+                        </div>
+                    </td>
+                </tr>
+                <?php endforeach; else: ?>
+                <tr>
+                    <td colspan="8" style="text-align: center; padding: 40px; color: #999;">
+                        暂无数据，请先添加汉字
+                    </td>
+                </tr>
+                <?php endif; ?>
+            </tbody>
+        </table>
+        <div class="page"><?php echo isset($page) ? $page->getfull() : ''; ?></div>
+    </div>
 </div>
 </body>
 </html>
