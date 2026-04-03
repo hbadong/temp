@@ -4,45 +4,101 @@
 <meta charset="UTF-8">
 <title>黄历管理 - 起名系统后台</title>
 <style>
-body { font-family: "Microsoft YaHei", Arial; margin: 0; padding: 0; background: #f5f5f5; }
-.header { background: #333; color: #fff; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
-.header h1 { margin: 0; font-size: 18px; }
-.header a { color: #fff; text-decoration: none; }
-.main { padding: 20px; }
-.card { background: #fff; border-radius: 5px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-.card h2 { margin: 0 0 15px; border-bottom: 2px solid #ff6600; padding-bottom: 10px; font-size: 16px; }
+* { box-sizing: border-box; }
+body { font-family: "Microsoft YaHei", Arial; margin: 0; padding: 0; background: #f5f7fa; }
+.header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; }
+.header h1 { margin: 0; font-size: 20px; font-weight: 500; }
+.header a { color: #fff; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 4px; font-size: 13px; }
+.header a:hover { background: rgba(255,255,255,0.3); }
+.main { padding: 25px; max-width: 1200px; margin: 0 auto; }
+.card { background: #fff; border-radius: 10px; padding: 25px; margin-bottom: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.05); }
+.card h2 { margin: 0 0 20px; font-size: 16px; color: #333; font-weight: 600; border-left: 4px solid #ff6600; padding-left: 12px; }
+.card h2 .subtitle { font-size: 12px; color: #999; font-weight: normal; margin-left: 10px; }
+.form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
 .form-group { margin-bottom: 15px; }
-.form-group label { display: block; margin-bottom: 5px; font-weight: bold; color: #333; }
-.form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 3px; font-size: 14px; box-sizing: border-box; }
-.form-group textarea { height: 80px; resize: vertical; }
-.form-group .help { font-size: 12px; color: #999; margin-top: 3px; }
-.form-row { display: flex; gap: 15px; }
-.form-row .form-group { flex: 1; }
-.btn { padding: 10px 20px; background: #ff6600; color: #fff; border: none; border-radius: 3px; cursor: pointer; font-size: 14px; }
-.btn:hover { background: #e55a00; }
-.btn-secondary { background: #999; margin-left: 10px; }
-.btn-secondary:hover { background: #888; }
+.form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #333; font-size: 13px; }
+.form-group label .required { color: #f44336; }
+.form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; transition: border-color 0.3s; }
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #ff6600; }
+.form-group textarea { height: 100px; resize: vertical; }
+.form-group .help { font-size: 12px; color: #999; margin-top: 5px; }
+.form-row { display: flex; gap: 15px; flex-wrap: wrap; }
+.form-row .form-group { flex: 1; min-width: 200px; }
+.btn { padding: 10px 24px; background: linear-gradient(135deg, #ff6600 0%, #ff8533 100%); color: #fff; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; transition: all 0.3s; display: inline-flex; align-items: center; gap: 6px; }
+.btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(255,102,0,0.3); }
+.btn-secondary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+.btn-secondary:hover { box-shadow: 0 4px 12px rgba(102,126,234,0.3); }
+.btn-outline { background: #fff; color: #666; border: 1px solid #ddd; }
+.btn-outline:hover { border-color: #ff6600; color: #ff6600; }
 .btn-small { padding: 6px 15px; font-size: 12px; }
-.search-box { margin-bottom: 15px; display: flex; gap: 10px; align-items: center; }
-.search-box input { padding: 8px; border: 1px solid #ddd; border-radius: 3px; width: 150px; }
-.breadcrumb { margin-bottom: 15px; }
-.breadcrumb a { color: #666; text-decoration: none; }
-.breadcrumb span { color: #999; margin: 0 10px; }
+.search-box { margin-bottom: 20px; padding: 20px; background: #f9f9f9; border-radius: 8px; display: flex; gap: 15px; align-items: center; flex-wrap: wrap; }
+.search-box label { font-size: 13px; color: #666; }
+.search-box input { padding: 10px 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; }
+.search-box input:focus { outline: none; border-color: #ff6600; }
+.date-nav { display: flex; gap: 10px; align-items: center; }
+.date-nav .current { font-size: 16px; font-weight: 600; color: #333; padding: 0 15px; }
+.calendar-preview { background: linear-gradient(135deg, #ff6600 0%, #ff8533 100%); color: #fff; padding: 25px; border-radius: 10px; text-align: center; margin-bottom: 20px; }
+.calendar-preview .day { font-size: 48px; font-weight: bold; }
+.calendar-preview .lunar { font-size: 14px; opacity: 0.9; margin-top: 5px; }
+.calendar-preview .weekday { font-size: 13px; opacity: 0.8; margin-top: 3px; }
+.info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px; }
+.info-item { padding: 15px; background: #f9f9f9; border-radius: 8px; display: flex; align-items: center; gap: 12px; }
+.info-item .icon { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+.info-item .icon.yi { background: #e8f5e9; color: #4caf50; }
+.info-item .icon.ji { background: #ffebee; color: #f44336; }
+.info-item .icon.jishi { background: #e3f2fd; color: #2196f3; }
+.info-item .icon.position { background: #fff3e0; color: #ff9800; }
+.info-item .content { flex: 1; }
+.info-item .content .label { font-size: 12px; color: #999; }
+.info-item .content .value { font-size: 14px; font-weight: 600; color: #333; }
+.quick-btns { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
+.quick-btn { padding: 8px 16px; background: #f5f5f5; border: 1px solid #ddd; border-radius: 20px; font-size: 13px; color: #666; cursor: pointer; transition: all 0.3s; }
+.quick-btn:hover { background: #ff6600; color: #fff; border-color: #ff6600; }
+.tips { background: #e3f2fd; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 13px; color: #1565c0; }
+.tips strong { display: block; margin-bottom: 5px; }
+@media (max-width: 768px) {
+    .search-box { flex-direction: column; align-items: stretch; }
+    .form-row { flex-direction: column; }
+    .date-nav { justify-content: center; }
+}
 </style>
 </head>
 <body>
 <div class="header">
-    <h1>黄历管理 - 起名系统后台</h1>
-    <a href="<?php echo U('admin/index/init'); ?>">返回后台首页</a>
+    <h1>&#128197; 黄历管理</h1>
+    <a href="<?php echo U('admin/index/init'); ?>">&#127968; 返回后台首页</a>
 </div>
 <div class="main">
+    <div class="calendar-preview">
+        <div class="day"><?php echo date('d'); ?></div>
+        <div class="lunar"><?php echo isset($data['lunar_date']) ? $data['lunar_date'] : '农历'; ?></div>
+        <div class="weekday"><?php echo date('Y年m月'); ?> · <?php echo date('l'); ?></div>
+    </div>
+    
     <div class="card">
-        <h2>编辑黄历 - <?php echo $date; ?></h2>
+        <h2>日期选择<span class="subtitle">查看和编辑指定日期的黄历数据</span></h2>
         <div class="search-box">
-            <form action="" method="get">
-                选择日期：<input type="date" name="date" value="<?php echo $date; ?>">
-                <button type="submit" class="btn btn-small">切换</button>
+            <div class="date-nav">
+                <a href="<?php echo U('qiming/horoscope', array('date' => date('Y-m-d', strtotime('-1 day', strtotime($date)))); ?>" class="btn btn-small btn-outline">&#9664; 前一天</a>
+                <span class="current"><?php echo $date; ?></span>
+                <a href="<?php echo U('qiming/horoscope', array('date' => date('Y-m-d', strtotime('+1 day', strtotime($date)))); ?>" class="btn btn-small btn-outline">后一天 &#9654;</a>
+            </div>
+            <form action="" method="get" style="display: flex; gap: 10px; align-items: center;">
+                <input type="date" name="date" value="<?php echo $date; ?>">
+                <button type="submit" class="btn btn-small">切换日期</button>
             </form>
+            <a href="<?php echo U('qiming/horoscope', array('date' => date('Y-m-d'))); ?>" class="btn btn-small btn-secondary">返回今天</a>
+        </div>
+    </div>
+    
+    <div class="card">
+        <h2>编辑黄历 - <?php echo $date; ?><span class="subtitle">填写当日的农历信息和吉凶宜忌</span></h2>
+        
+        <div class="tips">
+            <strong>&#9432; 填写说明</strong>
+            1. 农历日期格式：如"二月初六"<br>
+            2. 干支信息：年如"丙午年【马】"，月如"辛卯月"，日如"丁酉日"<br>
+            3. 吉凶宜忌：用逗号分隔各项，如"嫁娶,祭祀,开光"
         </div>
         
         <form action="<?php echo U('qiming/horoscope_update'); ?>" method="post">
@@ -51,73 +107,138 @@ body { font-family: "Microsoft YaHei", Arial; margin: 0; padding: 0; background:
             
             <div class="form-row">
                 <div class="form-group">
-                    <label>农历日期</label>
-                    <input type="text" name="lunar_date" value="<?php echo isset($data['lunar_date']) ? $data['lunar_date'] : ''; ?>" placeholder="如：农历二月初六">
+                    <label>农历日期 <span class="required">*</span></label>
+                    <input type="text" name="lunar_date" value="<?php echo isset($data['lunar_date']) ? htmlspecialchars($data['lunar_date']) : ''; ?>" placeholder="如：二月初六" required>
                 </div>
                 <div class="form-group">
-                    <label>生肖</label>
-                    <input type="text" name="zodiac" value="<?php echo isset($data['zodiac']) ? $data['zodiac'] : ''; ?>" placeholder="如：鼠、牛、虎...">
+                    <label>生肖 <span class="required">*</span></label>
+                    <select name="zodiac">
+                        <option value="">请选择</option>
+                        <?php 
+                        $zodiacs = array('鼠', '牛', '虎', '兔', '龙', '蛇', '马', '羊', '猴', '鸡', '狗', '猪');
+                        foreach($zodiacs as $z): 
+                        ?>
+                        <option value="<?php echo $z; ?>" <?php echo (isset($data['zodiac']) && $data['zodiac'] == $z) ? 'selected' : ''; ?>><?php echo $z; ?></option>
+                        <?php endforeach; ?>
+                    </select>
                 </div>
             </div>
             
             <div class="form-row">
                 <div class="form-group">
                     <label>干支年</label>
-                    <input type="text" name="zodiac_year" value="<?php echo isset($data['zodiac_year']) ? $data['zodiac_year'] : ''; ?>" placeholder="如：丙午年【马】">
+                    <input type="text" name="zodiac_year" value="<?php echo isset($data['zodiac_year']) ? htmlspecialchars($data['zodiac_year']) : ''; ?>" placeholder="如：丙午年【马】">
                 </div>
                 <div class="form-group">
                     <label>干支月</label>
-                    <input type="text" name="zodiac_month" value="<?php echo isset($data['zodiac_month']) ? $data['zodiac_month'] : ''; ?>" placeholder="如：辛卯月">
+                    <input type="text" name="zodiac_month" value="<?php echo isset($data['zodiac_month']) ? htmlspecialchars($data['zodiac_month']) : ''; ?>" placeholder="如：辛卯月">
                 </div>
                 <div class="form-group">
                     <label>干支日</label>
-                    <input type="text" name="zodiac_day" value="<?php echo isset($data['zodiac_day']) ? $data['zodiac_day'] : ''; ?>" placeholder="如：丁酉日">
+                    <input type="text" name="zodiac_day" value="<?php echo isset($data['zodiac_day']) ? htmlspecialchars($data['zodiac_day']) : ''; ?>" placeholder="如：丁酉日">
                 </div>
             </div>
             
             <div class="form-group">
-                <label>宜事项</label>
-                <textarea name="yi" placeholder="宜：嫁娶、祭祀、开光..."><?php echo isset($data['yi']) ? $data['yi'] : ''; ?></textarea>
+                <label>&#9989; 宜事项</label>
+                <textarea name="yi" placeholder="宜：嫁娶、祭祀、开光、祈福..."><?php echo isset($data['yi']) ? htmlspecialchars($data['yi']) : ''; ?></textarea>
                 <div class="help">用逗号分隔各项宜忌事项</div>
             </div>
             
             <div class="form-group">
-                <label>忌事项</label>
-                <textarea name="ji" placeholder="忌：动土、伐木、安葬..."><?php echo isset($data['ji']) ? $data['ji'] : ''; ?></textarea>
-                <div class="help">用逗号分隔各项忌讳事项</div>
+                <label>&#10060; 忌事项</label>
+                <textarea name="ji" placeholder="忌：动土、伐木、安葬、行丧..."><?php echo isset($data['ji']) ? htmlspecialchars($data['ji']) : ''; ?></textarea>
+                <div class="help">用逗号分隔各项宜忌事项</div>
             </div>
             
             <div class="form-row">
                 <div class="form-group">
-                    <label>吉时</label>
-                    <input type="text" name="jishi" value="<?php echo isset($data['jishi']) ? $data['jishi'] : ''; ?>" placeholder="如：子丑卯午酉戌">
+                    <label>&#127775; 吉时</label>
+                    <input type="text" name="jishi" value="<?php echo isset($data['jishi']) ? htmlspecialchars($data['jishi']) : ''; ?>" placeholder="如：子丑卯午">
                 </div>
                 <div class="form-group">
-                    <label>冲煞</label>
-                    <input type="text" name="chongsha" value="<?php echo isset($data['chongsha']) ? $data['chongsha'] : ''; ?>" placeholder="如：(辛卯)兔 东">
+                    <label>&#9888; 冲煞</label>
+                    <input type="text" name="chongsha" value="<?php echo isset($data['chongsha']) ? htmlspecialchars($data['chongsha']) : ''; ?>" placeholder="如：(辛卯)兔 东">
                 </div>
             </div>
             
             <div class="form-row">
                 <div class="form-group">
-                    <label>财神方位</label>
-                    <input type="text" name="caishen" value="<?php echo isset($data['caishen']) ? $data['caishen'] : ''; ?>" placeholder="如：东北、西南">
+                    <label>&#128176; 财神方位</label>
+                    <input type="text" name="caishen" value="<?php echo isset($data['caishen']) ? htmlspecialchars($data['caishen']) : ''; ?>" placeholder="如：东北、西南">
                 </div>
                 <div class="form-group">
-                    <label>喜神方位</label>
-                    <input type="text" name="xishen" value="<?php echo isset($data['xishen']) ? $data['xishen'] : ''; ?>" placeholder="如：正南、西北">
+                    <label>&#128150; 喜神方位</label>
+                    <input type="text" name="xishen" value="<?php echo isset($data['xishen']) ? htmlspecialchars($data['xishen']) : ''; ?>" placeholder="如：正南、西北">
                 </div>
                 <div class="form-group">
-                    <label>福神方位</label>
-                    <input type="text" name="fushen" value="<?php echo isset($data['fushen']) ? $data['fushen'] : ''; ?>" placeholder="如：东南、西南">
+                    <label>&#127793; 福神方位</label>
+                    <input type="text" name="fushen" value="<?php echo isset($data['fushen']) ? htmlspecialchars($data['fushen']) : ''; ?>" placeholder="如：东南、西南">
                 </div>
             </div>
             
-            <div class="form-group">
-                <button type="submit" class="btn">保存</button>
+            <div class="quick-btns">
+                <span style="font-size: 13px; color: #666;">快捷插入：</span>
+                <button type="button" class="quick-btn" onclick="insertYi('嫁娶,祭祀,开光,祈福,出行')">嫁娶祭祀</button>
+                <button type="button" class="quick-btn" onclick="insertYi('动土,伐木,安葬,行丧')">动土安葬</button>
+                <button type="button" class="quick-btn" onclick="insertYi('订盟,纳采,订婚,结婚')">订婚结婚</button>
+                <button type="button" class="quick-btn" onclick="insertYi('搬家,入宅,装修,开业')">搬家装修</button>
+            </div>
+            
+            <div style="margin-top: 25px;">
+                <button type="submit" class="btn">&#128190; 保存黄历</button>
+                <a href="<?php echo U('qiming/horoscope'); ?>" class="btn btn-outline" style="margin-left: 10px;">取消</a>
             </div>
         </form>
     </div>
+    
+    <div class="card">
+        <h2>当前数据预览<span class="subtitle">保存后的数据将在前台页面展示</span></h2>
+        <div class="info-grid">
+            <div class="info-item">
+                <div class="icon yi">宜</div>
+                <div class="content">
+                    <div class="label">宜事项</div>
+                    <div class="value"><?php echo isset($data['yi']) ? htmlspecialchars($data['yi']) : '未设置'; ?></div>
+                </div>
+            </div>
+            <div class="info-item">
+                <div class="icon ji">忌</div>
+                <div class="content">
+                    <div class="label">忌事项</div>
+                    <div class="value"><?php echo isset($data['ji']) ? htmlspecialchars($data['ji']) : '未设置'; ?></div>
+                </div>
+            </div>
+            <div class="info-item">
+                <div class="icon jishi">时</div>
+                <div class="content">
+                    <div class="label">吉时</div>
+                    <div class="value"><?php echo isset($data['jishi']) ? htmlspecialchars($data['jishi']) : '未设置'; ?></div>
+                </div>
+            </div>
+            <div class="info-item">
+                <div class="icon position">位</div>
+                <div class="content">
+                    <div class="label">方位</div>
+                    <div class="value">
+                        财神: <?php echo isset($data['caishen']) ? htmlspecialchars($data['caishen']) : '-'; ?> | 
+                        喜神: <?php echo isset($data['xishen']) ? htmlspecialchars($data['xishen']) : '-'; ?> | 
+                        福神: <?php echo isset($data['fushen']) ? htmlspecialchars($data['fushen']) : '-'; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+<script>
+function insertYi(text) {
+    var ta = document.getElementById('yi');
+    if (ta) {
+        ta.value = text;
+    } else {
+        document.querySelector('textarea[name="yi"]').value = text;
+    }
+}
+</script>
 </body>
 </html>
