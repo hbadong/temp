@@ -64,13 +64,13 @@
 <a href="https://www.qiming.cn/zhouyiqiming.html">周易起名</a>
 </li>
 <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children">
-<a href="https://www.qiming.cn/zhishi/18.html">起名知识</a>
+<a href="{U('qiming/index/zhishi')}">起名知识</a>
 </li>
 <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children">
-<a href="https://www.qiming.cn/kxzd/index.html">康熙字典</a>
+<a href="{U('qiming/index/kxzd')}">康熙字典</a>
 </li>
 <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children">
-<a href="https://www.qiming.cn/baijiaxing/index.html">百家姓</a>
+<a href="{U('qiming/index/baijiaxing')}">百家姓</a>
 </li>
 </ul>
 </nav>
@@ -86,7 +86,7 @@
 <div class="b-r-12 qiming-background-default qiming-overflow-hidden qiming-position-relative qiming-padding-30px">
 <h3>搜索</h3>
 <div class="search search-navbar">
-<form method="get" class="b-r-4 b-a qiming-form qiming-flex qiming-overflow-hidden search-form" action="https://www.qiming.cn/search.html">
+<form method="get" class="b-r-4 b-a qiming-form qiming-flex qiming-overflow-hidden search-form" action="{U('qiming/index/search')}">
 <input type="search" placeholder="查询字、名字或姓名" autocomplete="off" id="k" value="" name="k" required="required" class="qiming-input qiming-flex-1 qiming-text-small">
 <i class="iconfont icon-search qiming-text-search">
 </i>
@@ -400,7 +400,7 @@
 <h2>公司起名</h2>
 </div>
 </a>
-<a href="https://www.qiming.cn/zhishi/18.html" class="aui-palace-grid">
+<a href="{U('qiming/index/zhishi')}" class="aui-palace-grid">
 <div class="aui-palace-grid-icon">
 <img src="https://static.qiming.cn/style/qiming/images/xqmzs.jpg" alt="">
 </div>
@@ -408,7 +408,7 @@
 <h2>起名知识</h2>
 </div>
 </a>
-<a href="https://www.qiming.cn/kxzd/index.html" class="aui-palace-grid">
+<a href="{U('qiming/index/kxzd')}" class="aui-palace-grid">
 <div class="aui-palace-grid-icon">
 <img src="https://static.qiming.cn/style/qiming/images/xkxzd.jpg" alt="">
 </div>
@@ -665,7 +665,7 @@
 <ul class="btn w5 ">
 {loop $rankings['boy_chars'] $v}
 <li>
-<a href="{U('qiming/kxzd/show', 'char='.$v['char'])}" target="_blank" class="b-r-4">
+<a href="{U('qiming/index/kxzd', 'char='.$v['char'])}" target="_blank" class="b-r-4">
 <span>{$v.pinyin}</span>{$v['char']}<span class="<?php echo $v['is_lucky']?'jixiong':''; ?>"><?php echo $v['is_lucky']?'吉':''; ?></span>
 </a>
 </li>
@@ -680,19 +680,19 @@
 <div class="qiming-list qmlst tags-item qiming-margin-remove-bottom">
 <ul class="btn w5 wuxing">
 <li>
-<a href="https://www.qiming.cn/kxzd/wuxing/1.html" class="jin" target="_blank">金</a>
+<a href="{U('qiming/index/kxzd')}?wuxing=1.html" class="jin" target="_blank">金</a>
 </li>
 <li>
-<a href="https://www.qiming.cn/kxzd/wuxing/2.html" class="mu" target="_blank">木</a>
+<a href="{U('qiming/index/kxzd')}?wuxing=2.html" class="mu" target="_blank">木</a>
 </li>
 <li>
-<a href="https://www.qiming.cn/kxzd/wuxing/3.html" class="shui" target="_blank">水</a>
+<a href="{U('qiming/index/kxzd')}?wuxing=3.html" class="shui" target="_blank">水</a>
 </li>
 <li>
-<a href="https://www.qiming.cn/kxzd/wuxing/4.html" class="huo" target="_blank">火</a>
+<a href="{U('qiming/index/kxzd')}?wuxing=4.html" class="huo" target="_blank">火</a>
 </li>
 <li>
-<a href="https://www.qiming.cn/kxzd/wuxing/5.html" class="tu" target="_blank">土</a>
+<a href="{U('qiming/index/kxzd')}?wuxing=5.html" class="tu" target="_blank">土</a>
 </li>
 </ul>
 </div>
@@ -709,7 +709,7 @@
 <ul class="btn w5 ">
 {loop $rankings['girl_chars'] $v}
 <li>
-<a href="{U('qiming/kxzd/show', 'char='.$v['char'])}" target="_blank" class="b-r-4">
+<a href="{U('qiming/index/kxzd', 'char='.$v['char'])}" target="_blank" class="b-r-4">
 <span>{$v.pinyin}</span>{$v['char']}<span class="<?php echo $v['is_lucky']?'jixiong':''; ?>"><?php echo $v['is_lucky']?'吉':''; ?></span>
 </a>
 </li>
@@ -724,19 +724,19 @@
 <div class="qiming-list qmlst tags-item qiming-margin-remove-bottom">
 <ul class="btn w5 wuxing">
 <li>
-<a href="https://www.qiming.cn/kxzd/wuxing/6.html" class="jin" target="_blank">金</a>
+<a href="{U('qiming/index/kxzd')}?wuxing=6.html" class="jin" target="_blank">金</a>
 </li>
 <li>
-<a href="https://www.qiming.cn/kxzd/wuxing/7.html" class="mu" target="_blank">木</a>
+<a href="{U('qiming/index/kxzd')}?wuxing=7.html" class="mu" target="_blank">木</a>
 </li>
 <li>
-<a href="https://www.qiming.cn/kxzd/wuxing/8.html" class="shui" target="_blank">水</a>
+<a href="{U('qiming/index/kxzd')}?wuxing=8.html" class="shui" target="_blank">水</a>
 </li>
 <li>
-<a href="https://www.qiming.cn/kxzd/wuxing/9.html" class="huo" target="_blank">火</a>
+<a href="{U('qiming/index/kxzd')}?wuxing=9.html" class="huo" target="_blank">火</a>
 </li>
 <li>
-<a href="https://www.qiming.cn/kxzd/wuxing/10.html" class="tu" target="_blank">土</a>
+<a href="{U('qiming/index/kxzd')}?wuxing=10.html" class="tu" target="_blank">土</a>
 </li>
 </ul>
 </div>
@@ -978,8 +978,8 @@
 <div class="m-home-ranking__content__item">
 <div class="qiming_title_only">
 <div class="item_title qiming-flex">
-<a href="https://www.qiming.cn/zhishi/18.html" target="_blank" class="qiming-flex-1">起名知识</a>
-<a href="https://www.qiming.cn/zhishi/18.html" target="_blank" class="">
+<a href="{U('qiming/index/zhishi')}" target="_blank" class="qiming-flex-1">起名知识</a>
+<a href="{U('qiming/index/zhishi')}" target="_blank" class="">
 <i class="iconfont icon-arrow-right-bold">
 </i>
 </a>
@@ -1124,7 +1124,7 @@
 <a href="https://www.qiming.cn/zhouyiqiming.html" target="_blank">周易起名</a>
 </li>
 <li>
-<a href="https://www.qiming.cn/kxzd/index.html" target="_blank">康熙字典</a>
+<a href="{U('qiming/index/kxzd')}" target="_blank">康熙字典</a>
 </li>
 <li>
 <a href="https://www.qiming.cn/gongsiqiming.html" target="_blank">公司起名</a>
