@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>安装使用说明 - YzmCMS内容管理系统</title>
+    <meta name="author" content="yzmcms">
+    <style>
+    	*{margin:0;padding:0;box-sizing:border-box;font-family:"Microsoft Yahei", Arial, sans-serif;}
+    	:root{--primary:#3578e5;--primary-light:#e8f0fe;--warning:#f59e0b;--warning-light:#fffbeb;--text-dark:#1f2937;--text-gray:#4b5563;--text-light:#6b7280;--bg-main:#f9fafb;--bg-card:#ffffff;--border:#e5e7eb;--shadow:0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);--shadow-hover:0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);}
+    	body{background-color:var(--bg-main);color:var(--text-gray);line-height:1.5;}
+    	.container{max-width:1100px;margin:0 auto;padding:30px 20px;}
+    	header{text-align:center;margin-bottom:25px;padding-bottom:15px;border-bottom:2px solid var(--primary);position:relative;}
+    	h1{color:var(--text-dark);font-size:2rem;margin-bottom:8px;font-weight:600;}
+    	.version{color:var(--primary);font-size:1.1rem;font-weight:500;background-color:var(--primary-light);padding:3px 12px;border-radius:12px;display:inline-block;}
+    	.section{background-color:var(--bg-card);border-radius:8px;padding:20px 25px;margin-bottom:20px;box-shadow:var(--shadow);transition:all 0.3s ease;border-left:3px solid transparent;}
+    	.section:hover{box-shadow:var(--shadow-hover);border-left-color:var(--primary);}
+    	h2{color:var(--text-dark);font-size:1.35rem;margin-bottom:15px;padding-left:12px;border-left:3px solid var(--primary);display:flex;align-items:center;}
+    	h2::before{content:'•';color:var(--primary);font-size:1.8rem;margin-right:8px;line-height:1;}
+    	h3{color:var(--text-dark);font-size:1.1rem;margin:12px 0 8px;font-weight:500;}
+    	p{margin:5px 0;font-size:0.95rem;}
+    	ul{margin-left:20px;margin-bottom:10px;}
+    	li{margin-bottom:6px;font-size:0.95rem;position:relative;padding-left:8px;}
+    	li::before{content:'✓';color:var(--primary);position:absolute;left:-18px;}
+    	.code{background-color:var(--primary-light);border:1px solid var(--border);border-radius:6px;padding:8px 12px;font-family:"Consolas", monospace;color:var(--primary);margin:8px 0;word-break:break-all;font-size:0.9rem;position:relative;overflow:hidden;}
+    	.link{color:var(--primary);text-decoration:none;font-weight:500;position:relative;}
+    	.link::after{content:'';position:absolute;width:0;height:1px;bottom:-2px;left:0;background-color:var(--primary);transition:width 0.3s ease;}
+    	.link:hover::after{width:100%;}
+    	.warning{background-color:var(--warning-light);border-left:4px solid var(--warning);padding:12px 15px;margin:12px 0;border-radius:4px;font-size:0.95rem;}
+    	.copyright{text-align:center;margin-top:25px;padding-top:15px;border-top:1px solid var(--border);color:var(--text-light);font-size:0.85rem;}
+    	.official-links{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;}
+    	.official-links a{display:inline-block;background-color:var(--primary);color:#fff;padding:6px 12px;border-radius:4px;text-decoration:none;transition:all 0.2s ease;font-size:0.9rem;border:1px solid var(--primary);}
+    	.official-links a:hover{background-color:white;color:var(--primary);transform:translateY(-1px);}
+    	@media (max-width:768px){h1{font-size:1.7rem;}
+    	.section{padding:15px 20px;}
+    	.official-links{flex-direction:column;gap:8px;}
+    	.container{padding:20px 15px;}}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>YzmCMS 安装使用说明</h1>
+        </header>
+
+        <section class="section">
+            <h2>安装方法</h2>
+            <p>1. 请在浏览器中运行  <a href="application/install/index.php" target="_blank" class="link">/application/install/index.php</a> ，即访问 http://你的网址/application/install/index.php ，按照提示说明进行程序安装</p>
+            <p>2. 管理后台地址： <a href="admin" target="_blank" class="link">/admin</a> ，即访问 http://你的网址/admin</p>
+            <p>3. 管理员默认账号密码均为 <strong>yzmcms</strong> (系统安装时可自行修改)</p>
+            <p>4. 如果后台地址显示404，请参考以下伪静态配置：</p>
+            <a href="http://www.yzmcms.com/dongtai/121.html" target="_blank" class="link">http://www.yzmcms.com/dongtai/121.html</a>
+        </section>
+
+        <section class="section">
+            <h2>安装要求</h2>
+            <ul>
+                <li>操作系统：Linux/Unix/Windows</li>
+                <li>软件环境：Apache/Nginx/IIS + PHP5.4及以上(推荐PHP7+,支持PHP8)</li>
+                <li>服务器环境需开启伪静态</li>
+            </ul>
+        </section>
+
+        <section class="section">
+            <h2>其他注意事项</h2>
+            <div class="warning">
+                <p>1. 首次登录后台后：请点击：内容管理->批量更新URL->更新栏目URL和更新内容URL！</p>
+                <p>2. 如果系统安装成功后，打开首页仍然显示“欢迎安装”页面，请强制刷新浏览器缓存！</p>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>YzmCMS V7.5版本更新日志</h2>
+            <ul>
+                <li>支持并兼容PHP8.5</li>
+                <li>系统框架新增upsert操作</li>
+                <li>自定义SQL标签支持查询其他数据库</li>
+                <li>新增站点搜索记录及搜索功能开关</li>
+                <li>修复特殊环境下后台修改会员资料出错</li>
+                <li>管理后台新增全站评论功能开关</li>
+                <li>修复全局Cookie生命周期设置无效的问题</li>
+                <li>修复特殊环境下图片添加水印背景不透明的bug</li>
+                <li>站点内容不存在时，支持自定义404页面</li>
+                <li>修复会员中心修改资料异常报错</li>
+                <li>系统多处安全性及稳定性增强</li>
+                <li>优化其他细节问题</li>
+            </ul>
+            <p><strong>本次更新优化内容包括但不限于以上所列举的项！</strong></p>
+        </section>
+
+        <section class="section">
+            <h2>版权信息</h2>
+            <div class="warning">
+                <p>这不是一个自由软件！您只能在不用于商业目的的前提下对程序代码进行修改和使用，不允许对程序代码以任何形式任何目的的再发布！</p>
+            </div>
+            <p>版权所有: 袁志蒙工作室，并保留所有权利。</p>
+            
+            <h3>官方资源</h3>
+            <div class="official-links">
+                <a href="http://www.yzmcms.com" target="_blank">官方网址</a>
+                <a href="http://doc.yzmcms.com" target="_blank">官方文档</a>
+                <a href="http://www.yzmask.com" target="_blank">官方社区</a>
+                <a href="https://jq.qq.com/?_wv=1027&k=633258511" target="_blank">QQ交流群：161208398/633258511</a>
+            </div>
+        </section>
+
+        <footer class="copyright">
+            Powered By YzmCMS © 2026 袁志蒙工作室 版权所有 · YzmCMS可能是目前为止最简洁快速的CMS系统
+        </footer>
+    </div>
+</body>
+</html>

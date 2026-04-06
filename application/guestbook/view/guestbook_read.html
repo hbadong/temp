@@ -1,0 +1,72 @@
+<?php include $this->admin_tpl('meta','admin');?>
+<title>读留言 - YzmCMS内容管理系统</title>
+<style>
+	.mydel{color:#de4c1c;font-size:13px;}
+	.mydel:hover{color:red}
+</style>
+</head>
+<body>
+<article class="page-container">
+<div class="formdoby_normal"> 
+	<form method="post" onsubmit="return dosub(this)">
+		<ul>
+			 <li><label>留言主题：</label><?php echo $data['title'];?></li>
+			 <li><label>留言内容：</label><div style="margin-left:120px;margin-top:-23px;padding:10px;background:#efeef0"><?php echo nl2br($data['bookmsg']);?></div></li>
+			 <li><label>联 系 人：</label><?php echo $data['name'];?></li>
+			 <li><label>电子邮箱：</label><?php echo $data['email'] ? $data['email'] : '无';?></li>
+			 <li><label>电　　话：</label><?php echo $data['phone'] ? $data['phone'] : '无';?></li>
+			 <li><label>Q　　Q：</label><?php echo $data['qq'] ? $data['qq'] : '无';?></li>
+			 <li><label>地　　址：</label><?php echo $data['address']?  $data['address'] : '无';?></li>
+			 <li><label>留言日期：</label><?php echo date("Y-m-d H:i:s",$data['booktime']);?>  <span style="color:#888">[<?php echo $data['ip'];?>]</span></li>
+			<?php foreach($reply as $value){ ?>
+			<li>
+				<div>
+					<span style="color:#de4c1c"><?php echo $value['name']; ?>回复 【<?php echo date('Y-m-d H:i:s',$value['booktime']); ?>】</span>
+					<span class="yzm-iconfont yzm-iconshanchu mydel pointer" onclick="yzm_confirm('<?php echo U('del_reply', array('id'=>$value['id']));?>', '确定要删除此回复吗？', 1);"></span>
+				</div>
+				<div style="color:#0072c6">
+					<?php echo nl2br($value['bookmsg']); ?>
+				</div>
+			</li>
+			<?php } ?>
+			<li><label><b>我来回复</b>：</label></li>
+			 <li>
+			  <input type="hidden" name="replyid" value="<?php echo $data['id']?>">
+			  <textarea class="textarea" name="bookmsg" placeholder="请输入回复内容"></textarea>
+	         </li>
+			 <li>
+			 	<input class="dosubmit w_100 btn-primary radius" name="dosubmit" type="submit" value="提交">
+			 	<input class="btn w_100 btn-default radius h35" type="button" value="关闭" onclick="yzmcms_close()">
+			 </li>
+		</ul>
+	</form>
+</div>
+</article>
+<?php include $this->admin_tpl('footer','admin');?> 
+<script type="text/javascript">
+	function dosub(obj){
+		if(obj.bookmsg.value == ''){
+			layer.msg('请输入回复内容！', {icon:2});
+			return false;
+		}
+
+		$.ajax({
+			type: "POST",
+			url: "<?php echo U(ROUTE_A);?>", 
+            data: $(obj).serialize(),
+		    dataType: "json",
+			success: function (msg) {
+				if(msg.status == 1){
+					layer.msg(msg.message, {icon:1,time:1000},function(){
+						window.location.reload();
+					});
+				}else{
+					layer.msg(msg.message, {icon:2,time:2500});
+				}
+			}
+		})
+		return false;
+	}
+</script> 
+</body>
+</html>
