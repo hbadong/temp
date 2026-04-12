@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=yes">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>{$seo_title}</title>
+    <meta name="keywords" content="百家姓,百家姓大全,百家姓排名">
+    <meta name="description" content="起名网提供百家姓排名，百家姓大全，百家姓的历史来源，寻根问祖、姓氏来源免费查询服务">
+    <link rel="canonical" href="https://www.qiming.cn/baijiaxing/index.html">
+    <link rel="stylesheet" href="https://static.qiming.cn/style/qiming/css/font/iconfont.css">
+    <link rel="stylesheet" href="https://static.qiming.cn/style/qiming/css/uikit.css" type='text/css' media='all'>
+    <link rel="stylesheet" href="https://static.qiming.cn/style/qiming/css/diy.css" type='text/css' media='all'>
+    <link rel="stylesheet" href="https://static.qiming.cn/style/qiming/css/qiming.css" type='text/css' media='all'>
+    <script type="text/javascript" src="https://static.qiming.cn/style/qiming/js/jquery.min.js"></script>
+    <script type="text/javascript" src="https://static.qiming.cn/style/qiming/js/uikit.min.js"></script>
+</head>
+<body>
+    <header class="header qiming-background-default">
+        <div class="navbar qiming-position-relative">
+            <div class="qiming-container qiming-flex qiming-flex-middle qiming-position-relative qiming-logo-shou">
+                <a href="{U('qiming/index/init')}" class="header-home" qiming-toggle><i class="iconfont icon-menu qiming-text-bolder"></i></a>
+                <a href="{U('qiming/index/init')}" class="logo qiming-logo qiming-display-inline-block" alt="起名网">
+                    <div class="qiming-logo-nav-night logobg qiming-visible@m"></div>
+                    <div class="qiming-app-logo2 logobg2"></div>
+                </a>
+                <nav class="nav qiming-flex-1 qiming-position-relative">
+                    <ul class="nav qiming-flex-1 qiming-margin-remove">
+                        <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home">
+                            <a href="{U('qiming/index/init')}">首页</a>
+                        </li>
+                        <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children">
+                            <a href="{U('qiming/index/baobao')}">宝宝起名</a>
+                        </li>
+                        <li class="menu-item menu-item-type-custom menu-item-object-custom current-menu-ancestor current-menu-parent menu-item-has-children">
+                            <a href="{U('qiming/index/bazi')}">八字起名</a>
+                        </li>
+                        <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children">
+                            <a href="{U('qiming/index/shici')}">诗词起名</a>
+                        </li>
+                        <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children">
+                            <a href="{U('qiming/index/gaimingzi')}">成人改名</a>
+                        </li>
+                        <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children">
+                            <a href="{U('qiming/index/ceshi')}">姓名测试</a>
+                        </li>
+                        <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children">
+                            <a href="{U('qiming/index/gongsi')}">公司起名</a>
+                        </li>
+                        <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children">
+                            <a href="{U('qiming/index/zhouyi')}">周易起名</a>
+                        </li>
+                        <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children">
+                            <a href="{U('qiming/index/kxzd')}">康熙字典</a>
+                        </li>
+                        <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children current-menu-item">
+                            <a href="{U('qiming/index/baijiaxing')}">百家姓</a>
+                        </li>
+                    </ul>
+                </nav>
+                <div class="header-info qiming-flex qiming-flex-middle">
+                    <a href="#header-search" class="header-search qiming-navbar-s" qiming-toggle><i class="iconfont icon-search qiming-text-bolder"></i></a>
+                    <div id="header-search" qiming-modal>
+                        <div class="qiming-tan qiming-modal-dialog qiming-modal-body home-modal qiming-padding-remove qiming-margin-auto-vertical">
+                            <button class="qiming-modal-close-default" type="button" qiming-close></button>
+                            <div class="b-r-12 qiming-background-default qiming-overflow-hidden qiming-position-relative qiming-padding-30px">
+                                <h3>搜索</h3>
+                                <div class="search search-navbar">
+                                    <form method="get" class="b-r-4 b-a qiming-form qiming-flex qiming-overflow-hidden search-form" action="{U('qiming/index/search')}">
+                                        <input type="search" placeholder="查询字、名字或姓名" autocomplete="off" id="k" value="" name="k" required="required" class="qiming-input qiming-flex-1 qiming-text-small">
+                                        <i class="iconfont icon-search qiming-text-search"></i>
+                                        <input type="hidden" name="formType" id="searchType" value="header">
+                                    </form>
+                                </div>
+                                <div class="header-btn-search">
+                                    <div class="header-btn-search-s qiming-dt change-color btn-search-all">立即搜索</div>
+                                </div>
+                                <div class="tags-item qiming-margin-top">
+                                    <p class="qiming-margin-small-bottom qiming-text-small">搜索最多的：</p>
+                                    <a href="{U('qiming/index/kxzd')}?char=雪" class="tag-cloud-link tag-link-128 tag-link-position-1">雪</a>
+                                    <a href="{U('qiming/index/kxzd')}?char=旭" class="tag-cloud-link tag-link-128 tag-link-position-1">旭</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <section class="cat-bg qiming-backgroundcover qiming-overflow-hidden qiming-flex qiming-flex-middle qiming-flex-center qiming-cat-category qimingbg2">
+        <div class="qiming-overlay-primary qiming-position-cover"></div>
+        <div class="qiming-overlay qiming-position-center qiming-text-center qiming-light">
+            <h3 class="qiming-position-relative qiming-light qiming-margin-remove">百家姓</h3>
+        </div>
+    </section>
+    
+    <section class="qiming-container">
+        <br>
+        <div class="kxzd">
+            <div class="card qiming-animation-slide-left-small">
+                <div class="qiming-grid-medium qiming-mmlist" qiming-grid>
+                    <div class="fastlink-title b-b qiming-flex qiming-flex-middle qiming-text-bolder">
+                        <i class="iconfont icon-menu"></i>百家姓<span class="qiming-text-muted qiming-margin-small-left qiming-text-small">百家姓查询 特殊百家姓</span>
+                    </div>
+                    <div class="qiming-list qmlst tags-item qiming-margin-remove-bottom">
+                        <ul class="btn w5 ">
+                            <li><a href="#" title="王" target="_blank"><span>wáng,wàng</span>王<span class="paiming o">排名:1</span></a></li>
+                            <li><a href="#" title="李" target="_blank"><span>lǐ</span>李<span class="paiming tt">排名:2</span></a></li>
+                            <li><a href="#" title="张" target="_blank"><span>zhāng</span>张<span class="paiming c">排名:3</span></a></li>
+                            <li><a href="#" title="刘" target="_blank"><span>liú</span>刘<span class="paiming">排名:4</span></a></li>
+                            <li><a href="#" title="陈" target="_blank"><span>chén</span>陈<span class="paiming">排名:5</span></a></li>
+                            <li><a href="#" title="杨" target="_blank"><span>yáng</span>杨<span class="paiming">排名:6</span></a></li>
+                            <li><a href="#" title="黄" target="_blank"><span>huáng</span>黄<span class="paiming">排名:7</span></a></li>
+                            <li><a href="#" title="赵" target="_blank"><span>zhào</span>赵<span class="paiming">排名:8</span></a></li>
+                            <li><a href="#" title="吴" target="_blank"><span>wú</span>吴<span class="paiming">排名:9</span></a></li>
+                            <li><a href="#" title="周" target="_blank"><span>zhōu</span>周<span class="paiming">排名:10</span></a></li>
+                            <li><a href="#" title="徐" target="_blank"><span>xú</span>徐<span class="paiming">排名:11</span></a></li>
+                            <li><a href="#" title="孙" target="_blank"><span>sūn,xùn</span>孙<span class="paiming">排名:12</span></a></li>
+                            <li><a href="#" title="马" target="_blank"><span>mǎ</span>马<span class="paiming">排名:13</span></a></li>
+                            <li><a href="#" title="朱" target="_blank"><span>zhū,shú</span>朱<span class="paiming">排名:14</span></a></li>
+                            <li><a href="#" title="胡" target="_blank"><span>hú</span>胡<span class="paiming">排名:15</span></a></li>
+                            <li><a href="#" title="郭" target="_blank"><span>guō</span>郭<span class="paiming">排名:16</span></a></li>
+                            <li><a href="#" title="何" target="_blank"><span>hé,hē,hè</span>何<span class="paiming">排名:17</span></a></li>
+                            <li><a href="#" title="林" target="_blank"><span>lín</span>林<span class="paiming">排名:18</span></a></li>
+                            <li><a href="#" title="高" target="_blank"><span>gāo</span>高<span class="paiming">排名:19</span></a></li>
+                            <li><a href="#" title="罗" target="_blank"><span>luó</span>罗<span class="paiming">排名:20</span></a></li>
+                        </ul>
+                    </div>
+                    <div class="fastlink-title b-b qiming-flex qiming-flex-middle qiming-text-bolder">
+                        <i class="iconfont icon-menu"></i>超千万人<span class="qiming-text-muted qiming-margin-small-left qiming-text-small">千万级别人口的姓氏</span>
+                    </div>
+                    <div class="qiming-list bjxlst tags-item qiming-margin-remove-bottom">
+                        <a target="_blank" href="#">王</a>
+                        <a target="_blank" href="#">李</a>
+                        <a target="_blank" href="#">张</a>
+                        <a target="_blank" href="#">刘</a>
+                        <a target="_blank" href="#">陈</a>
+                        <a target="_blank" href="#">杨</a>
+                        <a target="_blank" href="#">黄</a>
+                        <a target="_blank" href="#">赵</a>
+                        <a target="_blank" href="#">吴</a>
+                        <a target="_blank" href="#">周</a>
+                        <a target="_blank" href="#">徐</a>
+                        <a target="_blank" href="#">孙</a>
+                        <a target="_blank" href="#">马</a>
+                        <a target="_blank" href="#">朱</a>
+                        <a target="_blank" href="#">胡</a>
+                        <a target="_blank" href="#">郭</a>
+                        <a target="_blank" href="#">何</a>
+                        <a target="_blank" href="#">林</a>
+                        <a target="_blank" href="#">高</a>
+                        <a target="_blank" href="#">罗</a>
+                        <a target="_blank" href="#">郑</a>
+                        <a target="_blank" href="#">梁</a>
+                    </div>
+                    <div class="fastlink-title b-b qiming-flex qiming-flex-middle qiming-text-bolder">
+                        <i class="iconfont icon-menu"></i>上古八姓<span class="qiming-text-muted qiming-margin-small-left qiming-text-small">中国上古时期形成的八个主要姓氏</span>
+                    </div>
+                    <div class="qiming-list bjxlst tags-item qiming-margin-remove-bottom">
+                        <a target="_blank" href="#">姚</a>
+                        <a target="_blank" href="#">姜</a>
+                        <a target="_blank" href="#">姬</a>
+                        <a target="_blank" href="#">妫</a>
+                        <a target="_blank" href="#">姒</a>
+                        <a target="_blank" href="#">嬴</a>
+                    </div>
+                    <div class="fastlink-title b-b qiming-flex qiming-flex-middle qiming-text-bolder">
+                        <i class="iconfont icon-menu"></i>常见复姓<span class="qiming-text-muted qiming-margin-small-left qiming-text-small">多于一个汉字的姓</span>
+                    </div>
+                    <div class="qiming-list bjxlst tags-item qiming-margin-remove-bottom">
+                        <a target="_blank" href="#">欧阳</a>
+                        <a target="_blank" href="#">上官</a>
+                        <a target="_blank" href="#">令狐</a>
+                        <a target="_blank" href="#">司马</a>
+                        <a target="_blank" href="#">独孤</a>
+                        <a target="_blank" href="#">皇甫</a>
+                        <a target="_blank" href="#">呼延</a>
+                        <a target="_blank" href="#">公孙</a>
+                        <a target="_blank" href="#">慕容</a>
+                        <a target="_blank" href="#">南宫</a>
+                        <a target="_blank" href="#">司徒</a>
+                        <a target="_blank" href="#">太史</a>
+                        <a target="_blank" href="#">夏侯</a>
+                        <a target="_blank" href="#">轩辕</a>
+                        <a target="_blank" href="#">西门</a>
+                        <a target="_blank" href="#">宇文</a>
+                        <a target="_blank" href="#">诸葛</a>
+                    </div>
+                    <div class="fastlink-title b-b qiming-flex qiming-flex-middle qiming-text-bolder">
+                        <i class="iconfont icon-menu"></i>数字姓氏<span class="qiming-text-muted qiming-margin-small-left qiming-text-small">中国姓氏文化中的一个独特现象</span>
+                    </div>
+                    <div class="qiming-list bjxlst tags-item qiming-margin-remove-bottom">
+                        <a target="_blank" href="#">万</a>
+                        <a target="_blank" href="#">百</a>
+                        <a target="_blank" href="#">八</a>
+                        <a target="_blank" href="#">二</a>
+                        <a target="_blank" href="#">九</a>
+                        <a target="_blank" href="#">零</a>
+                        <a target="_blank" href="#">六</a>
+                        <a target="_blank" href="#">千</a>
+                        <a target="_blank" href="#">七</a>
+                        <a target="_blank" href="#">三</a>
+                        <a target="_blank" href="#">四</a>
+                        <a target="_blank" href="#">十</a>
+                        <a target="_blank" href="#">五</a>
+                        <a target="_blank" href="#">一</a>
+                        <a target="_blank" href="#">亿</a>
+                        <a target="_blank" href="#">兆</a>
+                    </div>
+                    <div class="fastlink-title b-b qiming-flex qiming-flex-middle qiming-text-bolder">
+                        <i class="iconfont icon-menu"></i>生肖姓氏<span class="qiming-text-muted qiming-margin-small-left qiming-text-small">十二生肖中，每个生肖都可以作为姓氏</span>
+                    </div>
+                    <div class="qiming-list bjxlst tags-item qiming-margin-remove-bottom">
+                        <a target="_blank" href="#">马</a>
+                        <a target="_blank" href="#">龙</a>
+                        <a target="_blank" href="#">牛</a>
+                        <a target="_blank" href="#">羊</a>
+                        <a target="_blank" href="#">虎</a>
+                        <a target="_blank" href="#">猴</a>
+                        <a target="_blank" href="#">狗</a>
+                        <a target="_blank" href="#">兔</a>
+                        <a target="_blank" href="#">猪</a>
+                    </div>
+                    <div class="fastlink-title b-b qiming-flex qiming-flex-middle qiming-text-bolder">
+                        <i class="iconfont icon-menu"></i>植物姓氏<span class="qiming-text-muted qiming-margin-small-left qiming-text-small">以植物或植物的一部分为姓</span>
+                    </div>
+                    <div class="qiming-list bjxlst tags-item qiming-margin-remove-bottom">
+                        <a target="_blank" href="#">李</a>
+                        <a target="_blank" href="#">杨</a>
+                        <a target="_blank" href="#">柳</a>
+                        <a target="_blank" href="#">麦</a>
+                        <a target="_blank" href="#">梅</a>
+                        <a target="_blank" href="#">兰</a>
+                        <a target="_blank" href="#">柏</a>
+                        <a target="_blank" href="#">桂</a>
+                        <a target="_blank" href="#">桑</a>
+                        <a target="_blank" href="#">花</a>
+                        <a target="_blank" href="#">槐</a>
+                        <a target="_blank" href="#">荷</a>
+                        <a target="_blank" href="#">瓜</a>
+                        <a target="_blank" href="#">莲</a>
+                        <a target="_blank" href="#">梨</a>
+                        <a target="_blank" href="#">树</a>
+                        <a target="_blank" href="#">桃</a>
+                        <a target="_blank" href="#">梧</a>
+                        <a target="_blank" href="#">杏</a>
+                        <a target="_blank" href="#">竹</a>
+                        <a target="_blank" href="#">枣</a>
+                    </div>
+                    <div class="fastlink-title b-b qiming-flex qiming-flex-middle qiming-text-bolder">
+                        <i class="iconfont icon-menu"></i>动物姓氏<span class="qiming-text-muted qiming-margin-small-left qiming-text-small">与动物的名称或者动物的特性或行为有关</span>
+                    </div>
+                    <div class="qiming-list bjxlst tags-item qiming-margin-remove-bottom">
+                        <a target="_blank" href="#">燕</a>
+                        <a target="_blank" href="#">贝</a>
+                        <a target="_blank" href="#">雕</a>
+                        <a target="_blank" href="#">貂</a>
+                        <a target="_blank" href="#">狐</a>
+                        <a target="_blank" href="#">鸥</a>
+                        <a target="_blank" href="#">雀</a>
+                        <a target="_blank" href="#">虾</a>
+                    </div>
+                    <div class="fastlink-title b-b qiming-flex qiming-flex-middle qiming-text-bolder">
+                        <i class="iconfont icon-menu"></i>自然姓氏<span class="qiming-text-muted qiming-margin-small-left qiming-text-small">特殊百家姓</span>
+                    </div>
+                    <div class="qiming-list bjxlst tags-item qiming-margin-remove-bottom">
+                        <a target="_blank" href="#">田</a>
+                        <a target="_blank" href="#">石</a>
+                        <a target="_blank" href="#">金</a>
+                        <a target="_blank" href="#">江</a>
+                        <a target="_blank" href="#">雷</a>
+                        <a target="_blank" href="#">谷</a>
+                        <a target="_blank" href="#">沙</a>
+                        <a target="_blank" href="#">丘</a>
+                        <a target="_blank" href="#">云</a>
+                        <a target="_blank" href="#">水</a>
+                        <a target="_blank" href="#">山</a>
+                        <a target="_blank" href="#">岩</a>
+                        <a target="_blank" href="#">湖</a>
+                        <a target="_blank" href="#">海</a>
+                        <a target="_blank" href="#">风</a>
+                        <a target="_blank" href="#">火</a>
+                        <a target="_blank" href="#">河</a>
+                        <a target="_blank" href="#">光</a>
+                        <a target="_blank" href="#">岭</a>
+                        <a target="_blank" href="#">泥</a>
+                        <a target="_blank" href="#">泉</a>
+                        <a target="_blank" href="#">日</a>
+                        <a target="_blank" href="#">霜</a>
+                        <a target="_blank" href="#">天</a>
+                        <a target="_blank" href="#">土</a>
+                        <a target="_blank" href="#">雾</a>
+                        <a target="_blank" href="#">雪</a>
+                        <a target="_blank" href="#">星</a>
+                        <a target="_blank" href="#">月</a>
+                        <a target="_blank" href="#">雨</a>
+                        <a target="_blank" href="#">崖</a>
+                    </div>
+                    <div class="fastlink-title b-b qiming-flex qiming-flex-middle qiming-text-bolder">
+                        <i class="iconfont icon-menu"></i>色彩姓氏<span class="qiming-text-muted qiming-margin-small-left qiming-text-small">含有颜色意思的姓</span>
+                    </div>
+                    <div class="qiming-list bjxlst tags-item qiming-margin-remove-bottom">
+                        <a target="_blank" href="#">黄</a>
+                        <a target="_blank" href="#">朱</a>
+                        <a target="_blank" href="#">白</a>
+                        <a target="_blank" href="#">蓝</a>
+                        <a target="_blank" href="#">乌</a>
+                        <a target="_blank" href="#">红</a>
+                        <a target="_blank" href="#">青</a>
+                        <a target="_blank" href="#">黑</a>
+                        <a target="_blank" href="#">赤</a>
+                        <a target="_blank" href="#">橙</a>
+                        <a target="_blank" href="#">粉</a>
+                        <a target="_blank" href="#">灰</a>
+                        <a target="_blank" href="#">褐</a>
+                        <a target="_blank" href="#">绿</a>
+                        <a target="_blank" href="#">紫</a>
+                    </div>
+                    <div class="fastlink-title b-b qiming-flex qiming-flex-middle qiming-text-bolder">
+                        <i class="iconfont icon-menu"></i>方位姓氏
+                    </div>
+                    <div class="qiming-list bjxlst tags-item qiming-margin-remove-bottom">
+                        <a target="_blank" href="#">方</a>
+                        <a target="_blank" href="#">左</a>
+                        <a target="_blank" href="#">南</a>
+                        <a target="_blank" href="#">西</a>
+                        <a target="_blank" href="#">东</a>
+                        <a target="_blank" href="#">后</a>
+                        <a target="_blank" href="#">上</a>
+                        <a target="_blank" href="#">里</a>
+                        <a target="_blank" href="#">底</a>
+                        <a target="_blank" href="#">顶</a>
+                        <a target="_blank" href="#">北</a>
+                        <a target="_blank" href="#">内</a>
+                        <a target="_blank" href="#">前</a>
+                        <a target="_blank" href="#">旁</a>
+                        <a target="_blank" href="#">外</a>
+                        <a target="_blank" href="#">下</a>
+                        <a target="_blank" href="#">中</a>
+                    </div>
+                    <div class="fastlink-title b-b qiming-flex qiming-flex-middle qiming-text-bolder">
+                        <i class="iconfont icon-menu"></i>武器姓氏
+                    </div>
+                    <div class="qiming-list bjxlst tags-item qiming-margin-remove-bottom">
+                        <a target="_blank" href="#">戈</a>
+                        <a target="_blank" href="#">弓</a>
+                        <a target="_blank" href="#">刀</a>
+                        <a target="_blank" href="#">盾</a>
+                        <a target="_blank" href="#">棒</a>
+                        <a target="_blank" href="#">鞭</a>
+                        <a target="_blank" href="#">斧</a>
+                        <a target="_blank" href="#">剑</a>
+                        <a target="_blank" href="#">箭</a>
+                        <a target="_blank" href="#">棍</a>
+                        <a target="_blank" href="#">矛</a>
+                        <a target="_blank" href="#">枪</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <br>
+    
+    <div class="qiming_follow_service" style="top:75%">
+        <ul>
+            <li class="qiming_follow_service_box qiming_follow_service_ax goTop qiming_footer_s">
+                <a href="#header" class="qiming-display-block" qiming-scroll><i class="iconfont icon-direction-up"></i>
+                    <div class="qiming_follow_service_ax_cont">
+                        <span class="qiming_follow_service_triangle"></span>
+                        <span>返回顶部</span>
+                    </div>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="qiming-app-gotop gotops qiming-hidden@s" id="gotops">
+        <a href="#header" class="qiming-display-block" qiming-scroll><i class="iconfont icon-arrow-up-bold icontop"></i></a>
+    </div>
+    
+    <footer class="footer qiming-background-secondary">
+        <div class="foot qiming-container qiming-padding">
+            <div class="qiming-grid" qiming-grid>
+                <div class="qiming-width-1-1@s qiming-width-1-3@xl">
+                    <div class="foot-item foot-item-first qiming-position-relative qiming-flex">
+                        <a href="{U('qiming/index/init')}" target="_blank" class="foot-logo qiming-display-block">
+                            <img src="https://static.qiming.cn/style/qiming/images/logo_foot.png">
+                        </a>
+                        <p class="qiming-text-small">起名网专注科学智能宝宝起名，测名字打分平台，结合传统国学文化的智能起名系统研发和起名学术探索交流，以"只为一个好名字"为宗旨，潜心研发，百次升级，千万级大数据分析，助您轻松起好名。</p>
+                    </div>
+                </div>
+                <div class="qiming-width-2-3 qiming-visible@">
+                    <div class="qiming-grid" qiming-grid>
+                        <div class="qiming-width-1-3">
+                            <div class="foot-item">
+                                <div class="foot-item-title"><i class="iconfont icon-security"></i>快捷导航</div>
+                                <ul class="qiming-padding-remove">
+                                    <li><a href="{U('qiming/index/baobao')}">宝宝起名</a></li>
+                                    <li><a href="{U('qiming/index/bazi')}">八字起名</a></li>
+                                    <li><a href="{U('qiming/index/zhouyi')}">周易起名</a></li>
+                                    <li><a href="{U('qiming/index/kxzd')}">康熙字典</a></li>
+                                    <li><a href="{U('qiming/index/gongsi')}">公司起名</a></li>
+                                    <li><a href="{U('qiming/index/ceshi')}">姓名测试</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="qiming-width-1-3">
+                            <div class="foot-item">
+                                <div class="foot-item-title"><i class="iconfont icon-security"></i>关于我们</div>
+                                <ul class="qiming-padding-remove">
+                                    <li><a href="https://www.qiming.cn/about.html" target="_blank">关于我们</a></li>
+                                    <li><a href="https://www.qiming.cn/service.html" target="_blank">服务条款</a></li>
+                                    <li><a href="https://www.qiming.cn/copyright.html" target="_blank">版权声明</a></li>
+                                    <li><a href="https://www.qiming.cn/busine.html" target="_blank">投诉建议</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="qiming-width-1-3">
+                            <div class="foot-item">
+                                <div class="foot-item-title"><i class="iconfont icon-link"></i>友情链接</div>
+                                <ul class="qiming-padding-remove">
+                                    <li><a href="https://zidian.qiming.cn/" target="_blank">汉语字典</a></li>
+                                    <li><a href="https://cidian.qiming.cn/" target="_blank">汉语词典</a></li>
+                                    <li><a href="https://chengyu.qiming.cn/" target="_blank">成语大全</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="foot-cop">
+            <div class="qiming-container qiming-padding-small qiming-clearfix">
+                <div class="qiming-float-left">
+                    <span>&copy; 2005-2025 <a href="https://www.qiming.cn/" title="起名网" target="_blank">www.qiming.cn</a> & All rights reserved</span>
+                    <a class="qiming-margin-small-right" href="#"><i class="iconfont icon-map-filling" aria-hidden="true"></i>网站地图</a>
+                    <span class="qiming-margin-small-right qiming-gongan">
+                        <img src="https://static.qiming.cn/style/qiming/images/qiming-110.png" height="6">皖公网安备34010402704531号
+                    </span>
+                    <span class="qiming-margin-small-right"><a href="https://beian.miit.gov.cn/" target="_blank" rel="noreferrer nofollow">皖ICP备2024064902号</a></span>
+                </div>
+                <div class="qiming-float-right qiming-visible@">
+                    <span><a href="https://www.qiming.cn/" target="_blank">起名网</a></span>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <link href="https://static.qiming.cn/style/date_c/rui-datepicker.min.css" rel="stylesheet" type="text/css">
+    <script src="https://static.qiming.cn/style/layer/layer.js" charset="utf-8"></script>
+    <script src="https://static.qiming.cn/style/date_c/rui-datepicker.min.js" charset="utf-8"></script>
+    <script src="https://static.qiming.cn/style/city/jquery.popcity.js" type="text/javascript"></script>
+    <link href="https://static.qiming.cn/style/city/city.css" rel="stylesheet" type="text/css">
+    <script src="https://static.qiming.cn/style/qiming/js/common.js"></script>
+</body>
+</html>

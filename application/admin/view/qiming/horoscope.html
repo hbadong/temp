@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>黄历管理 - 起名系统后台</title>
+<style>
+body { font-family: "Microsoft YaHei", Arial; margin: 0; padding: 0; background: #f5f5f5; }
+.header { background: #333; color: #fff; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
+.header h1 { margin: 0; font-size: 18px; }
+.header a { color: #fff; text-decoration: none; }
+.main { padding: 20px; }
+.card { background: #fff; border-radius: 5px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+.card h2 { margin: 0 0 15px; border-bottom: 2px solid #ff6600; padding-bottom: 10px; font-size: 16px; }
+.form-group { margin-bottom: 15px; }
+.form-group label { display: block; margin-bottom: 5px; font-weight: bold; color: #333; }
+.form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 3px; font-size: 14px; box-sizing: border-box; }
+.form-group textarea { height: 80px; resize: vertical; }
+.form-group .help { font-size: 12px; color: #999; margin-top: 3px; }
+.form-row { display: flex; gap: 15px; }
+.form-row .form-group { flex: 1; }
+.btn { padding: 10px 20px; background: #ff6600; color: #fff; border: none; border-radius: 3px; cursor: pointer; font-size: 14px; }
+.btn:hover { background: #e55a00; }
+.btn-secondary { background: #999; margin-left: 10px; }
+.btn-secondary:hover { background: #888; }
+.btn-small { padding: 6px 15px; font-size: 12px; }
+.search-box { margin-bottom: 15px; display: flex; gap: 10px; align-items: center; }
+.search-box input { padding: 8px; border: 1px solid #ddd; border-radius: 3px; width: 150px; }
+.breadcrumb { margin-bottom: 15px; }
+.breadcrumb a { color: #666; text-decoration: none; }
+.breadcrumb span { color: #999; margin: 0 10px; }
+</style>
+</head>
+<body>
+<div class="header">
+    <h1>黄历管理 - 起名系统后台</h1>
+    <a href="<?php echo U('admin/index/init'); ?>">返回后台首页</a>
+</div>
+<div class="main">
+    <div class="card">
+        <h2>编辑黄历 - <?php echo $date; ?></h2>
+        <div class="search-box">
+            <form action="" method="get">
+                选择日期：<input type="date" name="date" value="<?php echo $date; ?>">
+                <button type="submit" class="btn btn-small">切换</button>
+            </form>
+        </div>
+        
+        <form action="<?php echo U('qiming/horoscope_update'); ?>" method="post">
+            <input type="hidden" name="dosubmit" value="1">
+            <input type="hidden" name="date" value="<?php echo $date; ?>">
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>农历日期</label>
+                    <input type="text" name="lunar_date" value="<?php echo isset($data['lunar_date']) ? $data['lunar_date'] : ''; ?>" placeholder="如：农历二月初六">
+                </div>
+                <div class="form-group">
+                    <label>生肖</label>
+                    <input type="text" name="zodiac" value="<?php echo isset($data['zodiac']) ? $data['zodiac'] : ''; ?>" placeholder="如：鼠、牛、虎...">
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>干支年</label>
+                    <input type="text" name="zodiac_year" value="<?php echo isset($data['zodiac_year']) ? $data['zodiac_year'] : ''; ?>" placeholder="如：丙午年【马】">
+                </div>
+                <div class="form-group">
+                    <label>干支月</label>
+                    <input type="text" name="zodiac_month" value="<?php echo isset($data['zodiac_month']) ? $data['zodiac_month'] : ''; ?>" placeholder="如：辛卯月">
+                </div>
+                <div class="form-group">
+                    <label>干支日</label>
+                    <input type="text" name="zodiac_day" value="<?php echo isset($data['zodiac_day']) ? $data['zodiac_day'] : ''; ?>" placeholder="如：丁酉日">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>宜事项</label>
+                <textarea name="yi" placeholder="宜：嫁娶、祭祀、开光..."><?php echo isset($data['yi']) ? $data['yi'] : ''; ?></textarea>
+                <div class="help">用逗号分隔各项宜忌事项</div>
+            </div>
+            
+            <div class="form-group">
+                <label>忌事项</label>
+                <textarea name="ji" placeholder="忌：动土、伐木、安葬..."><?php echo isset($data['ji']) ? $data['ji'] : ''; ?></textarea>
+                <div class="help">用逗号分隔各项忌讳事项</div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>吉时</label>
+                    <input type="text" name="jishi" value="<?php echo isset($data['jishi']) ? $data['jishi'] : ''; ?>" placeholder="如：子丑卯午酉戌">
+                </div>
+                <div class="form-group">
+                    <label>冲煞</label>
+                    <input type="text" name="chongsha" value="<?php echo isset($data['chongsha']) ? $data['chongsha'] : ''; ?>" placeholder="如：(辛卯)兔 东">
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>财神方位</label>
+                    <input type="text" name="caishen" value="<?php echo isset($data['caishen']) ? $data['caishen'] : ''; ?>" placeholder="如：东北、西南">
+                </div>
+                <div class="form-group">
+                    <label>喜神方位</label>
+                    <input type="text" name="xishen" value="<?php echo isset($data['xishen']) ? $data['xishen'] : ''; ?>" placeholder="如：正南、西北">
+                </div>
+                <div class="form-group">
+                    <label>福神方位</label>
+                    <input type="text" name="fushen" value="<?php echo isset($data['fushen']) ? $data['fushen'] : ''; ?>" placeholder="如：东南、西南">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <button type="submit" class="btn">保存</button>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

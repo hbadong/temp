@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>诗词管理 - 起名系统</title>
+<style>
+body { font-family: "Microsoft YaHei", Arial; margin: 0; padding: 20px; background: #f5f5f5; }
+.page-title { background: #fff; padding: 15px 20px; border-radius: 5px; margin-bottom: 20px; }
+.card { background: #fff; border-radius: 5px; padding: 20px; }
+.tabs { margin-bottom: 20px; }
+.tabs a { padding: 8px 20px; background: #eee; border-radius: 3px; text-decoration: none; color: #333; margin-right: 10px; }
+.tabs a.active { background: #ff6600; color: #fff; }
+.btn { padding: 6px 15px; background: #ff6600; color: #fff; border: none; border-radius: 3px; cursor: pointer; text-decoration: none; display: inline-block; }
+.btn-danger { background: #f44336; }
+table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
+th { background: #f9f9f9; color: #666; }
+.page { margin-top: 15px; text-align: center; }
+</style>
+</head>
+<body>
+<div class="page-title">
+    <h1>诗词管理</h1>
+</div>
+<div class="card">
+    <a href="<?php echo U('qiming/poetry_add'); ?>" class="btn">添加诗词</a>
+    
+    <div class="tabs">
+        <a href="<?php echo U('qiming/poetry', array('type'=>1)); ?>" class="<?php echo $type==1?'active':''; ?>">唐诗</a>
+        <a href="<?php echo U('qiming/poetry', array('type'=>2)); ?>" class="<?php echo $type==2?'active':''; ?>">宋词</a>
+        <a href="<?php echo U('qiming/poetry', array('type'=>3)); ?>" class="<?php echo $type==3?'active':''; ?>">诗经</a>
+        <a href="<?php echo U('qiming/poetry', array('type'=>4)); ?>" class="<?php echo $type==4?'active':''; ?>">楚辞</a>
+    </div>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>标题</th>
+                <th>作者</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php if (!empty($list)): foreach($list as $v): ?>
+            <tr>
+                <td><?php echo $v['id']; ?></td>
+                <td><?php echo $v['title']; ?></td>
+                <td><?php echo $v['author']; ?></td>
+                <td>
+                    <a href="<?php echo U('qiming/poetry_edit', array('id'=>$v['id'])); ?>" class="btn" style="padding: 4px 10px; font-size: 12px;">编辑</a>
+                    <a href="<?php echo U('qiming/poetry_del', array('id'=>$v['id'])); ?>" class="btn btn-danger" style="padding: 4px 10px; font-size: 12px;" onclick="return confirm('确定删除?')">删除</a>
+                </td>
+            </tr>
+            <?php endforeach; endif; ?>
+        </tbody>
+    </table>
+    <div class="page"><?php echo $page->getfull(); ?></div>
+</div>
+</body>
+</html>

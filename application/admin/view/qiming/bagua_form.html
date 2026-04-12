@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title><?php echo isset($data) && $data ? '编辑卦象' : '添加卦象'; ?> - 起名系统后台</title>
+<style>
+body { font-family: "Microsoft YaHei", Arial; margin: 0; padding: 0; background: #f5f5f5; }
+.header { background: #333; color: #fff; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
+.header h1 { margin: 0; font-size: 18px; }
+.header a { color: #fff; text-decoration: none; }
+.main { padding: 20px; }
+.card { background: #fff; border-radius: 5px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+.card h2 { margin: 0 0 15px; border-bottom: 2px solid #ff6600; padding-bottom: 10px; font-size: 16px; }
+.form-group { margin-bottom: 15px; }
+.form-group label { display: block; margin-bottom: 5px; font-weight: bold; color: #333; }
+.form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 3px; font-size: 14px; box-sizing: border-box; }
+.form-group textarea { height: 100px; resize: vertical; }
+.form-group .help { font-size: 12px; color: #999; margin-top: 3px; }
+.btn { padding: 10px 20px; background: #ff6600; color: #fff; border: none; border-radius: 3px; cursor: pointer; font-size: 14px; }
+.btn:hover { background: #e55a00; }
+.btn-secondary { background: #999; margin-left: 10px; }
+.btn-secondary:hover { background: #888; }
+.breadcrumb { margin-bottom: 15px; }
+.breadcrumb a { color: #666; text-decoration: none; }
+.breadcrumb span { color: #999; margin: 0 10px; }
+</style>
+</head>
+<body>
+<div class="header">
+    <h1><?php echo isset($data) && $data ? '编辑卦象' : '添加卦象'; ?> - 起名系统后台</h1>
+    <a href="<?php echo U('qiming/bagua'); ?>">返回列表</a>
+</div>
+<div class="main">
+    <div class="card">
+        <h2><?php echo isset($data) && $data ? '编辑卦象' : '添加卦象'; ?></h2>
+        <form action="" method="post">
+            <input type="hidden" name="dosubmit" value="1">
+            <?php if (isset($data) && $data) { ?>
+            <input type="hidden" name="id" value="<?php echo $data['id']; ?>">
+            <?php } ?>
+            
+            <div class="form-group">
+                <label>卦名</label>
+                <input type="text" name="gua_name" value="<?php echo isset($data['gua_name']) ? $data['gua_name'] : ''; ?>" required placeholder="如：乾、坤、屯等">
+            </div>
+            
+            <div class="form-group">
+                <label>五行</label>
+                <select name="wuxing">
+                    <option value="金" <?php echo (isset($data['wuxing']) && $data['wuxing'] == '金') ? 'selected' : ''; ?>>金</option>
+                    <option value="木" <?php echo (isset($data['wuxing']) && $data['wuxing'] == '木') ? 'selected' : ''; ?>>木</option>
+                    <option value="水" <?php echo (isset($data['wuxing']) && $data['wuxing'] == '水') ? 'selected' : ''; ?>>水</option>
+                    <option value="火" <?php echo (isset($data['wuxing']) && $data['wuxing'] == '火') ? 'selected' : ''; ?>>火</option>
+                    <option value="土" <?php echo (isset($data['wuxing']) && $data['wuxing'] == '土') ? 'selected' : ''; ?>>土</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>卦辞</label>
+                <textarea name="gua_ci" placeholder="卦辞原文"><?php echo isset($data['gua_ci']) ? $data['gua_ci'] : ''; ?></textarea>
+                <div class="help">周易原文中的卦辞</div>
+            </div>
+            
+            <div class="form-group">
+                <label>彖辞</label>
+                <textarea name="tuan_ci" placeholder="彖辞原文"><?php echo isset($data['tuan_ci']) ? $data['tuan_ci'] : ''; ?></textarea>
+                <div class="help">彖辞是对卦辞的解释</div>
+            </div>
+            
+            <div class="form-group">
+                <label>象辞</label>
+                <textarea name="xiang_ci" placeholder="象辞原文"><?php echo isset($data['xiang_ci']) ? $data['xiang_ci'] : ''; ?></textarea>
+                <div class="help">象辞包括大象和小象</div>
+            </div>
+            
+            <div class="form-group">
+                <label>爻辞</label>
+                <textarea name="yao_ci" placeholder="爻辞原文"><?php echo isset($data['yao_ci']) ? $data['yao_ci'] : ''; ?></textarea>
+                <div class="help">六爻的爻辞</div>
+            </div>
+            
+            <div class="form-group">
+                <button type="submit" class="btn">保存</button>
+                <a href="<?php echo U('qiming/bagua'); ?>" class="btn btn-secondary">取消</a>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

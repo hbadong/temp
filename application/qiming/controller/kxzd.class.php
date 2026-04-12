@@ -1,0 +1,84 @@
+<?php
+/**
+ * 康熙字典控制器
+ */
+
+defined('IN_YZMPHP') or exit('Access Denied');
+
+class kxzd {
+    
+    /**
+     * 字典首页
+     */
+    public function index() {
+        $seo_title = '康熙字典 - 起名网';
+        include template('qiming', 'kxzd_index');
+    }
+    
+    /**
+     * 汉字详情
+     */
+    public function show() {
+        $char = isset($_GET['char']) ? trim($_GET['char']) : '';
+        if (empty($char)) {
+            showmsg('参数错误', 'stop');
+        }
+        
+        require_once APP_PATH . 'qiming/model/character_model.class.php';
+        $character_model = new character_model();
+        $data = $character_model->get_char($char);
+        if (!$data) {
+            showmsg('未找到该汉字', 'stop');
+        }
+        
+        $wuxing_names = array(1 => '金', 2 => '木', 3 => '水', 4 => '火', 5 => '土');
+        
+        $seo_title = '汉字' . $char . ' - 康熙字典 - 起名网';
+        include template('qiming', 'kxzd_show');
+    }
+    
+    /**
+     * 搜索
+     */
+    public function search() {
+        $keyword = isset($_GET['keyword']) ? trim($_GET['keyword']) : '';
+        $wuxing = isset($_GET['wuxing']) ? intval($_GET['wuxing']) : 0;
+        $list = array();
+        $total = 0;
+        
+        $wuxing_names = array(1 => '金', 2 => '木', 3 => '水', 4 => '火', 5 => '土');
+        
+        if (!empty($keyword) || !empty($wuxing)) {
+            require_once APP_PATH . 'qiming/model/character_model.class.php';
+            $character_model = new character_model();
+            
+            if (!empty($keyword)) {
+                $list = $character_model->search_by_pinyin($keyword);
+                $total = count($list);
+            } elseif (!empty($wuxing)) {
+                $list = $character_model->search_by_wuxing($wuxing);
+                $total = count($list);
+            }
+        }
+        
+        $seo_title = '搜索结果 - 康熙字典 - 起名网';
+        include template('qiming', 'kxzd_search');
+    }
+    
+    /**
+     * 五行分类浏览
+     */
+    public function wuxing() {
+        $wuxing = isset($_GET['wuxing']) ? intval($_GET['wuxing']) : 1;
+        
+        require_once APP_PATH . 'qiming/model/character_model.class.php';
+        $character_model = new character_model();
+        $list = $character_model->search_by_wuxing($wuxing);
+        
+        $wuxing_names = array(1 => '金', 2 => '木', 3 => '水', 4 => '火', 5 => '土');
+        $current_wuxing = isset($wuxing_names[$wuxing]) ? $wuxing_names[$wuxing] : '金';
+        
+        $seo_title = $current_wuxing . '属性汉字 - 康熙字典 - 起名网';
+        include template('qiming', 'kxzd_wuxing');
+    }
+}

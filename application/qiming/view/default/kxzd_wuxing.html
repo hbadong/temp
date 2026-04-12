@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{$seo_title}</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Microsoft YaHei", Arial, sans-serif; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 15px; }
+        .page-header { background: linear-gradient(135deg, #ff6600, #ff8533); color: #fff; padding: 40px 0; text-align: center; }
+        .page-header h1 { font-size: 28px; }
+        
+        .main { padding: 40px 0; }
+        .filter-tabs { background: #fff; padding: 15px 20px; border-radius: 8px; margin-bottom: 20px; display: flex; gap: 15px; }
+        .filter-tabs a { padding: 8px 20px; background: #f5f5f5; border-radius: 5px; color: #333; }
+        .filter-tabs a.active { background: #ff6600; color: #fff; }
+        
+        .char-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 15px; }
+        .char-card { background: #fff; padding: 25px 15px; border-radius: 8px; text-align: center; transition: transform 0.3s; }
+        .char-card:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .char-card .char { font-size: 36px; font-weight: bold; color: #ff6600; }
+        .char-card .info { font-size: 12px; color: #999; margin-top: 5px; }
+        
+        .page { text-align: center; margin-top: 30px; }
+        .page a { padding: 8px 15px; background: #fff; border-radius: 5px; color: #333; margin: 0 5px; }
+        .page a.active { background: #ff6600; color: #fff; }
+    </style>
+</head>
+<body>
+    <div class="page-header">
+        <div class="container">
+            <h1>{$current_wuxing}属性汉字</h1>
+        </div>
+    </div>
+    
+    <div class="container main">
+        <div class="filter-tabs">
+            <a href="{U('qiming/kxzd/wuxing', 'wuxing=1')}" class="<?php echo $wuxing==1?'active':''; ?>">金</a>
+            <a href="{U('qiming/kxzd/wuxing', 'wuxing=2')}" class="<?php echo $wuxing==2?'active':''; ?>">木</a>
+            <a href="{U('qiming/kxzd/wuxing', 'wuxing=3')}" class="<?php echo $wuxing==3?'active':''; ?>">水</a>
+            <a href="{U('qiming/kxzd/wuxing', 'wuxing=4')}" class="<?php echo $wuxing==4?'active':''; ?>">火</a>
+            <a href="{U('qiming/kxzd/wuxing', 'wuxing=5')}" class="<?php echo $wuxing==5?'active':''; ?>">土</a>
+        </div>
+        
+        <?php if (!empty($list)): ?>
+        <div class="char-grid">
+            <?php foreach ($list as $v): ?>
+            <a href="{U('qiming/kxzd/show', 'char='.$v['char'])}" class="char-card">
+                <div class="char">{$v['char']}</div>
+                <div class="info">{$v['pinyin']} | {$v['bihua']}画</div>
+            </a>
+            <?php endforeach; ?>
+        </div>
+        <?php else: ?>
+        <p style="text-align:center;color:#999;padding:60px 0;">暂无数据</p>
+        <?php endif; ?>
+    </div>
+</body>
+</html>

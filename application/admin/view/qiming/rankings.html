@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>热门排行 - 起名系统</title>
+<style>
+body { font-family: "Microsoft YaHei", Arial; margin: 0; padding: 20px; background: #f5f5f5; }
+.page-title { background: #fff; padding: 15px 20px; border-radius: 5px; margin-bottom: 20px; }
+.card { background: #fff; border-radius: 5px; padding: 20px; }
+.tabs { margin-bottom: 20px; }
+.tabs a { padding: 8px 20px; background: #eee; border-radius: 3px; text-decoration: none; color: #333; margin-right: 10px; }
+.tabs a.active { background: #ff6600; color: #fff; }
+.btn { padding: 6px 15px; background: #ff6600; color: #fff; border: none; border-radius: 3px; cursor: pointer; text-decoration: none; display: inline-block; }
+table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
+th { background: #f9f9f9; color: #666; }
+.input-small { width: 50px; padding: 5px; border: 1px solid #ddd; border-radius: 3px; }
+</style>
+</head>
+<body>
+<div class="page-title">
+    <h1>热门排行管理</h1>
+</div>
+<div class="card">
+    <div class="tabs">
+        <a href="<?php echo U('qiming/rankings', array('type'=>'boy-char')); ?>" class="<?php echo $type=='boy-char'?'active':''; ?>">男孩用字</a>
+        <a href="<?php echo U('qiming/rankings', array('type'=>'girl-char')); ?>" class="<?php echo $type=='girl-char'?'active':''; ?>">女孩用字</a>
+        <a href="<?php echo U('qiming/rankings', array('type'=>'boy-name')); ?>" class="<?php echo $type=='boy-name'?'active':''; ?>">男孩名字</a>
+        <a href="<?php echo U('qiming/rankings', array('type'=>'girl-name')); ?>" class="<?php echo $type=='girl-name'?'active':''; ?>">女孩名字</a>
+    </div>
+    
+    <form method="post" action="<?php echo U('qiming/rankings_update'); ?>">
+        <input type="hidden" name="type" value="<?php echo $type; ?>">
+        <button type="submit" class="btn">保存修改</button>
+        <table>
+            <thead>
+                <tr>
+                    <th>排行</th>
+                    <th>汉字/名字</th>
+                    <th>拼音</th>
+                    <th>搜索次数</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php if (!empty($list)): foreach($list as $v): ?>
+                <tr>
+                    <td><?php echo $v['ranking']; ?></td>
+                    <td><?php echo $v['char_or_name']; ?></td>
+                    <td>-</td>
+                    <td><?php echo $v['search_count']; ?></td>
+                </tr>
+                <?php endforeach; endif; ?>
+            </tbody>
+        </table>
+    </form>
+</div>
+</body>
+</html>

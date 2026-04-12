@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>{$seo_title}</title>
+<meta name="keywords" content="{$keywords}">
+<meta name="description" content="{$description}">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="applicable-device" content="pc,mobile">
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+<link rel="canonical" href="https://www.qiming.cn/">
+<link rel="stylesheet" href="https://static.qiming.cn/style/qiming/css/font/iconfont.css">
+<link rel="stylesheet" href="https://static.qiming.cn/style/qiming/css/uikit.css">
+<link rel="stylesheet" href="https://static.qiming.cn/style/qiming/css/diy.css">
+<link rel="stylesheet" href="https://static.qiming.cn/style/qiming/css/qiming.css">
+<link rel="stylesheet" href="https://static.qiming.cn/style/qiming/css/indexhl.css">
+<script type="text/javascript" src="https://static.qiming.cn/style/qiming/js/jquery.min.js"></script>
+<script type="text/javascript" src="https://static.qiming.cn/style/qiming/js/uikit.min.js"></script>
+<style>
+/* 移动端响应式样式覆盖 */
+@media (max-width: 767px) {
+    .header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        background: #fff !important;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .navbar {
+        padding: 10px 15px !important;
+    }
+    
+    .header-home {
+        display: inline-block !important;
+        width: 30px;
+        height: 30px;
+        line-height: 30px;
+        text-align: center;
+        background: #f5f5f5;
+        border-radius: 4px;
+    }
+    
+    .header-home i {
+        font-size: 18px !important;
+    }
+    
+    .logo {
+        margin-left: 10px !important;
+    }
+    
+    .logo .logobg,
+    .logo .logobg2 {
+        width: 100px !important;
+        height: 30px !important;
+    }
+    
+    .nav {
+        display: none !important;
+    }
+    
+    .header-info {
+        margin-left: auto !important;
+    }
+    
+    .header-search {
+        display: inline-block !important;
+        width: 30px;
+        height: 30px;
+        line-height: 30px;
+        text-align: center;
+        background: #f5f5f5;
+        border-radius: 4px;
+    }
+    
+    .header-search i {
+        font-size: 18px !important;
+    }
+    
+    .qiming-modal {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        z-index: 2000 !important;
+        background: rgba(0,0,0,0.5) !important;
+        padding: 20px;
+    }
+    
+    .qiming-modal-dialog {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        background: #fff;
+        border-radius: 8px;
+        padding: 20px;
+    }
+    
+    .home-modal {
+        width: 100%;
+    }
+    
+    .search-form {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .search-form input[type="search"] {
+        width: 100% !important;
+        padding: 12px 15px !important;
+        border: 1px solid #ddd !important;
+        border-radius: 4px !important;
+        font-size: 16px !important;
+    }
+    
+    .btn-search-all {
+        width: 100%;
+        padding: 12px;
+        background: linear-gradient(135deg, #ff6600, #ff8533);
+        color: #fff;
+        text-align: center;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    
+    .tags-item {
+        margin-top: 15px;
+    }
+    
+    .tag-cloud-link {
+        display: inline-block;
+        padding: 5px 10px;
+        background: #f5f5f5;
+        border-radius: 3px;
+        margin: 3px;
+        font-size: 13px;
+    }
+    
+    body {
+        padding-top: 60px;
+    }
+    
+    .qiming-container {
+        padding: 0 15px;
+    }
+}
+
+/* 移动端导航侧边栏 */
+.mobile-sidebar {
+    position: fixed;
+    top: 0;
+    left: -280px;
+    width: 280px;
+    height: 100%;
+    background: #fff;
+    z-index: 3000;
+    overflow-y: auto;
+    transition: left 0.3s ease;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.2);
+}
+
+.mobile-sidebar.active {
+    left: 0;
+}
+
+.mobile-sidebar-header {
+    background: linear-gradient(135deg, #ff6600, #ff8533);
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+}
+
+.mobile-sidebar-header h3 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.mobile-sidebar-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    background: rgba(255,255,255,0.2);
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.mobile-nav-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.mobile-nav-list li {
+    border-bottom: 1px solid #eee;
+}
+
+.mobile-nav-list a {
+    display: block;
+    padding: 15px 20px;
+    color: #333;
+    font-size: 15px;
+    text-decoration: none;
+}
+
+.mobile-nav-list a:hover,
+.mobile-nav-list a:active {
+    background: #f5f5f5;
+    color: #ff6600;
+}
+
+.mobile-sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 2999;
+    display: none;
+}
+
+.mobile-sidebar-overlay.active {
+    display: block;
+}
+
+/* 返回顶部按钮 */
+.qiming-app-gotop {
+    position: fixed;
+    right: 15px;
+    bottom: 80px;
+    width: 40px;
+    height: 40px;
+    background: rgba(0,0,0,0.6);
+    border-radius: 50%;
+    text-align: center;
+    line-height: 40px;
+    z-index: 999;
+}
+
+.qiming-app-gotop a {
+    color: #fff;
+    display: block;
+}
+
+.qiming-app-gotop i {
+    font-size: 20px;
+}
+</style>
+</head>
+<body>
+<!-- 移动端导航遮罩层 -->
+<div class="mobile-sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- 移动端侧边栏导航 -->
+<nav class="mobile-sidebar" id="mobileSidebar">
+    <div class="mobile-sidebar-header">
+        <h3>起名网</h3>
+        <div class="mobile-sidebar-close" id="sidebarClose">
+            <i class="iconfont icon-close"></i>
+        </div>
+    </div>
+    <ul class="mobile-nav-list">
+        <li><a href="{U('qiming/index/init')}">首页</a></li>
+        <li><a href="{U('qiming/index/baobao')}">宝宝起名</a></li>
+        <li><a href="{U('qiming/index/bazi')}">八字起名</a></li>
+        <li><a href="{U('qiming/index/shici')}">诗词起名</a></li>
+        <li><a href="{U('qiming/index/gaimingzi')}">成人改名</a></li>
+        <li><a href="{U('qiming/index/ceshi')}">姓名测试</a></li>
+        <li><a href="{U('qiming/index/gongsi')}">公司起名</a></li>
+        <li><a href="{U('qiming/index/zhouyi')}">周易起名</a></li>
+        <li><a href="{U('qiming/index/kxzd')}">康熙字典</a></li>
+        <li><a href="{U('qiming/index/baijiaxing')}">百家姓</a></li>
+        <li><a href="{U('qiming/index/zhishi')}">起名知识</a></li>
+    </ul>
+</nav>
+
+<!-- Header -->
+<header class="header qiming-background-default" id="header">
+    <div class="navbar qiming-position-relative">
+        <div class="qiming-container qiming-flex qiming-flex-middle qiming-position-relative qiming-logo-shou">
+            <a href="javascript:;" class="header-home" id="sidebarToggle">
+                <i class="iconfont icon-menu qiming-text-bolder"></i>
+            </a>
+            <a href="{U('qiming/index/init')}" class="logo qiming-logo qiming-display-inline-block" alt="起名网">
+                <div class="qiming-logo-nav-night logobg qiming-visible@m"></div>
+                <div class="qiming-app-logo2 logobg2"></div>
+            </a>
+            <nav class="nav qiming-flex-1 qiming-position-relative qiming-visible@m">
+                <ul class="nav qiming-flex-1 qiming-margin-remove">
+                    <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home">
+                        <a href="{U('qiming/index/init')}">首页</a>
+                    </li>
+                    <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children">
+                        <a href="{U('qiming/index/baobao')}">宝宝起名</a>
+                    </li>
+                    <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children">
+                        <a href="{U('qiming/index/bazi')}">八字起名</a>
+                    </li>
+                    <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children">
+                        <a href="{U('qiming/index/shici')}">诗词起名</a>
+                    </li>
+                    <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children">
+                        <a href="{U('qiming/index/gaimingzi')}">成人改名</a>
+                    </li>
+                    <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children">
+                        <a href="{U('qiming/index/ceshi')}">姓名测试</a>
+                    </li>
+                    <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children">
+                        <a href="{U('qiming/index/gongsi')}">公司起名</a>
+                    </li>
+                    <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children">
+                        <a href="{U('qiming/index/zhouyi')}">周易起名</a>
+                    </li>
+                    <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children">
+                        <a href="{U('qiming/index/kxzd')}">康熙字典</a>
+                    </li>
+                    <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children">
+                        <a href="{U('qiming/index/baijiaxing')}">百家姓</a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="header-info qiming-flex qiming-flex-middle">
+                <a href="#header-search" class="header-search qiming-navbar-s" qiming-toggle>
+                    <i class="iconfont icon-search qiming-text-bolder"></i>
+                </a>
+                <div id="header-search" qiming-modal>
+                    <div class="qiming-tan qiming-modal-dialog qiming-modal-body home-modal qiming-padding-remove qiming-margin-auto-vertical">
+                        <button class="qiming-modal-close-default" type="button" qiming-close>
+                            <i class="iconfont icon-close"></i>
+                        </button>
+                        <div class="b-r-12 qiming-background-default qiming-overflow-hidden qiming-position-relative qiming-padding-30px">
+                            <h3>搜索</h3>
+                            <div class="search search-navbar">
+                                <form method="get" class="b-r-4 b-a qiming-form qiming-flex qiming-overflow-hidden search-form" action="{U('qiming/index/search')}">
+                                    <input type="search" placeholder="查询字、名字或姓名" autocomplete="off" id="k" value="" name="k" required="required" class="qiming-input qiming-flex-1 qiming-text-small">
+                                    <i class="iconfont icon-search qiming-text-search"></i>
+                                    <input type="hidden" name="formType" id="searchType" value="header">
+                                </form>
+                            </div>
+                            <div class="header-btn-search">
+                                <div class="header-btn-search-s qiming-dt change-color btn-search-all">立即搜索</div>
+                            </div>
+                            <div class="tags-item qiming-margin-top">
+                                <p class="qiming-margin-small-bottom qiming-text-small">搜索最多的：</p>
+                                <a href="{U('qiming/index/kxzd')}?char=雪" class="tag-cloud-link tag-link-128 tag-link-position-1">雪</a>
+                                <a href="{U('qiming/index/kxzd')}?char=旭" class="tag-cloud-link tag-link-128 tag-link-position-1">旭</a>
+                                <a href="{U('qiming/index/search')}?k=信川" class="tag-cloud-link tag-link-128 tag-link-position-1">信川</a>
+                                <a href="{U('qiming/index/search')}?k=煜晨" class="tag-cloud-link tag-link-128 tag-link-position-1">煜晨</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<script>
+$(function() {
+    // 侧边栏切换
+    $('#sidebarToggle').on('click', function() {
+        $('#mobileSidebar').addClass('active');
+        $('#sidebarOverlay').addClass('active');
+        $('body').css('overflow', 'hidden');
+    });
+    
+    $('#sidebarClose, #sidebarOverlay').on('click', function() {
+        $('#mobileSidebar').removeClass('active');
+        $('#sidebarOverlay').removeClass('active');
+        $('body').css('overflow', '');
+    });
+    
+    // 搜索表单提交
+    $('.btn-search-all').on('click', function() {
+        var searchForm = $(this).closest('.qiming-modal').find('form');
+        if (searchForm.length) {
+            searchForm.submit();
+        }
+    });
+});
+</script>

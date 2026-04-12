@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=yes">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>{$seo_title}</title>
+    <meta name="keywords" content="康熙字典在线查字,康熙字典查字">
+    <meta name="description" content="起名网康熙字典频道免费提供康熙字典在线查字，提供全面的汉字五行属性、解释、拼音、笔画等助您轻松查询孩子起名所需的汉字信息！">
+    <link rel="canonical" href="https://www.qiming.cn/kxzd/index.html">
+    <link rel="stylesheet" href="https://static.qiming.cn/style/qiming/css/font/iconfont.css">
+    <link rel="stylesheet" href="https://static.qiming.cn/style/qiming/css/uikit.css" type='text/css' media='all'>
+    <link rel="stylesheet" href="https://static.qiming.cn/style/qiming/css/diy.css" type='text/css' media='all'>
+    <link rel="stylesheet" href="https://static.qiming.cn/style/qiming/css/qiming.css" type='text/css' media='all'>
+    <script type="text/javascript" src="https://static.qiming.cn/style/qiming/js/jquery.min.js"></script>
+    <script type="text/javascript" src="https://static.qiming.cn/style/qiming/js/uikit.min.js"></script>
+</head>
+<body>
+    <header class="header qiming-background-default">
+        <div class="navbar qiming-position-relative">
+            <div class="qiming-container qiming-flex qiming-flex-middle qiming-position-relative qiming-logo-shou">
+                <a href="{U('qiming/index/init')}" class="header-home" qiming-toggle><i class="iconfont icon-menu qiming-text-bolder"></i></a>
+                <a href="{U('qiming/index/init')}" class="logo qiming-logo qiming-display-inline-block" alt="起名网">
+                    <div class="qiming-logo-nav-night logobg qiming-visible@m"></div>
+                    <div class="qiming-app-logo2 logobg2"></div>
+                </a>
+                <nav class="nav qiming-flex-1 qiming-position-relative">
+                    <ul class="nav qiming-flex-1 qiming-margin-remove">
+                        <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home">
+                            <a href="{U('qiming/index/init')}">首页</a>
+                        </li>
+                        <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children">
+                            <a href="{U('qiming/index/baobao')}">宝宝起名</a>
+                        </li>
+                        <li class="menu-item menu-item-type-custom menu-item-object-custom current-menu-ancestor current-menu-parent menu-item-has-children">
+                            <a href="{U('qiming/index/bazi')}">八字起名</a>
+                        </li>
+                        <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children">
+                            <a href="{U('qiming/index/shici')}">诗词起名</a>
+                        </li>
+                        <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children">
+                            <a href="{U('qiming/index/gaimingzi')}">成人改名</a>
+                        </li>
+                        <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children">
+                            <a href="{U('qiming/index/ceshi')}">姓名测试</a>
+                        </li>
+                        <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children">
+                            <a href="{U('qiming/index/gongsi')}">公司起名</a>
+                        </li>
+                        <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children">
+                            <a href="{U('qiming/index/zhouyi')}">周易起名</a>
+                        </li>
+                        <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children">
+                            <a href="{U('qiming/index/kxzd')}">康熙字典</a>
+                        </li>
+                        <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children">
+                            <a href="{U('qiming/index/baijiaxing')}">百家姓</a>
+                        </li>
+                    </ul>
+                </nav>
+                <div class="header-info qiming-flex qiming-flex-middle">
+                    <a href="#header-search" class="header-search qiming-navbar-s" qiming-toggle><i class="iconfont icon-search qiming-text-bolder"></i></a>
+                    <div id="header-search" qiming-modal>
+                        <div class="qiming-tan qiming-modal-dialog qiming-modal-body home-modal qiming-padding-remove qiming-margin-auto-vertical">
+                            <button class="qiming-modal-close-default" type="button" qiming-close></button>
+                            <div class="b-r-12 qiming-background-default qiming-overflow-hidden qiming-position-relative qiming-padding-30px">
+                                <h3>搜索</h3>
+                                <div class="search search-navbar">
+                                    <form method="get" class="b-r-4 b-a qiming-form qiming-flex qiming-overflow-hidden search-form" action="{U('qiming/index/search')}">
+                                        <input type="search" placeholder="查询字、名字或姓名" autocomplete="off" id="k" value="" name="k" required="required" class="qiming-input qiming-flex-1 qiming-text-small">
+                                        <i class="iconfont icon-search qiming-text-search"></i>
+                                        <input type="hidden" name="formType" id="searchType" value="header">
+                                    </form>
+                                </div>
+                                <div class="header-btn-search">
+                                    <div class="header-btn-search-s qiming-dt change-color btn-search-all">立即搜索</div>
+                                </div>
+                                <div class="tags-item qiming-margin-top">
+                                    <p class="qiming-margin-small-bottom qiming-text-small">搜索最多的：</p>
+                                    <a href="{U('qiming/index/kxzd')}?char=雪" class="tag-cloud-link tag-link-128 tag-link-position-1">雪</a>
+                                    <a href="{U('qiming/index/kxzd')}?char=旭" class="tag-cloud-link tag-link-128 tag-link-position-1">旭</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <section class="cat-bg qiming-background-cover qiming-overflow-hidden qiming-flex qiming-flex-middle qiming-flex-center qiming-cat-category qimingbg2">
+        <div class="qiming-overlay-primary qiming-position-cover"></div>
+        <div class="qiming-overlay qiming-position-center qiming-text-center qiming-light">
+            <h3 class="qiming-position-relative qiming-light qiming-margin-remove">康熙字典-起名网</h3>
+        </div>
+    </section>
+    
+    <section class="list-nav b-b qiming-background-default qiming-catnav-1">
+        <ul class="qiming-container qiming-margin-remove-bottom">
+            <div class="qiming-lanmu-fenlei">
+                <dt><i class="iconfont icon-adjust"></i>按首字母查询：</dt>
+                <li>&nbsp;&nbsp;<a href="{U('qiming/index/kxzd')}?py=a">A</a></li>
+                <li><a href="{U('qiming/index/kxzd')}?py=b">B</a></li>
+                <li><a href="{U('qiming/index/kxzd')}?py=c">C</a></li>
+                <li><a href="{U('qiming/index/kxzd')}?py=d">D</a></li>
+                <li><a href="{U('qiming/index/kxzd')}?py=e">E</a></li>
+                <li><a href="{U('qiming/index/kxzd')}?py=f">F</a></li>
+                <li><a href="{U('qiming/index/kxzd')}?py=g">G</a></li>
+                <li><a href="{U('qiming/index/kxzd')}?py=h">H</a></li>
+                <li><a href="{U('qiming/index/kxzd')}?py=j">J</a></li>
+                <li><a href="{U('qiming/index/kxzd')}?py=k">K</a></li>
+                <li><a href="{U('qiming/index/kxzd')}?py=l">L</a></li>
+                <li><a href="{U('qiming/index/kxzd')}?py=m">M</a></li>
+                <li><a href="{U('qiming/index/kxzd')}?py=n">N</a></li>
+                <li><a href="{U('qiming/index/kxzd')}?py=o">O</a></li>
+                <li><a href="{U('qiming/index/kxzd')}?py=p">P</a></li>
+                <li><a href="{U('qiming/index/kxzd')}?py=q">Q</a></li>
+                <li><a href="{U('qiming/index/kxzd')}?py=r">R</a></li>
+                <li><a href="{U('qiming/index/kxzd')}?py=s">S</a></li>
+                <li><a href="{U('qiming/index/kxzd')}?py=t">T</a></li>
+                <li><a href="{U('qiming/index/kxzd')}?py=w">W</a></li>
+                <li><a href="{U('qiming/index/kxzd')}?py=x">X</a></li>
+                <li><a href="{U('qiming/index/kxzd')}?py=y">Y</a></li>
+                <li><a href="{U('qiming/index/kxzd')}?py=z">Z</a></li>
+            </div>
+        </ul>
+        <div class="qiming-htt"></div>
+        <ul class="qiming-container qiming-margin-remove-bottom">
+            <div class="qiming-lanmu-fenlei">
+                <dt><i class="iconfont icon-chart-bar"></i>按汉字结构查：</dt>
+                <li class="cat-item cat-item-2">&nbsp;&nbsp;<a href="{U('qiming/index/kxzd')}?jiegou=1">单一结构</a></li>
+                <li class="cat-item cat-item-2"><a href="{U('qiming/index/kxzd')}?jiegou=2">左右结构</a></li>
+                <li class="cat-item cat-item-2"><a href="{U('qiming/index/kxzd')}?jiegou=3">上下结构</a></li>
+                <li class="cat-item cat-item-2"><a href="{U('qiming/index/kxzd')}?jiegou=4">左中右结构</a></li>
+                <li class="cat-item cat-item-2"><a href="{U('qiming/index/kxzd')}?jiegou=5">上中下结构</a></li>
+                <li class="cat-item cat-item-2"><a href="{U('qiming/index/kxzd')}?jiegou=6">半包围结构</a></li>
+                <li class="cat-item cat-item-2"><a href="{U('qiming/index/kxzd')}?jiegou=7">品字结构</a></li>
+                <li class="cat-item cat-item-2"><a href="{U('qiming/index/kxzd')}?jiegou=8">全包围结构</a></li>
+                <li class="cat-item cat-item-2"><a href="{U('qiming/index/kxzd')}?jiegou=9">嵌套结构</a></li>
+            </div>
+        </ul>
+        <div class="qiming-htt"></div>
+        <div class="qiming-container qiming-text-small qiming-flex qiming-flex-middle qiming-catnav-ck">
+            <div class="qiming-catnav-ss qiming-flss qiming-shouji-pass qiming-flex-1">
+                <ul class="qiming-container qiming-margin-remove-bottom">
+                    <dt class="cat-item-dt"><i class="iconfont icon-data-view"></i>常用类型查找：</dt>
+                    <li class="cat-item"><a href="{U('qiming/index/kxzd')}?type=changyong">常用字</a></li>
+                    <li class="cat-item"><a href="{U('qiming/index/kxzd')}?type=pinyin">拼音查字</a></li>
+                    <li class="cat-item"><a href="{U('qiming/index/kxzd')}?type=bushou">部首查字</a></li>
+                    <li class="cat-item"><a href="{U('qiming/index/kxzd')}?type=bihua">笔画查字</a></li>
+                </ul>
+            </div>
+            <div class="qiming-fl-icon">
+                <a class="hot qiming-category-shaixuan" href="{U('qiming/index/kxzd')}?type=nan">男孩起名常用字</a>
+                <a class="hot qiming-category-shaixuan" href="{U('qiming/index/kxzd')}?type=nv">女孩起名常用字</a>
+            </div>
+        </div>
+    </section>
+    
+    <section class="qiming-container">
+        <div class="kxzd">
+            <div class="card qiming-animation-slide-left-small">
+                <div class="qiming-grid-medium qiming-mmlist" qiming-grid>
+                    <div class="fastlink-title b-b qiming-flex qiming-flex-middle qiming-text-bolder">
+                        <i class="iconfont icon-menu"></i>常用汉字<span class="qiming-text-muted qiming-margin-small-left qiming-text-small">男孩起名用字排行</span>
+                    </div>
+                    <div class="qiming-list qmlst tags-item qiming-margin-remove-bottom">
+                        <ul class="btn w5 ">
+                            <li><a href="{U('qiming/index/kxzd')}?char=辰" class="b-r-4"><span>chén</span>辰<span class="jixiong">吉</span></a></li>
+                            <li><a href="{U('qiming/index/kxzd')}?char=逸" class="b-r-4"><span>yì</span>逸<span class="jixiong">吉</span></a></li>
+                            <li><a href="{U('qiming/index/kxzd')}?char=雨" class="b-r-4"><span>yǔ,yù</span>雨<span class="jixiong">吉</span></a></li>
+                            <li><a href="{U('qiming/index/kxzd')}?char=泽" class="b-r-4"><span>zé,shì</span>泽<span class="jixiong">吉</span></a></li>
+                            <li><a href="{U('qiming/index/kxzd')}?char=瑾" class="b-r-4"><span>jǐn</span>瑾<span class="jixiong">吉</span></a></li>
+                            <li><a href="{U('qiming/index/kxzd')}?char=瑜" class="b-r-4"><span>yú</span>瑜<span class="jixiong">吉</span></a></li>
+                            <li><a href="{U('qiming/index/kxzd')}?char=圣" class="b-r-4"><span>shèng,kū</span>圣<span class="jixiong">吉</span></a></li>
+                            <li><a href="{U('qiming/index/kxzd')}?char=杰" class="b-r-4"><span>jié</span>杰<span class="jixiong">吉</span></a></li>
+                            <li><a href="{U('qiming/index/kxzd')}?char=瑞" class="b-r-4"><span>ruì</span>瑞<span class="jixiong">吉</span></a></li>
+                            <li><a href="{U('qiming/index/kxzd')}?char=浩" class="b-r-4"><span>hào</span>浩<span class="jixiong">吉</span></a></li>
+                            <li><a href="{U('qiming/index/kxzd')}?char=南" class="b-r-4"><span>nán,nā</span>南<span class="jixiong">吉</span></a></li>
+                            <li><a href="{U('qiming/index/kxzd')}?char=思" class="b-r-4"><span>sī,sāi</span>思<span class="jixiong">吉</span></a></li>
+                            <li><a href="{U('qiming/index/kxzd')}?char=旭" class="b-r-4"><span>xù</span>旭<span class="jixiong">吉</span></a></li>
+                            <li><a href="{U('qiming/index/kxzd')}?char=尧" class="b-r-4"><span>yáo</span>尧<span class="jixiong">吉</span></a></li>
+                            <li><a href="{U('qiming/index/kxzd')}?char=俊" class="b-r-4"><span>jùn</span>俊<span class="jixiong">吉</span></a></li>
+                            <li><a href="{U('qiming/index/kxzd')}?char=楠" class="b-r-4"><span>nán</span>楠<span class="jixiong">吉</span></a></li>
+                            <li><a href="{U('qiming/index/kxzd')}?char=天" class="b-r-4"><span>tiān</span>天<span class="jixiong">吉</span></a></li>
+                            <li><a href="{U('qiming/index/kxzd')}?char=磊" class="b-r-4"><span>lěi</span>磊</a></li>
+                            <li><a href="{U('qiming/index/kxzd')}?char=伟" class="b-r-4"><span>wěi</span>伟<span class="jixiong">吉</span></a></li>
+                            <li><a href="{U('qiming/index/kxzd')}?char=博" class="b-r-4"><span>bó</span>博<span class="jixiong">吉</span></a></li>
+                        </ul>
+                    </div>
+                    <div class="fastlink-title b-b qiming-flex qiming-flex-middle qiming-text-bolder">
+                        <i class="iconfont icon-menu"></i>男孩起名五行分类<span class="qiming-text-muted qiming-margin-small-left qiming-text-small">男孩起名按五行分类查找常用字</span>
+                    </div>
+                    <div class="qiming-list qmlst tags-item qiming-margin-remove-bottom">
+                        <ul class="btn w5 wuxing">
+                            <li><a href="{U('qiming/index/kxzd')}?wx=1" class="jin" target="_blank">金</a></li>
+                            <li><a href="{U('qiming/index/kxzd')}?wx=2" class="mu" target="_blank">木</a></li>
+                            <li><a href="{U('qiming/index/kxzd')}?wx=3" class="shui" target="_blank">水</a></li>
+                            <li><a href="{U('qiming/index/kxzd')}?wx=4" class="huo" target="_blank">火</a></li>
+                            <li><a href="{U('qiming/index/kxzd')}?wx=5" class="tu" target="_blank">土</a></li>
+                        </ul>
+                    </div>
+                    <div class="fastlink-title b-b qiming-flex qiming-flex-middle qiming-text-bolder">
+                        <i class="iconfont icon-menu"></i>女孩起名五行分类<span class="qiming-text-muted qiming-margin-small-left qiming-text-small">女孩起名按五行分类查找常用字</span>
+                    </div>
+                    <div class="qiming-list qmlst tags-item qiming-margin-remove-bottom">
+                        <ul class="btn w5 wuxing">
+                            <li><a href="{U('qiming/index/kxzd')}?wx=6" class="jin" target="_blank">金</a></li>
+                            <li><a href="{U('qiming/index/kxzd')}?wx=7" class="mu" target="_blank">木</a></li>
+                            <li><a href="{U('qiming/index/kxzd')}?wx=8" class="shui" target="_blank">水</a></li>
+                            <li><a href="{U('qiming/index/kxzd')}?wx=9" class="huo" target="_blank">火</a></li>
+                            <li><a href="{U('qiming/index/kxzd')}?wx=10" class="tu" target="_blank">土</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <div class="wapnone qiming_follow_service" style="top:75%">
+        <ul>
+            <li class="qiming_follow_service_box qiming_follow_service_ax goTop qiming_footer_s">
+                <a href="#header" class="qiming-display-block" qiming-scroll><i class="iconfont icon-direction-up"></i>
+                    <div class="qiming_follow_service_ax_cont">
+                        <span class="qiming_follow_service_triangle"></span>
+                        <span>返回顶部</span>
+                    </div>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="qiming-app-gotop gotops qiming-hidden@" id="gotops">
+        <a href="#header" class="qiming-display-block" qiming-scroll><i class="iconfont icon-arrow-up-bold icontop"></i></a>
+    </div>
+    
+    <footer class="footer qiming-background-secondary">
+        <div class="foot qiming-container qiming-padding">
+            <div class="qiming-grid" qiming-grid>
+                <div class="qiming-width-1-1@s qiming-width-1-3@xl">
+                    <div class="foot-item foot-item-first qiming-position-relative qiming-flex">
+                        <a href="{U('qiming/index/init')}" target="_blank" class="foot-logo qiming-display-block">
+                            <img src="https://static.qiming.cn/style/qiming/images/logo_foot.png">
+                        </a>
+                        <p class="qiming-text-small">起名网专注科学智能宝宝起名，测名字打分平台，结合传统国学文化的智能起名系统研发和起名学术探索交流，以"只为一个好名字"为宗旨，潜心研发，百次升级，千万级大数据分析，助您轻松起好名。</p>
+                    </div>
+                </div>
+                <div class="qiming-width-2-3 qiming-visible@">
+                    <div class="qiming-grid" qiming-grid>
+                        <div class="qiming-width-1-3">
+                            <div class="foot-item">
+                                <div class="foot-item-title"><i class="iconfont icon-security"></i>快捷导航</div>
+                                <ul class="qiming-padding-remove">
+                                    <li><a href="{U('qiming/index/baobao')}" target="_blank">宝宝起名</a></li>
+                                    <li><a href="{U('qiming/index/bazi')}" target="_blank">八字起名</a></li>
+                                    <li><a href="{U('qiming/index/zhouyi')}" target="_blank">周易起名</a></li>
+                                    <li><a href="{U('qiming/index/kxzd')}" target="_blank">康熙字典</a></li>
+                                    <li><a href="{U('qiming/index/gongsi')}" target="_blank">公司起名</a></li>
+                                    <li><a href="{U('qiming/index/ceshi')}" target="_blank">姓名测试</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="qiming-width-1-3">
+                            <div class="foot-item">
+                                <div class="foot-item-title"><i class="iconfont icon-security"></i>关于我们</div>
+                                <ul class="qiming-padding-remove">
+                                    <li><a href="https://www.qiming.cn/about.html" target="_blank">关于我们</a></li>
+                                    <li><a href="https://www.qiming.cn/service.html" target="_blank">服务条款</a></li>
+                                    <li><a href="https://www.qiming.cn/copyright.html" target="_blank">版权声明</a></li>
+                                    <li><a href="https://www.qiming.cn/busine.html" target="_blank">投诉建议</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="qiming-width-1-3">
+                            <div class="foot-item">
+                                <div class="foot-item-title"><i class="iconfont icon-link"></i>友情链接</div>
+                                <ul class="qiming-padding-remove">
+                                    <li><a href="https://zidian.qiming.cn/" target="_blank">汉语字典</a></li>
+                                    <li><a href="https://cidian.qiming.cn/" target="_blank">汉语词典</a></li>
+                                    <li><a href="https://chengyu.qiming.cn/" target="_blank">成语大全</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="foot-cop">
+            <div class="qiming-container qiming-padding-small qiming-clearfix">
+                <div class="qiming-float-left">
+                    <span>&copy; 2005-2025 <a href="https://www.qiming.cn/" title="起名网" target="_blank">www.qiming.cn</a> & All rights reserved</span>
+                    <a class="qiming-margin-small-right" href="#"><i class="iconfont icon-map-filling" aria-hidden="true"></i>网站地图</a>
+                    <span class="qiming-margin-small-right qiming-gongan">
+                        <img src="https://static.qiming.cn/style/qiming/images/qiming-110.png" height="6">皖公网安备34010402704531号
+                    </span>
+                    <span class="qiming-margin-small-right"><a href="https://beian.miit.gov.cn/" target="_blank" rel="noreferrer nofollow">皖ICP备2024064902号</a></span>
+                </div>
+                <div class="qiming-float-right qiming-visible@">
+                    <span><a href="https://www.qiming.cn/" target="_blank">起名网</a></span>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <link href="https://static.qiming.cn/style/date_c/rui-datepicker.min.css" rel="stylesheet" type="text/css">
+    <script src="https://static.qiming.cn/style/layer/layer.js" charset="utf-8"></script>
+    <script src="https://static.qiming.cn/style/date_c/rui-datepicker.min.js" charset="utf-8"></script>
+    <script src="https://static.qiming.cn/style/city/jquery.popcity.js" type="text/javascript"></script>
+    <link href="https://static.qiming.cn/style/city/city.css" rel="stylesheet" type="text/css">
+    <script src="https://static.qiming.cn/style/qiming/js/common.js"></script>
+</body>
+</html>

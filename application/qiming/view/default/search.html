@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{$seo_title}</title>
+    <meta name="keywords" content="{$keywords}">
+    <meta name="description" content="{$description}">
+    <link rel="stylesheet" href="https://static.qiming.cn/style/qiming/css/font/iconfont.css">
+    <link rel="stylesheet" href="https://static.qiming.cn/style/qiming/css/uikit.css">
+    <link rel="stylesheet" href="https://static.qiming.cn/style/qiming/css/diy.css">
+    <link rel="stylesheet" href="https://static.qiming.cn/style/qiming/css/qiming.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header qiming-background-default">
+        <div class="navbar qiming-position-relative">
+            <div class="qiming-container qiming-flex qiming-flex-middle qiming-position-relative qiming-logo-shou">
+                <a href="javascript:;" class="header-home qiming-hidden@m" qiming-toggle><i class="iconfont icon-menu qiming-text-bolder"></i></a>
+                <a href="{U('qiming/index/init')}" class="logo qiming-logo qiming-display-inline-block" alt="起名网">
+                    <div class="qiming-logo-nav-night logobg qiming-visible@m"></div>
+                    <div class="qiming-app-logo2 logobg2"></div>
+                </a>
+                <nav class="nav qiming-flex-1 qiming-position-relative">
+                    <ul class="nav qiming-flex-1 qiming-margin-remove">
+                        <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home">
+                            <a href="{U('qiming/index/init')}">首页</a>
+                        </li>
+                        <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children">
+                            <a href="{U('qiming/index/baobao')}">宝宝起名</a>
+                        </li>
+                        <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children">
+                            <a href="{U('qiming/index/bazi')}">八字起名</a>
+                        </li>
+                        <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children">
+                            <a href="{U('qiming/index/shici')}">诗词起名</a>
+                        </li>
+                        <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children">
+                            <a href="{U('qiming/index/ceshi')}">姓名测试</a>
+                        </li>
+                        <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children">
+                            <a href="{U('qiming/index/kxzd')}">康熙字典</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+    
+    <main class="qiming-container qiming-margin-medium-top qiming-margin-medium-bottom">
+        <div class="qiming-grid" qiming-grid>
+            <!-- Main Content -->
+            <div class="qiming-width-2-3@xl qiming-width-1-1">
+                <div class="search-header qiming-margin-medium-bottom">
+                    <h1 class="qiming-text-large">
+                        搜索结果：<span class="qiming-text-danger">{$k}</span>
+                    </h1>
+                    <p class="qiming-text-small qiming-text-muted">
+                        找到相关内容 {php}echo isset($results['chars']) ? count($results['chars']) : 0 + isset($results['names']) ? count($results['names']) : 0;{/php} 条
+                    </p>
+                </div>
+                
+                <!-- Tabs -->
+                <ul class="qiming-tab qiming-margin-medium-bottom" qiming-tab>
+                    <li class="qiming-active"><a href="#char-results">汉字</a></li>
+                    <li><a href="#name-results">姓名</a></li>
+                </ul>
+                
+                <!-- Char Results -->
+                <div id="char-results" class="qiming-panel qiming-margin-medium-bottom">
+                    <div class="qiming-panel-body">
+                        <h3 class="qiming-margin-small-bottom">汉字搜索结果</h3>
+                        {if isset($results['chars']) && !empty($results['chars'])}
+                        <div class="char-list qiming-grid qiming-grid-match" qiming-grid>
+                            {foreach $results['chars'] as $char}
+                            <div class="qiming-width-1-3@xl qiming-width-1-2">
+                                <a href="{U('qiming/index/kxzd')}?char={$char['char']}" class="char-item qiming-display-block qiming-padding-small qiming-margin-small-bottom qiming-background-secondary-hover">
+                                    <div class="char-main">
+                                        <span class="char-big">{$char['char']}</span>
+                                        <span class="char-pinyin">{$char['pinyin']}</span>
+                                    </div>
+                                    <div class="char-info qiming-text-small qiming-text-muted">
+                                        笔画：{$char['bihua']} | 五行：{switch $char['wuxing']}{case 1}金{case 2}木{case 3}水{case 4}火{default}土{/switch}
+                                    </div>
+                                </a>
+                            </div>
+                            {/foreach}
+                        </div>
+                        {else}
+                        <p class="qiming-text-muted">未找到相关汉字</p>
+                        {/if}
+                    </div>
+                </div>
+                
+                <!-- Name Results -->
+                <div id="name-results" class="qiming-panel qiming-margin-medium-bottom">
+                    <div class="qiming-panel-body">
+                        <h3 class="qiming-margin-small-bottom">姓名搜索结果</h3>
+                        {if isset($results['names']) && !empty($results['names'])}
+                        <div class="name-list">
+                            {foreach $results['names'] as $name}
+                            <a href="{U('qiming/index/ceshi')}?surname={$name['surname']}&name={$name['name']}" class="name-item qiming-display-block qiming-padding-small qiming-margin-small-bottom qiming-background-secondary-hover">
+                                <span class="name-full">{$name['surname']}{$name['name']}</span>
+                                <span class="name-date qiming-text-small qiming-text-muted">{php}echo date('Y-m-d', $name['created_at']);{/php}</span>
+                            </a>
+                            {/foreach}
+                        </div>
+                        {else}
+                        <p class="qiming-text-muted">未找到相关姓名</p>
+                        {/if}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sidebar -->
+            <div class="qiming-width-1-3@xl qiming-width-1-1 qiming-visible@">
+                <div class="qiming-panel qiming-margin-medium-bottom">
+                    <div class="qiming-panel-heading">
+                        <h3>搜索帮助</h3>
+                    </div>
+                    <div class="qiming-panel-body">
+                        <ul class="qiming-list qiming-list-space">
+                            <li>汉字搜索：输入汉字或拼音，如"雪"或"xue"</li>
+                            <li>姓名搜索：输入完整姓名，如"李明"</li>
+                            <li>支持康熙字典五行、笔画查询</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="qiming-panel">
+                    <div class="qiming-panel-heading">
+                        <h3>热门搜索</h3>
+                    </div>
+                    <div class="qiming-panel-body">
+                        <div class="tags-item">
+                            <a href="{U('qiming/index/kxzd')}?char=雪" class="tag-cloud-link">雪</a>
+                            <a href="{U('qiming/index/kxzd')}?char=旭" class="tag-cloud-link">旭</a>
+                            <a href="{U('qiming/index/kxzd')}?char=煜晨" class="tag-cloud-link">煜晨</a>
+                            <a href="{U('qiming/index/kxzd')}?char=浩" class="tag-cloud-link">浩</a>
+                            <a href="{U('qiming/index/kxzd')}?char=杰" class="tag-cloud-link">杰</a>
+                            <a href="{U('qiming/index/kxzd')}?char=俊" class="tag-cloud-link">俊</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="footer qiming-background-secondary">
+        <div class="foot qiming-container qiming-padding">
+            <div class="qiming-text-center qiming-text-muted">
+                <p>&copy; 2005-2026 <a href="https://www.qiming.cn/" target="_blank">www.qiming.cn</a> & All rights reserved</p>
+            </div>
+        </div>
+    </footer>
+    
+    <script src="https://static.qiming.cn/style/qiming/js/jquery.min.js"></script>
+    <script src="https://static.qiming.cn/style/qiming/js/uikit.min.js"></script>
+</body>
+</html>

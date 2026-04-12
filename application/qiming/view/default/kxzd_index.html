@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{$seo_title}</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Microsoft YaHei", Arial, sans-serif; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 15px; }
+        .page-header { background: linear-gradient(135deg, #ff6600, #ff8533); color: #fff; padding: 60px 0; text-align: center; }
+        .page-header h1 { font-size: 36px; margin-bottom: 10px; }
+        .page-header p { font-size: 16px; opacity: 0.9; }
+        
+        .main { padding: 40px 0; }
+        .section { background: #fff; border-radius: 10px; padding: 30px; margin-bottom: 20px; }
+        .section-title { font-size: 20px; color: #333; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #ff6600; }
+        
+        .wuxing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+        .wuxing-card { display: block; padding: 30px 20px; background: #f9f9f9; border-radius: 8px; text-align: center; transition: transform 0.3s; }
+        .wuxing-card:hover { transform: translateY(-5px); }
+        .wuxing-card .icon { width: 60px; height: 60px; border-radius: 50%; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; font-size: 28px; color: #fff; }
+        .wuxing-card .icon.jin { background: #ffc107; }
+        .wuxing-card .icon.mu { background: #4caf50; }
+        .wuxing-card .icon.shui { background: #2196f3; }
+        .wuxing-card .icon.huo { background: #f44336; }
+        .wuxing-card .icon.tu { background: #795548; }
+        .wuxing-card h3 { color: #333; margin-bottom: 5px; }
+        .wuxing-card p { color: #999; font-size: 14px; }
+        
+        .desc { background: #fff; padding: 30px; border-radius: 10px; line-height: 1.8; color: #666; }
+    </style>
+</head>
+<body>
+    <div class="page-header">
+        <div class="container">
+            <h1>康熙字典</h1>
+            <p>输入汉字拼音搜索汉字详细信息</p>
+        </div>
+    </div>
+    
+    <div class="container main">
+        <div class="section">
+            <h2 class="section-title">按五行属性浏览</h2>
+            <div class="wuxing-grid">
+                <a href="{U('qiming/kxzd/wuxing', 'wuxing=1')}" class="wuxing-card">
+                    <div class="icon jin">金</div>
+                    <h3>金</h3>
+                    <p>金属性汉字</p>
+                </a>
+                <a href="{U('qiming/kxzd/wuxing', 'wuxing=2')}" class="wuxing-card">
+                    <div class="icon mu">木</div>
+                    <h3>木</h3>
+                    <p>木属性汉字</p>
+                </a>
+                <a href="{U('qiming/kxzd/wuxing', 'wuxing=3')}" class="wuxing-card">
+                    <div class="icon shui">水</div>
+                    <h3>水</h3>
+                    <p>水属性汉字</p>
+                </a>
+                <a href="{U('qiming/kxzd/wuxing', 'wuxing=4')}" class="wuxing-card">
+                    <div class="icon huo">火</div>
+                    <h3>火</h3>
+                    <p>火属性汉字</p>
+                </a>
+                <a href="{U('qiming/kxzd/wuxing', 'wuxing=5')}" class="wuxing-card">
+                    <div class="icon tu">土</div>
+                    <h3>土</h3>
+                    <p>土属性汉字</p>
+                </a>
+            </div>
+        </div>
+        
+        <div class="desc">
+            <p><strong>康熙字典</strong>收录了40,000多个汉字，每个汉字都有其独特的含义和五行属性。在起名时，选择适合宝宝八字五行需求的汉字非常重要。本字典提供了汉字的拼音、笔画、五行、解释等详细信息，帮助您更好地选择起名用字。</p>
+        </div>
+    </div>
+</body>
+</html>
