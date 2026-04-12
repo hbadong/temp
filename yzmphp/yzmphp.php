@@ -33,9 +33,15 @@ define('SYS_TIME', time());
 yzm_base::load_sys_func('global');
 
 //主机协议
-define('SERVER_PORT', is_ssl() ? 'https://' : 'http://');
+$is_ssl = is_ssl();
+define('SERVER_PORT', $is_ssl ? 'https://' : 'http://');
 //当前访问的主机名
-define('HTTP_HOST', (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : ''));
+$http_host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '';
+//如果是测试环境且主机名不含端口，则添加端口
+if(strpos($http_host, 'monkeycode-ai.online') !== false && strpos($http_host, ':') === false) {
+    $http_host .= ':9443';
+}
+define('HTTP_HOST', $http_host);
 //来源
 define('HTTP_REFERER', isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '');
 //类文件后缀
