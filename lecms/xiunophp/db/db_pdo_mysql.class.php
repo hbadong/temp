@@ -18,7 +18,7 @@ class db_pdo_mysql implements db_interface {
 		// 主数据库 (写)
 		if($var == 'wlink') {
 			$cfg = $this->conf['master'];
-			empty($cfg['engine']) && $cfg['engine'] = 'MyISAM';
+			empty($cfg['engine']) && $cfg['engine'] = 'InnoDB';
 			$this->wlink = $this->connect($cfg['host'], $cfg['port'], $cfg['user'], $cfg['password'], $cfg['name'], $cfg['charset'], $cfg['engine']);
 			return $this->wlink;
 
@@ -30,7 +30,7 @@ class db_pdo_mysql implements db_interface {
 			}
 			$n = rand(0, count($this->conf['slaves']) - 1);
 			$cfg = $this->conf['slaves'][$n];
-			empty($cfg['engine']) && $cfg['engine'] = 'MyISAM';
+			empty($cfg['engine']) && $cfg['engine'] = 'InnoDB';
 			$this->rlink = $this->connect($cfg['host'], $cfg['port'], $cfg['user'], $cfg['password'], $cfg['name'], $cfg['charset'], $cfg['engine']);
 			return $this->rlink;
 
@@ -41,7 +41,7 @@ class db_pdo_mysql implements db_interface {
 				return $this->xlink;
 			}
 			$cfg = $this->conf['arbiter'];
-			empty($cfg['engine']) && $cfg['engine'] = 'MyISAM';
+			empty($cfg['engine']) && $cfg['engine'] = 'InnoDB';
 			$this->xlink = $this->connect($cfg['host'], $cfg['port'], $cfg['user'], $cfg['password'], $cfg['name'], $cfg['charset'], $cfg['engine']);
 			return $this->xlink;
 		}
@@ -534,7 +534,7 @@ class db_pdo_mysql implements db_interface {
 
 	// 创建表
 	public function table_create($table, $cols, $engineer = '') {
-		empty($engineer) && $engineer = 'MyISAM';
+		empty($engineer) && $engineer = 'InnoDB';
 		$sql = "CREATE TABLE IF NOT EXISTS {$this->tablepre}$table (\n";
 		$sep = '';
 		foreach($cols as $col) {
@@ -545,7 +545,7 @@ class db_pdo_mysql implements db_interface {
 			}
 			$sep = ",\n";
 		}
-		$sql .= ") ENGINE=$engineer DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;";
+		$sql .= ") ENGINE=$engineer DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;";
 		return $this->query($sql, $this->wlink);
 	}
 

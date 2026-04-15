@@ -26,7 +26,7 @@ CREATE TABLE pre_user (
   PRIMARY KEY (uid),
   UNIQUE KEY username(username),
   KEY email(email)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='用户表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='用户表';
 
 # 用户组表
 DROP TABLE IF EXISTS pre_user_group;
@@ -36,7 +36,7 @@ CREATE TABLE pre_user_group (
   `system` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否系统内置',
   purviews mediumtext NOT NULL COMMENT '后台权限',
   PRIMARY KEY (groupid)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='用户组表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='用户组表';
 
 # 分类栏目表
 DROP TABLE IF EXISTS pre_category;
@@ -63,7 +63,7 @@ CREATE TABLE pre_category (
   PRIMARY KEY (cid),
   KEY mid (mid),
   UNIQUE KEY alias (alias)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='分类表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='分类表';
 
 # 内容模型表
 DROP TABLE IF EXISTS pre_models;
@@ -80,7 +80,7 @@ CREATE TABLE pre_models (
   icon varchar(30) NOT NULL DEFAULT 'fa fa-bars' COMMENT '后台菜单图标',
   PRIMARY KEY (mid),
   UNIQUE KEY tablename (tablename)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='模型表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='模型表';
 
 # 内容模型字段表
 DROP TABLE IF EXISTS pre_models_field;
@@ -98,7 +98,7 @@ CREATE TABLE pre_models_field (
   PRIMARY KEY (id),
   KEY (mid),
   UNIQUE KEY mid_field (mid,field)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='模型字段表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='模型字段表';
 
 # 唯一别名表 用于伪静态 (只储存内容的别名 分类和其他别名放 kv 表)
 DROP TABLE IF EXISTS pre_only_alias;
@@ -109,7 +109,7 @@ CREATE TABLE pre_only_alias (
   id int(10) unsigned NOT NULL DEFAULT '0' COMMENT '内容ID',
   PRIMARY KEY (alias),
   KEY mid_id (mid,id)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='URL别名表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='URL别名表';
 
 # 单页表
 DROP TABLE IF EXISTS pre_cms_page;
@@ -117,7 +117,7 @@ CREATE TABLE pre_cms_page (
   cid int(10) unsigned NOT NULL COMMENT '分类ID',
   content mediumtext NOT NULL COMMENT '单页内容',
   PRIMARY KEY (cid)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='单页分类表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='单页分类表';
 
 # 文章表 (可根据 id 范围分区 审核/定时发布等考虑单独设计一张表)
 DROP TABLE IF EXISTS pre_cms_article;
@@ -149,7 +149,7 @@ CREATE TABLE pre_cms_article (
   KEY uid (uid),
   KEY cid_id (cid,id),
   KEY cid_dateline (cid,dateline)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='文章主表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='文章主表';
 
 # 文章数据表 (大内容字段表 可根据 id 范围分区)
 DROP TABLE IF EXISTS pre_cms_article_data;
@@ -157,7 +157,7 @@ CREATE TABLE pre_cms_article_data (
   id int(10) unsigned NOT NULL DEFAULT '0' COMMENT '内容ID',
   content mediumtext NOT NULL COMMENT '内容',
   PRIMARY KEY (id)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='文章数据表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='文章数据表';
 
 # 文章属性标记表
 DROP TABLE IF EXISTS pre_cms_article_flag;
@@ -168,7 +168,7 @@ CREATE TABLE pre_cms_article_flag (
   PRIMARY KEY (flag,id),
   KEY flag_cid (flag,cid,id),
   KEY id (id)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='文章属性表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='文章属性表';
 
 # 文章附件表
 DROP TABLE IF EXISTS pre_cms_article_attach;
@@ -189,7 +189,7 @@ CREATE TABLE pre_cms_article_attach (
   PRIMARY KEY (aid),
   KEY id (id, aid),
   KEY uid (uid, aid)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='文章附件表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='文章附件表';
 
 # 文章查看数表 用来分离主表的写压力
 DROP TABLE IF EXISTS pre_cms_article_views;
@@ -217,7 +217,7 @@ CREATE TABLE pre_cms_article_tag (
   PRIMARY KEY (tagid),
   UNIQUE KEY tagname (`name`),
   KEY content_count (`count`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='文章标签表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='文章标签表';
 
 # 文章标签数据表
 DROP TABLE IF EXISTS pre_cms_article_tag_data;
@@ -225,7 +225,7 @@ CREATE TABLE pre_cms_article_tag_data (
   tagid int(10) unsigned NOT NULL COMMENT '标签ID',
   id int(10) unsigned NOT NULL DEFAULT '0' COMMENT '内容ID',
   PRIMARY KEY (tagid,id)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='文章标签数据表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='文章标签数据表';
 
 # 内容评论排序表 用来减小主表索引 (有评论时才写入 不含单页模型)
 DROP TABLE IF EXISTS pre_cms_comment_sort;
@@ -240,7 +240,7 @@ CREATE TABLE pre_cms_comment_sort (
   KEY comments (comments),
   KEY cid_lastdate (cid,lastdate),
   KEY lastdate (lastdate)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='评论排序表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='评论排序表';
 
 # 评论表 该功能用的不多 所有的模型内容评论都写入此表(含单页)
 DROP TABLE IF EXISTS pre_cms_comment;
@@ -258,7 +258,7 @@ CREATE TABLE pre_cms_comment (
   KEY uid_id (uid,id),
   KEY mid_id (mid,id),
   KEY ip (ip,commentid)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='评论表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='评论表';
 
 # 持久保存的 key value 数据 (包括设置信息)
 DROP TABLE IF EXISTS pre_kv;
@@ -267,7 +267,7 @@ CREATE TABLE pre_kv (
   `v` mediumtext NOT NULL DEFAULT '' COMMENT '数据',
   `expiry` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '过期时间',
   PRIMARY KEY (`k`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='配置数据表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='配置数据表';
 
 # 缓存表
 DROP TABLE IF EXISTS pre_runtime;
@@ -276,7 +276,7 @@ CREATE TABLE pre_runtime (
   `v` mediumtext NOT NULL DEFAULT '' COMMENT '数据',
   `expiry` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '过期时间',
   PRIMARY KEY (`k`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='数据缓存表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='数据缓存表';
 
 # 记录其它表的总行数
 DROP TABLE IF EXISTS pre_framework_count;
@@ -284,7 +284,7 @@ CREATE TABLE pre_framework_count (
   `name` char(32) NOT NULL DEFAULT '' COMMENT '表名',
   `count` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '总行数',
   PRIMARY KEY (`name`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='表的总数记录表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='表的总数记录表';
 
 # 记录其它表的最大ID
 DROP TABLE IF EXISTS pre_framework_maxid;
@@ -292,4 +292,4 @@ CREATE TABLE pre_framework_maxid (
   `name` char(32) NOT NULL DEFAULT '' COMMENT '表名',
   maxid int(10) unsigned NOT NULL DEFAULT '0' COMMENT '最大ID',
   PRIMARY KEY (`name`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='表的最大ID记录表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='表的最大ID记录表';

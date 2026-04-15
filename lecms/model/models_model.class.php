@@ -155,11 +155,11 @@ class models extends model {
           seo_description varchar(255) NOT NULL DEFAULT '' COMMENT 'SEO描述',
           jumpurl varchar(255) NOT NULL DEFAULT '' COMMENT '跳转URL',
           show_tpl varchar(80) NOT NULL DEFAULT '' COMMENT '内容页模板',
-          PRIMARY KEY  (id),
+          PRIMARY KEY (id),
 		  KEY uid (uid),
           KEY cid_id (cid,id),
           KEY cid_dateline (cid,dateline)
-        ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT '{$model_name}主表';";
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT '{$model_name}主表';";
         $this->db->query($sql_table);
 
         $sql_table = "CREATE TABLE IF NOT EXISTS {$table_cms_attach} (
@@ -179,24 +179,24 @@ class models extends model {
           PRIMARY KEY (aid),
           KEY id (id, aid),
           KEY uid (uid, aid)
-        ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT '{$model_name}附件表'";
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT '{$model_name}附件表'";
         $this->db->query($sql_table);
 
         $sql_table = "CREATE TABLE IF NOT EXISTS {$table_cms_data} (
           id int(10) unsigned NOT NULL DEFAULT '0' COMMENT '内容ID',
           content mediumtext NOT NULL COMMENT '内容',
-          PRIMARY KEY  (id)
-        ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT '{$model_name}数据表';";
+          PRIMARY KEY (id)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT '{$model_name}数据表';";
         $this->db->query($sql_table);
 
         $sql_table = "CREATE TABLE IF NOT EXISTS {$table_cms_flag} (
           flag tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '属性标记',
           cid int(10) unsigned NOT NULL DEFAULT '0' COMMENT '分类ID',
           id int(10) unsigned NOT NULL DEFAULT '0' COMMENT '内容ID',
-          PRIMARY KEY  (flag,id),
+          PRIMARY KEY (flag,id),
           KEY flag_cid (flag,cid,id),
           KEY id (id)
-        ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT '{$model_name}属性表'";
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT '{$model_name}属性表'";
         $this->db->query($sql_table);
 
         $sql_table = "CREATE TABLE IF NOT EXISTS {$table_cms_tag} (
@@ -209,24 +209,24 @@ class models extends model {
           seo_keywords varchar(255) NOT NULL DEFAULT '' COMMENT 'SEO关键词',
           seo_description varchar(255) NOT NULL DEFAULT '' COMMENT 'SEO描述',
           orderby int(10) unsigned NOT NULL DEFAULT '0' COMMENT '排序值',
-          PRIMARY KEY  (tagid),
+          PRIMARY KEY (tagid),
           UNIQUE KEY tagname (`name`),
           KEY content_count (`count`)
-        ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT '{$model_name}标签表'";
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT '{$model_name}标签表'";
         $this->db->query($sql_table);
 
         $sql_table = "CREATE TABLE IF NOT EXISTS {$table_cms_tag_data} (
           tagid int(10) unsigned NOT NULL COMMENT '标签ID',
           id int(10) unsigned NOT NULL DEFAULT '0' COMMENT '内容ID',
-          PRIMARY KEY  (tagid,id)
-        ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT '{$model_name}标签数据表'";
+          PRIMARY KEY (tagid,id)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT '{$model_name}标签数据表'";
         $this->db->query($sql_table);
 
         $sql_table = "CREATE TABLE IF NOT EXISTS {$table_cms_views} (
           id int(10) unsigned NOT NULL DEFAULT '0' COMMENT '内容ID',
           cid int(10) unsigned NOT NULL DEFAULT '0' COMMENT '分类ID',
           views int(10) unsigned NOT NULL DEFAULT '0' COMMENT '查看次数',
-          PRIMARY KEY  (id),
+          PRIMARY KEY (id),
           KEY cid (cid,views),
           KEY views (views)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT '{$model_name}浏览量表'";

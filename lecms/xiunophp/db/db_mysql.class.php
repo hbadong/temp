@@ -21,7 +21,7 @@ class db_mysql implements db_interface {
 		// 主数据库 (写)
 		if($var == 'wlink') {
 			$cfg = $this->conf['master'];
-			empty($cfg['engine']) && $cfg['engine'] = 'MyISAM';
+			empty($cfg['engine']) && $cfg['engine'] = 'InnoDB';
 			$this->wlink = $this->connect($cfg['host'].':'.$cfg['port'], $cfg['user'], $cfg['password'], $cfg['name'], $cfg['charset'], $cfg['engine']);
 			return $this->wlink;
 
@@ -33,7 +33,7 @@ class db_mysql implements db_interface {
 			}
 			$n = rand(0, count($this->conf['slaves']) - 1);
 			$cfg = $this->conf['slaves'][$n];
-			empty($cfg['engine']) && $cfg['engine'] = 'MyISAM';
+			empty($cfg['engine']) && $cfg['engine'] = 'InnoDB';
 			$this->rlink = $this->connect($cfg['host'].':'.$cfg['port'], $cfg['user'], $cfg['password'], $cfg['name'], $cfg['charset'], $cfg['engine']);
 			return $this->rlink;
 
@@ -44,7 +44,7 @@ class db_mysql implements db_interface {
 				return $this->xlink;
 			}
 			$cfg = $this->conf['arbiter'];
-			empty($cfg['engine']) && $cfg['engine'] = 'MyISAM';
+			empty($cfg['engine']) && $cfg['engine'] = 'InnoDB';
 			$this->xlink = $this->connect($cfg['host'].':'.$cfg['port'], $cfg['user'], $cfg['password'], $cfg['name'], $cfg['charset'], $cfg['engine']);
 			return $this->xlink;
 		}
@@ -183,7 +183,7 @@ class db_mysql implements db_interface {
 			$sql .= "`name` char(32) NOT NULL default '',";
 			$sql .= "`maxid` int(10) unsigned NOT NULL default '0',";
 			$sql .= "PRIMARY KEY (`name`)";
-			$sql .= ") ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci";
+			$sql .= ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci";
 			$this->query($sql, $this->xlink);
 		}else{
 			throw new Exception('framework_maxid error, mysql_error:'.mysql_error());
@@ -233,10 +233,10 @@ class db_mysql implements db_interface {
 			$sql .= "`name` char(32) NOT NULL default '',";
 			$sql .= "`count` int(10) unsigned NOT NULL default '0',";
 			$sql .= "PRIMARY KEY (`name`)";
-			$sql .= ") ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci";
+			$sql .= ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci";
 			$this->query($sql, $this->xlink);
 		}else{
-			throw new Exception('framework_cout error, mysql_error:'.mysql_error());
+			throw new Exception('framework_count error, mysql_error:'.mysql_error());
 		}
 		if($count === FALSE) {
 			$query = $this->query("SELECT COUNT(*) FROM {$this->tablepre}$table", $this->wlink);
@@ -503,7 +503,7 @@ class db_mysql implements db_interface {
 
     // 创建表
     public function table_create($table, $cols, $engineer = '') {
-        empty($engineer) && $engineer = 'MyISAM';
+        empty($engineer) && $engineer = 'InnoDB';
         $sql = "CREATE TABLE IF NOT EXISTS {$this->tablepre}$table (\n";
         $sep = '';
         foreach($cols as $col) {
@@ -514,7 +514,7 @@ class db_mysql implements db_interface {
             }
             $sep = ",\n";
         }
-        $sql .= ") ENGINE=$engineer DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;";
+        $sql .= ") ENGINE=$engineer DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;";
         return $this->query($sql, $this->wlink);
     }
 

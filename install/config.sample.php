@@ -64,8 +64,8 @@ $_ENV['_config'] = array(
 	// 后台
 	'admin_static' => '../static/',
 	'url_suffix' => '.html',
-	'version' => '3.0.3',			// 版本号
-	'release' => '20251126',		// 发布日期
+	'version' => '3.0.4',			// 版本号
+	'release' => '20260415',		// 发布日期
 
     'php_error' => '0',   //开启写错误日志
     'php_error404' => '0',   //开启写404错误日志
