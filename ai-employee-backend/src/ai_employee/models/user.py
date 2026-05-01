@@ -1,5 +1,7 @@
 """User model for authentication and user management."""
 
+import uuid
+
 from sqlalchemy import Boolean, ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -19,7 +21,8 @@ class User(BaseModel):
     is_superuser: Mapped[bool] = mapped_column(default=False, nullable=False)
 
     # Foreign key to tenant
-    tenant_id: Mapped[str] = mapped_column(
+    tenant_id: Mapped[uuid.UUID] = mapped_column(
+        String(36),
         ForeignKey("tenants.id"),
         nullable=False,
         index=True,

@@ -3,8 +3,7 @@
 import uuid
 from datetime import UTC, datetime
 
-from sqlalchemy import Boolean, DateTime, func
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy import Boolean, DateTime, String, func
 from sqlalchemy.orm import Mapped, mapped_column
 
 from ai_employee.db.session import Base
@@ -16,12 +15,12 @@ class BaseModel(Base):
     __abstract__ = True
 
     id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True),
+        String(36),
         primary_key=True,
-        default=uuid.uuid4,
+        default=lambda: str(uuid.uuid4()),
     )
     tenant_id: Mapped[uuid.UUID | None] = mapped_column(
-        UUID(as_uuid=True),
+        String(36),
         nullable=True,
         index=True,
     )

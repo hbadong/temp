@@ -2,6 +2,7 @@
 
 import asyncio
 import os
+import uuid
 from collections.abc import AsyncGenerator
 from pathlib import Path
 
@@ -17,9 +18,10 @@ os.environ["ENVIRONMENT"] = "testing"
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
+from ai_employee.core.security import create_access_token, hash_password
 from ai_employee.db.session import Base, get_db
 from ai_employee.main import create_app
-from ai_employee.models import tenant, user, audit_log  # noqa: F401 - ensures models are registered
+from ai_employee.models import tenant, user, audit_log, quota, rbac  # noqa: F401
 
 # Use SQLite for tests (no external DB required)
 TEST_DATABASE_URL = os.environ["DATABASE_URL"]
@@ -47,12 +49,23 @@ async def engine():
 
 @pytest.fixture
 async def db_session(engine) -> AsyncGenerator[AsyncSession, None]:
-    """Create a new database session for a test."""
-    session_factory = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
-    async with session_factory() as session:
-        async with session.begin():
-            yield session
-        await session.rollback()
+    """Create a new database session for a test with automatic rollback."""
+    connection = await engine.connect()
+    transaction = await connection.begin()
+
+    session_factory = async_sessionmaker(
+        bind=connection,
+        class_=AsyncSession,
+        expire_on_commit=False,
+    )
+    session = session_factory()
+
+    try:
+        yield session
+    finally:
+        await session.close()
+        await transaction.rollback()
+        await connection.close()
 
 
 @pytest.fixture
@@ -71,11 +84,28 @@ async def client(db_session: AsyncSession) -> AsyncGenerator[AsyncClient, None]:
 
 
 @pytest.fixture
+async def authenticated_client(db_session: AsyncSession) -> AsyncGenerator[AsyncClient, None]:
+    """Create test client with authentication and overridden dependencies."""
+
+    async def override_get_db() -> AsyncGenerator[AsyncSession, None]:
+        yield db_session
+
+    app = create_app()
+    app.dependency_overrides[get_db] = override_get_db
+
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as ac:
+        yield ac
+
+
+@pytest.fixture
 def test_tenant_data() -> dict:
     """Sample tenant data for tests."""
     return {
         "name": "Test Tenant",
-        "industry": "technology",
+        "code": "test-tenant",
+        "description": "A test tenant",
+        "domain": "test.example.com",
     }
 
 
@@ -85,4 +115,55 @@ def test_user_data() -> dict:
     return {
         "email": "test@example.com",
         "password": "SecureP@ss123",
+        "username": "testuser",
+        "full_name": "Test User",
     }
+
+
+@pytest.fixture
+async def test_tenant(db_session: AsyncSession, test_tenant_data: dict):
+    """Create a test tenant in the database."""
+    from ai_employee.models.tenant import Tenant
+
+    t = Tenant(**test_tenant_data)
+    db_session.add(t)
+    await db_session.flush()
+    await db_session.refresh(t)
+    return t
+
+
+@pytest.fixture
+async def test_superuser(db_session: AsyncSession, test_tenant, test_user_data: dict):
+    """Create a test superuser."""
+    from ai_employee.models.user import User
+
+    u = User(
+        email=test_user_data["email"],
+        username=test_user_data["username"],
+        full_name=test_user_data["full_name"],
+        hashed_password=hash_password(test_user_data["password"]),
+        tenant_id=test_tenant.id,
+        is_active=True,
+        is_superuser=True,
+    )
+    db_session.add(u)
+    await db_session.flush()
+    await db_session.refresh(u)
+    return u
+
+
+@pytest.fixture
+def superuser_token(test_superuser) -> str:
+    """Generate a JWT token for the superuser."""
+    return create_access_token(
+        subject=test_superuser.id,
+        tenant_id=test_superuser.tenant_id,
+        is_superuser=True,
+        role="admin",
+    )
+
+
+@pytest.fixture
+def auth_headers(superuser_token: str) -> dict:
+    """Headers with authentication token."""
+    return {"Authorization": f"Bearer {superuser_token}"}

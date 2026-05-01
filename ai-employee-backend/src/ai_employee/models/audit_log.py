@@ -1,5 +1,7 @@
 """Audit log model for tracking changes."""
 
+import uuid
+
 from sqlalchemy import JSON, ForeignKey, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -11,7 +13,8 @@ class AuditLog(BaseModel):
 
     __tablename__ = "audit_logs"
 
-    user_id: Mapped[str | None] = mapped_column(
+    user_id: Mapped[uuid.UUID | None] = mapped_column(
+        String(36),
         ForeignKey("users.id"),
         nullable=True,
         index=True,

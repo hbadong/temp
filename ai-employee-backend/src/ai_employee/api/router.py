@@ -2,7 +2,14 @@
 
 from fastapi import APIRouter
 
-from ai_employee.api.v1.endpoints import auth, tenants, users
+from ai_employee.api.v1.endpoints import (
+    audit,
+    auth,
+    quotas,
+    rbac,
+    tenants,
+    users,
+)
 
 api_router = APIRouter()
 
@@ -10,3 +17,6 @@ api_router = APIRouter()
 api_router.include_router(auth.router, prefix="/v1")
 api_router.include_router(users.router, prefix="/v1")
 api_router.include_router(tenants.router, prefix="/v1")
+api_router.include_router(rbac.router, prefix="/v1")
+api_router.include_router(quotas.router, prefix="/v1")
+api_router.include_router(audit.router, prefix="/v1")

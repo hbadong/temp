@@ -26,6 +26,7 @@ def create_access_token(
     subject: str | uuid.UUID,
     tenant_id: str | uuid.UUID | None = None,
     is_superuser: bool = False,
+    role: str = "admin",
     expires_delta: timedelta | None = None,
 ) -> str:
     """Create a new JWT access token."""
@@ -39,6 +40,7 @@ def create_access_token(
         "exp": expire,
         "iat": datetime.now(UTC),
         "type": "access_token",
+        "role": role,
     }
 
     if tenant_id:
