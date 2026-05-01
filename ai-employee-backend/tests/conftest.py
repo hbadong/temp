@@ -21,7 +21,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_asyn
 from ai_employee.core.security import create_access_token, hash_password
 from ai_employee.db.session import Base, get_db
 from ai_employee.main import create_app
-from ai_employee.models import tenant, user, audit_log, quota, rbac  # noqa: F401
+from ai_employee.models import tenant, user, audit_log, quota, rbac, trend  # noqa: F401
 
 # Use SQLite for tests (no external DB required)
 TEST_DATABASE_URL = os.environ["DATABASE_URL"]
