@@ -467,3 +467,165 @@ flowchart LR
 4. **密码加密**: `password()` 函数使用 hash 算法
 5. **权限验证**: 后台控制器继承 `common` 类进行权限检查
 6. **模板安全**: 模板引擎自动过滤危险标签
+
+---
+
+# AI员工系统架构
+
+## 概述
+
+AI员工系统是一个多租户 SaaS 平台，提供 11 个 AI 智能体，覆盖从热点追踪、内容创作、数字人直播、私域获客到电销转化的全链路自动化营销场景。
+
+## 技术栈
+
+**语言与运行时**
+- Python 3.11+
+
+**Web 框架**
+- FastAPI 0.115+
+- Uvicorn (ASGI 服务器)
+
+**数据存储**
+- PostgreSQL (主数据库，生产环境)
+- SQLite (测试环境)
+- Redis (缓存、会话、队列)
+
+**ORM 与迁移**
+- SQLAlchemy 2.0 (async)
+- Alembic (数据库迁移)
+
+**认证与安全**
+- python-jose (JWT)
+- passlib + bcrypt (密码哈希)
+
+**AI 引擎** (后续集成)
+- DeepSeek-V3 / GPT-4o (大语言模型)
+- BGE (向量化)
+- CosyVoice / OpenVoice (TTS)
+- Wav2Lip / SadTalker (数字人)
+
+**部署**
+- Docker + Kubernetes
+- APISIX (API 网关)
+
+## 项目结构
+
+```
+ai-employee-backend/
+├── src/ai_employee/
+│   ├── main.py              # FastAPI 应用入口
+│   ├── config.py            # Pydantic Settings 配置
+│   ├── dependencies.py      # FastAPI 依赖注入
+│   ├── api/
+│   │   ├── router.py        # 路由聚合
+│   │   └── v1/endpoints/    # v1 版本端点
+│   │       ├── auth.py      # 认证端点
+│   │       ├── tenants.py   # 租户管理端点
+│   │       └── users.py     # 用户管理端点
+│   ├── core/
+│   │   ├── security.py      # JWT 安全、密码哈希
+│   │   └── exceptions.py    # 自定义 HTTP 异常
+│   ├── models/
+│   │   ├── base.py          # 基础模型 (tenant_id, 软删除)
+│   │   ├── tenant.py        # 租户模型
+│   │   ├── user.py          # 用户模型
+│   │   └── audit_log.py     # 审计日志模型
+│   ├── schemas/
+│   │   ├── base.py          # 统一响应格式 ApiResponse[T]
+│   │   ├── tenant.py        # 租户 Schema
+│   │   └── user.py          # 用户 Schema
+│   ├── services/
+│   │   ├── tenant_service.py
+│   │   └── user_service.py
+│   ├── db/
+│   │   ├── session.py       # 异步 SQLAlchemy 会话
+│   │   └── redis.py         # Redis 连接池
+│   └── utils/
+├── tests/
+├── alembic/                 # 数据库迁移
+└── pyproject.toml
+```
+
+## 分层架构
+
+```
+┌──────────────────────────────────────────────────┐
+│                    API 层                         │
+│  FastAPI Endpoints (auth, tenants, users...)     │
+└──────────────────┬───────────────────────────────┘
+                   │
+┌──────────────────┴───────────────────────────────┐
+│                  业务服务层                        │
+│  TenantService, UserService, ...                 │
+└──────────────────┬───────────────────────────────┘
+                   │
+┌──────────────────┴───────────────────────────────┐
+│                  数据访问层                        │
+│  SQLAlchemy Models + AsyncSession                │
+└──────────────────┬───────────────────────────────┘
+                   │
+┌──────────────────┴───────────────────────────────┐
+│                  基础设施层                        │
+│  PostgreSQL · Redis · Milvus · MinIO             │
+└──────────────────────────────────────────────────┘
+```
+
+## 数据模型
+
+### 核心表
+
+| 表名 | 描述 | 关键字段 |
+|------|------|---------|
+| tenants | 租户 | id, name, status, quota, usage |
+| users | 用户 | id, tenant_id, email, password_hash, role |
+| audit_logs | 审计日志 | id, tenant_id, user_id, action, details |
+
+### 共享字段
+
+所有业务表继承 BaseModel：
+- `id` (UUID, 主键)
+- `tenant_id` (UUID, 租户隔离)
+- `created_at` (自动填充)
+- `updated_at` (自动更新)
+- `is_deleted` (软删除)
+
+## 认证流程
+
+```
+用户登录 → 验证邮箱/密码 → 生成 JWT (access + refresh) → 返回 Token
+                                                ↓
+后续请求 → 携带 Authorization: Bearer <token> → 验证 Token → 获取用户信息
+```
+
+## 统一响应格式
+
+```json
+{
+  "code": 0,
+  "message": "success",
+  "data": {...},
+  "request_id": "req_abc123",
+  "timestamp": 1704067200000
+}
+```
+
+## 错误码
+
+| 错误码 | 说明 |
+|--------|------|
+| 0 | 成功 |
+| 400 | 请求参数错误 |
+| 401 | 未认证/Token 无效 |
+| 403 | 权限不足 |
+| 404 | 资源不存在 |
+| 429 | 请求频率超限 |
+| 1001 | 配额不足 |
+
+## 安全机制
+
+1. **JWT 认证**: 基于 python-jose 的 Token 认证
+2. **密码加密**: passlib + bcrypt 哈希
+3. **软删除**: is_deleted 字段，逻辑删除
+4. **操作审计**: audit_logs 记录所有关键操作
+5. **CORS**: FastAPI CORS 中间件
+6. **输入验证**: Pydantic 严格类型验证
