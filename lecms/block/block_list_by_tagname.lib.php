@@ -64,7 +64,7 @@ function block_list_by_tagname($conf) {
     $run->cms_content->table = 'cms_'.$table;
 
     //获取标签信息
-    $tagdata = $this->cms_content_tag->get_tag_by_tagname($tagname);
+    $tagdata = $run->cms_content_tag->get_tag_by_tagname($tagname);
     if( empty($tagdata) ){
         return array('tag_name'=> $tagname, 'tag_url'=> 'javascript:;', 'list'=> array());
     }

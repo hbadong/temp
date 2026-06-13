@@ -64,7 +64,7 @@ function block_list_by_keywords($conf) {
 
     if($cid){
         $cate_arr = $run->category->get_cache($cid);
-        if(empty($cate_arr)) return array();
+        if(empty($cate_arr)) return $ret;
         $cate_name = $cate_arr['name'];
         $cate_url = $run->category->category_url($cate_arr);
         $table = &$cate_arr['table'];
