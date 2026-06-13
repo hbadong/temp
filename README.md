@@ -12,6 +12,9 @@ PHP & MYSQL架构、基于xiunophp框架开发
 2.  layui
 3.  layuimini
 
+#### 版本
+gitee上面的是InnoDB，您也可以下载MyISAM版本：https://pan.quark.cn/s/d0f9a8b1e9b6?pwd=6ZKR
+
 #### lecms相关：
 1. lecms交流论坛：www.lecms.cc
 2. lecms交流QQ群： **797599080**  欢迎入群
