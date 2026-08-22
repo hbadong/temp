@@ -2,17 +2,17 @@
   <div class="res-card card">
     <div class="main">
       <div class="title-row">
-        <span class="cloud-tag" :class="`tag-${item.cloud_type}`">{{ cloudName }}</span>
+        <span class="tag tag--primary">{{ cloudName }}</span>
         <component :is="'span'" class="title">
           <template v-for="(seg, i) in segments" :key="i">
             <span v-if="seg.hit" class="hl">{{ seg.text }}</span>
             <template v-else>{{ seg.text }}</template>
           </template>
         </component>
-        <span v-if="isExpired" class="tag tag-expired">已失效</span>
+        <span v-if="isExpired" class="tag tag--danger">已失效</span>
       </div>
       <div class="meta">
-        <span class="tag" :class="`tag-${item.res_type}`">{{ resTypeName }}</span>
+        <span class="tag" :class="resTypeTag">{{ resTypeName }}</span>
         <span v-if="item.size_text" class="meta-item">{{ item.size_text }}</span>
         <span v-if="item.channel" class="meta-item">来自 {{ item.channel }}</span>
         <span class="meta-item">{{ formatTime(item.published_at) }}收录</span>
@@ -36,14 +36,26 @@
     </div>
 
     <teleport to="body">
-      <div v-if="showReport" class="modal-mask" @click.self="showReport = false">
-        <div class="modal">
-          <h3>链接失效反馈</h3>
-          <div class="form-item">
-            <label>问题描述（可选）</label>
-            <textarea v-model="reportContent" placeholder="例如：链接显示文件已被取消分享"></textarea>
+      <div v-if="showReport" class="dialog-mask" @click.self="showReport = false">
+        <div class="dialog">
+          <div class="dialog__header">
+            <span class="dialog__title">链接失效反馈</span>
+            <span class="dialog__close" @click="showReport = false">&times;</span>
           </div>
-          <div style="display: flex; gap: 10px; justify-content: flex-end">
+          <div class="dialog__body">
+            <div class="form-item">
+              <label class="form-item__label">问题描述（可选）</label>
+              <div class="form-item__content">
+                <textarea
+                  class="form-item__textarea"
+                  v-model="reportContent"
+                  placeholder="例如：链接显示文件已被取消分享"
+                  rows="3"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="dialog__footer">
             <button class="btn" @click="showReport = false">取消</button>
             <button class="btn btn-primary" @click="submitReport">提交反馈</button>
           </div>
@@ -54,7 +66,7 @@
 </template>
 
 <script>
-import { CLOUD_NAMES, RES_TYPE_NAMES, formatTime, highlightTitle } from '../constants'
+import { CLOUD_NAMES, RES_TYPE_NAMES, RES_TYPE_TAGS, formatTime, highlightTitle } from '../constants'
 import { reportResource } from '../api'
 
 export default {
@@ -72,6 +84,9 @@ export default {
     },
     resTypeName() {
       return RES_TYPE_NAMES[this.item.res_type] || '其他'
+    },
+    resTypeTag() {
+      return `tag--${RES_TYPE_TAGS[this.item.res_type] || 'info'}`
     },
     isExpired() {
       return this.item.status === 'expired'
@@ -117,16 +132,17 @@ export default {
 <style scoped>
 .res-card {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
-  gap: 14px;
-  padding: 14px 16px;
-  margin-bottom: 10px;
-  transition: box-shadow 0.15s;
+  gap: 16px;
+  padding: 16px 20px;
+  margin-bottom: 12px;
+  transition: box-shadow var(--transition-base), border-color var(--transition-fast);
 }
 
 .res-card:hover {
-  box-shadow: 0 4px 16px rgba(31, 45, 80, 0.08);
+  box-shadow: var(--shadow-base);
+  border-color: var(--border-light);
 }
 
 .title-row {
@@ -134,22 +150,28 @@ export default {
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
+  margin-bottom: 10px;
 }
 
 .title {
   font-size: 15px;
   font-weight: 500;
+  color: var(--text-primary);
   word-break: break-all;
+  line-height: 1.5;
 }
 
 .meta {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-top: 8px;
-  color: var(--text-3);
-  font-size: 12px;
+  gap: 10px;
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
   flex-wrap: wrap;
+}
+
+.meta-item {
+  color: var(--text-secondary);
 }
 
 .actions {
@@ -160,10 +182,16 @@ export default {
   justify-content: flex-end;
 }
 
-@media (max-width: 640px) {
+.hl {
+  color: var(--danger);
+  font-weight: 600;
+}
+
+@media (max-width: 767px) {
   .res-card {
     flex-direction: column;
     align-items: stretch;
+    gap: 12px;
   }
 
   .actions {

@@ -3,15 +3,25 @@
     <template v-if="!loggedIn">
       <div class="login-wrap">
         <div class="card login-card">
-          <h2>盘搜管理后台</h2>
-          <p class="tip">请输入管理令牌登录</p>
-          <form @submit.prevent="login">
+          <h2 class="login-card__title">盘搜管理后台</h2>
+          <p class="login-card__tip">请输入管理令牌登录</p>
+          <form @submit.prevent="login" class="form">
             <div class="form-item">
-              <input v-model="token" type="password" placeholder="Admin Token" required />
+              <div class="form-item__content">
+                <input
+                  v-model="token"
+                  type="password"
+                  class="form-item__input"
+                  placeholder="Admin Token"
+                  required
+                />
+              </div>
             </div>
-            <button class="btn btn-primary" style="width: 100%" type="submit" :disabled="busy">
-              {{ busy ? '验证中...' : '登录' }}
-            </button>
+            <div class="form-item form-item--submit">
+              <button class="btn btn-primary btn-lg" style="width: 100%" type="submit" :disabled="busy">
+                {{ busy ? '验证中...' : '登录' }}
+              </button>
+            </div>
           </form>
           <p class="back"><router-link to="/">返回首页</router-link></p>
         </div>
@@ -22,11 +32,11 @@
       <header class="header">
         <div class="container header-inner">
           <span class="logo">盘搜后台</span>
-          <nav>
+          <nav class="tabs">
             <a
               v-for="t in tabs"
               :key="t.key"
-              :class="{ active: currentTab === t.key }"
+              :class="['tabs__item', { 'tabs__item--active': currentTab === t.key }]"
               @click.prevent="currentTab = t.key"
             >{{ t.label }}</a>
           </nav>
@@ -108,76 +118,116 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 20px;
 }
 
 .login-card {
   width: min(360px, calc(100vw - 32px));
-  padding: 28px;
+  padding: 30px;
 }
 
-.login-card h2 {
-  font-size: 18px;
-  margin-bottom: 6px;
+.login-card__title {
+  font-size: var(--font-size-title);
+  line-height: 24px;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 8px;
 }
 
-.tip {
-  color: var(--text-3);
-  font-size: 13px;
-  margin-bottom: 16px;
+.login-card__tip {
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  margin-bottom: 24px;
 }
 
 .back {
-  margin-top: 14px;
+  margin-top: 20px;
   text-align: center;
-  font-size: 13px;
+  font-size: var(--font-size-sm);
+}
+
+.back a {
+  color: var(--text-secondary);
+  transition: color var(--transition-fast);
+}
+
+.back a:hover {
+  color: var(--primary);
 }
 
 .header {
-  background: #fff;
-  border-bottom: 1px solid var(--border);
+  background: var(--bg-color);
+  border-bottom: 1px solid var(--border-divider);
   position: sticky;
   top: 0;
   z-index: 50;
 }
 
 .header-inner {
-  height: 54px;
+  height: 56px;
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 16px;
 }
 
 .logo {
-  font-weight: 700;
-  color: var(--primary);
-  font-size: 17px;
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--text-primary);
   flex-shrink: 0;
 }
 
-.header nav {
+.tabs {
   display: flex;
   gap: 4px;
-  overflow-x: auto;
   flex: 1;
+  overflow-x: auto;
 }
 
-.header nav a {
-  padding: 6px 12px;
-  border-radius: 6px;
-  color: var(--text-2);
-  cursor: pointer;
-  font-size: 13px;
+.tabs__item {
+  display: flex;
+  align-items: center;
+  padding: 6px 14px;
+  height: 36px;
+  font-size: var(--font-size-sm);
+  color: var(--text-regular);
+  border-radius: var(--radius-base);
   white-space: nowrap;
+  transition: all var(--transition-fast);
+  cursor: pointer;
 }
 
-.header nav a.active {
-  background: #eef3ff;
+.tabs__item:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.tabs__item.tabs__item--active {
+  background: var(--primary-bg);
   color: var(--primary);
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .main {
-  padding-top: 20px;
+  padding-top: 24px;
   padding-bottom: 40px;
+}
+
+@media (max-width: 767px) {
+  .login-card {
+    padding: 20px 16px;
+  }
+
+  .header-inner {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 12px 0;
+    gap: 12px;
+  }
+
+  .tabs {
+    order: 3;
+    flex-basis: 100%;
+  }
 }
 </style>

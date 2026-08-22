@@ -29,6 +29,15 @@ export const CLOUD_ICONS = {
   other: '📦',
 }
 
+export const RES_TYPE_TAGS = {
+  video: 'danger',
+  software: 'success',
+  doc: 'primary',
+  music: 'warning',
+  image: 'info',
+  other: 'info',
+}
+
 export function formatTime(iso) {
   if (!iso) return ''
   const d = new Date(iso)

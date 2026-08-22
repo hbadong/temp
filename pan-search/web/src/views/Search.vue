@@ -17,21 +17,25 @@
       <div class="filters card">
         <div class="filter-row">
           <span class="filter-label">网盘</span>
-          <a
-            v-for="c in cloudOptions"
-            :key="c.value"
-            :class="['filter-item', { active: currentCloud === c.value }]"
-            @click.prevent="setFilter('cloud', c.value)"
-          >{{ c.label }}</a>
+          <div class="filter-items">
+            <a
+              v-for="c in cloudOptions"
+              :key="c.value"
+              :class="['filter-item', { 'filter-item--active': currentCloud === c.value }]"
+              @click.prevent="setFilter('cloud', c.value)"
+            >{{ c.label }}</a>
+          </div>
         </div>
         <div class="filter-row">
           <span class="filter-label">类型</span>
-          <a
-            v-for="t in typeOptions"
-            :key="t.value"
-            :class="['filter-item', { active: currentType === t.value }]"
-            @click.prevent="setFilter('type', t.value)"
-          >{{ t.label }}</a>
+          <div class="filter-items">
+            <a
+              v-for="t in typeOptions"
+              :key="t.value"
+              :class="['filter-item', { 'filter-item--active': currentType === t.value }]"
+              @click.prevent="setFilter('type', t.value)"
+            >{{ t.label }}</a>
+          </div>
         </div>
       </div>
 
@@ -55,16 +59,21 @@
       </template>
 
       <div v-else-if="!loading" class="empty card">
-        <p style="font-size: 40px; margin-bottom: 12px">🔍</p>
-        <p>没有找到相关资源，换个关键词试试吧</p>
+        <p class="empty__icon">🔍</p>
+        <p class="empty__description">没有找到相关资源，换个关键词试试吧</p>
       </div>
 
-      <div v-if="loading" class="empty">搜索中...</div>
+      <div v-if="loading" class="loading-container">
+        <div class="loading"></div>
+        <p style="margin-top: 12px; color: var(--text-secondary);">搜索中...</p>
+      </div>
     </main>
 
     <footer class="footer">
-      本站所有内容均来自网络公开渠道，仅用于学习交流 ·
-      <router-link to="/complain">侵权投诉</router-link>
+      <div class="container">
+        本站所有内容均来自网络公开渠道，仅用于学习交流 ·
+        <router-link to="/complain">侵权投诉</router-link>
+      </div>
     </footer>
   </div>
 </template>
@@ -174,23 +183,23 @@ export default {
 .header {
   position: sticky;
   top: 0;
-  background: rgba(255, 255, 255, 0.92);
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(8px);
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--border-divider);
   z-index: 50;
 }
 
 .header-inner {
   display: flex;
   align-items: center;
-  gap: 18px;
-  height: 62px;
+  gap: 16px;
+  height: 56px;
 }
 
 .logo {
-  font-size: 24px;
-  font-weight: 700;
-  color: var(--primary);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary);
   flex-shrink: 0;
 }
 
@@ -202,48 +211,65 @@ export default {
 .header nav {
   margin-left: auto;
   display: flex;
-  gap: 14px;
+  gap: 16px;
   flex-shrink: 0;
 }
 
 .header nav a {
-  color: var(--text-2);
-  font-size: 13px;
+  color: var(--text-secondary);
+  font-size: var(--font-size-base);
+  transition: color var(--transition-fast);
+}
+
+.header nav a:hover {
+  color: var(--primary);
 }
 
 .filters {
-  padding: 10px 16px;
-  margin: 16px 0;
+  padding: 12px 20px;
+  margin: 20px 0;
 }
 
 .filter-row {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 12px;
   flex-wrap: wrap;
-  padding: 4px 0;
+  padding: 8px 0;
 }
 
 .filter-label {
-  color: var(--text-3);
-  font-size: 13px;
-  width: 36px;
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  width: 48px;
   flex-shrink: 0;
 }
 
+.filter-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  flex: 1;
+}
+
 .filter-item {
+  display: inline-flex;
+  align-items: center;
   padding: 4px 12px;
-  border-radius: 6px;
-  color: var(--text-2);
-  cursor: pointer;
-  font-size: 13px;
+  border-radius: var(--radius-base);
+  color: var(--text-regular);
+  font-size: var(--font-size-sm);
+  transition: all var(--transition-fast);
+  white-space: nowrap;
 }
 
 .filter-item:hover {
+  background: var(--bg-hover);
   color: var(--primary);
 }
 
-.filter-item.active {
+.filter-item.filter-item--active {
   background: var(--primary);
   color: #fff;
 }
@@ -251,43 +277,73 @@ export default {
 .result-meta {
   display: flex;
   justify-content: space-between;
-  color: var(--text-3);
-  font-size: 13px;
-  margin-bottom: 10px;
+  align-items: center;
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  margin-bottom: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border-divider);
 }
 
 .result-meta b {
-  color: var(--primary);
+  color: var(--text-primary);
+  font-weight: 600;
 }
 
 .took {
-  color: var(--text-3);
+  color: var(--text-secondary);
 }
 
 .page-info {
-  color: var(--text-2);
-  font-size: 13px;
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
 }
 
 .footer {
-  text-align: center;
   padding: 24px 0;
-  color: var(--text-3);
-  font-size: 12px;
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  text-align: center;
+  border-top: 1px solid var(--border-divider);
 }
 
-@media (max-width: 640px) {
+.footer a {
+  color: var(--text-secondary);
+  transition: color var(--transition-fast);
+}
+
+.footer a:hover {
+  color: var(--primary);
+}
+
+@media (max-width: 767px) {
   .header-inner {
     flex-wrap: wrap;
     height: auto;
-    padding-top: 10px;
-    padding-bottom: 10px;
+    padding: 12px 0;
+    gap: 12px;
   }
 
   .search-wrap {
     order: 3;
     max-width: 100%;
     flex-basis: 100%;
+  }
+
+  .filter-label {
+    width: auto;
+  }
+
+  .filter-items {
+    flex-basis: calc(100% - 56px);
   }
 }
 </style>

@@ -1,13 +1,19 @@
 <template>
-  <div class="card section">
+  <div class="card resources-panel">
     <div class="toolbar">
       <form class="filter-form" @submit.prevent="load(1)">
-        <input v-model="q" type="text" placeholder="搜索标题或链接" />
-        <select v-model="cloud">
+        <input
+          v-model="q"
+          type="text"
+          class="form-item__input"
+          placeholder="搜索标题或链接"
+          style="width: 240px;"
+        />
+        <select v-model="cloud" class="form-item__select" style="width: 140px;">
           <option value="">全部网盘</option>
           <option v-for="(name, key) in cloudNames" :key="key" :value="key">{{ name }}</option>
         </select>
-        <select v-model="status">
+        <select v-model="status" class="form-item__select" style="width: 120px;">
           <option value="">全部状态</option>
           <option value="ok">正常</option>
           <option value="expired">已失效</option>
@@ -18,75 +24,106 @@
       <button class="btn btn-primary" @click="showAdd = true">手动添加资源</button>
     </div>
 
-    <table class="table">
-      <thead>
-        <tr>
-          <th class="wrap">标题</th>
-          <th>网盘</th>
-          <th>状态</th>
-          <th>失效举报</th>
-          <th>来源</th>
-          <th>操作</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="item in items" :key="item.id">
-          <td class="wrap">
-            {{ item.title }}
-            <span class="link-text">{{ item.link }}</span>
-            <span v-if="item.password" class="pwd">码：{{ item.password }}</span>
-          </td>
-          <td>{{ cloudNames[item.cloud_type] || item.cloud_type }}</td>
-          <td>
-            <span :class="['tag', statusClass(item.status)]">{{ statusName(item.status) }}</span>
-          </td>
-          <td>{{ item.invalid_reports }}</td>
-          <td>{{ item.channel || 'manual' }}</td>
-          <td class="ops">
-            <button v-if="item.status !== 'blocked'" class="btn btn-sm" @click="setStatus(item, 'blocked')">屏蔽</button>
-            <button v-if="item.status === 'blocked'" class="btn btn-sm" @click="setStatus(item, 'ok')">恢复</button>
-            <button v-if="item.status === 'ok'" class="btn btn-sm" @click="setStatus(item, 'expired')">标失效</button>
-            <button class="btn btn-sm btn-danger" @click="remove(item)">删除</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <div class="empty" v-if="!loading && items.length === 0">暂无数据</div>
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th class="wrap">标题</th>
+            <th>网盘</th>
+            <th>状态</th>
+            <th>失效举报</th>
+            <th>来源</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="item in items" :key="item.id">
+            <td class="wrap">
+              <div class="title-cell">
+                <span class="title-text">{{ item.title }}</span>
+                <span class="link-text">{{ item.link }}</span>
+                <span v-if="item.password" class="pwd">码：{{ item.password }}</span>
+              </div>
+            </td>
+            <td>{{ cloudNames[item.cloud_type] || item.cloud_type }}</td>
+            <td>
+              <span :class="['tag', statusTag(item.status)]">{{ statusName(item.status) }}</span>
+            </td>
+            <td>{{ item.invalid_reports }}</td>
+            <td>{{ item.channel || 'manual' }}</td>
+            <td class="ops">
+              <button v-if="item.status !== 'blocked'" class="btn btn-sm" @click="setStatus(item, 'blocked')">屏蔽</button>
+              <button v-if="item.status === 'blocked'" class="btn btn-sm" @click="setStatus(item, 'ok')">恢复</button>
+              <button v-if="item.status === 'ok'" class="btn btn-sm" @click="setStatus(item, 'expired')">标失效</button>
+              <button class="btn btn-sm btn-danger" @click="remove(item)">删除</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div v-if="!loading && items.length === 0" class="empty">
+      <p class="empty__icon">📦</p>
+      <p class="empty__description">暂无数据</p>
+    </div>
 
     <div class="pager" v-if="totalPages > 1">
       <button class="btn btn-sm" :disabled="page <= 1" @click="load(page - 1)">上一页</button>
-      <span>{{ page }} / {{ totalPages }}</span>
+      <span class="page-info">{{ page }} / {{ totalPages }}</span>
       <button class="btn btn-sm" :disabled="page >= totalPages" @click="load(page + 1)">下一页</button>
     </div>
 
     <teleport to="body">
-      <div v-if="showAdd" class="modal-mask" @click.self="showAdd = false">
-        <div class="modal">
-          <h3>手动添加资源</h3>
-          <div class="form-item">
-            <label>资源标题 *</label>
-            <input v-model="form.title" type="text" />
+      <div v-if="showAdd" class="dialog-mask" @click.self="showAdd = false">
+        <div class="dialog">
+          <div class="dialog__header">
+            <span class="dialog__title">手动添加资源</span>
+            <span class="dialog__close" @click="showAdd = false">&times;</span>
           </div>
-          <div class="form-item">
-            <label>网盘链接 *</label>
-            <input v-model="form.link" type="text" placeholder="https://pan.quark.cn/s/..." />
-          </div>
-          <div style="display: flex; gap: 10px">
-            <div class="form-item" style="flex: 1">
-              <label>提取码</label>
-              <input v-model="form.password" type="text" maxlength="4" />
-            </div>
-            <div class="form-item" style="flex: 1">
-              <label>网盘类型</label>
-              <select v-model="form.cloud_type">
-                <option value="">自动识别</option>
-                <option v-for="(name, key) in cloudNames" :key="key" :value="key">{{ name }}</option>
-              </select>
-            </div>
-          </div>
-          <div style="display: flex; gap: 10px; justify-content: flex-end">
-            <button class="btn" @click="showAdd = false">取消</button>
-            <button class="btn btn-primary" @click="add">保存</button>
+          <div class="dialog__body">
+            <form @submit.prevent="add" class="form">
+              <div class="form-item">
+                <label class="form-item__label">资源标题 *</label>
+                <div class="form-item__content">
+                  <input v-model="form.title" type="text" class="form-item__input" required />
+                </div>
+              </div>
+              <div class="form-item">
+                <label class="form-item__label">网盘链接 *</label>
+                <div class="form-item__content">
+                  <input
+                    v-model="form.link"
+                    type="text"
+                    class="form-item__input"
+                    placeholder="https://pan.quark.cn/s/..."
+                    required
+                  />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-item" style="flex: 1">
+                  <label class="form-item__label">提取码</label>
+                  <div class="form-item__content">
+                    <input v-model="form.password" type="text" class="form-item__input" maxlength="4" />
+                  </div>
+                </div>
+                <div class="form-item" style="flex: 1">
+                  <label class="form-item__label">网盘类型</label>
+                  <div class="form-item__content">
+                    <select v-model="form.cloud_type" class="form-item__select">
+                      <option value="">自动识别</option>
+                      <option v-for="(name, key) in cloudNames" :key="key" :value="key">{{ name }}</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="dialog__footer">
+                <button class="btn" type="button" @click="showAdd = false">取消</button>
+                <button class="btn btn-primary" type="submit" :disabled="submitting">
+                  {{ submitting ? '保存中...' : '保存' }}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       </div>
@@ -111,6 +148,7 @@ export default {
       size: 20,
       loading: false,
       showAdd: false,
+      submitting: false,
       form: { title: '', link: '', password: '', cloud_type: '' },
       cloudNames: CLOUD_NAMES,
     }
@@ -160,69 +198,128 @@ export default {
       }
     },
     async add() {
+      if (!this.form.title || !this.form.link) {
+        this.$toast('请填写标题和链接')
+        return
+      }
+      this.submitting = true
       try {
         await adminPost('/admin/resources', this.form)
         this.$toast('添加成功')
         this.showAdd = false
         this.form = { title: '', link: '', password: '', cloud_type: '' }
+        this.submitting = false
         this.load(1)
       } catch (err) {
         this.$toast(err.message)
+        this.submitting = false
       }
     },
     statusName(s) {
       return { ok: '正常', expired: '已失效', blocked: '已屏蔽' }[s] || s
     },
-    statusClass(s) {
-      return { ok: 'tag-ok', expired: 'tag-expired', blocked: 'tag-other' }[s] || ''
+    statusTag(s) {
+      return { ok: 'tag--success', expired: 'tag--danger', blocked: 'tag--info' }[s] || ''
     },
   },
 }
 </script>
 
 <style scoped>
-.section {
-  padding: 16px;
+.resources-panel {
+  animation: fade-in 0.3s ease-out;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .toolbar {
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 14px;
+  gap: 16px;
+  margin-bottom: 20px;
   flex-wrap: wrap;
 }
 
 .filter-form {
   display: flex;
-  gap: 8px;
+  align-items: center;
+  gap: 10px;
   flex-wrap: wrap;
 }
 
-.filter-form input,
-.filter-form select {
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 7px 10px;
+.table-wrap {
+  overflow-x: auto;
+  margin: 0 -20px;
+  padding: 0 20px;
 }
 
-.filter-form input {
-  width: 200px;
+.title-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.title-text {
+  font-weight: 500;
+  color: var(--text-primary);
+  word-break: break-all;
 }
 
 .link-text {
-  display: block;
-  color: var(--text-3);
-  font-size: 12px;
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  word-break: break-all;
 }
 
 .pwd {
-  color: var(--warn);
-  font-size: 12px;
-  margin-left: 8px;
+  color: var(--warning);
+  font-size: var(--font-size-sm);
 }
 
 .ops {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
   white-space: nowrap;
+}
+
+.form-row {
+  display: flex;
+  gap: 16px;
+}
+
+@media (max-width: 767px) {
+  .toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filter-form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filter-form input,
+  .filter-form select {
+    width: 100%;
+  }
+
+  .ops {
+    flex-direction: column;
+  }
+
+  .ops .btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
 }
 </style>

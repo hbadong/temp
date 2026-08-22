@@ -1,6 +1,6 @@
 <template>
   <form class="search-box" :class="{ big }" @submit.prevent="onSearch">
-    <div class="input-wrap">
+    <div class="input-wrap" :class="{ focused }">
       <svg class="icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
         <circle cx="11" cy="11" r="7" />
         <path d="m20 20-3.5-3.5" />
@@ -13,7 +13,12 @@
         @focus="focused = true"
         @blur="focused = false"
       />
-      <button v-if="keyword" type="button" class="clear" @click="keyword = ''">×</button>
+      <button v-if="keyword" type="button" class="clear" @click="keyword = ''">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
     </div>
     <button type="submit" class="go">搜索</button>
   </form>
@@ -60,71 +65,115 @@ export default {
   flex: 1;
   display: flex;
   align-items: center;
-  background: #fff;
-  border: 2px solid transparent;
-  border-radius: 12px;
+  background: var(--bg-color);
+  border: 1px solid var(--border-base);
+  border-radius: var(--radius-base);
   padding: 0 12px;
-  box-shadow: 0 2px 12px rgba(47, 107, 255, 0.08);
-  transition: border-color 0.15s;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  height: 36px;
 }
 
 .search-box.big .input-wrap {
-  height: 54px;
-  border-radius: 27px;
+  height: 48px;
+  border-radius: var(--radius-base);
+  box-shadow: var(--shadow-light);
 }
 
+.input-wrap.focused,
 .input-wrap:focus-within {
   border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(180, 106, 255, 0.2);
 }
 
 .icon {
-  color: var(--text-3);
+  color: var(--text-secondary);
   flex-shrink: 0;
+  margin-right: 8px;
 }
 
 .input-wrap input {
   flex: 1;
   border: none;
-  padding: 13px 10px;
-  font-size: 15px;
   background: transparent;
+  font-size: var(--font-size-base);
+  color: var(--text-primary);
+  height: 100%;
+  min-width: 0;
+}
+
+.input-wrap input::placeholder {
+  color: var(--text-placeholder);
+}
+
+.search-box.big .input-wrap input {
+  font-size: var(--font-size-lg);
+  padding: 4px 0;
 }
 
 .clear {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
   border: none;
-  background: var(--border);
-  color: #fff;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  line-height: 1;
-  font-size: 13px;
+  background: var(--border-lighter);
+  color: var(--text-secondary);
+  border-radius: var(--radius-circle);
   flex-shrink: 0;
+  transition: all var(--transition-fast);
+}
+
+.clear:hover {
+  background: var(--primary);
+  color: #fff;
 }
 
 .go {
-  border: none;
-  background: var(--primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  padding: 0 20px;
+  font-size: var(--font-size-base);
+  font-weight: 500;
   color: #fff;
-  font-size: 15px;
-  border-radius: 12px;
-  padding: 0 26px;
-  box-shadow: 0 4px 14px rgba(47, 107, 255, 0.35);
-  transition: background 0.15s;
+  background: var(--primary);
+  border-radius: var(--radius-base);
+  border: 1px solid var(--primary);
+  white-space: nowrap;
+  transition: all var(--transition-fast);
+  box-shadow: 0 2px 4px rgba(180, 106, 255, 0.2);
 }
 
 .search-box.big .go {
-  border-radius: 27px;
-  padding: 0 34px;
+  height: 48px;
+  padding: 0 32px;
+  font-size: var(--font-size-lg);
+  border-radius: var(--radius-base);
 }
 
 .go:hover {
-  background: var(--primary-dark);
+  background: var(--primary-light);
+  border-color: var(--primary-light);
 }
 
-@media (max-width: 640px) {
+.go:active {
+  background: var(--primary-dark);
+  border-color: var(--primary-dark);
+}
+
+@media (max-width: 767px) {
+  .search-box {
+    gap: 8px;
+  }
+
   .go {
     padding: 0 16px;
+  }
+
+  .search-box.big .go {
+    padding: 0 24px;
   }
 }
 </style>

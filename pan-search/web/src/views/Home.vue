@@ -11,36 +11,39 @@
     </header>
 
     <main class="hero">
-      <h1 class="logo">盘搜 <span>PanSearch</span></h1>
-      <p class="slogan">聚合百度 / 阿里 / 夸克 / 迅雷等网盘资源，一搜即达</p>
+      <div class="hero-content">
+        <h1 class="logo">盘搜 <span>PanSearch</span></h1>
+        <p class="slogan">聚合百度 / 阿里 / 夸克 / 迅雷等网盘资源，一搜即达</p>
 
-      <div class="search-area">
-        <SearchBox big v-model="keyword" @search="goSearch" />
-        <div class="hot">
-          <span>热门搜索：</span>
-          <a
-            v-for="kw in hotKeywords"
-            :key="kw"
-            @click.prevent="keyword = kw; goSearch(kw)"
-          >{{ kw }}</a>
+        <div class="search-area">
+          <SearchBox big v-model="keyword" @search="goSearch" />
+          <div class="hot">
+            <span>热门搜索：</span>
+            <a
+              v-for="kw in hotKeywords"
+              :key="kw"
+              @click.prevent="keyword = kw; goSearch(kw)"
+              class="tag tag--info"
+            >{{ kw }}</a>
+          </div>
         </div>
-      </div>
 
-      <div class="cloud-entry">
-        <a
-          v-for="c in clouds"
-          :key="c.type"
-          class="cloud-item card"
-          @click.prevent="goSearch('', c.type)"
-        >
-          <span class="emoji">{{ c.emoji }}</span>
-          <span>{{ c.name }}</span>
-        </a>
-      </div>
+        <div class="cloud-entry">
+          <a
+            v-for="c in clouds"
+            :key="c.type"
+            class="cloud-item card"
+            @click.prevent="goSearch('', c.type)"
+          >
+            <span class="emoji">{{ c.emoji }}</span>
+            <span>{{ c.name }}</span>
+          </a>
+        </div>
 
-      <div v-if="stats" class="stats">
-        已收录 <b>{{ stats.total.toLocaleString() }}</b> 条资源 · 今日新增
-        <b>{{ stats.today_new.toLocaleString() }}</b> 条
+        <div v-if="stats" class="stats">
+          已收录 <b>{{ stats.total.toLocaleString() }}</b> 条资源 · 今日新增
+          <b>{{ stats.today_new.toLocaleString() }}</b> 条
+        </div>
       </div>
     </main>
 
@@ -112,8 +115,9 @@ export default {
 
 .topbar nav a {
   margin-left: 18px;
-  color: var(--text-2);
-  font-size: 13px;
+  color: var(--text-secondary);
+  font-size: var(--font-size-base);
+  transition: color var(--transition-fast);
 }
 
 .topbar nav a:hover {
@@ -124,28 +128,7 @@ export default {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background:
-    radial-gradient(800px 400px at 20% -10%, rgba(47, 107, 255, 0.12), transparent),
-    radial-gradient(600px 300px at 80% 0%, rgba(122, 92, 255, 0.1), transparent),
-    var(--bg);
-}
-
-.logo {
-  font-size: 40px;
-  font-weight: 700;
-  letter-spacing: 2px;
-  color: var(--primary);
-}
-
-.logo.small {
-  font-size: 22px;
-}
-
-.logo span {
-  font-size: 16px;
-  color: var(--text-3);
-  font-weight: 400;
-  letter-spacing: 0;
+  background: var(--bg-page);
 }
 
 .hero {
@@ -154,48 +137,79 @@ export default {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 80px 16px 40px;
+  padding: 80px 20px 40px;
   text-align: center;
 }
 
+.hero-content {
+  width: 100%;
+  max-width: 640px;
+}
+
+.logo {
+  font-size: 36px;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.logo.small {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.logo span {
+  font-size: 14px;
+  color: var(--text-secondary);
+  font-weight: 400;
+  letter-spacing: 0;
+  display: inline-block;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
 .slogan {
-  margin: 14px 0 30px;
-  color: var(--text-2);
-  font-size: 15px;
+  margin: 16px 0 32px;
+  color: var(--text-regular);
+  font-size: var(--font-size-base);
+  line-height: 1.6;
 }
 
 .search-area {
-  width: min(640px, 100%);
+  width: 100%;
 }
 
 .hot {
-  margin-top: 16px;
-  font-size: 13px;
-  color: var(--text-3);
+  margin-top: 20px;
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
   display: flex;
-  gap: 10px;
+  gap: 8px;
   flex-wrap: wrap;
   justify-content: center;
+  align-items: center;
 }
 
-.hot a {
-  color: var(--text-2);
-  background: rgba(255, 255, 255, 0.7);
-  padding: 3px 10px;
-  border-radius: 20px;
+.hot > span {
+  color: var(--text-secondary);
+}
+
+.hot a.tag {
   cursor: pointer;
-  border: 1px solid var(--border);
+  transition: all var(--transition-fast);
 }
 
-.hot a:hover {
-  color: var(--primary);
+.hot a.tag:hover {
+  background: var(--primary);
+  color: #fff;
   border-color: var(--primary);
 }
 
 .cloud-entry {
-  margin-top: 44px;
+  margin-top: 40px;
   display: flex;
-  gap: 14px;
+  gap: 12px;
   flex-wrap: wrap;
   justify-content: center;
 }
@@ -204,40 +218,85 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
-  width: 92px;
-  padding: 16px 0;
+  gap: 8px;
+  width: 100px;
+  padding: 20px 0;
   cursor: pointer;
-  transition: all 0.15s;
-  font-size: 13px;
-  color: var(--text-2);
+  transition: all var(--transition-base);
+  font-size: var(--font-size-sm);
+  color: var(--text-regular);
 }
 
 .cloud-item:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(31, 45, 80, 0.1);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-base);
+  border-color: var(--border-light);
   color: var(--primary);
 }
 
 .emoji {
-  font-size: 26px;
+  font-size: 28px;
+  line-height: 1;
 }
 
 .stats {
-  margin-top: 36px;
-  color: var(--text-3);
-  font-size: 13px;
+  margin-top: 40px;
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
 }
 
 .stats b {
-  color: var(--primary);
+  color: var(--text-primary);
+  font-weight: 600;
 }
 
 .footer {
-  padding: 18px 0 22px;
-  color: var(--text-3);
-  font-size: 12px;
+  padding: 24px 0;
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
   text-align: center;
-  line-height: 1.9;
+  line-height: 1.8;
+  border-top: 1px solid var(--border-divider);
+  margin-top: auto;
+}
+
+.footer a {
+  color: var(--text-secondary);
+  transition: color var(--transition-fast);
+}
+
+.footer a:hover {
+  color: var(--primary);
+}
+
+.footer span {
+  color: var(--border-base);
+}
+
+@media (max-width: 767px) {
+  .logo {
+    font-size: 28px;
+  }
+
+  .logo span {
+    font-size: 12px;
+  }
+
+  .slogan {
+    font-size: var(--font-size-sm);
+  }
+
+  .cloud-item {
+    width: calc(50% - 6px);
+    padding: 16px 0;
+  }
+
+  .emoji {
+    font-size: 24px;
+  }
+
+  .topbar-inner {
+    height: 48px;
+  }
 }
 </style>
