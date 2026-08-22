@@ -1,0 +1,231 @@
+:root {
+  --primary: #2f6bff;
+  --primary-dark: #1e54e6;
+  --bg: #f5f7fb;
+  --card: #ffffff;
+  --text: #1f2430;
+  --text-2: #5b6472;
+  --text-3: #9aa3b2;
+  --border: #e6eaf2;
+  --danger: #e5484d;
+  --success: #30a46c;
+  --warn: #f5a623;
+  --radius: 10px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC',
+    'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+}
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+input,
+select,
+textarea {
+  font-family: inherit;
+  font-size: 14px;
+  outline: none;
+}
+
+.container {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text-2);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 13px;
+  transition: all 0.15s;
+}
+
+.btn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.btn-primary {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: var(--primary-dark);
+  color: #fff;
+}
+
+.btn-danger {
+  color: var(--danger);
+}
+
+.btn-sm {
+  padding: 3px 8px;
+  font-size: 12px;
+  border-radius: 6px;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 20px;
+  line-height: 18px;
+}
+
+.tag-aliyun { background: #eef4ff; color: #3568ff; }
+.tag-baidu { background: #eef8ff; color: #06a7ff; }
+.tag-quark { background: #eff0ff; color: #4a5aff; }
+.tag-xunlei { background: #eefaff; color: #00a5eb; }
+.tag-pan115 { background: #f0faff; color: #1b9df3; }
+.tag-tianyi { background: #fff2ee; color: #f05a4c; }
+.tag-mobile { background: #eefaff; color: #0085d0; }
+.tag-other { background: #f0f2f5; color: #6b7280; }
+
+.tag-video { background: #fff4ec; color: #e57326; }
+.tag-software { background: #ecfaf1; color: #22a06b; }
+.tag-doc { background: #f4f0ff; color: #7c5ce0; }
+.tag-music { background: #fdeef6; color: #d6409f; }
+.tag-image { background: #fdf8ec; color: #b58a1b; }
+
+.tag-expired { background: #feecec; color: var(--danger); }
+.tag-ok { background: #ecfaf1; color: var(--success); }
+
+.hl {
+  color: var(--danger);
+  font-weight: 600;
+}
+
+.empty {
+  text-align: center;
+  padding: 60px 0;
+  color: var(--text-3);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.table th,
+.table td {
+  text-align: left;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.table td.wrap,
+.table th.wrap {
+  white-space: normal;
+  word-break: break-all;
+}
+
+.table th {
+  color: var(--text-3);
+  font-weight: 500;
+  background: #fafbfd;
+}
+
+.pager {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.modal-mask {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 20, 34, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.modal {
+  background: #fff;
+  border-radius: 12px;
+  width: min(440px, calc(100vw - 32px));
+  padding: 20px;
+}
+
+.modal h3 {
+  margin-bottom: 14px;
+  font-size: 16px;
+}
+
+.form-item {
+  margin-bottom: 12px;
+}
+
+.form-item label {
+  display: block;
+  font-size: 13px;
+  color: var(--text-2);
+  margin-bottom: 5px;
+}
+
+.form-item input,
+.form-item select,
+.form-item textarea {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 10px;
+  background: #fff;
+}
+
+.form-item textarea {
+  resize: vertical;
+  min-height: 70px;
+}
+
+.toast {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(28, 33, 46, 0.92);
+  color: #fff;
+  padding: 9px 18px;
+  border-radius: 8px;
+  z-index: 200;
+  font-size: 13px;
+}
