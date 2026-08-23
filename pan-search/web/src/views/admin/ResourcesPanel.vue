@@ -292,7 +292,7 @@ export default {
   gap: 16px;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 700px) {
   .toolbar {
     flex-direction: column;
     align-items: stretch;

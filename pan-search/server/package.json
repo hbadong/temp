@@ -6,9 +6,11 @@
   "main": "src/index.js",
   "scripts": {
     "start": "node --experimental-sqlite --no-warnings src/index.js",
-    "dev": "node --experimental-sqlite --no-warnings --watch src/index.js"
+    "dev": "node --experimental-sqlite --no-warnings --watch src/index.js",
+    "sitemap": "node ../scripts/generate-sitemap.js"
   },
   "dependencies": {
+    "better-sqlite3": "^11.10.0",
     "express": "^4.21.2"
   }
 }

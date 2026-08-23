@@ -241,7 +241,7 @@ export default {
   padding: 60px 20px;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 700px) {
   .stat-grid {
     grid-template-columns: repeat(2, 1fr);
   }

@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#b46aff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#a25fe5;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="96" fill="url(#bg)"/>
+  <g transform="translate(256, 256)">
+    <!-- Cloud shape -->
+    <path d="M-120 -20 
+             Q-100 -40 -80 -30 
+             Q-60 -50 -40 -30 
+             Q-20 -50 0 -30 
+             Q20 -50 40 -30 
+             Q60 -50 80 -30 
+             Q100 -40 120 -20 
+             Q140 0 120 20 
+             Q100 40 80 30 
+             Q60 50 40 30 
+             Q20 50 0 30 
+             Q-20 50 -40 30 
+             Q-60 50 -80 30 
+             Q-100 40 -120 20 
+             Q-140 0 -120 -20 Z" 
+          fill="white" opacity="0.95"/>
+    <!-- Search icon -->
+    <circle cx="-10" cy="10" r="35" fill="none" stroke="#b46aff" stroke-width="8"/>
+    <line x1="20" y1="40" x2="45" y2="65" stroke="#b46aff" stroke-width="8" stroke-linecap="round"/>
+  </g>
+</svg>

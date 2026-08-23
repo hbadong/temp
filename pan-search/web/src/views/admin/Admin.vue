@@ -40,12 +40,16 @@
               @click.prevent="currentTab = t.key"
             >{{ t.label }}</a>
           </nav>
-          <button class="btn btn-sm" @click="logout">退出</button>
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <ThemeToggle />
+            <button class="btn btn-sm" @click="logout">退出</button>
+          </div>
         </div>
       </header>
       <main class="container main">
         <DashboardPanel v-if="currentTab === 'dashboard'" />
         <ResourcesPanel v-else-if="currentTab === 'resources'" />
+        <SubmissionsPanel v-else-if="currentTab === 'submissions'" />
         <ChannelsPanel v-else-if="currentTab === 'channels'" />
         <SensitivePanel v-else-if="currentTab === 'sensitive'" />
         <FeedbacksPanel v-else-if="currentTab === 'feedbacks'" />
@@ -63,6 +67,8 @@ import ChannelsPanel from './ChannelsPanel.vue'
 import SensitivePanel from './SensitivePanel.vue'
 import FeedbacksPanel from './FeedbacksPanel.vue'
 import LogsPanel from './LogsPanel.vue'
+import SubmissionsPanel from './SubmissionsPanel.vue'
+import ThemeToggle from '../../components/ThemeToggle.vue'
 
 export default {
   name: 'AdminView',
@@ -73,6 +79,8 @@ export default {
     SensitivePanel,
     FeedbacksPanel,
     LogsPanel,
+    SubmissionsPanel,
+    ThemeToggle,
   },
   data() {
     return {
@@ -83,6 +91,7 @@ export default {
       tabs: [
         { key: 'dashboard', label: '数据监控' },
         { key: 'resources', label: '资源管理' },
+        { key: 'submissions', label: '提交审核' },
         { key: 'channels', label: '频道管理' },
         { key: 'sensitive', label: '敏感词' },
         { key: 'feedbacks', label: '用户反馈' },
@@ -213,7 +222,7 @@ export default {
   padding-bottom: 40px;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 700px) {
   .login-card {
     padding: 20px 16px;
   }

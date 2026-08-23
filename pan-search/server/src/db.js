@@ -100,6 +100,36 @@ CREATE TABLE IF NOT EXISTS collect_logs (
   message TEXT,
   created_at TEXT NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS resource_files (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  resource_id INTEGER NOT NULL,
+  parent_id INTEGER,
+  name TEXT NOT NULL,
+  is_dir INTEGER NOT NULL DEFAULT 0,
+  size INTEGER,
+  created_at TEXT NOT NULL,
+  FOREIGN KEY (resource_id) REFERENCES resources(id) ON DELETE CASCADE,
+  FOREIGN KEY (parent_id) REFERENCES resource_files(id) ON DELETE CASCADE
+);
+CREATE INDEX IF NOT EXISTS idx_resource_files_resource ON resource_files(resource_id);
+CREATE INDEX IF NOT EXISTS idx_resource_files_parent ON resource_files(parent_id);
+
+CREATE TABLE IF NOT EXISTS resource_submissions (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  title TEXT NOT NULL,
+  link TEXT NOT NULL,
+  password TEXT,
+  cloud_type TEXT NOT NULL DEFAULT 'other',
+  res_type TEXT NOT NULL DEFAULT 'other',
+  size_text TEXT,
+  submitter TEXT,
+  status TEXT NOT NULL DEFAULT 'pending',
+  admin_note TEXT,
+  created_at TEXT NOT NULL,
+  reviewed_at TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_submissions_status ON resource_submissions(status);
 `);
 
 const stmtCache = new Map();

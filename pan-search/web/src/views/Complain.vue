@@ -4,6 +4,7 @@
       <div class="container header-inner">
         <router-link to="/" class="logo">盘搜</router-link>
         <span class="crumb">侵权投诉</span>
+        <ThemeToggle />
       </div>
     </header>
 
@@ -74,9 +75,11 @@
 
 <script>
 import { reportResource, submitFeedback } from '../api'
+import ThemeToggle from '../components/ThemeToggle.vue'
 
 export default {
   name: 'ComplainView',
+  components: { ThemeToggle },
   data() {
     return {
       type: 'infringe',
@@ -210,7 +213,7 @@ export default {
   box-shadow: 0 0 0 2px rgba(180, 106, 255, 0.2);
 }
 
-@media (max-width: 767px) {
+@media (max-width: 700px) {
   .form-card {
     padding: 20px 16px;
   }

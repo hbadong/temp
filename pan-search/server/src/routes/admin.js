@@ -236,4 +236,27 @@ router.post('/import', (req, res) => {
   res.json({ ok: true, ...result });
 });
 
+router.get('/submissions', (req, res) => {
+  const status = req.query.status || 'pending';
+  const page = Math.max(1, parseInt(req.query.page, 10) || 1);
+  const size = Math.min(50, Math.max(1, parseInt(req.query.size, 10) || 20));
+  res.json(store.listSubmissions({ status, page, size }));
+});
+
+router.post('/submissions/:id/approve', (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  const ok = store.approveSubmission(id);
+  if (!ok) return res.status(404).json({ error: '提交不存在或已处理' });
+  store.flushSearchCache();
+  res.json({ ok: true });
+});
+
+router.post('/submissions/:id/reject', (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  const { note } = req.body || {};
+  const ok = store.rejectSubmission(id, note);
+  if (!ok) return res.status(404).json({ error: '提交不存在或已处理' });
+  res.json({ ok: true });
+});
+
 module.exports = router;

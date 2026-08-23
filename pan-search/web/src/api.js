@@ -20,10 +20,16 @@ export function search(params) {
 
 export const getHot = () => request('/hot')
 export const getStats = () => request('/stats')
+export const getResourceDetail = (id) => request(`/resources/${id}/detail`)
+export const checkResourceUrl = (id) => request(`/resources/${id}/check`)
+export const getResourceUrl = (id) => request(`/resources/${id}/url`)
+export const getSearchSuggestions = (q, limit = 8) => request(`/search/suggest?q=${encodeURIComponent(q)}&limit=${limit}`)
 export const reportResource = (id, body) =>
   request(`/resources/${id}/report`, { method: 'POST', body: JSON.stringify(body) })
 export const submitFeedback = (body) =>
   request('/feedback', { method: 'POST', body: JSON.stringify(body) })
+export const submitResource = (body) =>
+  request('/resources/submit', { method: 'POST', body: JSON.stringify(body) })
 
 function adminHeaders() {
   return { 'X-Admin-Token': localStorage.getItem('admin_token') || '' }
