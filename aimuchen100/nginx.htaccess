@@ -1,0 +1,9 @@
+location ~ \.(zip|rar|7z|gz|ini|htm)$ {deny all;}
+location ~ /(view|lecms|admin)/.*\.(htm|ini)?$ {deny all;}
+location ~ ^/(static|log|runcache|upload)/.*.(php|php3|php4|php5|cgi|asp|aspx|jsp|shtml|shtm|pl|cfm|sql|mdb|dll|exe|com|inc|sh)$ {deny all;}
+if ($request_uri ~ "//") {
+	return 404;
+}
+if (!-e $request_filename) {
+	rewrite ^/(.+) /index.php?rewrite=$1 last;
+}

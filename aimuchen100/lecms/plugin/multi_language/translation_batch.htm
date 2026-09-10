@@ -1,0 +1,59 @@
+{inc:header.htm}
+<div class="layuimini-container">
+	<div class="layuimini-main">
+		<div class="layui-card">
+			<div class="layui-card-header">批量翻译</div>
+			<div class="layui-card-body">
+				<form id="form" method="post" action="?translation_batch-translate_post-ajax-1" class="layui-form">
+					<input type="hidden" name="FORM_HASH" value="{@form_hash()}" />
+					<div class="layui-form-item">
+						<label class="layui-form-label required">文章ID</label>
+						<div class="layui-input-block">
+							<input type="text" name="article_ids" class="layui-input" placeholder="1, 2, 3, ..." required>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">目标语言</label>
+						<div class="layui-input-block">
+							{loop:$target_langs $lang}
+							<input type="checkbox" name="languages[]" value="{$lang['language']}" title="{$lang['language_name']} ({$lang['language']})" lay-skin="primary">
+							{/loop}
+							{if:empty($target_langs)}
+							<p>暂无可用目标语言</p>
+							{/if}
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<div class="layui-input-block">
+							<button type="submit" class="layui-btn" lay-submit lay-filter="form">开始批量翻译</button>
+							<a class="layui-btn layui-btn-primary" href="?translation_batch-index">返回</a>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+layui.use(['form', 'layer', 'miniTab'], function(){
+	var form = layui.form, layer = layui.layer, miniTab = layui.miniTab;
+	form.render();
+
+	//监听提交
+	form.on('submit(form)', function () {
+		adminAjax.postform('#form', function (data) {
+			var json = toJson(data);
+			layer.msg(json.msg, {icon: json.err == 0 ? 1 : 5});
+			if (json.err == 0) {
+				setTimeout(function () {
+					miniTab.reloadIframe('index.php?translation_batch-index');
+					miniTab.deleteCurrentByIframe();
+				}, 1500);
+			}
+		});
+		return false;
+	});
+});
+</script>
+</body>
+</html>

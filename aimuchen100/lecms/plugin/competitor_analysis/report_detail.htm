@@ -1,0 +1,71 @@
+{inc:header.htm}
+<div class="layuimini-container">
+	<div class="layuimini-main">
+	<div class="layui-card">
+	<div class="layui-card-header">报告详情 - {$report['competitor_name']}</div>
+	<div class="layui-card-body">
+		<p><strong>URL：</strong><a href="{$report['competitor_url']}" target="_blank">{$report['competitor_url']}</a></p>
+		<p><strong>分析时间：</strong>{$report['analyzed_at']}</p>
+		<p><strong>报告类型：</strong>{if:$report['report_type'] == 'weekly'}周报{else}手动{/if}</p>
+
+		<fieldset class="layui-elem-field">
+			<legend>域名权重</legend>
+			<div class="layui-field-box">权重评分：{$report['domain_authority']}</div>
+		</fieldset>
+
+		<fieldset class="layui-elem-field">
+			<legend>标题策略</legend>
+			<div class="layui-field-box">
+				<p>标题长度：{php}echo isset($report['title_data']['title_length']) ? $report['title_data']['title_length'] : 0;{/php} 字符</p>
+				<p>描述长度：{php}echo isset($report['title_data']['description_length']) ? $report['title_data']['description_length'] : 0;{/php} 字符</p>
+			</div>
+		</fieldset>
+
+		<fieldset class="layui-elem-field">
+			<legend>模板结构</legend>
+			<div class="layui-field-box">
+				<p>CSS 框架：{php}echo implode(', ', (array)$report['template_data']['css_frameworks']);{/php}</p>
+				<p>JS 库：{php}echo implode(', ', (array)$report['template_data']['js_libraries']);{/php}</p>
+				<p>页面大小：{php}echo isset($report['template_data']['page_size_kb']) ? $report['template_data']['page_size_kb'] : 0;{/php} KB</p>
+			</div>
+		</fieldset>
+
+		<fieldset class="layui-elem-field">
+			<legend>服务器信息</legend>
+			<div class="layui-field-box">
+				<p>Server：{php}echo isset($report['server_info']['server']) ? $report['server_info']['server'] : 'Unknown';{/php}</p>
+				<p>CDN：{php}echo isset($report['server_info']['cdn']) ? $report['server_info']['cdn'] : 'None';{/php}</p>
+			</div>
+		</fieldset>
+
+		<fieldset class="layui-elem-field">
+			<legend>AI 优化建议</legend>
+			<div class="layui-field-box">
+				{if:$report['ai_suggestions']}
+				<div class="layui-card">
+					<div class="layui-card-header">标题优化</div>
+					<div class="layui-card-body"><ul>{loop:$report['ai_suggestions']['title_optimization'] $sug}<li>{$sug}</li>{/loop}</ul></div>
+				</div>
+				<div class="layui-card">
+					<div class="layui-card-header">内容策略</div>
+					<div class="layui-card-body"><ul>{loop:$report['ai_suggestions']['content_strategy'] $sug}<li>{$sug}</li>{/loop}</ul></div>
+				</div>
+				<div class="layui-card">
+					<div class="layui-card-header">技术 SEO</div>
+					<div class="layui-card-body"><ul>{loop:$report['ai_suggestions']['technical_seo'] $sug}<li>{$sug}</li>{/loop}</ul></div>
+				</div>
+				<div class="layui-card">
+					<div class="layui-card-header">用户体验</div>
+					<div class="layui-card-body"><ul>{loop:$report['ai_suggestions']['user_experience'] $sug}<li>{$sug}</li>{/loop}</ul></div>
+				</div>
+				{else}
+				<p>暂无 AI 建议（API 未配置或调用失败）</p>
+				{/if}
+			</div>
+		</fieldset>
+	</div>
+</div>
+	</div>
+</div>
+</body>
+</html>

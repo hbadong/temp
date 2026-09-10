@@ -1,0 +1,58 @@
+{inc:header.htm}
+<div class="layuimini-container">
+	<div class="layuimini-main">
+		<div class="layui-card">
+			<div class="layui-card-header">批量生成URL</div>
+			<div class="layui-card-body">
+				<form class="layui-form" id="form" action="?admin_url-generate_post-ajax-1" method="post">
+					<input type="hidden" name="FORM_HASH" value="{@form_hash()}" />
+					<div class="layui-form-item">
+                    <label class="layui-form-label">选择站点</label>
+                    <div class="layui-input-block">
+                        <select name="site_id" required lay-verify="required">
+                            <option value="">请选择站点</option>
+                            {loop:$sites $site}
+                            <option value="{$site['sid']}">{$site['site_name']} ({$site['domain']})</option>
+                            {/loop}
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">生成数量</label>
+                    <div class="layui-input-block">
+                        <input type="number" name="count" value="1000" min="1" max="100000" required lay-verify="required" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button class="layui-btn" lay-submit lay-filter="form">生成URL</button>
+                        <a href="?admin_url-index" class="layui-btn layui-btn-primary">返回</a>
+                    </div>
+                </div>
+			</form>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	layui.use(['form','layer', 'miniTab'], function () {
+		var layer = layui.layer, form = layui.form, miniTab = layui.miniTab;
+
+		//监听提交
+		form.on('submit(form)', function () {
+			adminAjax.postform('#form',function (data) {
+				var json = toJson(data);
+				layer.msg(json.msg, {icon: json.err==0 ? 1 : 5});
+				if(json.err==0) {
+					setTimeout(function(){
+						miniTab.reloadIframe('index.php?admin_url-index');
+						miniTab.deleteCurrentByIframe();
+					}, 1500);
+				}
+			});
+			return false;
+		});
+	});
+</script>
+</body>
+</html>

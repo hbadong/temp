@@ -1,0 +1,129 @@
+{inc:header.htm}
+<div class="layuimini-container">
+    <div class="layuimini-main">
+        <div class="layui-card">
+            <div class="layui-card-header">【{$models['name']}模型】添加扩展字段</div>
+            <div class="layui-card-body layui-row">
+                <form class="layui-form" id="form" action="?models_field-{$_GET['action']}-ajax-1" method="post">
+                    <input type="hidden" name="FORM_HASH" value="{@form_hash()}" />
+                    <input name="id" type="hidden" value="{$data['id']}" />
+                    <input name="mid" type="hidden" value="{$data['mid']}" />
+                    <div class="layui-form-item">
+                        <label class="layui-form-label required">显示名称</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="name" lay-verify="required" lay-reqtext="显示名称不能为空" placeholder="请输入显示名称" value="{$data['name']}" class="layui-input"/>
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">用于 后台添加编辑内容时显示</div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label required">表字段名</label>
+                        <div class="layui-input-inline">
+                          <input type="text" name="field" lay-verify="required" lay-reqtext="数据表字段名称不能为空" placeholder="请输入数据表字段名称" value="{$data['field']}" class="layui-input"/>
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">英文字母和数字</div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label required">类型</label>
+                        <div class="layui-input-inline">
+                            {$inputtype}
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">谨慎操作，不能修改</div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">字段长度</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="length" placeholder="字段长度" value="" class="layui-input"/>
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">输入字段长度</div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">提示语</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="tips" placeholder="提示语" value="{$data['tips']}" class="layui-input"/>
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">输入框提示语</div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">设置</label>
+                        <div class="layui-input-block">
+                            <textarea name="setting" class="layui-textarea" placeholder="类型为下拉框、单选项、多选项时，此处必须填写(格式【数据表值=>显示名】：0=>男#1=>女#2=>保密)。" autocomplete="off" style="min-height: 50px;">{$data['setting']}</textarea>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">储存表</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="isbase" value="1" title="主表" {if:$data['isbase']==1}checked{/if}>
+                            <input type="radio" name="isbase" value="0" title="附表" {if:$data['isbase']==0}checked{/if}>
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">如果只在前台内容页调用，就选择附表。</div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">排序值</label>
+                        <div class="layui-input-inline">
+                            <input type="number" name="orderby" value="{$data['orderby']}" class="layui-input"/>
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">后台添加或者编辑时，显示顺序（升序）</div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">是否必填</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="required" value="1" title="是" {if:$data['required']==1}checked{/if}>
+                            <input type="radio" name="required" value="0" title="否" {if:$data['required']==0}checked{/if}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">索引</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="index" value="0" title="无" {if:$data['index']==0}checked{/if}>
+                            <input type="radio" name="index" value="1" title="一般索引" {if:$data['isbase']==1}checked{/if}>
+                            <input type="radio" name="index" value="2" title="唯一索引" {if:$data['isbase']==2}checked{/if}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">索引说明</label>
+                        <div class="layui-form-mid layui-word-aux">如果字段参与搜索，可以添加索引，一般情况下都不需要索引。如果能确保每次添加内容时，该字段值有值并且是唯一的，可以选择唯一索引！</div>
+                    </div>
+                    {hook:admin_models_field_set_after.htm}
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button class="layui-btn" lay-submit lay-filter="form">保存</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+   </div>
+</div>  
+
+<script type="text/javascript">
+    layui.use(['form','layer', 'miniTab'], function () {
+        var layer = layui.layer, form = layui.form, miniTab = layui.miniTab;
+        //监听提交
+        form.on('submit(form)', function () {
+            layer.confirm('提交后不可修改，确认添加？', {
+                btn: ['确认','取消'] //按钮
+            }, function(){
+                adminAjax.postform("#form",function(data){
+                    var json = toJson(data);
+                    if( json.err == 0 ){
+                        var icon = 1;
+                    }else{
+                        var icon = 5;
+                    }
+                    layer.msg(json.msg, {icon: icon});
+                    if(json.err==0) {
+                        setTimeout(function(){
+                            miniTab.reloadIframe('?models_field-index-mid-'+{$data['mid']});
+                            miniTab.deleteCurrentByIframe();
+                        }, 1500);
+                    }
+                });
+            }, function(){
+            });
+            return false;
+        });
+    });
+</script>
+</body>
+</html>

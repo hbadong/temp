@@ -1,0 +1,140 @@
+{inc:header.htm}
+
+<!-- 截图灯箱样式 -->
+<link rel="stylesheet" href="{$cfg[tpl]}style/css/screenshot.css" type="text/css" media="all"/>
+
+<!-- 内容详情数据（生成 $gdata） -->
+{block:global_show show_prev_next="1" dateformat="Y-m-d" field_format="1"}{/block}
+
+<!-- 面包屑导航 -->
+<div class="crumb">
+	<div>
+		<i class="ico"></i>所在位置：
+		<a href="{$cfg[weburl]}" target="_blank">首页</a>
+		&nbsp;&gt;&nbsp;
+		<a href="{$cfg_var[url]}" target="_blank">{$cfg_var[name]}</a>
+		&nbsp;&gt;&nbsp;
+		{$gdata[title]}
+	</div>
+</div>
+
+<div class="wraper">
+	<div class="stradetail_left">
+		<!-- 文章主体 -->
+		<section class="straDeCont">
+			<div class="tit">
+				<h1>{$gdata[title]}</h1>
+				<p>
+					<span>文章来源：{if:$gdata[source]}{$gdata[source]}{else}网络{/if}</span>
+					<span>作者：{$gdata[author]}</span>
+					<span>发布时间：{$gdata[date]}</span>
+				</p>
+			</div>
+			<div class="cont">
+				{$gdata[content]}
+			</div>
+			<!-- 上一篇 / 下一篇 -->
+			<div class="next_pre">
+				<p>上一篇：{if:isset($gdata[prev][url])}<a href="{$gdata[prev][url]}" class="prev_article">{$gdata[prev][title]}</a>{else}没有了{/if}</p>
+				<p>下一篇：{if:isset($gdata[next][url])}<a href="{$gdata[next][url]}" class="next_article">{$gdata[next][title]}</a>{else}没有了{/if}</p>
+			</div>
+		</section>
+
+		<!-- 相关新闻 -->
+		<section class="ga_strategy">
+			<div class="tiTle"><em>相关新闻</em></div>
+			<div class="circleList">
+				<ul>
+					{block:list limit="5"}
+					{loop:$data[list] $v}
+					<li><a title="{$v[title]}" href="{$v[url]}" target="_blank"><p>{$v[subject]}</p></a></li>
+					{/loop}
+					<div class="line"></div>
+					{/block}
+				</ul>
+				<ul>
+					{block:list limit="5" start="5"}
+					{loop:$data[list] $v}
+					<li><a title="{$v[title]}" href="{$v[url]}" target="_blank"><p>{$v[subject]}</p></a></li>
+					{/loop}
+					<div class="line"></div>
+					{/block}
+				</ul>
+			</div>
+		</section>
+
+		<!-- 同类推荐（游戏/软件） -->
+		<section class="straga_same">
+			<div class="tiTle"><em>同类推荐</em></div>
+			<ul>
+				{block:list_top cid="1" orderby="dateline" limit="10"}
+				{loop:$data[list] $v}
+				<li>
+					<a href="{$v[url]}" target="_blank" title="{$v[title]}">
+						<img src="{$v[pic]}" alt="{$v[title]}" onerror="this.src='{$cfg[tpl]}style/img/nopic.png'">
+						<div class="info">
+							<p class="name">{$v[subject]}</p>
+							<p><span>{$v[cate_name]}</span>&nbsp;|&nbsp;<span>{$v[size]}</span></p>
+							<p class="btn">查看</p>
+						</div>
+					</a>
+				</li>
+				{/loop}
+				{/block}
+			</ul>
+		</section>
+	</div>
+
+	<div class="stradetail_right">
+		<!-- 手游新品榜 -->
+		<section class="ga_rank">
+			<div class="title_l"><em>手游新品榜</em><a href="{$cfg[weburl]}game/" target="_blank"><i class="ico"></i></a></div>
+			<ul>
+				{block:list cid="1" limit="10" orderby="dateline" orderway="-1"}
+				{loop:$data[list] $v}
+				<li>
+					<a href="{$v[url]}" target="_blank" title="{$v[title]}">
+						<img src="{$v[pic]}" alt="{$v[title]}" onerror="this.src='{$cfg[tpl]}style/img/nopic.png'">
+						<div class="info">
+							<div class="name">{$v[subject]}</div>
+							<p><span>{$v[cate_name]}</span></p>
+							<p class="txt">{$v[intro]}</p>
+						</div>
+					</a>
+				</li>
+				{/loop}
+				{/block}
+			</ul>
+		</section>
+
+		<!-- 热门推荐 -->
+		<section class="strade_hot">
+			<div class="tiTle"><em>热门推荐</em><a href="{$cfg[weburl]}news/" target="_blank"><i class="ico"></i></a></div>
+			{block:list limit="1"}
+			{loop:$data[list] $v}
+			<a href="{$v[url]}" target="_blank" title="{$v[title]}">
+				<img src="{$v[pic]}" alt="{$v[title]}" onerror="this.src='{$cfg[tpl]}style/img/nopic.png'">
+				<p>{$v[subject]}</p>
+			</a>
+			{/loop}
+			{/block}
+			<div class="circleList">
+				<ul>
+					{block:list_top orderby="views" limit="5"}
+					{loop:$data[list] $v}
+					<li><span>{@date('m-d', $v['dateline'])}</span><a title="{$v[title]}" href="{$v[url]}" target="_blank">{$v[subject]}</a></li>
+					{/loop}
+					{/block}
+				</ul>
+			</div>
+		</section>
+	</div>
+</div>
+
+<!-- 参考网站原生 JS -->
+<script src="{$cfg[tpl]}script/index.js"></script>
+<script src="{$cfg[tpl]}script/permission.js"></script>
+<script src="{$cfg[tpl]}script/screenshot.js"></script>
+<script src="{$cfg[tpl]}script/gameDetail.js"></script>
+
+{inc:footer.htm}

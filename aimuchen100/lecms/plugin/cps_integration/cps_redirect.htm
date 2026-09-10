@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>正在跳转...</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #f5f6fa; margin: 0; padding: 0; }
+        .cps-box { max-width: 520px; margin: 80px auto; background: #fff; border-radius: 12px; padding: 40px; text-align: center; box-shadow: 0 4px 24px rgba(0,0,0,.08); }
+        .cps-box h1 { font-size: 22px; color: #333; margin: 0 0 6px; }
+        .cps-box .game-name { font-size: 14px; color: #888; margin-bottom: 20px; }
+        .countdown { font-size: 56px; font-weight: 700; color: #3498db; margin: 10px 0; }
+        .countdown small { font-size: 16px; color: #bbb; font-weight: 400; }
+        .cps-box .tip { color: #999; font-size: 14px; margin: 10px 0 20px; }
+        .cps-box .url { font-size: 12px; color: #666; word-break: break-all; background: #f8f9fb; border-radius: 6px; padding: 10px; margin-top: 16px; }
+        .cps-box .fallback { margin-top: 20px; font-size: 13px; }
+        .cps-box .fallback a { color: #3498db; }
+        .spinner { width: 32px; height: 32px; margin: 0 auto 12px; border: 3px solid #e0e5ee; border-top-color: #3498db; border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div class="cps-box">
+        <div class="spinner"></div>
+        <h1>即将开始下载</h1>
+        <div class="game-name">{$game_name}</div>
+        <div class="countdown"><span id="countdown">3</span><small> 秒</small></div>
+        <p class="tip">正在跳转到下载页面，请稍候...</p>
+        {if:$backup_url}
+        <div class="fallback">
+            <p>如果页面没有自动跳转，请点击备用链接：</p>
+            <a href="{$backup_url}">{$backup_url}</a>
+        </div>
+        {/if}
+        <div class="url">{$download_url}</div>
+    </div>
+    <script>
+        var countdown = 3;
+        var targetUrl = {$download_url_json};
+        var el = document.getElementById('countdown');
+        var interval = setInterval(function() {
+            countdown--;
+            if (el) el.textContent = countdown;
+            if (countdown <= 0) {
+                clearInterval(interval);
+                if (targetUrl) window.location.href = targetUrl;
+            }
+        }, 1000);
+        setTimeout(function() {
+            if (targetUrl) window.location.href = targetUrl;
+        }, 3500);
+    </script>
+</body>
+</html>

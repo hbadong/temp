@@ -1,0 +1,180 @@
+{inc:header.htm}
+<div class="layuimini-container">
+    <div class="layuimini-main">
+        <fieldset class="table-search-fieldset">
+            <legend>{lang:search}</legend>
+            <div>
+                <form class="layui-form layui-form-pane">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">{lang:user_group}</label>
+                            <div class="layui-input-inline">
+                                {$groupidhtml}
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">{lang:username}</label>
+                            <div class="layui-input-inline">
+                                <input placeholder="{lang:username}" autocomplete="off" type="text" class="layui-input" name="username" />
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">{lang:email}</label>
+                            <div class="layui-input-inline">
+                                <input placeholder="{lang:email}" autocomplete="off" type="text" class="layui-input" name="email" />
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">{lang:uid}</label>
+                            <div class="layui-input-inline">
+                                <input placeholder="{lang:uid}" autocomplete="off" type="number" class="layui-input" name="uid" />
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button type="submit" class="layui-btn layui-btn-primary"  lay-submit lay-filter="data-search-btn"><i class="layui-icon"></i> {lang:search}</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </fieldset>
+        <script type="text/html" id="toolbar">
+            <div class="layui-btn-container">
+                <button class="layui-btn layui-btn-sm layui-btn-normal" lay-event="add">{lang:add}</button>
+                <button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="delete">{lang:batch_delete}</button>
+            </div>
+        </script>
+        <table class="layui-hide" id="data-table" lay-filter="data-table-filter"></table>
+
+        <script type="text/html" id="currentTableBar">
+            <div class="layui-btn-group">
+                <a class="layui-btn layui-btn-xs" lay-event="edit">{lang:edit}</a>
+                <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="info">{lang:view}</a>
+                <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="pwd">{lang:edit_pwd}</a>
+                <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delete">{lang:delete}</a>
+            </div>
+        </script>
+    </div>
+</div>
+<script id="edit_code" type="text/html">
+    <div class="layui-form">
+        <div class="layui-form-item">
+            <label class="layui-form-label required">{lang:new_password}</label>
+            <div class="layui-input-block">
+                <input id="t_newpw" name="newpw" type="text" required="required" value="123456" class="layui-input" />
+            </div>
+        </div>
+    </div>
+</script>
+<script type="text/javascript">
+    layui.use(['form','layer', 'table', 'miniTab'], function () {
+        var layer = layui.layer, form = layui.form, table = layui.table, miniTab = layui.miniTab;
+
+        table.render({
+            elem: '#data-table',
+            url: 'index.php?user-get_list',
+            height: 'full-145',
+            toolbar: '#toolbar',
+            defaultToolbar: ['filter', 'exports', 'print'],
+            cellMinWidth: 50,
+            escape: false,
+            cols: [[{$cols}]],
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 15,
+            page: true
+        });
+        // 监听搜索操作
+        form.on('submit(data-search-btn)', function (data) {
+            //执行搜索重载
+            table.reload('data-table', {
+                page: {
+                    curr: 1
+                }
+                , where: {
+                    groupid: data.field.groupid,
+                    uid: data.field.uid,
+                    email: data.field.email,
+                    username: data.field.username
+                }
+            }, 'data');
+
+            return false;
+        });
+        /**
+         * toolbar监听事件 table列表 头部的操作
+         */
+        table.on('toolbar(data-table-filter)', function (obj) {
+            if (obj.event === 'add') {  // 监听添加操作
+                miniTab.openNewTabByIframe({
+                    href:"index.php?user-add",
+                    title:"{lang:add_user}",
+                });
+            } else if (obj.event === 'delete') {  // 监听删除操作
+                var checkStatus = table.checkStatus('data-table')
+                    , data = checkStatus.data;
+                var len = data.length;
+                if(len == 0){
+                    layer.msg('{lang:select_data}',{icon:5});
+                    return false;
+                }else{
+                    adminAjax.confirm('{lang:delete_confirm}', function () {
+                        var id_arr = [];
+                        for (var i in data) {
+                            id_arr[i] = data[i]['uid'];
+                        }
+                        adminAjax.postd("index.php?user-batch_del-ajax-1", {"id_arr": id_arr});
+                    });
+                }
+            }
+        });
+        //监听单元格编辑
+        table.on('edit(data-table-filter)', function(obj){
+            var value = obj.value //得到修改后的值
+                ,data = obj.data //得到所在行所有键值
+                ,field = obj.field; //得到字段
+            adminAjax.postd("index.php?user-set-ajax-1", {"uid":data.uid, "field":field, "value":value});
+        });
+        //监听每一行的操作
+        table.on('tool(data-table-filter)', function (obj) {
+            var data = obj.data;
+
+            if (obj.event === 'edit') {
+                miniTab.openNewTabByIframe({
+                    href:"index.php?user-edit-uid-"+data.uid,
+                    title:"{lang:edit_user}",
+                });
+            } else if (obj.event === 'info') {
+                var url = 'index.php?user-info-uid-'+data.uid;
+                adminAjax.open('{lang:view}',url,'95%','90%', function () {});
+            } else if (obj.event === 'pwd') {
+                adminAjax.confirm($('#edit_code').html(),function () {
+                    var newpw = $("#t_newpw").val();
+                    if(newpw == ''){
+                        layer.msg('{lang:new_pwd_no_empty}', {icon:5});
+                    }else{
+                        adminAjax.postd("index.php?user-pwd-ajax-1", {"newpw":newpw,"uid":data.uid},function (json) {
+                            if( json.err == 0 ){
+                                var icon = 1;
+                            }else{
+                                var icon = 5;
+                            }
+                            layer.msg(json.msg, {icon: icon});
+                            if(json.err==0 && json.name != '') {
+                                setTimeout(function(){
+                                    window.location.href = json.name;
+                                }, 1000);
+                            }
+                        });
+                    }
+                },function () {
+
+                },'{lang:edit_pwd}');
+            } else if (obj.event === 'delete') {
+                adminAjax.confirm('{lang:delete_confirm}', function () {
+                    adminAjax.postd("index.php?user-del-ajax-1", {"uid":data.uid});
+                });
+            }
+        });
+    });
+</script>
+</body>
+</html>

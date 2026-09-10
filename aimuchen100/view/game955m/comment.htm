@@ -1,0 +1,26 @@
+{inc:header.htm}
+        <ul class="url-here">
+            <li><a href="{$cfg[weburl]}">首页</a></li>
+            <li><h1>评论</h1></li>
+        </ul>
+        <div class="section">
+            <div class="section-hd">
+                <h3 class="title">评论列表</h3>
+            </div>
+            <div class="comment-list">
+                {block:comment pagenum="20"}{loop:$data[list] $v}
+                <div class="comment-item" style="padding:0.3rem;border-bottom:1px solid #eee;">
+                    <p style="color:#333;">{$v[username]} <span style="color:#999;font-size:0.24rem;">{@date('Y-m-d H:i', $v['dateline'])}</span></p>
+                    <p style="margin-top:0.1rem;color:#666;">{$v[content]}</p>
+                </div>
+                {/loop}{/block}
+                <div class="pagecode">{$data[pages]}</div>
+            </div>
+        </div>
+{inc:footer.htm}
+<script type="text/javascript">
+    seajs.use('app/common', function(fn){
+        fn.init();
+    });
+</script>
+</div></body></html>

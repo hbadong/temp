@@ -1,0 +1,224 @@
+{inc:header.htm}
+        {block:global_show show_prev_next="1" dateformat="Y-m-d" field_format="1"}{/block}
+        <ul class="url-here"><li><a href="{$cfg[weburl]}">首页</a></li>{loop:$cfg_var[place] $p $k}{if:$k == 0}<li><a href="{$p[url]}">{$p[name]}</a></li>{/if}{/loop}<li class="active">{$gdata[subject]}</li></ul>
+        <!-- 软件信息 -->
+        <div class="soft-info">
+            <div class="bd">
+                <div class="divimg">
+                    <img class="pic" src="{$gdata[pic]}" alt="{$gdata[title]}">
+                </div>
+                <dl class="con">
+                    <dt><h1>{$gdata[subject]}</h1></dt>
+                    <dd class="flex flex-center">
+                        <div class="col">
+                            <p>版本：{$gdata[version]}</p>
+                            <p>大小：{$gdata[size]}</p>
+                        </div>
+                        <div class="col">
+                            <p>类别：{$cfg_var[name]}</p>
+                            <p>时间：{@date('Y-m-d', $gdata['dateline'])}</p>
+                        </div>
+                    </dd>
+                </dl>
+            </div>
+            <div class="ft" id="download_url_show">
+                {if:$gdata[download_url_android]}
+                <a class="btn btn-gs" href="{$gdata[download_url_android]}" rel="nofollow"><i class="icon-down-gs"></i>高速下载</a>
+                {/if}
+                {if:$gdata[download_url_ios]}
+                <a class="btn btn-pt" href="{$gdata[download_url_ios]}" rel="nofollow"><i class="icon-down-pt"></i>普通下载</a>
+                {/if}
+                {if:!$gdata[download_url_android] && !$gdata[download_url_ios]}
+                <span class="btn btn-none"><i class="icon-down-none"></i>暂不提供</span>
+                {/if}
+            </div>
+        </div>
+        <!-- 软件介绍 -->
+        <div class="section">
+            <div class="section-hd">
+                <h3 class="title">软件介绍</h3>
+            </div>
+            <div class="soft-remark" id="softRemarkText">
+                {php}
+                if (!empty($gdata['content']) && preg_match_all('/<img[^>]+src="([^"]+)"/', $gdata['content'], $m) && !empty($m[1])) {
+                    echo '<div class="soft-focus" id="softFocus"><div class="bd"><ul>';
+                    foreach ($m[1] as $img) {
+                        echo '<li><img src="' . $img . '" alt="' . $gdata['subject'] . '"></li>';
+                    }
+                    echo '</ul></div><div class="hd"><ul></ul></div></div>';
+                }
+                {/php}
+                <div class="text">
+                    <div class="text-inner">
+                        {$gdata[content]}
+                    </div>
+                    <div class="text-toggle" id="textShow">展开全部<i class="arrow-down"></i></div>
+                    <div class="text-toggle text-toggle-hide" id="textHide">收起<i class="arrow-up"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 精品推荐 -->
+        <div class="section">
+            <div class="section-hd">
+                <h3 class="title">精品推荐</h3>
+            </div>
+            <div class="soft-list">
+                <ul class="list" id="jptj">
+                    {block:list_flag flag="1" mid="3" limit="5"}{loop:$data[list] $v}
+                    <li class="item">
+                        <a href="{$v[url]}"><img class="pic lazy" src="{$v[pic]}" alt="{$v[title]}">
+                            <div class="tit">{$v[subject]}</div>
+                        </a>
+                    </li>
+                    {/loop}{/block}
+                </ul>
+            </div>
+        </div>
+
+        <!-- 相关下载 -->
+        <div class="section" id="xgxz">
+            <div class="section-hd">
+                <h3 class="title">相关下载</h3>
+            </div>
+            <div class="soft-list">
+                <ul class="list">
+                    {php}
+                    $xgxz_conf = array('cid' => (int)$cfg_var['cid'], 'mid' => 3, 'limit' => 8);
+                    $xgxz_data = block_list($xgxz_conf);
+                    {/php}
+                    {loop:$xgxz_data[list] $v}
+                    <li class="item">
+                        <a href="{$v[url]}"><img class="pic lazy" src="{$v[pic]}" alt="{$v[title]}">
+                            <div class="tit">{$v[subject]}</div>
+                            <div class="btn btn-link">查看</div>
+                        </a>
+                    </li>
+                    {/loop}
+                </ul>
+            </div>
+        </div>
+
+        <!-- 相关文章 -->
+        <div class="section">
+            <div class="section-hd">
+                <h3 class="title">相关文章</h3>
+                <a class="more" href="{$cfg[webdir]}news/">更多+</a>
+            </div>
+            <div class="strategy-list">
+                <ul class="list">
+                    {block:list cid="39" mid="2" limit="5"}{loop:$data[list] $v}
+                    <li class="item flex">
+                        <div class="tit flex-item"><a href="{$v[url]}">{$v[subject]}</a></div>
+                        <div class="date">{@date('m/d', $v['dateline'])}</div>
+                    </li>
+                    {/loop}{/block}
+                </ul>
+            </div>
+        </div>
+
+        <!-- 热门搜索 -->
+        <div class="section">
+            <div class="section-hd">
+                <h3 class="title">热门搜索</h3>
+            </div>
+            <div class="dcatetory hot_game">
+                {block:list_flag flag="2" mid="3" limit="16"}{loop:$data[list] $v}
+                <a href="{$v[url]}">{$v[subject]}</a>
+                {/loop}{/block}
+            </div>
+        </div>
+
+        <!-- 手游排行榜 -->
+        <div class="section mobile-games-list" id="mobileGamesList">
+            <div class="section-hd">
+                <h3 class="title">手游排行榜</h3>
+                <ul class="tab-cell">
+                    <li class="on">最新排行</li>
+                    <li>最热排行</li>
+                    <li>评分最高</li>
+                </ul>
+            </div>
+            <div class="tab-content on">
+                <div class="soft-list2">
+                    <div class="list">
+                        {block:list mid="3" limit="12" orderby="dateline" orderway="-1"}{loop:$data[list] $v}
+                        <a class="list-item flex{if:$v[xuhao] > 4} hide{/if}" href="{$v[url]}">
+                            <div class="col">
+                                <img class="pic lazy" src="{$v[pic]}" alt="{$v[title]}">
+                            </div>
+                            <div class="con flex-item">
+                                <div class="tit">{$v[subject]}</div>
+                                <div class="star star{$v[star]}"></div>
+                                <div class="txt">
+                                    <span class="attr">{$v[cate_name]}</span>
+                                    <span class="attr">大小:{$v[size]}</span>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <span class="btn btn-download">查&nbsp;看</span>
+                            </div>
+                        </a>
+                        {/loop}{/block}
+                    </div>
+                </div>
+                <div class="section-ft">
+                    <a class="btn btn-more">查看更多</a>
+                </div>
+            </div>
+            <div class="tab-content">
+                <div class="soft-list2">
+                    <div class="list">
+                        {block:list_top orderby="views" mid="3" limit="12"}{loop:$data[list] $v}
+                        <a class="list-item flex{if:$v[xuhao] > 4} hide{/if}" href="{$v[url]}">
+                            <div class="col">
+                                <img class="pic lazy" src="{$v[pic]}" alt="{$v[title]}">
+                            </div>
+                            <div class="con flex-item">
+                                <div class="tit">{$v[subject]}</div>
+                                <div class="star star{$v[star]}"></div>
+                                <div class="txt">
+                                    <span class="attr">{$v[cate_name]}</span>
+                                    <span class="attr">大小:{$v[size]}</span>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <span class="btn btn-download">查&nbsp;看</span>
+                            </div>
+                        </a>
+                        {/loop}{/block}
+                    </div>
+                </div>
+                <div class="section-ft">
+                    <a class="btn btn-more">查看更多</a>
+                </div>
+            </div>
+            <div class="tab-content">
+                <div class="soft-list2">
+                    <div class="list">
+                        {block:list_flag flag="1" mid="3" limit="12"}{loop:$data[list] $v}
+                        <a class="list-item flex{if:$v[xuhao] > 4} hide{/if}" href="{$v[url]}">
+                            <div class="col">
+                                <img class="pic lazy" src="{$v[pic]}" alt="{$v[title]}">
+                            </div>
+                            <div class="con flex-item">
+                                <div class="tit">{$v[subject]}</div>
+                                <div class="star star{$v[star]}"></div>
+                                <div class="txt">
+                                    <span class="attr">{$v[cate_name]}</span>
+                                    <span class="attr">大小:{$v[size]}</span>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <span class="btn btn-download">查&nbsp;看</span>
+                            </div>
+                        </a>
+                        {/loop}{/block}
+                    </div>
+                </div>
+                <div class="section-ft">
+                    <a class="btn btn-more">查看更多</a>
+                </div>
+            </div>
+        </div>
+{inc:footer.htm}

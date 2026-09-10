@@ -1,0 +1,77 @@
+{inc:header.htm}
+
+<div class="crumb">
+    <div><i class="ico"></i>所在位置：
+        <a href="{$cfg[weburl]}" target="_blank">首页</a> &gt; <a href="{$cate_url}">资讯攻略</a>
+    </div>
+</div>
+
+<div class="wraper">
+    <div class="strategy_left">
+        <section class="stra_list">
+            {block:global_cate pagenum="20" dateformat="Y-m-d" intronum="100" showcate="1"}{/block}
+            <ul>
+                {loop:$gdata[list] $v}
+                <li>
+                    <a href="{$v[url]}" target="_blank" title="{$v[title]}">
+                        <img src="{$v[pic]}" alt="{$v[title]}" onerror="this.src='{$cfg[tpl]}style/img/nopic.png'">
+                        <div class="info">
+                            <strong>{$v[subject]}</strong>
+                            <p class="txt">{$v[intro]}</p>
+                            <p class="time">
+                                <span><i class="ico"></i>{$v[cate_name]}</span>
+                                <span><i class="ico"></i>{$v[date]}</span>
+                            </p>
+                        </div>
+                    </a>
+                </li>
+                {/loop}
+            </ul>
+            <div class="pagecode">
+                {$gdata[pages]}
+            </div>
+        </section>
+    </div>
+    <div class="strategy_right">
+        <section class="stra_hot">
+            <div class="title_l"><em>热门推荐</em><a href="{$cfg[weburl]}news/" target="_blank"><i class="ico"></i></a></div>
+            <ul>
+                {block:list_top orderby="views" limit="7"}
+                {loop:$data[list] $v}
+                <li>
+                    <a href="{$v[url]}" target="_blank" title="{$v[title]}">
+                        <img src="{$v[pic]}" alt="{$v[title]}" onerror="this.src='{$cfg[tpl]}style/img/nopic.png'">
+                        <div class="info">
+                            <p>{$v[subject]}</p>
+                            <span>{$v[date]}</span>
+                        </div>
+                    </a>
+                </li>
+                {/loop}
+                {/block}
+            </ul>
+        </section>
+        <section class="ga_rank">
+            <div class="title_l"><em>手游新品榜</em><a href="{$cfg[weburl]}game/" target="_blank"><i class="ico"></i></a></div>
+            <ul>
+                <!-- 手游新品榜：cid="0" 显示该模型下所有内容，管理员可替换为手机游戏分类的实际 cid -->
+                {block:list cid="15" mid="3" limit="10" orderby="dateline" orderway="-1"}
+                {loop:$data[list] $v}
+                <li>
+                    <a href="{$v[url]}" target="_blank" title="{$v[title]}">
+                        <img src="{$v[pic]}" alt="{$v[title]}" onerror="this.src='{$cfg[tpl]}style/img/nopic.png'">
+                        <div class="info">
+                            <div class="name">{$v[subject]}</div>
+                            <p><span>{$v[cate_name]}</span></p>
+                            <p class="txt">{$v[intro]}</p>
+                        </div>
+                    </a>
+                </li>
+                {/loop}
+                {/block}
+            </ul>
+        </section>
+    </div>
+</div>
+
+{inc:footer.htm}

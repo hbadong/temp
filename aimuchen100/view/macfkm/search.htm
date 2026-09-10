@@ -1,0 +1,51 @@
+{inc:header.htm}
+<main class="page-module__MO71vG__main">
+    <section class="page-module__MO71vG__hero">
+        <div class="page-module__MO71vG__heroBackground">
+        </div>
+        <div class="page-module__MO71vG__heroContent">
+            <p class="page-module__MO71vG__eyebrow">搜索结果</p>
+            <h1 class="page-module__MO71vG__title">“{$keyword}”</h1>
+            <p class="page-module__MO71vG__summary">为您找到 {if:$gdata[total]}{$gdata[total]}{else}0{/if} 款相关的 Windows 应用及内容。</p>
+            <div class="page-module__MO71vG__chips" aria-label="热门搜索">
+                <a class="page-module__MO71vG__chip" href="{$cfg[weburl]}winoffice/">办公</a>
+                <a class="page-module__MO71vG__chip" href="{$cfg[weburl]}winmedia/">媒体</a>
+                <a class="page-module__MO71vG__chip" href="{$cfg[weburl]}winmotion/">影视</a>
+                <a class="page-module__MO71vG__chip" href="{$cfg[weburl]}winsystem/">系统</a>
+                <a class="page-module__MO71vG__chip" href="{$cfg[weburl]}windesign/">设计</a>
+                {block:list_flag flag="1" cid="92" mid="6" limit="3" intronum="15"}
+                {loop:$data[list] $v}
+                <a class="page-module__MO71vG__chip" href="{$v[url]}">{$v[subject]}</a>
+                {/loop}
+                {/block}
+            </div>
+        </div>
+    </section>
+    <section class="page-module__MO71vG__resultsSection">
+        <div class="page-module__MO71vG__resultsHead">
+            <h2 class="page-module__MO71vG__resultsTitle">搜索结果</h2>
+            <p class="page-module__MO71vG__resultsMeta">{if:$gdata[total]}{$gdata[total]}{else}0{/if} 款应用</p>
+        </div>
+        <div class="page-module__MO71vG__resultsGrid">
+            {block:global_search pagenum="20" dateformat="Y-m-d" field_format="1"}
+            {loop:$gdata[list] $v}
+            <a class="page-module__MO71vG__storeCard" href="{$v[url]}">
+                <div class="page-module__MO71vG__storeCardCover">
+                    <img alt="{$v[title]}" class="page-module__MO71vG__storeCardImage" draggable="false" src="{$v[pic]}"/>
+                </div>
+                <div class="page-module__MO71vG__storeCardMeta">
+                    <img alt="{$v[title]}" class="page-module__MO71vG__storeCardIcon" draggable="false" src="{$v[pic]}"/>
+                    <div class="page-module__MO71vG__storeCardCopy">
+                        <div class="page-module__MO71vG__storeCardTitle">{$v[subject]}</div>
+                        <div class="page-module__MO71vG__storeCardSubtitle">{@implode(' / ', (array)$v['tags'])} · {@$v['developer']}</div>
+                    </div>
+                    <span class="page-module__MO71vG__storeCardAction">获取</span>
+                </div>
+            </a>
+            {/loop}
+            {/block}
+        </div>
+        <div class="page-module__MO71vG__resultsPagination">{$gdata[pages]}</div>
+    </section>
+</main>
+{inc:footer.htm}

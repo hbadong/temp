@@ -1,0 +1,146 @@
+{inc:header.htm}
+<div class="layui-card">
+	<div class="layui-card-header">{lang:other_setting}</div>
+	<div class="layui-card-body">
+		<form id="form" class="layui-form" action="index.php?setting-other-ajax-1" method="post">
+			<div class="layui-form-item">
+				<div class="layui-inline">
+					<label class="layui-form-label required">{lang:debug_mod}</label>
+					<div class="layui-input-inline">
+						{$input[debug]}
+					</div>
+				</div>
+				<div class="layui-inline">
+					<label class="layui-form-label required">{lang:debug_mod_admin}</label>
+					<div class="layui-input-inline">
+						{$input[debug_admin]}
+					</div>
+				</div>
+			</div>
+			<hr/>
+			<div class="layui-form-item">
+				<div class="layui-inline">
+					<label class="layui-form-label required">{lang:php_error}</label>
+					<div class="layui-input-inline">
+						{$input[php_error]}
+					</div>
+				</div>
+				<div class="layui-inline">
+					<label class="layui-form-label required">{lang:php_error404}</label>
+					<div class="layui-input-inline">
+						{$input[php_error404]}
+					</div>
+				</div>
+			</div>
+			<hr/>
+			<div class="layui-form-item">
+				<div class="layui-inline">
+					<label class="layui-form-label required">{lang:lang_mod}</label>
+					<div class="layui-input-inline">
+						{$input[lang]}
+					</div>
+				</div>
+				<div class="layui-inline">
+					<label class="layui-form-label required">{lang:lang_mod_admin}</label>
+					<div class="layui-input-inline">
+						{$input[lang_admin]}
+					</div>
+				</div>
+			</div>
+			<hr/>
+			<div class="layui-form-item">
+				<label class="layui-form-label">{lang:spider_user_agent}</label>
+				<div class="layui-input-block">
+					{$input[spider_user_agent]}
+					<div class="layui-form-mid layui-word-aux">{lang:spider_user_agent_tips}</div>
+				</div>
+			</div>
+			<hr/>
+			<div class="layui-form-item">
+				<div class="layui-inline">
+					<label class="layui-form-label">{lang:close_website}</label>
+					<div class="layui-input-inline">
+						{$input[close_website]}
+					</div>
+				</div>
+				<div class="layui-inline">
+					<label class="layui-form-label">{lang:close_search}</label>
+					<div class="layui-input-inline">
+						{$input[close_search]}
+					</div>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">{lang:auto_pic}</label>
+				<div class="layui-input-inline">
+					{$input[auto_pic]}
+				</div>
+				<div class="layui-form-mid layui-word-aux">{lang:auto_pic_tips}</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">{lang:open_title_check}</label>
+				<div class="layui-input-inline">
+					{$input[open_title_check]}
+				</div>
+				<div class="layui-form-mid layui-word-aux">{lang:open_title_check_tips}</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">{lang:close_views}</label>
+				<div class="layui-input-inline">
+					{$input[close_views]}
+				</div>
+				<div class="layui-form-mid layui-word-aux">{lang:close_views_tips}</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">{lang:content_len}</label>
+				<div class="layui-input-inline">
+					{$input[content_min_len]}
+				</div>
+				<div class="layui-form-mid layui-word-aux">{lang:content_min_len_tips}</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">{lang:url_path}</label>
+				<div class="layui-input-block">
+					{$input[url_path]}
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">{lang:admin_layout}</label>
+				<div class="layui-input-block">
+					{$input[admin_layout]}
+				</div>
+			</div>
+			{hook:admin_setting_other_after.htm}
+			<div class="layui-form-item">
+				<div class="layui-input-block">
+					<button class="layui-btn" lay-submit lay-filter="form">{lang:submit}</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+<script type="text/javascript">
+layui.use(['form','layer'], function(){
+	var layer = layui.layer, form = layui.form;
+	//监听提交
+	form.on('submit(form)', function(){
+		adminAjax.submit("#form", function (data) {
+			var json = toJson(data);
+			if( json.err == 0 ){
+				var icon = 1;
+			}else{
+				var icon = 5;
+			}
+			layer.msg(json.msg, {icon: icon});
+			if(json.err==0) {
+				setTimeout(function(){
+					top.location.reload();
+				}, 1500);
+			}
+		});
+	});
+});
+</script>
+</body>
+</html>

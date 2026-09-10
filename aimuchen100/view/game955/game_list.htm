@@ -1,0 +1,100 @@
+{inc:header.htm}
+<div class="content wrapper">
+	<div class="url-here">
+		{loop:$cfg_var[place] $p}
+		{if:$p[url]}
+		<a href="{$p[url]}">{$p[name]}</a> &gt;
+		{else}
+		{$p[name]}
+		{/if}
+		{/loop}
+	</div>
+	<!-- 分类标签栏 -->
+	<div class="sec-nav">
+		<a {if:$_GET[cid] == $cfg_var[cid]}class="on"{/if} href="{$cfg_var[url]}">全部</a>
+		{block:category type="child"}
+		{loop:$data $v}
+		<a {if:$_GET[cid] == $v[cid]}class="on"{/if} href="{$v[url]}">{$v[name]}</a>
+		{/loop}
+		{/block}
+	</div>
+
+	<div class="fn-clear">
+		<div class="content-l fl">
+			<div class="game-list">
+				{block:global_cate pagenum="15" dateformat="Y-m-d" intronum="60" showcate="1"}
+				{loop:$gdata[list] $v}
+				<div class="item">
+					<a class="pic-wrap" href="{$v[url]}" target="_blank" title="{$v[title]}"><img class="pic" src="{$v[pic]}" alt="{$v[title]}" onerror="this.src='{$cfg[tpl]}style/img/nopic.png'"></a>
+					<div class="tit-wrap">
+						<a class="tit" href="{$v[url]}" target="_blank" title="{$v[title]}">{$v[subject]}</a>
+						<span class="type"><a href="{$v[cate_url]}" target="_blank">{$v[cate_name]}</a></span>
+						<span class="txt"><i class="icon icon-time2"></i>{$v[date]}</span>
+					</div>
+					<p class="rem">{$v[intro]}</p>
+				</div>
+				{/loop}
+				{/block}
+				<div class="laypage_main">
+					{$gdata[pages]}
+				</div>
+			</div>
+		</div>
+		<div class="content-r fr">
+			<!-- 游戏下载排行榜 -->
+			<div class="conbox">
+				<div class="block-title4">
+					<h3 class="title">游戏下载排行榜</h3>
+				</div>
+				<div class="soft-top-list3">
+					<ul>
+						{block:list_top orderby="views" limit="8" showcate="1"}
+						{loop:$data[list] $v}
+						<li>
+							<p class="txt">{$v[size]}</p>
+							<i class="num num{@$v['xuhao']}">{@$v['xuhao']}</i>
+							<p class="tit"><a href="{$v[url]}" target="_blank" title="{$v[title]}">{$v[subject]}</a></p>
+						</li>
+						{/loop}
+						{/block}
+					</ul>
+				</div>
+			</div>
+			<!-- 同类热门游戏排行榜 -->
+			<div class="conbox">
+				<div class="block-title4">
+					<h3 class="title">同类热门游戏排行榜</h3>
+				</div>
+				<div class="soft-list5">
+					<ul>
+						{block:list_top orderby="views" limit="10"}
+						{loop:$data[list] $v}
+						<li>
+							<a href="{$v[url]}" target="_blank" title="{$v[title]}">
+								<img class="pic" src="{$v[pic]}" alt="{$v[title]}" onerror="this.src='{$cfg[tpl]}style/img/nopic.png'">
+								<div class="tit">{$v[subject]}</div>
+							</a>
+						</li>
+						{/loop}
+						{/block}
+					</ul>
+				</div>
+			</div>
+			<!-- 热门搜索 -->
+			<div class="conbox">
+				<div class="block-title4">
+					<h3 class="title">热门搜索</h3>
+				</div>
+				<div class="hot-words">
+					{block:taglist mid="3" limit="16" orderby="count"}
+					{loop:$data[list] $v}
+					<a class="c{@$v['xuhao']}" href="{$v[url]}" target="_blank" title="{$v[name]}">{$v[name]}</a>
+					{/loop}
+					{/block}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{inc:footer.htm}

@@ -1,0 +1,10 @@
+schema_version: 1
+module_path: lottery_templates
+title: 牛一三零彩票模板广告系统
+scope:
+    - niu1130/
+source_files: []
+depends_on: []
+related_to:
+    - path: themes
+    - path: tools_module

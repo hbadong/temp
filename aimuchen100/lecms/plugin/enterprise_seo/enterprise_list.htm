@@ -1,0 +1,196 @@
+{inc:header.htm}
+<style>
+/* 企业SEO 设置页专用样式（原 settings.htm 合并） */
+.settings-wrap { padding: 0 16px; }
+.settings-card { margin-bottom: 16px; }
+.settings-card .layui-card-header { display: flex; align-items: center; justify-content: space-between; font-weight: 600; }
+.settings-card .layui-card-header i { color: #1E9FFF; margin-right: 8px; }
+.settings-card .layui-card-header .header-tip { font-weight: 400; font-size: 12px; color: #999; }
+.settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 24px; }
+.settings-grid .layui-form-item { display: flex; align-items: center; }
+.settings-grid .layui-form-label { width: 130px; padding: 9px 12px 9px 0; text-align: right; }
+.settings-grid .layui-input-inline { width: auto; flex: 1; }
+.settings-grid .layui-input-block { margin-left: 130px; }
+.settings-actions { position: sticky; bottom: 0; padding: 12px 0; background: #fff; border-top: 1px solid #eee; text-align: right; margin-top: 16px; box-shadow: 0 -2px 6px rgba(0,0,0,.03); z-index: 10; }
+.settings-actions .layui-btn + .layui-btn { margin-left: 8px; }
+.field-hint { display: block; color: #999; font-size: 12px; margin-top: 4px; }
+@media (max-width: 900px) { .settings-grid { grid-template-columns: 1fr; } }
+</style>
+<div class="layuimini-container">
+	<div class="layuimini-main">
+		<div class="layui-tab layui-tab-brief" lay-filter="main">
+			<ul class="layui-tab-title">
+				<li class="layui-this">功能</li>
+				<li>插件设置</li>
+			</ul>
+			<div class="layui-tab-content">
+
+				<!-- Tab 1：功能（原页面全部内容） -->
+				<div class="layui-tab-item layui-show">
+					<div class="layui-card">
+						<div class="layui-card-header">企业站点管理</div>
+						<div class="layui-card-body">
+							<div class="layui-btn-container" style="margin-bottom:10px">
+								<a class="layui-btn layui-btn-sm layui-btn-normal" href="javascript:;" onclick="openGenerate();"><i class="layui-icon">&#xe654;</i> 快速生成企业站点</a>
+							</div>
+							<table class="layui-table">
+								<thead>
+									<tr>
+										<th>ID</th>
+										<th>企业名称</th>
+										<th>行业</th>
+										<th>地址</th>
+										<th>电话</th>
+										<th>状态</th>
+										<th>创建时间</th>
+										<th>操作</th>
+									</tr>
+								</thead>
+								<tbody>
+									{loop:$list $site}
+									<tr>
+										<td>{$site['id']}</td>
+										<td>{$site['enterprise_name']}</td>
+										<td>{$site['industry']}</td>
+										<td>{$site['address']}</td>
+										<td>{$site['phone']}</td>
+										<td>
+											{if:$site['status'] == 0}<span class="layui-badge layui-bg-gray">草稿</span>{/if}
+											{if:$site['status'] == 1}<span class="layui-badge layui-bg-green">已发布</span>{/if}
+											{if:$site['status'] == 2}<span class="layui-badge layui-bg-orange">已下线</span>{/if}
+										</td>
+										<td>{$site['created_at']}</td>
+										<td>
+											<a href="javascript:;" onclick="editSite({$site['id']})" class="layui-btn layui-btn-xs">编辑</a>
+											<a href="javascript:;" onclick="delSite({$site['id']})" class="layui-btn layui-btn-xs layui-btn-danger">删除</a>
+										</td>
+									</tr>
+									{/loop}
+									{if:empty($list)}
+									<tr><td colspan="8">暂无数据</td></tr>
+									{/if}
+								</tbody>
+							</table>
+							{$pagebar}
+						</div>
+					</div>
+				</div>
+
+				<!-- Tab 2：插件设置（原 settings.htm 核心内容合并） -->
+				<div class="layui-tab-item">
+					<div class="settings-wrap">
+						<!-- AI 内容生成配额 -->
+						<div class="layui-card settings-card">
+							<div class="layui-card-header">
+								<span><i class="layui-icon">&#xe62e;</i> AI 内容生成配额</span>
+								<span class="header-tip">控制 AI 调用频率与成本</span>
+							</div>
+							<div class="layui-card-body">
+								<form id="form-settings" class="layui-form" action="?enterprise-settings_post-ajax-1" method="post">
+									<input type="hidden" name="FORM_HASH" value="{@form_hash()}" />
+									<div class="settings-grid">
+										<div class="layui-form-item">
+											<label class="layui-form-label">每日调用上限</label>
+											<div class="layui-input-inline">
+												<input type="number" name="ai_daily_quota" min="0" max="10000" value="{$settings['ai_daily_quota']}" class="layui-input" placeholder="例如 50">
+												<span class="field-hint">单站点每天调用 AI 接口的最大次数，0=不限</span>
+											</div>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+
+						<!-- 外链发布策略 -->
+						<div class="layui-card settings-card">
+							<div class="layui-card-header">
+								<span><i class="layui-icon">&#xe609;</i> 外链发布策略</span>
+								<span class="header-tip">避免平台封禁的频率控制</span>
+							</div>
+							<div class="layui-card-body">
+								<div class="settings-grid">
+									<div class="layui-form-item">
+										<label class="layui-form-label">发布间隔(分钟)</label>
+										<div class="layui-input-inline">
+											<input type="number" name="external_link_interval_minutes" min="1" max="1440" value="{$settings['external_link_interval_minutes']}" class="layui-input" placeholder="例如 60">
+											<span class="field-hint">两次外链提交之间的最小间隔，单位分钟</span>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- 审核开关 -->
+						<div class="layui-card settings-card">
+							<div class="layui-card-header">
+								<span><i class="layui-icon">&#xe6b2;</i> 内容审核</span>
+								<span class="header-tip">是否需要人工二次审核</span>
+							</div>
+							<div class="layui-card-body">
+								<div class="settings-grid">
+									<div class="layui-form-item">
+										<label class="layui-form-label">启用人工审核</label>
+										<div class="layui-input-inline">
+											<input type="radio" name="review_required" value="1" title="启用" {if:$settings['review_required']}checked{/if} form="form-settings">
+											<input type="radio" name="review_required" value="0" title="关闭" {if:!$settings['review_required']}checked{/if} form="form-settings">
+											<span class="field-hint">开启后 AI 生成内容需审核通过才对外发布</span>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- 底部操作栏 -->
+						<div class="settings-actions">
+							<button type="submit" lay-submit lay-filter="form-settings" class="layui-btn">
+								<i class="layui-icon">&#xe605;</i> 保存设置
+							</button>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+layui.use(['layer', 'element', 'form', 'miniTab'], function(){
+	var layer = layui.layer, miniTab = layui.miniTab;
+
+	// 快速生成向导：新开标签页
+	window.openGenerate = function () {
+		miniTab.openNewTabByIframe({
+			href: "index.php?generate-index",
+			title: "快速生成企业站点",
+		});
+	};
+
+	// 编辑：layuimini 多标签内新开标签页
+	window.editSite = function (id) {
+		miniTab.openNewTabByIframe({
+			href: "index.php?enterprise-edit-id-" + id,
+			title: "编辑企业站点",
+		});
+	};
+
+	// 删除：layer.confirm 确认后 POST ajax（delete_post 校验 form_submit()）
+	window.delSite = function (id) {
+		layer.confirm('确定删除？', function () {
+			adminAjax.postd("index.php?enterprise-delete_post-ajax-1", {"id": id, "FORM_HASH": "{@form_hash()}"});
+		});
+	};
+
+	// 插件设置表单提交（原 settings.htm 合并）
+	var form = layui.form;
+	form.render();
+	form.on('submit(form-settings)', function () {
+		adminAjax.postform('#form-settings', function (data) {
+			var json = toJson(data);
+			layer.msg(json.msg, { icon: json.err == 0 ? 1 : 5 });
+		});
+		return false;
+	});
+});
+</script>
+</body>
+</html>

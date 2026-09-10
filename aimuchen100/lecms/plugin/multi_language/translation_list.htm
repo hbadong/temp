@@ -1,0 +1,94 @@
+{inc:header.htm}
+<div class="layuimini-container">
+	<div class="layuimini-main">
+		<div class="layui-card">
+			<div class="layui-card-header">翻译记录列表</div>
+			<div class="layui-card-body">
+				<fieldset class="table-search-fieldset">
+					<legend>筛选</legend>
+					<form class="layui-form layui-form-pane" method="get">
+						<input type="hidden" name="admin" value="multi-language">
+						<input type="hidden" name="action" value="translation">
+						<div class="layui-form-item">
+							<div class="layui-inline">
+								<label class="layui-form-label">语言</label>
+								<div class="layui-input-inline">
+									<select name="language">
+										<option value="">全部语言</option>
+										{loop:$target_langs $lang}
+										<option value="{$lang['language']}" {if:$language==$lang['language']}selected{/if}>{$lang['language_name']}</option>
+										{/loop}
+									</select>
+								</div>
+							</div>
+							<div class="layui-inline">
+								<label class="layui-form-label">状态</label>
+								<div class="layui-input-inline">
+									<select name="status">
+										<option value="-1">全部状态</option>
+										<option value="0" {if:$status==0}selected{/if}>待翻译</option>
+										<option value="1" {if:$status==1}selected{/if}>翻译中</option>
+										<option value="2" {if:$status==2}selected{/if}>已翻译</option>
+										<option value="3" {if:$status==3}selected{/if}>已验证</option>
+									</select>
+								</div>
+							</div>
+							<div class="layui-inline">
+								<button type="submit" class="layui-btn layui-btn-primary"><i class="layui-icon">&#xe615;</i> 筛选</button>
+							</div>
+						</div>
+					</form>
+				</fieldset>
+				<table class="layui-table">
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th>原文ID</th>
+							<th>原文标题</th>
+							<th>语言</th>
+							<th>状态</th>
+							<th>AI模型</th>
+							<th>更新时间</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody>
+						{loop:$list $item}
+						<tr>
+							<td>{$item['id']}</td>
+							<td>{$item['source_id']}</td>
+							<td>{$item['source_title']}</td>
+							<td>{$item['language']}</td>
+							<td>
+								{if:$item['translator_status'] == 0}<span class="layui-badge layui-bg-gray">待翻译</span>{/if}
+								{if:$item['translator_status'] == 1}<span class="layui-badge layui-bg-orange">翻译中</span>{/if}
+								{if:$item['translator_status'] == 2}<span class="layui-badge layui-bg-blue">已翻译</span>{/if}
+								{if:$item['translator_status'] == 3}<span class="layui-badge layui-bg-green">已验证</span>{/if}
+							</td>
+							<td>{$item['ai_model']}</td>
+							<td>{$item['updated_at']}</td>
+							<td>
+								{if:$item['translator_status'] >= 2}
+								<a href="?translation-verify&id={$item['id']}" class="layui-btn layui-btn-xs layui-btn-normal">审核</a>
+								{/if}
+							</td>
+						</tr>
+						{/loop}
+						{if:empty($list)}
+						<tr><td colspan="8">暂无数据</td></tr>
+						{/if}
+					</tbody>
+				</table>
+				{$pagebar}
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+layui.use(['form'], function(){
+	var form = layui.form;
+	form.render();
+});
+</script>
+</body>
+</html>

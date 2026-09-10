@@ -1,0 +1,12 @@
+<ul class="rand_list">
+    {block:list_rand limit="10"}
+    {loop:$data[list] $v}
+    <li>
+        <a href="{$v[url]}" target="_blank" title="{$v[title]}">
+            <img src="{$v[pic]}" alt="{$v[title]}" onerror="this.src='{$cfg[tpl]}style/img/nopic.png'">
+            <span>{$v[subject]}</span>
+        </a>
+    </li>
+    {/loop}
+    {/block}
+</ul>

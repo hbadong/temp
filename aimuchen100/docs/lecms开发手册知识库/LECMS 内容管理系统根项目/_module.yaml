@@ -1,0 +1,18 @@
+schema_version: 1
+module_path: ""
+title: LECMS 内容管理系统根项目
+scope:
+    - index.php
+    - .gitignore
+    - README.md
+    - README.en.md
+    - SEO_RULES_V2_2.md
+    - robots.txt
+    - 新版本说明.txt
+    - LICENSE
+    - favicon.ico
+    - 公司起名网站PRD产品需求文档_v2.0.md
+    - 目录说明.txt
+source_files: []
+depends_on: []
+related_to: []

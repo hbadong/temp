@@ -1,0 +1,29 @@
+# Build and Release Folders
+bin-debug/
+bin-release/
+[Oo]bj/
+[Bb]in/
+
+# Other files and folders
+.settings/
+
+# Executables
+*.swf
+*.air
+*.ipa
+*.apk
+
+# Project files, i.e. `.project`, `.actionScriptProperties` and `.flexProperties`
+# should NOT be excluded as they contain compiler settings and other important
+# information for Eclipse / Flash Builder.
+.worktrees/
+
+# LECMS 运行时产物与临时文件
+runcache/
+runtime/
+log/
+_cookie.txt
+_tmp_test/
+.agents/
+.claude/worktrees/
+.claude/tmp_*.py

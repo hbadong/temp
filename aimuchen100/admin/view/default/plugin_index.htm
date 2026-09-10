@@ -1,0 +1,251 @@
+{inc:header.htm}
+
+{if:empty($plugins[enable]) && empty($plugins[disable]) && empty($plugins[not_install])}
+<div class="layui-card">
+	<div class="layui-card-body">
+		<div class="layui-btn layui-btn-disabled layui-btn-fluid">{lang:no_data}</div>
+	</div>
+</div>
+{else}
+<div class="layui-card">
+	<div class="layui-card-body">
+		<div class="layui-tab layui-tab-brief" lay-filter="plugin">
+			<ul class="layui-tab-title">
+				<li class="layui-this" lay-id="enabled">{lang:enabled_plugin}</li>
+				<li lay-id="no_enabled">{lang:no_enabled_plugin}</li>
+				<li lay-id="no_install">{lang:no_install_plugin}</li>
+			</ul>
+			<div class="layui-tab-content">
+				<div class="layui-tab-item layui-show">
+					{if:$plugins[enable]}
+					<div class="layui-row">
+						{loop:$plugins[enable] $v $k}
+						<div class="layui-col-xs12 layui-col-sm12 layui-col-md4">
+							<fieldset class="layui-elem-field">
+								<legend style="font-size: 16px;">{$v[name]}({$k})</legend>
+								<div class="layui-field-box">
+									<div class="layui-row">
+										<div class="layui-col-md4" style="width: 75px;">
+											{if:isset($v['is_show'])}
+											<img src="../lecms/plugin/{$k}/show.jpg" alt="{$v[name]}" style="width: 64px;height: 64px;" />
+											{else}
+											<img src="../static/admin/images/plugin.jpg" alt="{$v[name]}" />
+											{/if}
+										</div>
+										<div class="layui-col-md8">
+											<p class="plu_bottom" plugin="{$k}" version="{$v[version]}">
+												<a class="layui-btn layui-btn-sm layui-btn-danger disabled">{lang:disable_1}</a>
+												{if:!empty($v['setting'])}<a class="layui-btn layui-btn-sm layui-btn-normal" href="javascript:;" layuimini-content-href="index.php?{$v[setting]}" data-title="{$v[name]}">{lang:setting}</a>{/if}
+											</p>
+										</div>
+										<div class="layui-col-md12" style="border-top: 1px solid #eee;margin-top: 5px;">
+											<div class="plu_cont plu_i">{$v[brief]}</div>
+											<div class="plu_bottom layui-row">
+												<div class="layui-col-md4">{lang:version}：{$v[version]}</div>
+												<div class="layui-col-md4">{lang:author}: <a href="{$v[authorurl]}" rel="nofollow" target="_blank">{$v[author]}</a></div>
+												<div class="layui-col-md4">{lang:update}：{$v[update]}</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</fieldset>
+						</div>
+						{/loop}
+					</div>
+					{else}
+					<div class="layui-btn layui-btn-disabled layui-btn-fluid">{lang:no_data}</div>
+					{/if}
+				</div>
+				<div class="layui-tab-item">
+					{if:$plugins[disable]}
+					<div class="layui-row">
+						{loop:$plugins[disable] $v $k}
+						<div class="layui-col-xs12 layui-col-sm12 layui-col-md4">
+							<fieldset class="layui-elem-field">
+								<legend style="font-size: 16px;">{$v[name]}({$k})</legend>
+								<div class="layui-field-box">
+									<div class="layui-row">
+										<div class="layui-col-md4" style="width: 75px;">
+											{if:isset($v['is_show'])}
+											<img src="../lecms/plugin/{$k}/show.jpg" alt="{$v[name]}" style="width: 64px;height: 64px;" />
+											{else}
+											<img src="../static/admin/images/plugin.jpg" alt="{$v[name]}" />
+											{/if}
+										</div>
+										<div class="layui-col-md8">
+											<p class="plu_bottom" plugin="{$k}" version="{$v[version]}">
+												{if:!empty($v['setting']) && !empty($v['setting_ok'])}
+												<a class="layui-btn layui-btn-sm layui-btn-normal" href="javascript:;" layuimini-content-href="index.php?{$v[setting]}" data-title="{$v[name]}">{lang:setting}</a>
+												{else}
+												<a class="layui-btn layui-btn-sm enable">{lang:enable}</a>
+												{/if}
+												<a class="layui-btn layui-btn-sm layui-btn-danger unstall">{lang:unstall}</a>
+											</p>
+										</div>
+										<div class="layui-col-md12" style="border-top: 1px solid #eee;margin-top: 5px;">
+											<div class="plu_cont plu_i">{$v[brief]}</div>
+											<div class="plu_bottom layui-row">
+												<div class="layui-col-md4">{lang:version}：{$v[version]}</div>
+												<div class="layui-col-md4">{lang:author}: <a href="{$v[authorurl]}" rel="nofollow" target="_blank">{$v[author]}</a></div>
+												<div class="layui-col-md4">{lang:update}：{$v[update]}</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</fieldset>
+						</div>
+						{/loop}
+					</div>
+					{else}
+					<div class="layui-btn layui-btn-disabled layui-btn-fluid">{lang:no_data}</div>
+					{/if}
+				</div>
+				<div class="layui-tab-item">
+					{if:$plugins[not_install]}
+					<div class="layui-row">
+						{loop:$plugins[not_install] $v $k}
+						<div class="layui-col-xs12 layui-col-sm12 layui-col-md4">
+							<fieldset class="layui-elem-field">
+								<legend style="font-size: 16px;">{$v[name]}({$k})</legend>
+								<div class="layui-field-box">
+									<div class="layui-row">
+										<div class="layui-col-md4" style="width: 75px;">
+											{if:isset($v['is_show'])}
+											<img src="../lecms/plugin/{$k}/show.jpg" alt="{$v[name]}" style="width: 64px;height: 64px;" />
+											{else}
+											<img src="../static/admin/images/plugin.jpg" alt="{$v[name]}" />
+											{/if}
+										</div>
+										<div class="layui-col-md8">
+											<p class="plu_bottom" plugin="{$k}" version="{$v[version]}">
+												<a class="layui-btn layui-btn-sm install">{lang:install}</a>
+												<a class="layui-btn layui-btn-sm layui-btn-danger del">{lang:delete}</a>
+											</p>
+										</div>
+										<div class="layui-col-md12" style="border-top: 1px solid #eee;margin-top: 5px;">
+											<div class="plu_cont plu_i">{$v[brief]}</div>
+											<div class="plu_bottom layui-row">
+												<div class="layui-col-md4">{lang:version}：{$v[version]}</div>
+												<div class="layui-col-md4">{lang:author}: <a href="{$v[authorurl]}" rel="nofollow" target="_blank">{$v[author]}</a></div>
+												<div class="layui-col-md4">{lang:update}：{$v[update]}</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</fieldset>
+						</div>
+						{/loop}
+					</div>
+					{else}
+					<div class="layui-btn layui-btn-disabled layui-btn-fluid">{lang:no_data}</div>
+					{/if}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/if}
+
+<script type="text/javascript">
+layui.use(['form','layer', 'miniTab', 'element'], function () {
+	var layer = layui.layer, form = layui.form,miniTab = layui.miniTab, element = layui.element;
+	miniTab.listen();
+
+	var hashName = 'tabid';
+	var layid = location.hash.replace(new RegExp('^#'+ hashName + '='), '');
+	element.tabChange('plugin', layid);
+	// 切换事件
+	element.on('tab(plugin)', function(obj){
+		location.hash = hashName +'='+ this.getAttribute('lay-id');
+	});
+
+	var plugin_disable = "{$plugin_disable}";
+	if(plugin_disable == "1"){
+		layer.open({title: "{lang:tips}", content: '<div style="padding: 11px;">{lang:plugin_disable}</div>',closeBtn: 0, type: 1});
+	}
+
+	//停用
+	$(".disabled").click(function(){
+		var dir = $(this).parent().attr("plugin");
+		adminAjax.postd("index.php?plugin-disabled-ajax-1", {"dir" : dir},function (json) {
+			var res = toJson(json);
+			if( res.err ){
+				layer.msg(res.msg, {icon: 5});
+			}else{
+				layer.msg(res.msg, {icon: 1, time: 1000},function () {
+					window.location.reload(true);
+				});
+			}
+		});
+	});
+
+	//启用
+	$(".enable").click(function(){
+		var dir = $(this).parent().attr("plugin");
+		adminAjax.postd("index.php?plugin-enable-ajax-1", {"dir" : dir},function (json) {
+			var res = toJson(json);
+			if( res.err ){
+				layer.msg(res.msg, {icon: 5});
+			}else{
+				layer.msg(res.msg, {icon: 1, time: 1000},function () {
+					window.location.reload(true);
+				});
+			}
+		});
+	});
+
+	//卸载
+	$(".unstall").click(function(){
+		var dir = $(this).parent().attr("plugin");
+		adminAjax.postd("index.php?plugin-unstall-ajax-1", {"dir" : dir},function (json) {
+			var res = toJson(json);
+			if( res.err ){
+				layer.msg(res.msg, {icon: 5});
+			}else{
+				layer.msg(res.msg, {icon: 1, time: 1000},function () {
+					window.location.reload(true);
+				});
+			}
+		});
+	});
+
+	//安装
+	$(".install").click(function(){
+		var dir = $(this).parent().attr("plugin");
+		var loadIndex = layer.load(2);
+		adminAjax.postd("index.php?plugin-install-ajax-1", {"dir" : dir},function (json) {
+			layer.close(loadIndex);
+			var res = toJson(json);
+			if( res.err ){
+				layer.msg(res.msg, {icon: 5});
+			}else{
+				layer.msg(res.msg, {icon: 1, time: 1000},function () {
+					window.location.reload(true);
+				});
+			}
+		});
+	});
+
+	//删除
+	$(".del").click(function(){
+		var dir = $(this).parent().attr("plugin");
+		adminAjax.confirm("{lang:delete_confirm} “<font color='red'>"+dir+"</font>”，{lang:delete_plugin_dir_tips}", function(){
+			var loadIndex = layer.load(2);
+			adminAjax.postd("index.php?plugin-delete-ajax-1", {"dir" : dir},function (json) {
+				layer.close(loadIndex);
+				var res = toJson(json);
+				if( res.err ){
+					layer.msg(res.msg, {icon: 5});
+				}else{
+					layer.msg(res.msg, {icon: 1, time: 1000},function () {
+						window.location.reload(true);
+					});
+				}
+			});
+		});
+	});
+
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,176 @@
+{inc:header.htm}
+<style>
+/* AI搜索监测插件设置样式 */
+.settings-wrap { padding: 0 16px; }
+.settings-card { margin-bottom: 16px; }
+.settings-card .layui-card-header { display: flex; align-items: center; justify-content: space-between; font-weight: 600; }
+.settings-card .layui-card-header i { color: #1E9FFF; margin-right: 8px; }
+.settings-card .layui-card-header .header-tip { font-weight: 400; font-size: 12px; color: #999; }
+.settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 24px; }
+.settings-grid .layui-form-item { display: flex; align-items: center; }
+.settings-grid .layui-form-label { width: 140px; padding: 9px 12px 9px 0; text-align: right; }
+.settings-grid .layui-input-inline { width: auto; flex: 1; }
+.settings-grid .layui-input-block { margin-left: 140px; }
+.settings-actions { position: sticky; bottom: 0; padding: 12px 0; background: #fff; border-top: 1px solid #eee; text-align: right; margin-top: 16px; box-shadow: 0 -2px 6px rgba(0,0,0,.03); z-index: 10; }
+.settings-actions .layui-btn + .layui-btn { margin-left: 8px; }
+.field-hint { display: block; color: #999; font-size: 12px; margin-top: 4px; }
+.platform-row { display: flex; flex-wrap: wrap; gap: 24px; padding: 8px 0; }
+.platform-row .platform-item { min-width: 200px; }
+@media (max-width: 900px) { .settings-grid { grid-template-columns: 1fr; } }
+</style>
+<div class="layuimini-container">
+	<div class="layuimini-main">
+		<div class="layui-tab layui-tab-brief" lay-filter="main">
+			<ul class="layui-tab-title">
+				<li class="layui-this">功能</li>
+				<li>插件设置</li>
+			</ul>
+			<div class="layui-tab-content">
+				<!-- Tab 1：功能（原仪表盘内容） -->
+				<div class="layui-tab-item layui-show">
+					<div class="layui-card">
+						<div class="layui-card-header">AI搜索监测仪表盘</div>
+						<div class="layui-card-body">
+							<div class="layui-card">
+								<div class="layui-card-header">监测统计（最近7天）</div>
+								<div class="layui-card-body">
+									{if:$stats}
+									<table class="layui-table">
+										<thead>
+											<tr>
+												<th>平台</th>
+												<th>总检查数</th>
+												<th>展现数</th>
+												<th>平均置信度</th>
+											</tr>
+										</thead>
+										<tbody>
+											{loop:$stats $stat}
+											<tr>
+												<td>{$stat['platform']}</td>
+												<td>{$stat['total_checks']}</td>
+												<td>{$stat['found_count']}</td>
+												<td>{$stat['avg_confidence']}</td>
+											</tr>
+											{/loop}
+										</tbody>
+									</table>
+									{else}
+									<p>暂无监测数据</p>
+									{/if}
+								</div>
+							</div>
+
+							<div class="layui-card">
+								<div class="layui-card-header">品牌词列表</div>
+								<div class="layui-card-body">
+									<ul>
+										{loop:$keywords $keyword}
+										<li>{$keyword}</li>
+										{/loop}
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Tab 2：插件设置 -->
+				<div class="layui-tab-item">
+					<div class="settings-wrap">
+						<!-- 监测配额 -->
+						<div class="layui-card settings-card">
+							<div class="layui-card-header">
+								<span><i class="layui-icon">&#xe60b;</i> 监测配额</span>
+								<span class="header-tip">控制 keyword_control 与 cms_cron 行为</span>
+							</div>
+							<div class="layui-card-body">
+								<form id="form-settings" class="layui-form" action="?monitor-settings_post-ajax-1" method="post">
+									<input type="hidden" name="FORM_HASH" value="{@form_hash()}" />
+									<div class="settings-grid">
+										<div class="layui-form-item">
+											<label class="layui-form-label">关键词数量上限</label>
+											<div class="layui-input-inline">
+												<input type="number" name="keyword_limit" class="layui-input" value="{$settings['keyword_limit']}" min="1" max="1000">
+												<span class="field-hint">单站点最多添加的品牌词数量（1-1000）</span>
+											</div>
+										</div>
+										<div class="layui-form-item">
+											<label class="layui-form-label">刷新间隔（小时）</label>
+											<div class="layui-input-inline">
+												<input type="number" name="refresh_interval_hours" class="layui-input" value="{$settings['refresh_interval_hours']}" min="1" max="720">
+												<span class="field-hint">cms_cron 触发的最小检查间隔（1-720 小时）</span>
+											</div>
+										</div>
+										<div class="layui-form-item">
+											<label class="layui-form-label">通知邮箱</label>
+											<div class="layui-input-inline">
+												<input type="text" name="notify_email" class="layui-input" value="{$settings['notify_email']}" placeholder="alerts@example.com">
+												<span class="field-hint">占位：留空不发送；后续接入 SMTP 后用于品牌词异常告警</span>
+											</div>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+
+						<!-- AI 平台开关 -->
+						<div class="layui-card settings-card">
+							<div class="layui-card-header">
+								<span><i class="layui-icon">&#xe857;</i> AI 平台开关</span>
+								<span class="header-tip">占位字段，关闭后该平台不写入监测日志</span>
+							</div>
+							<div class="layui-card-body">
+								<div class="platform-row">
+									<div class="platform-item layui-form-item">
+										<label class="layui-form-label">百度文心</label>
+										<div class="layui-input-inline">
+											<input type="checkbox" name="platform_switch_baidu_wenxin" lay-skin="switch" lay-text="启用|禁用" value="1" form="form-settings" {if:$settings['platform_switch_baidu_wenxin']}checked{/if}>
+											<span class="field-hint">platform=baidu_wenxin</span>
+										</div>
+									</div>
+									<div class="platform-item layui-form-item">
+										<label class="layui-form-label">字节豆包</label>
+										<div class="layui-input-inline">
+											<input type="checkbox" name="platform_switch_doubao" lay-skin="switch" lay-text="启用|禁用" value="1" form="form-settings" {if:$settings['platform_switch_doubao']}checked{/if}>
+											<span class="field-hint">platform=doubao</span>
+										</div>
+									</div>
+									<div class="platform-item layui-form-item">
+										<label class="layui-form-label">微信 AI 搜索</label>
+										<div class="layui-input-inline">
+											<input type="checkbox" name="platform_switch_wechat_ai" lay-skin="switch" lay-text="启用|禁用" value="1" form="form-settings" {if:$settings['platform_switch_wechat_ai']}checked{/if}>
+											<span class="field-hint">platform=wechat_ai</span>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- 底部操作栏 -->
+						<div class="settings-actions">
+							<button type="submit" lay-submit lay-filter="form-settings" form="form-settings" class="layui-btn">
+								<i class="layui-icon">&#xe605;</i> 保存设置
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+layui.use(['form', 'layer', 'element', 'miniTab'], function () {
+	var form = layui.form, layer = layui.layer, miniTab = layui.miniTab;
+	form.render();
+	form.on('submit(form-settings)', function () {
+		adminAjax.postform('#form-settings', function (data) {
+			var json = toJson(data);
+			layer.msg(json.msg, { icon: json.err == 0 ? 1 : 5 });
+		});
+		return false;
+	});
+});
+</script>
+</body>
+</html>

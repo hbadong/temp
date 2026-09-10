@@ -1,0 +1,25 @@
+<div class="container">
+    <div class="page-header">
+        <h2>游戏列表</h2>
+    </div>
+    {if:$games}
+    <div class="row">
+        {loop:$games $g}
+        <div class="col-md-4 col-sm-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <a href="?game-index&id={$g['id']}">{$g['name']}</a>
+                </div>
+                <div class="panel-body">
+                    {if:$g['platform']}<p>平台：{$g['platform']}</p>{/if}
+                    <p class="text-muted">{if:$g['description']}{$g['description']}{else}暂无简介{/if}</p>
+                </div>
+            </div>
+        </div>
+        {/loop}
+    </div>
+    {else}
+    <div class="alert alert-info">暂无游戏数据</div>
+    {/if}
+    {$pagebar}
+</div>

@@ -1,0 +1,48 @@
+{inc:header.htm}
+<div class="content wrapper">
+	<div class="url-here">
+		<a href="{$cfg[weburl]}">{$cfg[webname]}</a> &gt;
+		全部标签
+	</div>
+
+	<div class="fn-clear">
+		<div class="content-l fl">
+			<div class="conbox">
+				<div class="block-title3">
+					<h3 class="title">全部标签</h3>
+				</div>
+				<div class="tag-list">
+					<ul>
+						{block:global_tag pagenum="100"}
+						{loop:$gdata[list] $v}
+						<li><a href="{$v[url]}" target="_blank" title="{$v[name]}">{$v[name]}</a></li>
+						{/loop}
+						{/block}
+					</ul>
+				</div>
+				<div class="laypage_main">
+					{$gdata[pages]}
+				</div>
+			</div>
+		</div>
+		<div class="content-r fr">
+			<!-- 最新资讯 -->
+			<div class="conbox">
+				<div class="block-title4">
+					<h3 class="title">最新资讯</h3>
+				</div>
+				<div class="news-list3">
+					<ul>
+						{block:list mid="2" limit="10"}
+						{loop:$data[list] $v}
+						<li><a class="tit" href="{$v[url]}" target="_blank" title="{$v[title]}">{$v[subject]}</a></li>
+						{/loop}
+						{/block}
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{inc:footer.htm}

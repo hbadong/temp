@@ -1,0 +1,53 @@
+{inc:header.htm}
+<div class="layuimini-container">
+	<div class="layuimini-main">
+		<div class="layui-card">
+			<div class="layui-card-header">同步日志</div>
+			<div class="layui-card-body">
+				<table class="layui-table">
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th>平台</th>
+							<th>文章ID</th>
+							<th>状态</th>
+							<th>重试次数</th>
+							<th>错误信息</th>
+							<th>同步时间</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody>
+						{loop:$list $item}
+						<tr>
+							<td>{$item['id']}</td>
+							<td>{$item['platform']}</td>
+							<td>{$item['article_id']}</td>
+							<td>
+								{if:$item['status'] == 0}<span class="layui-badge layui-bg-gray">待同步</span>{/if}
+								{if:$item['status'] == 1}<span class="layui-badge layui-bg-blue">同步中</span>{/if}
+								{if:$item['status'] == 2}<span class="layui-badge layui-bg-green">成功</span>{/if}
+								{if:$item['status'] == 3}<span class="layui-badge layui-bg-red">失败</span>{/if}
+							</td>
+							<td>{$item['retry_count']}</td>
+							<td>{$item['error_message']}</td>
+							<td>{$item['synced_at']}</td>
+							<td>
+								{if:$item['status'] == 3 && $item['retry_count'] < 3}
+								<a class="layui-btn layui-btn-xs layui-btn-warm" href="?sync-retry_post&id={$item['id']}">重试</a>
+								{/if}
+							</td>
+						</tr>
+						{/loop}
+						{if:empty($list)}
+						<tr><td colspan="8">暂无数据</td></tr>
+						{/if}
+					</tbody>
+				</table>
+				{$pagebar}
+			</div>
+		</div>
+	</div>
+</div>
+</body>
+</html>

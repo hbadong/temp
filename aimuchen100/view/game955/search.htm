@@ -1,0 +1,69 @@
+{inc:header.htm}
+<div class="content wrapper">
+	<div class="url-here">
+		<a href="{$cfg[weburl]}">{$cfg[webname]}</a> &gt;
+		搜索 "<em>{$keyword}</em>"
+	</div>
+
+	<div class="fn-clear">
+		<div class="content-l fl">
+			<div class="game-list">
+				{block:global_search pagenum="15" dateformat="Y-m-d" intronum="60" showcate="1"}
+				{loop:$gdata[list] $v}
+				<div class="item">
+					<a class="pic-wrap" href="{$v[url]}" target="_blank" title="{$v[title]}"><img class="pic" src="{$v[pic]}" alt="{$v[title]}" onerror="this.src='{$cfg[tpl]}style/img/nopic.png'"></a>
+					<div class="tit-wrap">
+						<a class="tit" href="{$v[url]}" target="_blank" title="{$v[title]}">{$v[subject]}</a>
+						<span class="type"><a href="{$v[cate_url]}" target="_blank">{$v[cate_name]}</a></span>
+						<span class="txt"><i class="icon icon-time2"></i>{$v[date]}</span>
+					</div>
+					<p class="rem">{$v[intro]}</p>
+				</div>
+				{/loop}
+				{/block}
+				<div class="laypage_main">
+					{$gdata[pages]}
+				</div>
+			</div>
+		</div>
+		<div class="content-r fr">
+			<!-- 最新资讯 -->
+			<div class="conbox">
+				<div class="block-title4">
+					<h3 class="title">最新资讯</h3>
+				</div>
+				<div class="news-list3">
+					<ul>
+						{block:list mid="2" limit="10"}
+						{loop:$data[list] $v}
+						<li><a class="tit" href="{$v[url]}" target="_blank" title="{$v[title]}">{$v[subject]}</a></li>
+						{/loop}
+						{/block}
+					</ul>
+				</div>
+			</div>
+			<!-- 同类热门游戏排行榜 -->
+			<div class="conbox">
+				<div class="block-title4">
+					<h3 class="title">同类热门游戏排行榜</h3>
+				</div>
+				<div class="soft-list5">
+					<ul>
+						{block:list_top orderby="views" limit="10"}
+						{loop:$data[list] $v}
+						<li>
+							<a href="{$v[url]}" target="_blank" title="{$v[title]}">
+								<img class="pic" src="{$v[pic]}" alt="{$v[title]}" onerror="this.src='{$cfg[tpl]}style/img/nopic.png'">
+								<div class="tit">{$v[subject]}</div>
+							</a>
+						</li>
+						{/loop}
+						{/block}
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{inc:footer.htm}

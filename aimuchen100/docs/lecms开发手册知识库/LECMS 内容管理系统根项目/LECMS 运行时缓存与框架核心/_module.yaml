@@ -1,0 +1,10 @@
+schema_version: 1
+module_path: runtime_cache
+title: LECMS 运行时缓存与框架核心
+scope:
+    - runcache/
+source_files: []
+depends_on: []
+related_to:
+    - path: admin_panel/tools_and_utilities
+    - path: lecms_core

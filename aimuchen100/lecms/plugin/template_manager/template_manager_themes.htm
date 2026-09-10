@@ -1,0 +1,391 @@
+{inc:header.htm}
+<style>
+.settings-wrap { padding: 0 16px; }
+.settings-card { margin-bottom: 16px; }
+.settings-card .layui-card-header { display: flex; align-items: center; justify-content: space-between; font-weight: 600; }
+.settings-card .layui-card-header i { color: #1E9FFF; margin-right: 8px; }
+.settings-card .layui-card-header .header-tip { font-weight: 400; font-size: 12px; color: #999; }
+.settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 24px; }
+.settings-grid .layui-form-item { display: flex; align-items: center; }
+.settings-grid .layui-form-label { width: 120px; padding: 9px 12px 9px 0; text-align: right; }
+.settings-grid .layui-input-inline { width: auto; flex: 1; }
+.settings-grid .layui-input-block { margin-left: 120px; }
+.settings-actions { position: sticky; bottom: 0; padding: 12px 0; background: #fff; border-top: 1px solid #eee; text-align: right; margin-top: 16px; box-shadow: 0 -2px 6px rgba(0,0,0,.03); z-index: 10; }
+.settings-actions .layui-btn + .layui-btn { margin-left: 8px; }
+.field-hint { display: block; color: #999; font-size: 12px; margin-top: 4px; }
+@media (max-width: 900px) { .settings-grid { grid-template-columns: 1fr; } }
+
+/* 概览统计：紧凑单行条 */
+.tm-stats { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 0; margin-bottom: 10px; padding: 6px 12px; background: #f8f9fb; border-radius: 3px; font-size: 13px; color: #666; }
+.tm-stats .item { display: inline-flex; align-items: center; padding: 0 14px; line-height: 20px; }
+.tm-stats .item + .item { border-left: 1px solid #e5e6eb; }
+.tm-stats .num { font-weight: 600; font-size: 15px; margin-left: 5px; }
+.tm-stats .c-blue   { color: #1E9FFF; }
+.tm-stats .c-green  { color: #16baaa; }
+.tm-stats .c-orange { color: #ffb800; }
+.tm-stats .c-red    { color: #ff5722; }
+
+/* 当前主题高亮行 */
+.layui-table tbody tr.tm-current-row { background: #f0f7ff !important; }
+.layui-table tbody tr.tm-current-row td:first-child { font-weight: 600; }
+.tm-name-code { background: #f6f6f6; padding: 1px 6px; border-radius: 2px; font-family: Consolas, monospace; }
+.tm-preview-tip { color: #999; font-size: 12px; }
+</style>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+        <div class="layui-tab layui-tab-brief" lay-filter="main">
+            <ul class="layui-tab-title">
+                <li class="layui-this">功能</li>
+                <li>插件设置</li>
+            </ul>
+            <div class="layui-tab-content">
+                <!-- Tab 1：功能（原主题管理页内容） -->
+                <div class="layui-tab-item layui-show">
+                    <!-- 概览统计（紧凑单行） -->
+                    <div class="tm-stats">
+                        <span class="item">主题总数<span class="num c-blue" id="stat-total">-</span></span>
+                        <span class="item">已登记启用<span class="num c-green" id="stat-enabled">-</span></span>
+                        <span class="item">未登记<span class="num c-orange" id="stat-unreg">-</span></span>
+                        <span class="item">目录缺失<span class="num c-red" id="stat-missing">-</span></span>
+                    </div>
+
+                    <div class="layui-card">
+                        <div class="layui-card-header">
+                            主题管理
+                            <span class="layui-badge layui-bg-blue" style="margin-left:8px;">当前站点主题：{@isset($theme) ? $theme : 'default'}</span>
+                            <div style="float:right;">
+                                <a class="layui-btn layui-btn-sm layui-btn-primary" href="index.php?template_manager-blocks"><i class="layui-icon">&#xe62a;</i> Block 配置</a>
+                                <a class="layui-btn layui-btn-sm layui-btn-primary" href="index.php?template_manager-files"><i class="layui-icon">&#xe64c;</i> 文件版本</a>
+                                <a class="layui-btn layui-btn-sm layui-btn-primary" href="index.php?template_manager-audit_logs"><i class="layui-icon">&#xe75b;</i> 审计日志</a>
+                                <button class="layui-btn layui-btn-sm" id="btn-create">
+                                    <i class="layui-icon">&#xe654;</i> 登记新主题
+                                </button>
+                                <button class="layui-btn layui-btn-sm layui-btn-normal" id="btn-sync">
+                                    <i class="layui-icon">&#xe85e;</i> 扫描登记主题
+                                </button>
+                            </div>
+                        </div>
+                        <div class="layui-card-body">
+                            <table class="layui-hide" id="data-table" lay-filter="data-table-filter"></table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 2：插件设置（合并自原 template_manager_settings.htm） -->
+                <div class="layui-tab-item settings-wrap">
+                    <form id="form-template-manager-settings" class="layui-form" action="?template_manager-settings_post-ajax-1" method="post">
+                        <input type="hidden" name="FORM_HASH" value="{@form_hash()}" />
+
+                        <!-- 基础设置 -->
+                        <div class="layui-card settings-card">
+                            <div class="layui-card-header">
+                                <span><i class="layui-icon">&#xe620;</i> 基础设置</span>
+                                <span class="header-tip">主题与插件总开关</span>
+                            </div>
+                            <div class="layui-card-body">
+                                <div class="settings-grid">
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label">启用插件</label>
+                                        <div class="layui-input-inline">
+                                            <input type="checkbox" name="enabled" value="1" lay-skin="primary" title="启用插件" {if:$settings['enabled']}checked{/if} />
+                                            <span class="field-hint">关闭后模板渲染注入全部停止</span>
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label">默认主题</label>
+                                        <div class="layui-input-inline">
+                                            <select name="default_theme" lay-search>
+                                                {loop:$settings_themes $t}
+                                                <option value="{$t}" {if:$t==$settings['default_theme']}selected{/if}>{$t}</option>
+                                                {/loop}
+                                            </select>
+                                            <span class="field-hint">新建主题未指定时使用</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 编辑器 -->
+                        <div class="layui-card settings-card">
+                            <div class="layui-card-header">
+                                <span><i class="layui-icon">&#xe632;</i> 编辑器</span>
+                                <span class="header-tip">CSS / Schema / Block / 版本控制</span>
+                            </div>
+                            <div class="layui-card-body">
+                                <div class="settings-grid">
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label">CSS 变量注入</label>
+                                        <div class="layui-input-inline">
+                                            <input type="checkbox" name="css_injection_enabled" value="1" lay-skin="primary" title="CSS 变量注入" {if:$settings['css_injection_enabled']}checked{/if} />
+                                            <span class="field-hint">将主题 css/theme.css 中 :root 变量注入 &lt;head&gt;</span>
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label">SEO Schema 注入</label>
+                                        <div class="layui-input-inline">
+                                            <input type="checkbox" name="schema_enabled" value="1" lay-skin="primary" title="SEO Schema 注入" {if:$settings['schema_enabled']}checked{/if} />
+                                            <span class="field-hint">按页面类型注入结构化数据</span>
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label">品牌设置注入</label>
+                                        <div class="layui-input-inline">
+                                            <input type="checkbox" name="brand_injection_enabled" value="1" lay-skin="primary" title="品牌设置注入" {if:$settings['brand_injection_enabled']}checked{/if} />
+                                            <span class="field-hint">注入 Logo / Favicon / 水印 meta 标签</span>
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label">Block 渲染</label>
+                                        <div class="layui-input-inline">
+                                            <input type="checkbox" name="block_enabled" value="1" lay-skin="primary" title="Block 渲染" {if:$settings['block_enabled']}checked{/if} />
+                                            <span class="field-hint">挂载 BlockRender 实例，渲染 Block 组件</span>
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label">启用版本控制</label>
+                                        <div class="layui-input-inline">
+                                            <input type="checkbox" name="version_control_enabled" value="1" lay-skin="primary" title="启用版本控制" {if:$settings['version_control_enabled']}checked{/if} />
+                                            <span class="field-hint">保存模板文件时记录版本，支持回滚</span>
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label">备份保留天数</label>
+                                        <div class="layui-input-inline">
+                                            <input type="number" name="backup_keep_days" min="1" max="365" value="{$settings['backup_keep_days']}" class="layui-input" placeholder="30">
+                                            <span class="field-hint">旧版本超过此天数将被清理</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 安全 -->
+                        <div class="layui-card settings-card">
+                            <div class="layui-card-header">
+                                <span><i class="layui-icon">&#xe7ae;</i> 安全</span>
+                                <span class="header-tip">沙箱预览与白名单</span>
+                            </div>
+                            <div class="layui-card-body">
+                                <div class="settings-grid">
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label">审计日志</label>
+                                        <div class="layui-input-inline">
+                                            <input type="checkbox" name="audit_log_enabled" value="1" lay-skin="primary" title="审计日志" {if:$settings['audit_log_enabled']}checked{/if} />
+                                            <span class="field-hint">记录模板编辑 / 回滚 / 上传</span>
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label">沙箱预览开关</label>
+                                        <div class="layui-input-inline">
+                                            <input type="checkbox" name="sandbox_enabled" value="1" lay-skin="primary" title="沙箱预览开关" {if:$settings['sandbox_enabled']}checked{/if} />
+                                            <span class="field-hint">模板预览不落盘，先经沙箱校验</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="layui-form-item" style="display: block; margin-top: 8px;">
+                                    <label class="layui-form-label" style="float: left;">白名单扩展</label>
+                                    <div class="layui-input-block" style="margin-left: 120px;">
+                                        <textarea name="sandbox_whitelist_extensions" class="layui-textarea" rows="3" placeholder="htm,html,css,js">{$sandbox_whitelist_text}</textarea>
+                                        <span class="field-hint">仅允许这些后缀的文件被沙箱通过，支持换行或英文逗号分隔</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 底部操作栏 -->
+                        <div class="settings-actions">
+                            <button type="submit" lay-submit lay-filter="form-template-manager-settings" class="layui-btn">
+                                <i class="layui-icon">&#xe605;</i> 保存设置
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/html" id="name-tpl">
+    <span class="tm-name-code">{{ d.name }}</span>
+    {{# if(d.is_current == 1) { }}<span class="layui-badge layui-bg-blue" style="margin-left:6px;">当前使用中</span>{{# } }}
+</script>
+
+<script type="text/html" id="dir-tpl">
+    {{# if(d.dir_exists == 1) { }}
+    <span class="layui-badge layui-bg-green">存在</span>
+    {{# } else { }}
+    <span class="layui-badge layui-bg-red">目录缺失</span>
+    {{# } }}
+</script>
+
+<script type="text/html" id="en-tpl">
+    {{# if(d.enabled == 1) { }}
+    <span class="layui-badge layui-bg-green">启用</span>
+    {{# } else if(d.enabled == 0) { }}
+    <span class="layui-badge">禁用</span>
+    {{# } else { }}
+    <span class="layui-badge layui-bg-gray">未登记</span>
+    {{# } }}
+</script>
+
+<script type="text/html" id="op-bar">
+    <div class="layui-btn-group">
+        {{# if(d.enabled >= 0) { }}
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="versions"><i class="layui-icon">&#xe64c;</i> 版本</a>
+        <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"><i class="layui-icon">&#xe642;</i> 编辑</a>
+        {{# if(d.is_current != 1 && d.dir_exists == 1) { }}
+        <a class="layui-btn layui-btn-xs" lay-event="use">启用</a>
+        {{# } }}
+        <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="default">设默认</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+        {{# } else { }}
+        <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="add"><i class="layui-icon">&#xe654;</i> 登记</a>
+        {{# } }}
+    </div>
+</script>
+
+<script type="text/javascript">
+layui.use(['table', 'layer', 'element', 'form', 'miniTab'], function () {
+    var layer = layui.layer, table = layui.table, form = layui.form, miniTab = layui.miniTab;
+    form.render();
+
+    function renderStats(data) {
+        // 统计口径：总数按磁盘实际存在的主题算，不含目录已删除的残留记录
+        var total = 0, enabled = 0, unreg = 0, missing = 0;
+        for (var i = 0; i < data.length; i++) {
+            if (data[i].dir_exists == 1) {
+                total++;
+                if (data[i].enabled == 1) enabled++;
+                if (data[i].enabled < 0) unreg++;
+            } else if (data[i].enabled >= 0) {
+                missing++; // 有登记记录但目录已删除
+            }
+        }
+        document.getElementById('stat-total').textContent = total;
+        document.getElementById('stat-enabled').textContent = enabled;
+        document.getElementById('stat-unreg').textContent = unreg;
+        document.getElementById('stat-missing').textContent = missing;
+    }
+
+    table.render({
+        elem: '#data-table',
+        url: 'index.php?template_manager-theme_get_list',
+        height: 'full-170',
+        cols: [[
+            {field: 'name', title: '主题标识', minWidth: 200, templet: '#name-tpl'},
+            {field: 'title', title: '标题', minWidth: 130},
+            {field: 'dir_exists', title: '目录', width: 90, align: 'center', templet: '#dir-tpl'},
+            {field: 'file_count', title: '文件数', width: 80, align: 'center'},
+            {field: 'enabled', title: '记录状态', width: 100, align: 'center', templet: '#en-tpl'},
+            {field: 'version', title: '版本', width: 80, align: 'center'},
+            {title: '操作', width: 340, toolbar: '#op-bar', align: 'center'}
+        ]],
+        page: false,
+        done: function (res) {
+            // 概览统计 + 当前行高亮
+            renderStats(res.data || []);
+            var currentTheme = '{@isset($theme) ? $theme : "default"}';
+            $('.layui-table tbody tr').each(function () {
+                var name = $(this).find('.tm-name-code').text();
+                if (name === currentTheme) {
+                    $(this).addClass('tm-current-row');
+                }
+            });
+        }
+    });
+
+    $('#btn-create').on('click', function () {
+        layer.open({
+            title: '登记新主题',
+            type: 2,
+            area: ['560px', '520px'],
+            content: 'index.php?template_manager-theme_create',
+            end: function () { table.reload('data-table'); }
+        });
+    });
+
+    form.on('submit(form-template-manager-settings)', function () {
+        adminAjax.postform('#form-template-manager-settings', function (data) {
+            var json = toJson(data);
+            layer.msg(json.msg, { icon: json.err == 0 ? 1 : 5 });
+        });
+        return false;
+    });
+
+    $('#btn-sync').on('click', function () {
+        layer.confirm('扫描 view/ 目录，把尚未登记的主题写入数据库？', function () {
+            adminAjax.postd("index.php?template_manager-theme_sync_post-ajax-1", {FORM_HASH: '{@form_hash()}'}, function (data) {
+                var json = typeof data === "object" ? data : toJson(data);
+                layer.msg(json.msg, {icon: json.err == 0 ? 1 : 5});
+                if (json.err == 0) {
+                    setTimeout(function () {
+                        table.reload('data-table');
+                    }, 800);
+                }
+            });
+        });
+    });
+
+    table.on('tool(data-table-filter)', function (obj) {
+        var data = obj.data;
+        function onRes(res) {
+            var json = typeof res === "object" ? res : toJson(res);
+            layer.msg(json.msg, {icon: json.err == 0 ? 1 : 5});
+            if (json.err == 0) {
+                // 切默认主题会改站点当前主题，整页刷新让头部徽标同步；其余仅刷表格
+                if (obj.event === 'default' || obj.event === 'use') {
+                    setTimeout(function () { window.location.reload(); }, 800);
+                } else {
+                    setTimeout(function () { table.reload('data-table'); }, 800);
+                }
+            }
+        }
+        if (obj.event === 'versions') {
+            if (data.template_id > 0) {
+                miniTab.openNewTabByIframe({
+                    href: "index.php?template_manager-files-template_id-" + data.template_id,
+                    title: "文件版本",
+                });
+            } else {
+                layer.msg('请先登记该主题，才能管理文件版本', {icon: 5});
+            }
+        } else if (obj.event === 'edit') {
+            layer.open({
+                title: '编辑主题',
+                type: 2,
+                area: ['560px', '520px'],
+                content: 'index.php?template_manager-theme_edit-id-' + data.template_id,
+                end: function () { table.reload('data-table'); }
+            });
+        } else if (obj.event === 'add') {
+            layer.open({
+                title: '登记主题',
+                type: 2,
+                area: ['560px', '520px'],
+                content: 'index.php?template_manager-theme_create',
+                end: function () { table.reload('data-table'); }
+            });
+        } else if (obj.event === 'use') {
+            // 启用并切换为站点当前主题（复用 set_default 接口：清默认标记 + 切 kv theme）
+            layer.confirm('将主题「' + data.name + '」设为当前站点使用的主题？', function () {
+                adminAjax.postd("index.php?template_manager-theme_set_default_post-ajax-1", {FORM_HASH: '{@form_hash()}', id: data.template_id}, onRes);
+            });
+        } else if (obj.event === 'toggle') {
+            layer.confirm('确定要' + (data.enabled == 1 ? '禁用' : '启用') + '该主题记录吗？', function () {
+                adminAjax.postd("index.php?template_manager-theme_toggle_post-ajax-1", {FORM_HASH: '{@form_hash()}', id: data.template_id}, onRes);
+            });
+        } else if (obj.event === 'default') {
+            layer.confirm('设为默认主题并切换站点当前主题？', function () {
+                adminAjax.postd("index.php?template_manager-theme_set_default_post-ajax-1", {FORM_HASH: '{@form_hash()}', id: data.template_id}, onRes);
+            });
+        } else if (obj.event === 'del') {
+            layer.confirm('确定要删除该主题记录吗？（不影响 view/ 目录）', function () {
+                adminAjax.postd("index.php?template_manager-theme_delete_post-ajax-1", {FORM_HASH: '{@form_hash()}', id: data.template_id}, onRes);
+            });
+        }
+    });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+{inc:header.htm}
+
+<!-- 单页样式 -->
+<link rel="stylesheet" href="{$cfg[tpl]}style/css/css1.css" type="text/css" media="all"/>
+
+<!-- 内容详情数据（生成 $gdata） -->
+{block:global_show show_prev_next="1" dateformat="Y-m-d" field_format="1"}{/block}
+
+<div class="row mt20 clearfix">
+	<div class="nav">
+		<ul>
+			{block:category type="sibling"}
+			{loop:$data $v}
+			<li><a href="{$v[url]}" {if:$_GET[cid] == $v[cid]}class="active"{/if}>{$v[name]}</a></li>
+			{/loop}
+			{/block}
+		</ul>
+	</div>
+	<div class="danye-cont">
+		<h1>{$gdata[title]}<i>about</i></h1>
+		<div class="content">
+			{$gdata[content]}
+		</div>
+	</div>
+</div>
+
+{inc:footer.htm}

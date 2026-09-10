@@ -1,0 +1,31 @@
+{inc:header.htm}
+<div class="layui-card">
+	<div class="layui-card-header">{lang:rebuild_statistics}</div>
+	<div class="layui-card-body">
+		<div class="layui-form-item layui-form">
+			<input type="checkbox" id="re_cate" title="{lang:re_cate}" checked lay-skin="primary" />
+			<input type="checkbox" id="re_table" title="{lang:re_table}" checked lay-skin="primary" />
+			<input type="checkbox" id="re_user_content" title="{lang:re_user_content}" lay-skin="primary" />
+		</div>
+		<div class="layui-form-item">
+			<div class="layui-input-inline">
+				<button class="layui-btn" id="rebuild">{lang:submit}</button>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	layui.use(['form','layer'], function () {
+		var layer = layui.layer, form = layui.form;
+
+		$("#rebuild").click(function(){
+			var v1 = $("#re_cate")[0].checked ? 1 : 0;
+			var v2 = $("#re_table")[0].checked ? 1 : 0;
+			var v3 = $("#re_user_content")[0].checked ? 1 : 0;
+			adminAjax.postd("index.php?tool-rebuild-ajax-1", {"re_cate":v1, "re_table":v2, "re_user_content":v3});
+		});
+
+	});
+</script>
+</body>
+</html>

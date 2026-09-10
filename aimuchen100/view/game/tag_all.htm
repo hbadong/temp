@@ -1,0 +1,23 @@
+{inc:header.htm}
+
+<div class="crumb">
+    <div><i class="ico"></i>所在位置：
+        <a href="{$cfg[weburl]}" target="_blank">首页</a> &gt;
+        全部标签
+    </div>
+</div>
+
+<div class="wraper">
+    <div class="tag_all_page">
+        <h2><em>全部标签</em></h2>
+        <div class="tag_cloud">
+            {block:global_tag mid="0" pagenum="200"}
+            {loop:$gdata[list] $v}
+            <a href="{$v[url]}" title="{$v[name]}" class="tag_size_{$v[size]}">{$v[name]}</a>
+            {/loop}
+            {/block}
+        </div>
+    </div>
+</div>
+
+{inc:footer.htm}

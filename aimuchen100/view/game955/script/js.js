@@ -1,0 +1,1 @@
+﻿document.write("<div><a class=\"btn btn-green \"  href=\"https://ugame.9game.cn/game/downloadGame?pack.cooperateModelId=201012&pack.id=50191125\" >    <i class=\"icon icon-aos\"></i>    <p class=\"text\"><b>安卓版下载</b>    </p></a><a class=\"btn btn-blue disabled\" >    <i class=\"icon icon-ios\"></i>    <p class=\"text\"><b>需跳转Apple Store下载</b></p></a></div>")

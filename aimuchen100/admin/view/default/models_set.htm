@@ -1,0 +1,82 @@
+{inc:header.htm}
+<div class="layuimini-container">
+    <div class="layuimini-main">
+        <div class="layui-card">
+            <div class="layui-card-header">
+                {lang:add_model}
+            </div>
+            <div class="layui-card-body layui-row">
+                <form class="layui-form" id="form" action="index.php?models-{$_GET['action']}-ajax-1" method="post">
+                    <input name="mid" type="hidden" value="{$data[mid]}" />
+                    <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label required">{lang:model_name}</label>
+                            <div class="layui-input-inline">
+                                {$input[name]}
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label required">{lang:table}</label>
+                            <div class="layui-input-inline">
+                                {$input[tablename]}
+                            </div>
+                            <div class="layui-form-mid layui-word-aux">{lang:modeltablename_no_safe}</div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label required">{lang:pic_width}</label>
+                            <div class="layui-input-inline">
+                                {$input[width]}
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label required">{lang:pic_height}</label>
+                            <div class="layui-input-inline">
+                                {$input[height]}
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label required">{lang:menu_icon}</label>
+                            <div class="layui-input-inline">
+                                {$input[icon]}
+                            </div>
+                        </div>
+                        {hook:admin_models_set_after.htm}
+                        <div class="layui-form-item">
+                            <div class="layui-input-block">
+                                <button class="layui-btn" lay-submit lay-filter="form">{lang:submit}</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+   </div>
+</div>  
+
+<script type="text/javascript">
+    layui.use(['form','layer', 'miniTab'], function () {
+        var layer = layui.layer, form = layui.form, miniTab = layui.miniTab;
+        //监听提交
+        form.on('submit(form)', function () {
+            adminAjax.postform('#form',function(data){
+                var json = toJson(data);
+                if( json.err == 0 ){
+                    var icon = 1;
+                }else{
+                    var icon = 5;
+                }
+                layer.msg(json.msg, {icon: icon});
+                if(json.err==0) {
+                    setTimeout(function(){
+                        miniTab.reloadIframe('index.php?models-index');
+                        miniTab.deleteCurrentByIframe();
+                    }, 1500);
+                }
+            });
+            return false;
+        });
+    });
+</script>
+</body>
+</html>

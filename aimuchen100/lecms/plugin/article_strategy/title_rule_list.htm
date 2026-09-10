@@ -1,0 +1,95 @@
+{inc:header.htm}
+<div class="layuimini-container">
+    <div class="layuimini-main">
+        <div class="layui-card">
+            <div class="layui-card-header">
+                标题规则管理
+                <button class="layui-btn layui-btn-sm layui-btn-normal" lay-event="add" id="btn-add" style="float:right">
+                    <i class="layui-icon">&#xe654;</i> 添加规则
+                </button>
+            </div>
+            <div class="layui-card-body">
+                <table class="layui-hide" id="data-table" lay-filter="data-table-filter"></table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/html" id="status-tpl">
+    {{# if(d.is_active == 1) { }}
+    <span class="layui-badge layui-bg-green">启用</span>
+    {{# } else { }}
+    <span class="layui-badge">禁用</span>
+    {{# } }}
+</script>
+
+<script type="text/html" id="op-bar">
+    <div class="layui-btn-group">
+        <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit">编辑</a>
+        <a class="layui-btn layui-btn-xs" lay-event="toggle">{{# if(d.is_active == 1) { }}禁用{{# } else { }}启用{{# } }}</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    </div>
+</script>
+
+<script type="text/javascript">
+layui.use(['table', 'layer', 'miniTab'], function () {
+    var layer = layui.layer, table = layui.table, miniTab = layui.miniTab;
+
+    table.render({
+        elem: '#data-table',
+        url: 'index.php?title_rule-get_list',
+        height: 'full-120',
+        cols: [[{$cols}]],
+        limits: [10, 15, 20, 50, 100],
+        limit: 20,
+        page: true
+    });
+
+    // Add button
+    $('#btn-add').on('click', function(){
+        var index = layer.open({
+            title: '添加标题规则',
+            type: 2,
+            area: ['700px', '550px'],
+            content: 'index.php?title_rule-create'
+        });
+    });
+
+    // Table toolbar events
+    table.on('tool(data-table-filter)', function(obj) {
+        var data = obj.data;
+        if (obj.event === 'edit') {
+            var index = layer.open({
+                title: '编辑标题规则',
+                type: 2,
+                area: ['700px', '550px'],
+                content: 'index.php?title_rule-edit-sid-' + data.sid
+            });
+        } else if (obj.event === 'toggle') {
+            layer.confirm('确定要' + (data.is_active == 1 ? '禁用' : '启用') + '该规则吗？', function(){
+                $.post('index.php?title_rule-toggle-ajax-1', {sid: data.sid}, function(res){
+                    if(res.status == 0){
+                        layer.msg(res.message, {icon: 1});
+                        table.reload('data-table');
+                    } else {
+                        layer.msg(res.message, {icon: 5});
+                    }
+                });
+            });
+        } else if (obj.event === 'del') {
+            layer.confirm('确定要删除该规则吗？', function(){
+                $.post('index.php?title_rule-delete-ajax-1', {sid: data.sid}, function(res){
+                    if(res.status == 0){
+                        layer.msg(res.message, {icon: 1});
+                        table.reload('data-table');
+                    } else {
+                        layer.msg(res.message, {icon: 5});
+                    }
+                });
+            });
+        }
+    });
+});
+</script>
+</body>
+</html>

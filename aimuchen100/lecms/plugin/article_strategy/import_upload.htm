@@ -1,0 +1,158 @@
+{inc:header.htm}
+<div class="layuimini-container">
+    <div class="layuimini-main">
+        <div class="layui-card">
+            <div class="layui-card-header">
+                导入文章
+            </div>
+            <div class="layui-card-body">
+                <form class="layui-form" method="post" enctype="multipart/form-data" action="?import-upload_post-ajax-1" id="import-form">
+                    <input type="hidden" name="FORM_HASH" value="{@form_hash()}" />
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">站点</label>
+                        <div class="layui-input-block">
+                            <span class="layui-form-radio">{ CURRENT_SITE_NAME }</span>
+                            <input type="hidden" name="site_id" value="{CURRENT_SITE_ID}">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">选择文件</label>
+                        <div class="layui-input-block">
+                            <div class="layui-upload-drag" id="upload-drag">
+                                <i class="layui-icon">&#xe67c;</i>
+                                <p>点击上传或将文件拖到此处</p>
+                                <p class="layui-font-12 layui-font-gray">支持 .txt 和 .csv 格式，最大 10MB</p>
+                                <input type="file" name="import_file" id="import-file" accept=".txt,.csv">
+                            </div>
+                            <div id="file-info" style="margin-top: 10px; display: none;">
+                                <span class="layui-badge layui-bg-green" id="file-name"></span>
+                                <span class="layui-font-12 layui-font-gray" id="file-size"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">格式说明</label>
+                        <div class="layui-input-block">
+                            <fieldset class="layui-elem-field layui-field-title">
+                                <legend>纯文本格式 (.txt)</legend>
+                                <div class="layui-field-box layui-font-12">
+                                    <p>按空行分隔每篇文章，每段格式如下：</p>
+                                    <pre style="background:#f5f5f5;padding:10px;border-radius:4px;">第一行标题
+正文内容开始...
+可以有多行
+
+第二篇文章标题
+第二篇正文内容...</pre>
+                                </div>
+                            </fieldset>
+                            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                                <legend>CSV 格式 (.csv)</legend>
+                                <div class="layui-field-box layui-font-12">
+                                    <p>CSV 文件需包含以下列（列名不区分大小写）：</p>
+                                    <ul>
+                                        <li><b>title</b> - 文章标题（必填）</li>
+                                        <li><b>content</b> - 文章正文</li>
+                                        <li><b>tags</b> - 标签（多个用逗号分隔）</li>
+                                        <li><b>category</b> - 分类名称</li>
+                                    </ul>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button class="layui-btn" lay-submit lay-filter="import-form-submit" id="btn-submit">开始导入</button>
+                            <button type="reset" class="layui-btn layui-btn-primary" id="btn-reset">重置</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+layui.use(['form', 'upload'], function () {
+    var form = layui.form;
+    var upload = layui.upload;
+
+    // File input change handler
+    $('#import-file').on('change', function() {
+        var file = this.files[0];
+        if (file) {
+            $('#file-name').text(file.name);
+            $('#file-size').text(' (' + (file.size / 1024).toFixed(1) + ' KB)');
+            $('#file-info').show();
+        } else {
+            $('#file-info').hide();
+        }
+    });
+
+    // Drag and drop
+    var dragArea = document.getElementById('upload-drag');
+    dragArea.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        dragArea.classList.add('layui-btn-normal');
+    });
+    dragArea.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        dragArea.classList.remove('layui-btn-normal');
+    });
+    dragArea.addEventListener('drop', function(e) {
+        e.preventDefault();
+        dragArea.classList.remove('layui-btn-normal');
+        var files = e.dataTransfer.files;
+        if (files.length > 0) {
+            var fileInput = document.getElementById('import-file');
+            fileInput.files = files;
+            $('#import-file').trigger('change');
+        }
+    });
+
+    // Form submit
+    form.on('submit(import-form-submit)', function(data) {
+        var fileInput = document.getElementById('import-file');
+        if (fileInput.files.length === 0) {
+            layer.msg('Please select a file to upload', {icon: 5});
+            return false;
+        }
+
+        var formData = new FormData(document.getElementById('import-form'));
+        var btn = $('#btn-submit');
+        btn.prop('disabled', true).text('Importing...');
+
+        $.ajax({
+            url: $('#import-form').attr('action'),
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(res) {
+                btn.prop('disabled', false).text('开始导入');
+                if (res.err === 0) {
+                    layer.msg(res.msg, {icon: 1}, function() {
+                        parent.location.reload();
+                    });
+                } else {
+                    layer.msg(res.msg, {icon: 5});
+                }
+            },
+            error: function() {
+                btn.prop('disabled', false).text('开始导入');
+                layer.msg('Upload failed', {icon: 5});
+            }
+        });
+        return false;
+    });
+
+    // Reset button
+    $('#btn-reset').on('click', function() {
+        $('#file-info').hide();
+    });
+});
+</script>
+</body>
+</html>

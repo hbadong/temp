@@ -1,0 +1,163 @@
+{inc:header.htm}
+<div class="layuimini-container">
+	<div class="layuimini-main">
+		<fieldset class="table-search-fieldset">
+			<legend>{lang:search}</legend>
+			<div>
+				<form class="layui-form layui-form-pane">
+					<div class="layui-form-item">
+						<div class="layui-inline">
+							<div class="layui-input-inline">
+								{$midhtml}
+							</div>
+						</div>
+						<div class="layui-inline">
+							<label class="layui-form-label">{lang:tagname}</label>
+							<div class="layui-input-inline">
+								<input placeholder="{lang:tagname}" autocomplete="off" type="text" class="layui-input" name="keyword" />
+							</div>
+						</div>
+						<div class="layui-inline">
+							<button type="submit" class="layui-btn layui-btn-primary"  lay-submit lay-filter="data-search-btn"><i class="layui-icon"></i> {lang:search}</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</fieldset>
+		<script type="text/html" id="toolbar">
+			<div class="layui-btn-container">
+				<button class="layui-btn layui-btn-sm layui-btn-normal" lay-event="add">{lang:add}</button>
+				<button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="delete">{lang:batch_delete}</button>
+			</div>
+		</script>
+		<table class="layui-hide" id="data-table" lay-filter="data-table-filter"></table>
+
+		<script type="text/html" id="currentTableBar">
+			<div class="layui-btn-group">
+				<a class="layui-btn layui-btn-xs" lay-event="edit">{lang:edit}</a>
+				<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="view">{lang:view}</a>
+				<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delete">{lang:delete}</a>
+			</div>
+		</script>
+	</div>
+</div>
+
+<script type="text/javascript">
+	var mid = "{$mid}";
+	var table = "{$table}";
+	var name = "{$name}";
+	var selectmid = $("#mid").val();
+	if(mid != selectmid){
+		mid = selectmid;
+	}
+
+	layui.use(['form','layer', 'table', 'miniTab'], function () {
+		var layer = layui.layer, form = layui.form, table = layui.table, miniTab = layui.miniTab;
+
+		table.render({
+			elem: '#data-table',
+			url: 'index.php?tag-get_list-mid-'+mid+'-',
+			height: 'full-145',
+			toolbar: '#toolbar',
+			defaultToolbar: ['filter', 'exports', 'print'],
+			cellMinWidth: 50,
+			escape: false,
+			cols: [[
+				{type: "checkbox", width: 50, fixed: 'left'},
+				{field: 'tagid', width: 100, title: 'tagid', align: 'center'},
+				{field: 'name', width: 150, title: '{lang:tagname}', align: 'left'},
+				{field: 'count', width: 100, title: '{lang:cate_count}', align: 'center'},
+				{field: 'orderby', width: 100, title: '{lang:orderby}', align: 'center', edit: 'text'},
+				{field: 'content', minwidth: 150, title: '{lang:content}', edit: 'text'},
+				{field: 'seo_title', title: '{lang:seo_title}', edit: 'text'},
+				{field: 'seo_keywords', title: '{lang:seo_keywords}', edit: 'text'},
+				{field: 'seo_description', title: '{lang:seo_description}', edit: 'text'},
+				{title: '{lang:opt}', width: 140, toolbar: '#currentTableBar', align: "center"}
+			]],
+			limits: [10, 15, 20, 25, 50, 100],
+			limit: 15,
+			page: true
+		});
+		// 监听搜索操作
+		form.on('submit(data-search-btn)', function (data) {
+			mid = data.field.mid;
+			//执行搜索重载
+			table.reload('data-table', {
+				url: 'index.php?tag-get_list-mid-'+mid+'-',
+				page: {
+					curr: 1
+				}
+				, where: {
+					keyword: data.field.keyword
+				}
+			}, 'data');
+
+			return false;
+		});
+		// 监听下拉框操作
+		form.on('select(mid)', function(data){
+			mid = data.value;
+			//执行搜索重载
+			table.reload('data-table', {
+				url: 'index.php?tag-get_list-mid-'+data.value+'-',
+				page: {
+					curr: 1
+				}
+			}, 'data');
+		});
+		/**
+		 * toolbar监听事件 table列表 头部的操作
+		 */
+		table.on('toolbar(data-table-filter)', function (obj) {
+			if (obj.event === 'add') {  // 监听添加操作
+				miniTab.openNewTabByIframe({
+					href:"index.php?tag-add",
+					title:"{lang:add_tag}",
+				});
+			} else if (obj.event === 'delete') {  // 监听删除操作
+				var checkStatus = table.checkStatus('data-table')
+						, data = checkStatus.data;
+				var len = data.length;
+				if(len == 0){
+					layer.msg('{lang:select_data}',{icon:5});
+					return false;
+				}else{
+					adminAjax.confirm('{lang:delete_confirm}', function () {
+						var id_arr = [];
+						for (var i in data) {
+							id_arr[i] = data[i]['tagid'];
+						}
+						adminAjax.postd("index.php?tag-batch_del-ajax-1", {"mid":mid, "id_arr": id_arr});
+					});
+				}
+			}
+		});
+
+		//监听单元格编辑
+		table.on('edit(data-table-filter)', function(obj){
+			var value = obj.value //得到修改后的值
+					,data = obj.data //得到所在行所有键值
+					,field = obj.field; //得到字段
+			adminAjax.postd("index.php?tag-set-ajax-1", {"mid":mid, "tagid":data.tagid, "field":field, "value":value});
+		});
+		//监听每一行的操作
+		table.on('tool(data-table-filter)', function (obj) {
+			var data = obj.data;
+
+			if (obj.event === 'edit') {
+				miniTab.openNewTabByIframe({
+					href:'index.php?tag-edit-mid-'+mid+'-tagid-'+data.tagid,
+					title:"{lang:edit_tag}",
+				});
+			} else if (obj.event === 'view') {
+				window.open(data.url);
+			} else if (obj.event === 'delete') {
+				adminAjax.confirm('{lang:delete_confirm}', function () {
+					adminAjax.postd("index.php?tag-del-ajax-1", {"mid":mid, "tagid":data.tagid});
+				});
+			}
+		});
+	});
+</script>
+</body>
+</html>

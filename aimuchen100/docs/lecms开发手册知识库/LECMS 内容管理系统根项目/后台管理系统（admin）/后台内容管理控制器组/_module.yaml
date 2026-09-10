@@ -1,0 +1,15 @@
+schema_version: 1
+module_path: admin_panel/content_management
+title: 后台内容管理控制器组
+scope:
+    - admin/control/content_control.class.php
+    - admin/control/category_control.class.php
+    - admin/control/cms_page_control.class.php
+    - admin/control/comment_control.class.php
+    - admin/control/attach_manage_control.class.php
+    - admin/control/navigate_control.class.php
+    - admin/control/flags_control.class.php
+source_files: []
+depends_on: []
+related_to:
+    - path: admin_panel/settings

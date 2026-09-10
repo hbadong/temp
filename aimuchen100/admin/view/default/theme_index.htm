@@ -1,0 +1,64 @@
+{inc:header.htm}
+<div class="layui-card">
+	<div class="layui-card-header">{lang:theme_manage}</div>
+	<div class="layui-card-body">
+		{if:!$themes}
+		<div class="layui-btn layui-btn-disabled layui-btn-fluid">{lang:no_data}</div>
+		{else}
+		<div class="layui-row layui-col-space15" id="theme">
+			{loop:$themes $v $k}
+			{php} $enable = ($k == $theme); {/php}
+			<div class="theme-col layui-col-lg2 layui-col-md3 layui-col-sm4 {if:$enable} used{/if}">
+				<div class="project-list-item">
+					<div class="project-list-item-cover">
+						<img src="{$v[pic]}" />
+					</div>
+					<div class="project-list-item-body">
+						<h2 class="layui-elip">{$v[name]}({$k})</h2>
+						<div class="project-list-item-text layui-text">
+                            {$v[brief]}
+                        </div>
+						<div class="project-list-item-desc">
+							<span class="time">{lang:author}: <a target="_blank" rel="nofollow" href="{$v[authorurl]}">{$v[author]}</a></span>
+						</div>
+						<div class="project-list-item-desc">
+							<span class="time">{lang:version}：{$v[version]}</span>
+							<span class="ew-head-list">{lang:update}：{$v[update]}</span>
+						</div>
+						<div class="project-list-item-gsm">
+							{if:$enable}
+							<a href="javascript:;" theme="{$k}" class="layui-btn layui-btn-sm layui-btn-primary">{lang:being_used}</a>
+							{else}
+							<div class="layui-btn-group"><a theme="{$k}" class="enable layui-btn layui-btn-sm">{lang:enable}</a><a theme="{$k}" class="del layui-btn layui-btn-sm layui-btn-danger">{lang:delete}</a></div>
+							{/if}
+						</div>
+					</div>
+				</div>
+			</div>
+			{/loop}
+		</div>
+		{/if}
+	</div>
+</div>
+<script type="text/javascript">
+layui.use(['form','layer'], function () {
+    var layer = layui.layer, form = layui.form;
+
+	//启用
+	$(".enable").off("click").click(function(){ enable($(this).attr("theme")); });
+
+	//删除
+	$(".del").off("click").click(function(){
+		var theme = $(this).attr("theme");
+		adminAjax.confirm("【"+theme+"】{lang:delete_confirm}", function(){
+			adminAjax.postd("index.php?theme-delete-ajax-1", {"theme" : theme});
+		});
+	});
+});
+// 启用
+function enable(theme) {
+	adminAjax.postd("index.php?theme-enable-ajax-1", {"theme" : theme});
+}
+</script>
+</body>
+</html>

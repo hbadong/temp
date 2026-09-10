@@ -1,0 +1,44 @@
+{inc:header.htm}
+<div class="layuimini-container">
+	<div class="layuimini-main">
+		<div class="layui-card">
+			<div class="layui-card-header">过滤日志</div>
+			<div class="layui-card-body">
+				<table class="layui-table">
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th>敏感词</th>
+							<th>分类</th>
+							<th>处理动作</th>
+							<th>检测时间</th>
+						</tr>
+					</thead>
+					<tbody>
+						{loop:$list $item}
+						<tr>
+							<td>{$item['id']}</td>
+							<td>{$item['word']}</td>
+							<td>{$item['category']}</td>
+							<td>
+								{if:$item['action'] == 'warning'}<span class="layui-badge layui-bg-orange">警告</span>
+								{elseif:$item['action'] == 'replace'}<span class="layui-badge layui-bg-blue">替换</span>
+								{elseif:$item['action'] == 'reject'}<span class="layui-badge layui-bg-red">拒绝</span>
+								{else}{$item['action']}
+								{/if}
+							</td>
+							<td>{$item['created_at']}</td>
+						</tr>
+						{/loop}
+						{if:empty($list)}
+						<tr><td colspan="5">暂无数据</td></tr>
+						{/if}
+					</tbody>
+				</table>
+				{$pagebar}
+			</div>
+		</div>
+	</div>
+</div>
+</body>
+</html>

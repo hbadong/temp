@@ -1,0 +1,270 @@
+{inc:header.htm}
+<style>
+.settings-wrap { padding: 0 16px; }
+.settings-card { margin-bottom: 16px; }
+.settings-card .layui-card-header { display: flex; align-items: center; justify-content: space-between; font-weight: 600; }
+.settings-card .layui-card-header i { color: #1E9FFF; margin-right: 8px; }
+.settings-card .layui-card-header .header-tip { font-weight: 400; font-size: 12px; color: #999; }
+.settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 24px; }
+.settings-grid .layui-form-item { display: flex; align-items: center; }
+.settings-grid .layui-form-label { width: 140px; padding: 9px 12px 9px 0; text-align: right; }
+.settings-grid .layui-input-inline { width: auto; flex: 1; }
+.settings-grid .layui-input-block { margin-left: 140px; }
+.settings-actions { position: sticky; bottom: 0; padding: 12px 0; background: #fff; border-top: 1px solid #eee; text-align: right; margin-top: 16px; box-shadow: 0 -2px 6px rgba(0,0,0,.03); z-index: 10; }
+.settings-actions .layui-btn + .layui-btn { margin-left: 8px; }
+.field-hint { display: block; color: #999; font-size: 12px; margin-top: 4px; }
+.field-block { grid-column: 1 / -1; }
+.field-block .layui-form-label { width: 140px; }
+.field-block .layui-input-block { margin-left: 140px; }
+.ratio-bar { display: flex; flex-wrap: wrap; gap: 6px 18px; padding: 4px 0; }
+.ratio-sum { padding: 8px 12px; border-radius: 4px; background: #f6f6f6; color: #666; font-size: 12px; }
+@media (max-width: 900px) { .settings-grid { grid-template-columns: 1fr; } .field-block .layui-input-block { margin-left: 0; } }
+</style>
+<div class="layuimini-container">
+	<div class="layuimini-main">
+		<div class="layui-tab layui-tab-brief" lay-filter="main">
+			<ul class="layui-tab-title">
+				<li class="layui-this">功能</li>
+				<li>插件设置</li>
+			</ul>
+			<div class="layui-tab-content">
+				<!-- Tab 1：功能（原 URL 列表页内容） -->
+				<div class="layui-tab-item layui-show">
+					<div class="layui-card">
+						<div class="layui-card-header">
+							URL 列表
+							<a href="javascript:;" class="layui-btn layui-btn-sm layui-btn-primary js-open-generate" style="float:right"><i class="layui-icon">&#xe654;</i> 生成URL</a>
+						</div>
+						<div class="layui-card-body">
+							<form class="layui-form" action="" method="get">
+								<input type="hidden" name="admin_url-index">
+								<div class="layui-form-item" style="display:inline">
+									<div class="layui-input-inline">
+										<select name="site_id">
+											<option value="0">全部站点</option>
+											{loop:$sites $site}
+											<option value="{$site['sid']}" {if:R('site_id','R')==$site['sid']}selected{/if}>{$site['site_name']}</option>
+											{/loop}
+										</select>
+									</div>
+									<div class="layui-input-inline">
+										<select name="status">
+											<option value="0">全部状态</option>
+											<option value="1" {if:R('status','R')==1}selected{/if}>待生成</option>
+											<option value="2" {if:R('status','R')==2}selected{/if}>已使用</option>
+											<option value="3" {if:R('status','R')==3}selected{/if}>已失效</option>
+										</select>
+									</div>
+									<button class="layui-btn" lay-submit>筛选</button>
+								</div>
+							</form>
+							<table class="layui-table" lay-skin="line">
+								<thead>
+									<tr>
+										<th>ID</th>
+										<th>站点</th>
+										<th>URL</th>
+										<th>类型</th>
+										<th>评分</th>
+										<th>状态</th>
+										<th>创建时间</th>
+									</tr>
+								</thead>
+								<tbody>
+									{loop:$urls $url}
+									<tr>
+										<td>{$url['id']}</td>
+										<td>{$url['site_id']}</td>
+										<td>{$url['url']}</td>
+										<td>{$url['type']}</td>
+										<td>{$url['score']}</td>
+										<td>
+											{if:$url['status']==1}<span class="layui-badge layui-bg-orange">待生成</span>{/if}
+											{if:$url['status']==2}<span class="layui-badge layui-bg-green">已使用</span>{/if}
+											{if:$url['status']==3}<span class="layui-badge layui-bg-gray">已失效</span>{/if}
+										</td>
+										<td>{$url['created_at']}</td>
+									</tr>
+									{/loop}
+									{if:empty($urls)}
+									<tr><td colspan="7" style="text-align:center">暂无URL数据</td></tr>
+									{/if}
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				<!-- Tab 2：插件设置（原 settings.htm 内容） -->
+				<div class="layui-tab-item">
+					<div class="settings-wrap">
+						<!-- 8 类型比例 -->
+						<div class="layui-card settings-card">
+							<div class="layui-card-header">
+								<span><i class="layui-icon">&#xe62a;</i> URL 类型比例</span>
+								<span class="header-tip">调用 generate_urls() 缺省 type_ratio 时按此分配;总和不必=1</span>
+							</div>
+							<div class="layui-card-body">
+								<form id="form-settings" class="layui-form" action="?admin_url-settings_post-ajax-1" method="post">
+									<input type="hidden" name="FORM_HASH" value="{@form_hash()}" />
+									<div class="settings-grid">
+										<div class="layui-form-item">
+											<label class="layui-form-label">列表型（TYPE_LIST）</label>
+											<div class="layui-input-inline">
+												<input type="number" step="0.01" min="0" max="1" name="ratio_list" value="{$settings['ratio_list']}" class="layui-input">
+												<span class="field-hint">/list-{page}.html</span>
+											</div>
+										</div>
+										<div class="layui-form-item">
+											<label class="layui-form-label">数字详情型</label>
+											<div class="layui-input-inline">
+												<input type="number" step="0.01" min="0" max="1" name="ratio_detail" value="{$settings['ratio_detail']}" class="layui-input">
+												<span class="field-hint">/{id}.html</span>
+											</div>
+										</div>
+										<div class="layui-form-item">
+											<label class="layui-form-label">分类型</label>
+											<div class="layui-input-inline">
+												<input type="number" step="0.01" min="0" max="1" name="ratio_category" value="{$settings['ratio_category']}" class="layui-input">
+												<span class="field-hint">/category/{slug}.html</span>
+											</div>
+										</div>
+										<div class="layui-form-item">
+											<label class="layui-form-label">标签型</label>
+											<div class="layui-input-inline">
+												<input type="number" step="0.01" min="0" max="1" name="ratio_tag" value="{$settings['ratio_tag']}" class="layui-input">
+												<span class="field-hint">/tag/{slug}.html</span>
+											</div>
+										</div>
+										<div class="layui-form-item">
+											<label class="layui-form-label">日期型</label>
+											<div class="layui-input-inline">
+												<input type="number" step="0.01" min="0" max="1" name="ratio_date" value="{$settings['ratio_date']}" class="layui-input">
+												<span class="field-hint">/{year}/{month}/{slug}.html</span>
+											</div>
+										</div>
+										<div class="layui-form-item">
+											<label class="layui-form-label">别名型</label>
+											<div class="layui-input-inline">
+												<input type="number" step="0.01" min="0" max="1" name="ratio_alias" value="{$settings['ratio_alias']}" class="layui-input">
+												<span class="field-hint">/{game-name}.html</span>
+											</div>
+										</div>
+										<div class="layui-form-item">
+											<label class="layui-form-label">灵活型</label>
+											<div class="layui-input-inline">
+												<input type="number" step="0.01" min="0" max="1" name="ratio_flexible" value="{$settings['ratio_flexible']}" class="layui-input">
+												<span class="field-hint">/cid/id/date/game.html</span>
+											</div>
+										</div>
+										<div class="layui-form-item">
+											<label class="layui-form-label">HashId 型</label>
+											<div class="layui-input-inline">
+												<input type="number" step="0.01" min="0" max="1" name="ratio_hashid" value="{$settings['ratio_hashid']}" class="layui-input">
+												<span class="field-hint">/{short-hash}.html</span>
+											</div>
+										</div>
+										<div class="layui-form-item field-block">
+											<label class="layui-form-label">总和提示</label>
+											<div class="layui-input-block">
+												<div class="ratio-sum" id="ratio-sum">当前总和：<b>0.00</b>;模型按比例向下取整,余数补给占比最高的类型,因此总和=1.00 是最佳</div>
+											</div>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+
+						<!-- 批量生成与清理 -->
+						<div class="layui-card settings-card">
+							<div class="layui-card-header">
+								<span><i class="layui-icon">&#xe620;</i> 批量生成与去重</span>
+								<span class="header-tip">影响 generate_urls() 内部分批粒度与清理任务</span>
+							</div>
+							<div class="layui-card-body">
+								<div class="settings-grid">
+									<div class="layui-form-item">
+										<label class="layui-form-label">批量上限（每请求）</label>
+										<div class="layui-input-inline">
+											<input type="number" name="batch_limit" value="{$settings['batch_limit']}" min="100" max="1000000" form="form-settings" class="layui-input">
+											<span class="field-hint">单次 generate_urls() 允许的最大 URL 数;模型内部固定 1000/批</span>
+										</div>
+									</div>
+									<div class="layui-form-item">
+										<label class="layui-form-label">自动去重</label>
+										<div class="layui-input-inline">
+											<input type="radio" name="auto_dedup" value="1" title="启用 INSERT IGNORE" {if:$settings['auto_dedup']}checked{/if} form="form-settings">
+											<input type="radio" name="auto_dedup" value="0" title="关闭" {if:!$settings['auto_dedup']}checked{/if} form="form-settings">
+											<span class="field-hint">基于 uk_site_hash 唯一索引静默去重（默认行为）</span>
+										</div>
+									</div>
+									<div class="layui-form-item">
+										<label class="layui-form-label">清理天数</label>
+										<div class="layui-input-inline">
+											<input type="number" name="clean_days" value="{$settings['clean_days']}" min="1" max="365" form="form-settings" class="layui-input">
+											<span class="field-hint">clean_unused_urls() 默认值</span>
+										</div>
+									</div>
+									<div class="layui-form-item">
+										<label class="layui-form-label">最低评分</label>
+										<div class="layui-input-inline">
+											<input type="number" name="min_score" value="{$settings['min_score']}" min="70" max="90" form="form-settings" class="layui-input">
+											<span class="field-hint">calculate_score() 输出范围 70-90</span>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- 底部操作栏 -->
+						<div class="settings-actions">
+							<button type="submit" lay-submit lay-filter="form-settings" class="layui-btn">
+								<i class="layui-icon">&#xe605;</i> 保存设置
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+layui.use(['form', 'layer', 'jquery', 'element'], function () {
+	var form = layui.form, layer = layui.layer, $ = layui.$, miniTab = layui.miniTab;
+	function refreshSum() {
+		var sum = 0;
+		$('input[name^="ratio_"]').each(function () {
+			var v = parseFloat($(this).val());
+			if (!isNaN(v)) sum += v;
+		});
+		$('#ratio-sum b').text(sum.toFixed(2));
+	}
+	form.render();
+	$('input[name^="ratio_"]').on('input', refreshSum);
+	refreshSum();
+	form.on('submit(form-settings)', function () {
+		adminAjax.postform('#form-settings', function (data) {
+			var json = toJson(data);
+			layer.msg(json.msg, { icon: json.err == 0 ? 1 : 5 });
+		});
+		return false;
+	});
+	//新标签打开「生成URL」页
+	$('.js-open-generate').on('click', function () {
+		miniTab.openNewTabByIframe({
+			href: "index.php?admin_url-generate",
+			title: "批量生成URL"
+		});
+	});
+	// 支持 index.php?admin_url-index-tab-settings 直达「插件设置」tab
+	var hash = location.hash;
+	if (hash !== '#tab-settings') {
+		var m = /[?&]tab-settings\b/.test(location.search) ? true : (/-tab-settings\b/.test(location.search));
+		if (m) location.hash = '#tab-settings';
+	}
+	if (location.hash === '#tab-settings') {
+		$('.layui-tab[lay-filter="main"] .layui-tab-title li:eq(1)').trigger('click');
+	}
+});
+</script>
+</body>
+</html>

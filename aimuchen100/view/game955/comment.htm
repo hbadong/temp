@@ -1,0 +1,51 @@
+{inc:header.htm}
+<!-- 内容详情数据（生成 $gdata） -->
+{block:global_show show_prev_next="1" dateformat="Y-m-d" field_format="1"}{/block}
+<div class="content wrapper">
+	<div class="url-here">
+		<a href="{$cfg[weburl]}">{$cfg[webname]}</a> &gt;
+		<a href="{$gdata[url]}">{$gdata[title]}</a> &gt;
+		评论
+	</div>
+
+	<div class="fn-clear">
+		<div class="content-l fl">
+			<div class="conbox">
+				<div class="block-title3">
+					<h3 class="title">评论列表</h3>
+				</div>
+				<div class="news-list3">
+					{block:global_comment pagenum="20"}{/block}
+					{loop:$gdata[list] $v}
+					<div style="padding:12px 0; border-bottom:1px dashed #eee;">
+						<p style="color:#00c853;">{$v[username]} <span style="color:#999; font-size:12px; margin-left:10px;">{@date('Y-m-d H:i', $v['dateline'])}</span></p>
+						<p style="margin-top:6px; line-height:24px;">{$v[content]}</p>
+					</div>
+					{/loop}
+				</div>
+				<div class="laypage_main">
+					{$gdata[pages]}
+				</div>
+			</div>
+		</div>
+		<div class="content-r fr">
+			<!-- 最新资讯 -->
+			<div class="conbox">
+				<div class="block-title4">
+					<h3 class="title">最新资讯</h3>
+				</div>
+				<div class="news-list3">
+					<ul>
+						{block:list mid="2" limit="10"}
+						{loop:$data[list] $v}
+						<li><a class="tit" href="{$v[url]}" target="_blank" title="{$v[title]}">{$v[subject]}</a></li>
+						{/loop}
+						{/block}
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{inc:footer.htm}

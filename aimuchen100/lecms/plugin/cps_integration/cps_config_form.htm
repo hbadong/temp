@@ -1,0 +1,91 @@
+{inc:header.htm}
+<div class="layuimini-container">
+	<div class="layuimini-main">
+		<div class="layui-card">
+			<div class="layui-card-header">
+				{if:!empty($row['id'])}编辑 CPS 推广链接{else}新增 CPS 推广链接{/if}
+			</div>
+			<div class="layui-card-body">
+			<form id="form" method="post" action="{if:!empty($row['id'])}?cps_config-update_post-ajax-1{else}?cps_config-create_post-ajax-1{/if}" class="layui-form">
+				<input type="hidden" name="FORM_HASH" value="{@form_hash()}">
+				{if:!empty($row['id'])}<input type="hidden" name="id" value="{$row['id']}">{/if}
+				<div class="layui-form-item">
+					<label class="layui-form-label">站点</label>
+					<div class="layui-input-block">
+						<select name="site_id">
+							{loop:$sites $site}
+							<option value="{$site['sid']}" {if:$site['sid']==$row['site_id']}selected{/if}>{$site['site_name']}（ID:{$site['sid']}）</option>
+							{/loop}
+							<option value="0" {if:empty($row['site_id']) || $row['site_id']==0}selected{/if}>全局（所有站点）</option>
+						</select>
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">游戏ID</label>
+					<div class="layui-input-block">
+						<input type="text" name="game_id" value="{$row['game_id']}" placeholder="游戏ID（必填）" class="layui-input" autocomplete="off">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">链接名称</label>
+					<div class="layui-input-block">
+						<input type="text" name="name" value="{$row['name']}" placeholder="如：迅雷下载" class="layui-input" autocomplete="off">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">推广链接</label>
+					<div class="layui-input-block">
+						<input type="text" name="url" value="{$row['url']}" placeholder="https://...（必填）" class="layui-input" autocomplete="off">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">备用链接</label>
+					<div class="layui-input-block">
+						<input type="text" name="backup_url" value="{$row['backup_url']}" placeholder="主链接失效时降级（可选）" class="layui-input" autocomplete="off">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">权重 0-100</label>
+					<div class="layui-input-block">
+						<input type="text" name="weight" value="{if:!empty($row['weight'])}{$row['weight']}{else}50{/if}" class="layui-input" autocomplete="off">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">启用</label>
+					<div class="layui-input-block">
+						<input type="checkbox" name="enabled" value="1" lay-skin="switch" lay-text="启用|停用" {if:empty($row['enabled']) || $row['enabled']==1}checked{/if}>
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<div class="layui-input-block">
+						<button type="submit" class="layui-btn" lay-submit lay-filter="form">保存</button>
+						<a href="?cps_config-index" class="layui-btn layui-btn-primary">返回列表</a>
+					</div>
+				</div>
+			</form>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+layui.use(['form', 'layer', 'miniTab'], function () {
+	var layer = layui.layer, form = layui.form, miniTab = layui.miniTab;
+
+	// 监听提交
+	form.on('submit(form)', function () {
+		adminAjax.postform('#form', function (data) {
+			var json = toJson(data);
+			layer.msg(json.msg, { icon: json.err == 0 ? 1 : 5 });
+			if (json.err == 0) {
+				setTimeout(function () {
+					miniTab.reloadIframe('index.php?cps_config-index');
+					miniTab.deleteCurrentByIframe();
+				}, 1500);
+			}
+		});
+		return false;
+	});
+});
+</script>
+</body>
+</html>

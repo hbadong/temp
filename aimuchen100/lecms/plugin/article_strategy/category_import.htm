@@ -1,0 +1,420 @@
+{inc:header.htm}
+<style>
+/* 文章策略 设置页专用样式（自 settings.htm 合并） */
+.settings-wrap { padding: 0 16px; }
+.settings-card { margin-bottom: 16px; }
+.settings-card .layui-card-header { display: flex; align-items: center; justify-content: space-between; font-weight: 600; }
+.settings-card .layui-card-header i { color: #1E9FFF; margin-right: 8px; }
+.settings-card .layui-card-header .header-tip { font-weight: 400; font-size: 12px; color: #999; }
+.settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 24px; }
+.settings-grid .layui-form-item { display: flex; align-items: center; }
+.settings-grid .layui-form-label { width: 130px; padding: 9px 12px 9px 0; text-align: right; }
+.settings-grid .layui-input-inline { width: auto; flex: 1; }
+.settings-grid .layui-input-block { margin-left: 130px; }
+.settings-actions { position: sticky; bottom: 0; padding: 12px 0; background: #fff; border-top: 1px solid #eee; text-align: right; margin-top: 16px; box-shadow: 0 -2px 6px rgba(0,0,0,.03); z-index: 10; }
+.settings-actions .layui-btn + .layui-btn { margin-left: 8px; }
+.field-hint { display: block; color: #999; font-size: 12px; margin-top: 4px; }
+@media (max-width: 900px) { .settings-grid { grid-template-columns: 1fr; } }
+</style>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+
+        <div class="layui-tab layui-tab-brief" lay-filter="main">
+            <ul class="layui-tab-title">
+                <li class="layui-this">功能</li>
+                <li lay-id="settings">插件设置</li>
+            </ul>
+            <div class="layui-tab-content">
+                <!-- Tab 1：功能 -->
+                <div class="layui-tab-item layui-show">
+
+        <!-- 统计卡片 -->
+        <div class="layui-row layui-col-space10">
+            <div class="layui-col-md4">
+                <div class="layui-card">
+                    <div class="layui-card-body">
+                        <blockquote class="layui-elem-quote layui-quote-nm">
+                            <span class="layui-badge layui-bg-blue">游戏总数</span>
+                            <span class="layui-font-24" style="margin-left: 10px;">{stats.total_games}</span>
+                        </blockquote>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md4">
+                <div class="layui-card">
+                    <div class="layui-card-body">
+                        <blockquote class="layui-elem-quote layui-quote-nm">
+                            <span class="layui-badge layui-bg-green">分类总数</span>
+                            <span class="layui-font-24" style="margin-left: 10px;">{stats.total_categories}</span>
+                        </blockquote>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md4">
+                <div class="layui-card">
+                    <div class="layui-card-body">
+                        <blockquote class="layui-elem-quote layui-quote-nm">
+                            <span class="layui-badge layui-bg-orange">7天导入</span>
+                            <span class="layui-font-24" style="margin-left: 10px;">{stats.recent_imports}</span>
+                        </blockquote>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Steam API 导入 -->
+        <div class="layui-card" style="margin-top: 15px;">
+            <div class="layui-card-header">
+                <i class="layui-icon layui-icon-fire"></i> Steam API 导入
+            </div>
+            <div class="layui-card-body">
+                <form class="layui-form" method="get" id="steam-form" action="index.php?category_import-import">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">分类/关键词</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="category" placeholder="留空获取全部应用，输入关键词搜索（如：RPG、动作）" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">导入数量</label>
+                        <div class="layui-input-block">
+                            <input type="number" name="limit" value="50" min="1" max="500" class="layui-input">
+                            <div class="layui-font-12 layui-font-gray">建议 50-200，最大 500</div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button class="layui-btn layui-btn-normal" lay-submit lay-filter="steam-form-submit" id="btn-steam">
+                                <i class="layui-icon layui-icon-fire"></i> 从 Steam 导入
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- CSV 导入 -->
+        <div class="layui-card" style="margin-top: 15px;">
+            <div class="layui-card-header">
+                <i class="layui-icon layui-icon-upload-circle"></i> CSV 文件导入
+            </div>
+            <div class="layui-card-body">
+                <form class="layui-form" method="post" enctype="multipart/form-data" action="?category_import-import_post-ajax-1" id="csv-form">
+                    <input type="hidden" name="FORM_HASH" value="{@form_hash()}" />
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">选择文件</label>
+                        <div class="layui-input-block">
+                            <div class="layui-upload-drag" id="csv-upload-drag">
+                                <i class="layui-icon">&#xe67c;</i>
+                                <p>点击上传或拖拽 CSV 文件到此处</p>
+                                <p class="layui-font-12 layui-font-gray">支持 .csv 格式，最大 10MB</p>
+                                <input type="file" name="csv_file" id="csv-file" accept=".csv">
+                            </div>
+                            <div id="csv-file-info" style="margin-top: 10px; display: none;">
+                                <span class="layui-badge layui-bg-green" id="csv-file-name"></span>
+                                <span class="layui-font-12 layui-font-gray" id="csv-file-size"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">CSV 格式说明</label>
+                        <div class="layui-input-block">
+                            <fieldset class="layui-elem-field layui-field-title">
+                                <legend>CSV 格式要求</legend>
+                                <div class="layui-field-box layui-font-12">
+                                    <p>CSV 文件需包含以下列（列名不区分大小写）：</p>
+                                    <table class="layui-table" lay-size="sm">
+                                        <thead>
+                                            <tr>
+                                                <th>列名</th>
+                                                <th>必填</th>
+                                                <th>说明</th>
+                                                <th>示例</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td><code>name</code></td>
+                                                <td><span class="layui-badge layui-bg-red">必填</span></td>
+                                                <td>游戏名称</td>
+                                                <td>艾尔登法环</td>
+                                            </tr>
+                                            <tr>
+                                                <td><code>category</code></td>
+                                                <td>选填</td>
+                                                <td>游戏分类</td>
+                                                <td>RPG</td>
+                                            </tr>
+                                            <tr>
+                                                <td><code>tags</code></td>
+                                                <td>选填</td>
+                                                <td>标签（逗号分隔）</td>
+                                                <td>动作,开放世界,魂系</td>
+                                            </tr>
+                                            <tr>
+                                                <td><code>description</code></td>
+                                                <td>选填</td>
+                                                <td>游戏描述</td>
+                                                <td>FromSoftware 出品...</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <pre style="background:#f5f5f5;padding:10px;border-radius:4px;margin-top:10px;">name,category,tags,description
+"艾尔登法环","RPG","动作,开放世界,魂系","FromSoftware 出品的开放世界动作RPG..."
+"塞尔达传说：王国之泪","冒险","开放世界,解谜","Nintendo Switch 独占开放世界冒险..."
+"博德之门3","RPG","回合制,角色扮演,合作","Larian Studios 开发的史诗级RPG..."</pre>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button class="layui-btn" lay-submit lay-filter="csv-form-submit" id="btn-csv">
+                                <i class="layui-icon layui-icon-upload-circle"></i> 导入 CSV
+                            </button>
+                            <button type="reset" class="layui-btn layui-btn-primary" id="btn-reset">重置</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- 分类列表 -->
+        <div class="layui-card" style="margin-top: 15px;">
+            <div class="layui-card-header">
+                <i class="layui-icon layui-icon-tabs"></i> 现有分类
+            </div>
+            <div class="layui-card-body">
+                {if:$categories}
+                <table class="layui-table" lay-size="sm">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>分类名称</th>
+                            <th>游戏数量</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {loop:$categories $cat}
+                        <tr>
+                            <td>{$cat['id']}</td>
+                            <td>{$cat['name']}</td>
+                            <td><span class="layui-badge layui-bg-blue">{$cat['game_count']}</span></td>
+                        </tr>
+                        {/loop}
+                    </tbody>
+                </table>
+                {else}
+                <div class="layui-font-gray" style="text-align: center; padding: 20px;">
+                    暂无分类，请通过 Steam API 或 CSV 导入游戏
+                </div>
+                {/if}
+            </div>
+        </div>
+
+                </div>
+                <!-- Tab 2：插件设置 -->
+                <div class="layui-tab-item">
+                  <div class="settings-wrap">
+
+                    <!-- 标题规则 -->
+                    <div class="layui-card settings-card">
+                        <div class="layui-card-header">
+                            <span><i class="layui-icon">&#xe60a;</i> 标题规则</span>
+                            <span class="header-tip">默认应用到新导入内容的标题模板</span>
+                        </div>
+                        <div class="layui-card-body">
+                            <form id="form-settings" class="layui-form" action="?title_rule-settings_post-ajax-1" method="post">
+                                <input type="hidden" name="FORM_HASH" value="{@form_hash()}" />
+                                <div class="settings-grid">
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label">默认标题规则</label>
+                                        <div class="layui-input-inline">
+                                            <select name="default_title_rule" lay-search>
+                                                <option value="" {if:$settings['default_title_rule']==''}selected{/if}>不指定</option>
+                                                {loop:$rules_list $r}
+                                                <option value="{$r['sid']}" {if:$settings['default_title_rule']==$r['sid']}selected{/if}>{$r['name']}</option>
+                                                {/loop}
+                                            </select>
+                                            <span class="field-hint">未指定时使用人工填写标题</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- 采集节奏 -->
+                    <div class="layui-card settings-card">
+                        <div class="layui-card-header">
+                            <span><i class="layui-icon">&#xe628;</i> 采集节奏</span>
+                            <span class="header-tip">避免频率过快触发风控</span>
+                        </div>
+                        <div class="layui-card-body">
+                            <div class="settings-grid">
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">采集间隔(分钟)</label>
+                                    <div class="layui-input-inline">
+                                        <input type="number" name="collect_interval" min="1" max="1440" value="{$settings['collect_interval']}" class="layui-input" placeholder="例如 5">
+                                        <span class="field-hint">两次采集任务之间的间隔，单位分钟</span>
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">随机因子(%)</label>
+                                    <div class="layui-input-inline">
+                                        <input type="number" name="random_factor" min="0" max="100" value="{$settings['random_factor']}" class="layui-input" placeholder="例如 30">
+                                        <span class="field-hint">在间隔上叠加 0~此值的随机抖动，降低规律性</span>
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">最大并发任务</label>
+                                    <div class="layui-input-inline">
+                                        <input type="number" name="max_concurrent" min="1" max="20" value="{$settings['max_concurrent']}" class="layui-input" placeholder="例如 3">
+                                        <span class="field-hint">同时执行的采集/生成任务数</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 底部操作栏 -->
+                    <div class="settings-actions">
+                        <button type="submit" lay-submit lay-filter="form-settings" class="layui-btn">
+                            <i class="layui-icon">&#xe605;</i> 保存设置
+                        </button>
+                    </div>
+
+                  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+layui.use(['form', 'upload', 'element'], function () {
+    var form = layui.form;
+    var upload = layui.upload;
+    var element = layui.element;
+
+    // 支持 ?category_import-index-tab-settings 直达设置 tab
+    if (window.location.search.indexOf('tab-settings') !== -1) {
+        element.tabChange('main', 'settings');
+    }
+
+    // 插件设置表单提交（自 settings.htm 合并）
+    form.on('submit(form-settings)', function () {
+        adminAjax.postform('#form-settings', function (data) {
+            var json = toJson(data);
+            layer.msg(json.msg, { icon: json.err == 0 ? 1 : 5 });
+        });
+        return false;
+    });    // CSV 文件选择
+    $('#csv-file').on('change', function() {
+        var file = this.files[0];
+        if (file) {
+            $('#csv-file-name').text(file.name);
+            $('#csv-file-size').text(' (' + (file.size / 1024).toFixed(1) + ' KB)');
+            $('#csv-file-info').show();
+        } else {
+            $('#csv-file-info').hide();
+        }
+    });
+
+    // 拖拽上传
+    var dragArea = document.getElementById('csv-upload-drag');
+    dragArea.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        dragArea.classList.add('layui-btn-normal');
+    });
+    dragArea.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        dragArea.classList.remove('layui-btn-normal');
+    });
+    dragArea.addEventListener('drop', function(e) {
+        e.preventDefault();
+        dragArea.classList.remove('layui-btn-normal');
+        var files = e.dataTransfer.files;
+        if (files.length > 0) {
+            var fileInput = document.getElementById('csv-file');
+            fileInput.files = files;
+            $('#csv-file').trigger('change');
+        }
+    });
+
+    // Steam 表单提交
+    form.on('submit(steam-form-submit)', function(data) {
+        var btn = $('#btn-steam');
+        btn.prop('disabled', true).html('<i class="layui-icon layui-icon-loading layui-anim layui-anim-rotate"></i> 导入中...');
+
+        $.ajax({
+            url: $('#steam-form').attr('action'),
+            type: 'GET',
+            data: data.field,
+            dataType: 'json',
+            success: function(res) {
+                btn.prop('disabled', false).html('<i class="layui-icon layui-icon-fire"></i> 从 Steam 导入');
+                if (res.err === 0) {
+                    layer.msg(res.msg, {icon: 1}, function() {
+                        location.reload();
+                    });
+                } else {
+                    layer.msg(res.msg, {icon: 5});
+                }
+            },
+            error: function() {
+                btn.prop('disabled', false).html('<i class="layui-icon layui-icon-fire"></i> 从 Steam 导入');
+                layer.msg('Request failed', {icon: 5});
+            }
+        });
+        return false;
+    });
+
+    // CSV 表单提交（本页为列表内嵌面板，成功后留在本页刷新数据）
+    form.on('submit(csv-form-submit)', function(data) {
+        var fileInput = document.getElementById('csv-file');
+        if (fileInput.files.length === 0) {
+            layer.msg('Please select a CSV file', {icon: 5});
+            return false;
+        }
+
+        var formData = new FormData(document.getElementById('csv-form'));
+        var btn = $('#btn-csv');
+        btn.prop('disabled', true).html('<i class="layui-icon layui-icon-loading layui-anim layui-anim-rotate"></i> 导入中...');
+
+        $.ajax({
+            url: $('#csv-form').attr('action'),
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            dataType: 'json',
+            success: function(res) {
+                btn.prop('disabled', false).html('<i class="layui-icon layui-icon-upload-circle"></i> 导入 CSV');
+                if (res.err === 0) {
+                    layer.msg(res.msg, {icon: 1}, function() {
+                        setTimeout(function(){ window.location.reload(); }, 1000);
+                    });
+                } else {
+                    layer.msg(res.msg, {icon: 5});
+                }
+            },
+            error: function() {
+                btn.prop('disabled', false).html('<i class="layui-icon layui-icon-upload-circle"></i> 导入 CSV');
+                layer.msg('Upload failed', {icon: 5});
+            }
+        });
+        return false;
+    });
+
+    // 重置按钮
+    $('#btn-reset').on('click', function() {
+        $('#csv-file-info').hide();
+    });
+});
+</script>
+
+</body>
+</html>

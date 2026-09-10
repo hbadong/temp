@@ -1,0 +1,32 @@
+{inc:header.htm}
+    <ul class="url-here"><li><a href="{$cfg[weburl]}">首页</a></li>{loop:$cfg_var[place] $p $k}{if:$k < count($cfg_var[place]) - 1}<li><a href="{$p[url]}">{$p[name]}</a></li>{/if}{/loop}<li><h1>{$cfg_var[name]}</h1></li></ul>
+
+    <!-- 资讯列表 -->
+    <div class="soft-list2" id="softContent">
+        <div class="list-tabs">
+            {block:category type="child"}{loop:$data $v}
+            <a href="{$v[url]}" class="item{if:$_GET[cid] == $v[cid]} on{/if}">{$v[name]}</a>
+            {/loop}{/block}
+        </div>
+        <div class="article-list list" id="listContent">
+            {block:global_cate pagenum="20"}{loop:$gdata[list] $v}
+            <a class="item" href="{$v[url]}">
+                <img class="pic lazy" src="{$v[pic]}" alt="{$v[title]}">
+                <div class="con">
+                    <h3 class="tit">{$v[subject]}</h3>
+                    <p class="time">{@date('Y-m-d', $v['dateline'])}</p>
+                </div>
+            </a>
+            {/loop}{/block}
+        </div>
+        <div class="pagecode">{$gdata[pages]}</div>
+        <div class="soft-list-loader" id="listLoader">没有更多了</div>
+    </div>
+{inc:footer.htm}
+<script type="text/javascript">
+    seajs.use('app/common', function(fn){
+        fn.init();
+        fn.imgLazyLoad();
+    });
+</script>
+</div></body></html>

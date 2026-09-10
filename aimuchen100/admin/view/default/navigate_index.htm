@@ -1,0 +1,496 @@
+{inc:header.htm}
+<style type="text/css">
+#nav_cont{position:relative}
+#nav_cont .list,#le_widget_holder{padding:2px}
+#nav_cont .list ul{padding:4px;background:#FBFBFB;border:1px solid #eee;border-radius:5px;cursor:move}
+#nav_cont .list ul li{height:38px;line-height:38px;padding:2px 0 2px 2px}
+#nav_cont .list ul:hover{background:#FFFFBB}
+.nav_l{float:left;width:250px}
+.nav_l input{float:left;vertical-align:top}
+.nav_l .check_box{cursor:pointer;margin:6px 0 0 5px}
+.nav_l .layui-form-label {
+	width: 25px;
+}
+.nav_c{float:left;width:50%}
+.nav_c .inp{width:90%}
+.nav_r{float:right;width:120px}
+.nav_r .but2{float:right;margin:3px 8px 0 0}
+.nav_rank_2{margin-left:50px}
+.nav_transport{display:none}
+
+/*对话框*/
+.outnav_tit{background:#E3F1F4;height:36px;line-height:36px;font-weight:bold;border-bottom:1px solid #B4DBF2}
+.case_type{padding:8px}
+.case_type a{display:inline;float:left;height:30px;line-height:30px;width:50px;background:#90CEF2;margin-right:5px;color:#fff;font-size:14px;text-align:center;border-radius:5px}
+.case_type a:visited{color:#fff}
+.case_type a:hover{background:#0D6EA7}
+.case_type a.on{background:#0B6092}
+.category .col div{_margin-top:8px}
+.layui-card-header .layui-btn{margin-bottom: 5px;}
+.layui-elem-field legend{font-size: 14px;}
+</style>
+<script id="edit_code" type="text/html">
+	<div class="layui-tab layui-tab-brief" style="margin: 0;">
+		<ul class="layui-tab-title">
+			<li class="layui-this">{lang:add_nav_location}</li>
+			<li>{lang:has_nav_location}</li>
+		</ul>
+		<div class="layui-tab-content">
+			<div class="layui-tab-item layui-show">
+				<div class="layui-form">
+					<div class="layui-form-item">
+						<label class="layui-form-label required">{lang:nav_location_alias}</label>
+						<div class="layui-input-inline">
+							<input id="nav_location_alias" name="nav_location_alias" type="text" required="required" class="layui-input" />
+						</div>
+						<div class="layui-form-mid layui-text-em">{lang:nav_location_alias_tips}</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label required">{lang:nav_location_name}</label>
+						<div class="layui-input-inline">
+							<input id="nav_location_name" name="nav_location_name" type="text" required="required" class="layui-input" />
+						</div>
+						<div class="layui-form-mid layui-text-em">{lang:nav_location_name_tips}</div>
+					</div>
+				</div>
+			</div>
+			<div class="layui-tab-item">
+				{if:$nav_location_arr}
+				<table class="layui-table">
+					<colgroup>
+						<col width="150">
+						<col width="150">
+						<col width="80">
+					</colgroup>
+					<thead>
+					<tr>
+						<th>{lang:nav_location_alias}</th>
+						<th>{lang:nav_location_name}</th>
+						<th>{lang:opt}</th>
+					</tr>
+					</thead>
+					<tbody>
+					{loop:$nav_location_arr $name $k}
+					<tr>
+						<td>{$k}</td>
+						<td>{$name}</td>
+						<td><button class="layui-btn layui-btn-xs layui-btn-danger" onclick="del_nav_location('{$k}')">{lang:delete}</button></td>
+					</tr>
+					{/loop}
+					</tbody>
+				</table>
+				{else}
+				<blockquote class="layui-elem-quote layui-quote-nm">{lang:no_data}</blockquote>
+				{/if}
+			</div>
+		</div>
+	</div>
+</script>
+<div class="layuimini-container">
+	<div class="layuimini-main">
+		<div class="layui-card p">
+			<div class="layui-card-header">
+				<input id="add" type="button" value="{lang:add}" data-type="add" class="layui-btn layui-btn-sm layui-btn-normal">
+				<button class="layui-btn layui-btn-sm" id="nav_location">{lang:nav_location}</button>
+			</div>
+			<div class="layui-card-body">
+				{if:empty($nav_arr)}<div class="layui-btn layui-btn-disabled layui-btn-fluid">{lang:no_data}</div>{/if}
+				<div id="nav_cont">
+					{inc:navigate_content.htm}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script id="add_link" type="text/html">
+	<div class="layui-tab" lay-filter="navigate">
+		<ul class="layui-tab-title">
+			<li class="layui-this">{lang:category}</li>
+			<li>{lang:links}</li>
+		</ul>
+		<div class="layui-tab-content">
+			<div class="layui-tab-item layui-show">
+				<div id="category">
+					{if:empty($category_arr)}
+					<div style="padding:10px 15px;font-size:14px">{lang:no_category_data}</div>
+					{else}
+					{loop:$category_arr $arr $mid}
+					<div class="category">
+						<fieldset class="layui-elem-field">
+							<legend>{php} if( $_ENV['_config']['admin_lang'] == 'zh-cn' ){echo $mod_name['models-mid-'.$mid]['name'];}else{echo ucfirst($mod_name['models-mid-'.$mid]['tablename']);}{/php}</legend>
+							<div class="layui-field-box">
+								<table class="layui-table">
+									<colgroup>
+										<col width="80">
+										<col>
+									</colgroup>
+									{loop:$arr $v}
+									<tr cid="{$v[cid]}" mid="{$v[mid]}">
+										<td><input title="{$v[name]}" type="checkbox" value="{$v[cid]}"></td>
+										<td>{php} echo str_repeat("　　", $v['pre']-1);{/php} {$v[name]}</td>
+									</tr>
+									{/loop}
+								</table>
+							</div>
+						</fieldset>
+					</div>
+					{/loop}
+					{/if}
+				</div>
+			</div>
+			<div class="layui-tab-item">
+				<form id="form1" action="index.php?navigate-add_link-ajax-1" method="post">
+					<table class="layui-table" id="outnav">
+						<colgroup>
+							<col width="120">
+							<col>
+						</colgroup>
+						<tr>
+							<th class="required">{lang:link_name}</th>
+							<td><input required placeholder="{lang:input_link_name}" name="name" type="text" class="layui-input" /></td>
+						</tr>
+						<tr>
+							<th class="required">{lang:links}</th>
+							<td><input required placeholder="{lang:input_link_url}" name="url" type="text" class="layui-input" /></td>
+						</tr>
+						<tr>
+							<th>Class</th>
+							<td><input placeholder="{lang:input_link_css_class}" name="class" type="text" class="layui-input" /></td>
+						</tr>
+						<tr>
+							<th>{lang:target}</th>
+							<td>
+								<input type="radio" name="target" value="1" lay-ignore checked> {lang:yes}
+								<input type="radio" name="target" value="0" lay-ignore> {lang:no}
+							</td>
+						</tr>
+					</table>
+				</form>
+			</div>
+		</div>
+	</div>
+</script>
+
+<script type="text/javascript">
+//拖拽插件
+$.fn.kpdragsort = function(options) {
+	var container = this;
+
+	$(container).children(".list").off("mousedown").mousedown(function(e) {
+		if(e.which != 1 || $(e.target).is("input, textarea, a") || window.kp_only) return; // 排除非左击和其他元素
+		e.preventDefault(); // 阻止选中文本
+
+		var x = e.pageX;
+		var y = e.pageY;
+		var _this = $(this); // 点击选中块
+		var w = _this.width();
+		var h = _this.height();
+		var w2 = w/2;
+		var h2 = h/2;
+		var p = _this.position();
+		var left = p.left;
+		var top = p.top;
+		var sTop = $(".p:first").scrollTop();
+		window.kp_only = true;
+		window.twoNav = null;
+
+		// 运输二级导航
+		if(!_this.is(".nav_rank_2")) {
+			var i = _this.index(".list");
+			var iObj = $("#nav_cont>.list");
+			var iSon = _this.children(".nav_transport");
+			for(++i; i<iObj.length; i++) {
+				if(!iObj.eq(i).is(".nav_rank_2")) break;
+				iObj.eq(i).appendTo(iSon);
+			}
+			if(iSon.children().length) iSon.show();
+		}
+
+		// 添加虚线框
+		_this.after('<div id="le_widget_holder"></div>');
+		var wid = $("#le_widget_holder");
+		wid.css({"border":"2px dashed #ccc", "height":_this.height()-4, "margin-left":_this.css("margin-left")});
+
+		// 保持原来的宽高
+		_this.css({"width":w, "height":h, "position":"absolute", opacity: 0.8, "z-index": 999, "left":left, "top":top});
+
+		// 绑定mousemove事件
+		$(document).mousemove(function(e) {
+			e.preventDefault();
+
+			// 移动选中块
+			var l = left + e.pageX - x;
+			var t = top + ($(".p:first").scrollTop() - sTop) + e.pageY - y;
+			_this.css({"left":l, "top":t});
+
+			var widPrevFun = function() {
+				var prev = wid.prev();
+				if(prev.is(_this)) return prev.prev();
+				return prev;
+			}
+
+			var widNextFun = function() {
+				var next = wid.next();
+				if(next.is(_this)) return next.next();
+				return next;
+			}
+
+			var rankOneFun = function() {
+				_this.attr("_rank", 1);
+				wid.css({"margin-left":0});
+				window.twoNav = 1;
+			}
+
+			var rankTwoFun = function() {
+				_this.attr("_rank", 2);
+				wid.css({"margin-left":50});
+				window.twoNav = 2;
+			}
+
+			// 当拖拽到第一个时变成一级 或 有下级时只能为一级
+			var widPrev = widPrevFun();
+			if(!widPrev.is(".list") || _this.find(".nav_transport>.list").length > 0) {
+				rankOneFun();
+			}else{
+				// 二级如果是最后一个时可以拖拽为一级
+				var winNext = widNextFun();
+				if(!winNext.is(".nav_rank_2")) {
+					if(left < l-50) {
+						rankTwoFun();
+					}else if(left > l) {
+						rankOneFun();
+					}
+				}else{
+					// 如果上一个对象是二级，那它直接为二级
+					if(widPrev.is(".nav_rank_2")) {
+						rankTwoFun();
+					}else{
+						// 如果下一个对象为二级，说明他有下级，那不能被代替
+						if(winNext.is(".nav_rank_2")) {
+							rankTwoFun();
+						}else{
+							if(left < l-50) {
+								rankTwoFun();
+							}else if(left > l) {
+								rankOneFun();
+							}
+						}
+					}
+				}
+			}
+
+			// 选中块的中心坐标
+			var ml = l+w2;
+			var mt = t+h2;
+
+			// 遍历所有块的坐标
+			$(container).children(".list").not(_this).each(function(i) {
+				var obj = $(this);
+				var p = obj.position();
+				var a1 = p.left;
+				var a2 = p.left + obj.width();
+				var a3 = p.top;
+				var a4 = p.top + obj.height();
+
+				// 移动虚线框
+				if(a1 < ml && ml < a2 && a3 < mt && mt < a4) {
+					if(!obj.next("#le_widget_holder").length) {
+						wid.insertAfter(this);
+					}else{
+						wid.insertBefore(this);
+					}
+				}
+			});
+		});
+
+		// 绑定mouseup事件
+		var _mouseup = function() {
+			$(document).off('mouseup').off('mousemove');
+
+			// 拖拽回位，并删除虚线框
+			var p = wid.position();
+
+			if(window.twoNav) {
+				if(window.twoNav === 2) {
+					p.left = p.left + 50;
+					_this.addClass("nav_rank_2");
+				}else{
+					_this.removeClass("nav_rank_2");
+				}
+			}
+
+			_this.animate({"left":p.left, "top":p.top}, 100, function() {
+				_this.removeAttr("style");
+				wid.replaceWith(_this);
+
+				// 运输结束
+				_this.children(".nav_transport").removeAttr("style");
+				_this.find(".nav_transport>.list").insertAfter(_this);
+
+				window.kp_only = null;
+				if(parent) parent.document.onmouseup = null;
+
+				check_change();
+			});
+		};
+		$(document).mouseup(_mouseup);
+		if(parent) parent.document.onmouseup = _mouseup;
+	});
+}
+
+layui.use(['form','layer','table','element'], function () {
+	var layer = layui.layer, form = layui.form, element = layui.element;
+	//添加导航
+	$("#add").click(function(){
+		window.setType = 0;
+
+		element.on('tab(navigate)', function(data){
+			window.setType = data.index;
+		});
+
+		layer.confirm($("#add_link").html(), {
+			btn: ['{lang:confirm}','{lang:cancel}'],
+			title:'{lang:tips}',
+			area: ['50%', '90%']
+		}, function(){
+			if(window.setType == 0) {
+				//添加分类
+				var cate = [];
+				$(".category input[type='checkbox']").each(function(i) {
+					if(this.checked) {
+						cate[i] = [$(this).attr('title'), $(this).val()];
+					}
+				});
+				adminAjax.postd("index.php?navigate-add_cate-ajax-1", {"cate":cate}, function(data){
+					adminAjax.alert(data);
+					nav_reload();
+				});
+			}else{
+				//添加链接
+				var name = $("#outnav input[name='name']").val();
+				var url = $("#outnav input[name='url']").val();
+				var cssclass = $("#outnav input[name='class']").val();
+				var target = $("#outnav input[name='target']")[0].checked ? 1 : 0;
+
+				adminAjax.postd("index.php?navigate-add_link-ajax-1", {"name":name, "url":url, "target":target, "class":cssclass}, function(data){
+					adminAjax.alert(data);
+					nav_reload();
+				});
+			}
+		}, function(){
+
+		}, '{lang:add_navigate}');
+	});
+
+	$("#nav_location").click(function () {
+		adminAjax.confirm($('#edit_code').html(),function (index) {
+			var nav_location_alias = $("#nav_location_alias").val();
+			var nav_location_name = $("#nav_location_name").val();
+			if(nav_location_alias == ''){
+				layer.msg('{lang:nav_location_alias_no_empty}', {icon:5});
+			}else if(nav_location_name == ''){
+				layer.msg('{lang:nav_location_name_no_empty}', {icon:5});
+			}else{
+				adminAjax.postd("index.php?navigate-add_nav_location-ajax-1", {"nav_location_alias":nav_location_alias,"nav_location_name":nav_location_name});
+			}
+		},function () {
+
+		},'<i class="fa fa-exclamation-circle" aria-hidden="true" /></i> {lang:nav_location_tips}');
+	});
+
+
+});
+
+//删除
+function nav_del(obj) {
+	var o = $(obj).parent().parent().parent();
+	var name = o.find(".name").val();
+	var key = o.attr("_key");
+	var s_end = (!o.is(".nav_rank_2") && o.next().is(".nav_rank_2")) ? "{lang:del_son_navigate_tips}" : "";
+	adminAjax.confirm("{lang:delete_confirm} “<font color='red'>"+name+"</font>”" + s_end +"？", function(){
+		adminAjax.postd("index.php?navigate-del-ajax-1", {"key":key}, function(data){
+			adminAjax.alert(data);
+			nav_reload();
+		});
+	});
+}
+
+//重新加载
+function nav_reload() {
+	setTimeout(function() {
+		adminAjax.get("index.php?navigate-get_navigate_content&r="+time(), function(html){
+			$(".sky").remove();
+			$("#nav_cont").html(html);
+			init_load();
+		});
+	}, 500);
+}
+
+//初始加载
+function init_load() {
+	$("#nav_cont").kpdragsort();
+	window.keys = get_navi();
+	$("input[type='checkbox']").change(check_change);
+	$("input[type='text']").focusin(nav_change).focusout(check_change);
+}
+
+//内容改变
+function nav_change() {
+	if(!$("#nav_change").length) $(".layui-card-header").append('<input id="nav_change" onclick="nav_save()" type="button" value="{lang:save}" class="layui-btn layui-btn-sm" />');
+}
+
+//保存修改
+function nav_save() {
+	adminAjax.postd("index.php?navigate-nav_save-ajax-1", {"navi":get_navi()});
+}
+
+//获取所有数据
+function get_navi() {
+	var navi = [];
+	$("#nav_cont>.list").each(function(i) {
+		var cid = $(this).attr("_cid");
+		var name = $(this).find(".name").val();
+		var url = $(this).find(".url").val();
+		var target = $(this).find("input[type='checkbox']")[0].checked ? 1 : 0;
+		var rank = $(this).attr("_rank");
+		var cssclass = $(this).find(".cssclass").val();
+		navi[i] = [cid, name, url, target, rank, cssclass];
+	});
+	return navi;
+}
+
+//检查参数是否改变
+function check_change() {
+	var len = $("#nav_cont>.list").length;
+	for(var i = 0; i < len; i++) {
+		var obj = $("#nav_cont>.list").eq(i);
+		var cid = obj.attr("_cid");
+		var name = obj.find(".name").val();
+		var url = obj.find(".url").val();
+		var target = obj.find("input[type='checkbox']")[0].checked ? 1 : 0;
+		var rank = obj.attr("_rank");
+		var cssclass = obj.find(".cssclass").val();
+
+		try{
+			var keys = window.keys;
+			if(keys[i][0] !== cid || keys[i][1] !== name || keys[i][2] !== url || keys[i][3] !== target || keys[i][4] !== rank || keys[i][5] !== cssclass) {
+				nav_change();
+				return;
+			}
+		}catch(e){}
+	}
+	if($("#nav_change").length) $("#nav_change").remove();
+}
+
+//删除导航位
+function del_nav_location(alias) {
+	adminAjax.confirm('{lang:delete_confirm}', function () {
+		adminAjax.postd("index.php?navigate-del_nav_location-ajax-1", {"alias":alias});
+	});
+}
+
+init_load();
+</script>
+</body>
+</html>

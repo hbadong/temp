@@ -1,0 +1,202 @@
+{inc:header.htm}
+<style>
+.settings-wrap { padding: 0 16px; }
+.settings-card { margin-bottom: 16px; }
+.settings-card .layui-card-header { display: flex; align-items: center; justify-content: space-between; font-weight: 600; }
+.settings-card .layui-card-header i { color: #1E9FFF; margin-right: 8px; }
+.settings-card .layui-card-header .header-tip { font-weight: 400; font-size: 12px; color: #999; }
+.settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 24px; }
+.settings-grid .layui-form-item { display: flex; align-items: center; }
+.settings-grid .layui-form-label { width: 120px; padding: 9px 12px 9px 0; text-align: right; }
+.settings-grid .layui-input-inline { width: auto; flex: 1; }
+.settings-grid .layui-input-block { margin-left: 120px; }
+.settings-actions { position: sticky; bottom: 0; padding: 12px 0; background: #fff; border-top: 1px solid #eee; text-align: right; margin-top: 16px; box-shadow: 0 -2px 6px rgba(0,0,0,.03); z-index: 10; }
+.settings-actions .layui-btn + .layui-btn { margin-left: 8px; }
+.field-hint { display: block; color: #999; font-size: 12px; margin-top: 4px; }
+@media (max-width: 900px) { .settings-grid { grid-template-columns: 1fr; } }
+</style>
+<div class="layuimini-container">
+	<div class="layuimini-main">
+
+		<div class="layui-tab layui-tab-brief" lay-filter="main">
+			<ul class="layui-tab-title">
+				<li class="layui-this">功能</li>
+				<li>插件设置</li>
+			</ul>
+			<div class="layui-tab-content">
+
+				<!-- Tab 1：功能（原页面内容） -->
+				<div class="layui-tab-item layui-show">
+
+					<div class="layui-card">
+					  <div class="layui-card-header">蜘蛛访问趋势（30 天）</div>
+					  <div class="layui-card-body">
+					    <div id="trend" style="width: 100%; height: 380px;"></div>
+					  </div>
+					</div>
+
+					<div class="layui-card">
+					  <div class="layui-card-header">引擎占比（7 天）</div>
+					  <div class="layui-card-body">
+					    <div id="pie" style="width: 100%; height: 380px;"></div>
+					  </div>
+					</div>
+
+				</div>
+
+				<!-- Tab 2：插件设置 -->
+				<div class="layui-tab-item">
+					<div class="settings-wrap">
+						<!-- 日志保留 -->
+						<div class="layui-card settings-card">
+							<div class="layui-card-header">
+								<span><i class="layui-icon">&#xe60e;</i> 日志保留策略</span>
+								<span class="header-tip">控制访问记录在数据库中的保留时长</span>
+							</div>
+							<div class="layui-card-body">
+								<form id="form-spider-analytics-settings" class="layui-form" action="?spider_dashboard-settings_post-ajax-1" method="post">
+									<input type="hidden" name="FORM_HASH" value="{@form_hash()}" />
+									<div class="settings-grid">
+										<div class="layui-form-item">
+											<label class="layui-form-label">日志保留天数</label>
+											<div class="layui-input-inline">
+												<input type="number" name="log_keep_days" min="1" max="3650" value="{$settings['log_keep_days']}" class="layui-input" placeholder="90">
+												<span class="field-hint">超过将被归档或清理，建议 30~180</span>
+											</div>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+
+						<!-- 统计刷新 -->
+						<div class="layui-card settings-card">
+							<div class="layui-card-header">
+								<span><i class="layui-icon">&#xe669;</i> 统计刷新</span>
+								<span class="header-tip">后台聚合任务多久触发一次</span>
+							</div>
+							<div class="layui-card-body">
+								<div class="settings-grid">
+									<div class="layui-form-item">
+										<label class="layui-form-label">刷新频率（小时）</label>
+										<div class="layui-input-inline">
+											<input type="number" name="stats_refresh_hours" min="1" max="168" value="{$settings['stats_refresh_hours']}" class="layui-input" placeholder="24" form="form-spider-analytics-settings">
+											<span class="field-hint">每多少小时刷新一次聚合统计（与 cron 任务配合）</span>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- 黑名单自动拉黑 -->
+						<div class="layui-card settings-card">
+							<div class="layui-card-header">
+								<span><i class="layui-icon">&#xe7ae;</i> 黑名单策略</span>
+								<span class="header-tip">达到阈值后自动将高频异常来源拉入黑名单</span>
+							</div>
+							<div class="layui-card-body">
+								<div class="settings-grid">
+									<div class="layui-form-item">
+										<label class="layui-form-label">自动拉黑阈值</label>
+										<div class="layui-input-inline">
+											<input type="number" name="blacklist_auto_threshold" min="1" max="10000" value="{$settings['blacklist_auto_threshold']}" class="layui-input" placeholder="10" form="form-spider-analytics-settings">
+											<span class="field-hint">单 IP/UA 在窗口内的命中次数上限</span>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- 底部操作栏 -->
+						<div class="settings-actions">
+							<a class="layui-btn layui-btn-primary" href="?spider_dashboard-index">返回面板</a>
+							<button type="submit" lay-submit lay-filter="form-spider-analytics-settings" class="layui-btn">
+								<i class="layui-icon">&#xe605;</i> 保存设置
+							</button>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+	</div>
+</div>
+
+<script>
+layui.use(['echarts','echartsTheme','jquery','element','form','layer'], function(){
+  var echarts = layui.echarts;
+  var theme = (layui.echartsTheme && layui.echartsTheme.theme) || null;
+  var $ = layui.jquery;
+  var element = layui.element;
+  var form = layui.form, layer = layui.layer;
+  var c1 = echarts.init(document.getElementById('trend'), theme);
+  var c2 = echarts.init(document.getElementById('pie'),   theme);
+
+  // 图表在隐藏 tab 中初始化时尺寸可能为 0，切换到功能 tab 时重置尺寸
+  element.on('tab(main)', function(data){
+    if (data.index == 0) { c1.resize(); c2.resize(); }
+  });
+
+  $.ajax({
+    url: 'index.php?spider_dashboard-trend-days-30',
+    dataType: 'json',
+    success: function(resp) {
+      var data = (resp && resp.message) ? JSON.parse(resp.message) : [];
+      var engines = []; var seen = {};
+      for (var i = 0; i < data.length; i++) { if (!seen[data[i].engine]) { seen[data[i].engine] = 1; engines.push(data[i].engine); } }
+      var dates = []; var dseen = {};
+      for (var j = 0; j < data.length; j++) { if (!dseen[data[j].visit_date]) { dseen[data[j].visit_date] = 1; dates.push(data[j].visit_date); } }
+      dates.sort();
+      var series = engines.map(function(e){
+        return {
+          name: e, type: 'line', stack: 'total', areaStyle: {},
+          data: dates.map(function(d){
+            for (var k = 0; k < data.length; k++) {
+              if (data[k].visit_date === d && data[k].engine === e) return parseInt(data[k].visit_count, 10) || 0;
+            }
+            return 0;
+          })
+        };
+      });
+      c1.setOption({
+        tooltip: { trigger: 'axis' },
+        legend: { data: engines },
+        xAxis: { type: 'category', data: dates },
+        yAxis: { type: 'value', name: '访问次数' },
+        series: series
+      });
+      c1.resize();
+    }
+  });
+
+  $.ajax({
+    url: 'index.php?spider_dashboard-pie-days-7',
+    dataType: 'json',
+    success: function(resp) {
+      var data = (resp && resp.message) ? JSON.parse(resp.message) : [];
+      c2.setOption({
+        tooltip: { trigger: 'item', formatter: '{b}: {c} ({d}%)' },
+        series: [{ type: 'pie', radius: ['40%','70%'], data: data.map(function(r){ return { name: r.engine, value: parseInt(r.total, 10) || 0 }; }) }]
+      });
+      c2.resize();
+    }
+  });
+
+  form.render();
+  form.on('submit(form-spider-analytics-settings)', function () {
+    adminAjax.postform('#form-spider-analytics-settings', function (data) {
+      var json = toJson(data);
+      layer.msg(json.msg, { icon: json.err == 0 ? 1 : 5 });
+      if (json.err == 0) {
+        setTimeout(function(){
+          window.location.href = 'index.php?spider_dashboard-index-tab-settings';
+        }, 1000);
+      }
+    });
+    return false;
+  });
+});
+</script>
+</body>
+</html>

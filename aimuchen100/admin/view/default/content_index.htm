@@ -1,0 +1,266 @@
+{inc:header.htm}
+<div class="layuimini-container">
+	<div class="layuimini-main">
+		<fieldset class="table-search-fieldset">
+			<legend>{lang:search}</legend>
+			<div>
+				<form class="layui-form layui-form-pane">
+					<div class="layui-form-item">
+						<div class="layui-inline">
+							<label class="layui-form-label">{lang:category}</label>
+							<div class="layui-input-inline">
+								{$cidhtml}
+							</div>
+						</div>
+						<div class="layui-inline">
+							<label class="layui-form-label">{lang:title}</label>
+							<div class="layui-input-inline">
+								<input placeholder="{lang:title}" autocomplete="off" type="text" class="layui-input" name="keyword" />
+							</div>
+						</div>
+						<div class="layui-inline">
+							<button type="submit" class="layui-btn layui-btn-primary" lay-submit lay-filter="data-search-btn"><i class="layui-icon"></i> {lang:search}</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</fieldset><!--搜索 end-->
+		<script type="text/html" id="toolbar">
+			<div class="layui-btn-container">
+				<button class="layui-btn layui-btn-sm layui-btn-normal" lay-event="add">{lang:add}</button>
+				<button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="delete">{lang:batch_delete}</button>
+				<button class="layui-btn layui-btn-sm layui-btn-warm" lay-event="move">{lang:move}</button>
+				<button class="layui-btn layui-btn-sm layui-btn-primary" lay-event="output_url">{lang:export_url}</button>
+				{hook:admin_content_index_toolbar_after.htm}
+			</div>
+		</script><!--添加 删除 end-->
+		<table class="layui-hide" id="data-table" lay-filter="data-table-filter"></table><!--列表 end-->
+		<script type="text/html" id="currentTableBar">
+			<div class="layui-btn-group">
+				{$tr_btn}
+			</div>
+		</script><!--列表每一行的数据操作 end-->
+	</div>
+</div>
+
+<script id="output_url" type="text/html"></script>
+<script src="{$C[admin_static]}js/clipboard.min.js"></script>
+<script type="text/javascript">
+	var mid = "{$mid}";
+	var table = "{$table}";
+	var name = "{$name}";
+
+	function setflag(cid, id, flag, exist){
+		adminAjax.postd("index.php?content-set_flag-mid-"+mid+"-ajax-1", {"cid": cid, "id":id, "flag":flag, "exist":exist},function (json) {
+			var res = toJson(json);
+			if( res.err ){
+				layer.msg(res.msg, {icon: 5});
+			}else{
+				layui.table.reload('data-table', {page:{curr:$(".layui-laypage-em").next().html()}});
+			}
+		});
+	}
+
+	layui.use(['form','layer', 'table', 'miniTab'], function () {
+		var layer = layui.layer, form = layui.form, table = layui.table, miniTab = layui.miniTab;
+		var currPage = 1;
+
+		// 数据列
+		table.render({
+			elem: '#data-table',
+			url: 'index.php?content-get_list-mid-'+mid,
+			height: 'full-145',
+			toolbar: '#toolbar',
+			defaultToolbar: ['filter', 'exports', 'print'],
+			cellMinWidth: 50,
+			escape: false,
+			cols: [[{$cols}]],
+			limits: [10, 15, 20, 25, 50, 100],
+			limit: 15,
+			page: true,
+			done: function(res, curr, count){
+				currPage = curr;
+			}
+		});
+
+		//定位到上一次编辑内容所在的页数（只有默认的列表定位，没有搜索结果页的定位）
+		var currPage_cookie = parseInt($.cookie("currPage"));
+		if(currPage_cookie > 1){
+			$.cookie("currPage", 0, {expires:1});
+			table.reload('data-table', {
+				page: {curr: currPage_cookie}
+			});
+		}
+
+		// 监听搜索操作
+		form.on('submit(data-search-btn)', function (data) {
+			//执行搜索重载
+			table.reload('data-table', {
+				page: {curr: 1}
+				, where: {
+					cid: data.field.cid,
+					keyword: data.field.keyword
+				}
+			}, 'data');
+			return false;
+		});
+
+		/**
+		 * toolbar监听事件 table列表 头部的操作
+		 */
+		table.on('toolbar(data-table-filter)', function (obj) {
+			if (obj.event === 'add') {  // 监听添加操作
+				miniTab.openNewTabByIframe({
+					href:"index.php?content-add-mid-"+mid,
+					title:"{$add_content}",
+				});
+			} else if (obj.event === 'delete') {  // 监听删除操作
+				var checkStatus = table.checkStatus('data-table'), data = checkStatus.data;
+				var len = data.length;
+				if(len == 0){
+					layer.msg('{lang:select_data}',{icon:5});
+					return false;
+				}else{
+					adminAjax.confirm('{lang:delete_confirm}', function () {
+						var id_arr = [];
+						for (var i in data) {
+							id_arr[i] = [data[i]['id'], data[i]['cid']];
+						}
+						adminAjax.postd("index.php?content-batch_del-mid-"+mid+"-ajax-1", {"id_arr": id_arr},function (json) {
+							var res = toJson(json);
+							if( res.err ){
+								layer.msg(res.msg, {icon: 5});
+							}else{
+								layer.msg(res.msg, {icon: 1, time: 1000},function () {
+									layui.table.reload('data-table', {page:{curr:$(".layui-laypage-em").next().html()}});
+								});
+							}
+						});
+					});
+				}
+			} else if (obj.event === 'move') {
+				var checkStatus = table.checkStatus('data-table'), data = checkStatus.data;
+				var len = data.length;
+				if(len == 0){
+					layer.msg('{lang:select_data}',{icon:5});
+					return false;
+				}else{
+					var id_arr = [];
+					for (var i in data) {
+						id_arr[i] = [data[i]['id'], data[i]['cid']];
+					}
+
+					layer.open({
+						type: 2,
+						title: '{lang:move}',
+						area: ['auto', '80%'],
+						shade: 0.6,
+						shadeClose: true,
+						maxmin: true,
+						anim: 0,
+						content: "index.php?content-get_category_html-mid-"+mid,
+						btn: ['{lang:confirm}', '{lang:cancel}'],
+						btn1: function(index){
+							var body = layer.getChildFrame('body', index);
+							var cid = parseInt(body.find("#cid").val());
+							if(cid){
+								adminAjax.postd("index.php?content-batch_move-mid-"+mid+"-ajax-1", {"id_arr": id_arr, "cid":cid},function (json) {
+									layer.close(index);
+									var res = toJson(json);
+									if( res.err ){
+										layer.msg(res.msg, {icon: 5});
+									}else{
+										layer.msg(res.msg, {icon: 1, time: 1000},function () {
+											layui.table.reload('data-table', {page:{curr:$(".layui-laypage-em").next().html()}});
+										});
+									}
+								});
+							}else{
+								layer.msg('{lang:please_select_category}', {icon: 5});
+							}
+						}
+					});
+				}
+			} else if (obj.event === 'output_url') {  // 监听导出网址操作
+				var checkStatus = table.checkStatus('data-table'), data = checkStatus.data;
+				var len = data.length;
+				if(len == 0){
+					layer.msg('{lang:select_data}',{icon:5});
+					return false;
+				}else{
+					var url_html = '';
+					for (var i in data) {
+						url_html += data[i]['absolute_url']+'<br/>';
+					}
+					$("#output_url").html('<div id="copy">'+url_html+'</div>');
+					layer.confirm($("#output_url").html(), {
+						btn: ['{lang:copy}','{lang:cancel}'],
+						title:'{lang:tips}'
+					}, function(){
+						$("a.layui-layer-btn0").attr("data-clipboard-target","#copy")
+						var clipboard = new ClipboardJS("a.layui-layer-btn0");
+						clipboard.on('success', function(e) {
+							layer.msg("{lang:copy_successfully}",{"icon":1});
+						});
+						clipboard.on('error', function(e) {
+							layer.msg("{lang:copy_failed}",{"icon":5});
+						});
+					}, function(){});
+				}
+			}
+
+			{hook:admin_content_index_toolbar_filter_js_after.htm}
+		});
+
+		//监听单元格编辑
+		table.on('edit(data-table-filter)', function(obj){
+			var value = obj.value //得到修改后的值
+					,data = obj.data //得到所在行所有键值
+					,field = obj.field; //得到字段
+			adminAjax.postd("index.php?content-set-ajax-1", {"mid":mid, "id":data.id, "field":field, "value":value},function(json){
+				var res = toJson(json);
+				if(res.err){
+					layer.msg(res.msg, {icon: 5});
+				}else{
+					layer.msg(res.msg, {icon: 1, time: 1000},function () {
+						layui.table.reload('data-table', {page:{curr:$(".layui-laypage-em").next().html()}});
+					});
+				}
+			});
+		});
+		//监听每一行的操作
+		table.on('tool(data-table-filter)', function (obj) {
+			var data = obj.data;
+
+			if (obj.event === 'edit') {
+				miniTab.openNewTabByIframe({
+					href:'index.php?content-edit-mid-'+mid+'-id-'+data.id+'-cid-'+data.cid+'-currpage-'+currPage,
+					title:"{$edit_content}",
+				});
+			} else if (obj.event === 'view') {
+				window.open(data.url);
+			} else if (obj.event === 'delete') {
+				adminAjax.confirm('{lang:delete_confirm}', function () {
+					layer.closeAll();
+					adminAjax.postd("index.php?content-del-ajax-1", {"mid":mid, "id":data.id,"cid":data.cid},function (json) {
+						var res = toJson(json);
+						if( res.err ){
+							layer.msg(res.msg, {icon: 5});
+						}else{
+							layer.msg(res.msg, {icon: 1, time: 1000},function () {
+								layui.table.reload('data-table', {page:{curr:$(".layui-laypage-em").next().html()}});
+							});
+						}
+					});
+				});
+			}
+
+			{hook:admin_content_index_currenttablebar_filter_js_after.htm}
+		});
+
+		{hook:admin_content_index_layui_js_after.htm}
+	});
+</script>
+{hook:admin_content_index_after.htm}
+</body>
+</html>

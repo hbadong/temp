@@ -1,0 +1,495 @@
+{inc:header.htm}
+
+<div class="wrap">
+
+<!-- ==================== index_one：热门游戏 tab + 幻灯片 + 资讯 + 编辑推荐 ==================== -->
+<section class="index_one">
+	<div>
+		<!-- 热门游戏 / 精品应用 Tab -->
+		<div class="hotGame tab_box">
+			<ul class="tab_menu">
+				<li class="current"><i class="ico"></i><span>热门游戏</span></li>
+				<li><i class="ico"></i><span>精品应用</span></li>
+			</ul>
+			<div class="cont">
+				<!-- 热门内容（flag=2 热点） -->
+				{block:list_flag flag="2" mid="2" limit="10" showcate="1"}
+				<ul class="sub_box">
+					{loop:$data[list] $v}
+					<li>
+						<a href="{$v[url]}" target="_blank" title="{$v[title]}">
+							<img src="{$v[pic]}" alt="{$v[title]}" onerror="this.src='{$cfg[tpl]}style/img/nopic.png'">
+							<p>{$v[subject]}</p>
+						</a>
+					</li>
+					{/loop}
+				</ul>
+				{/block}
+				<!-- 精品推荐（flag=1 推荐） -->
+				{block:list_flag flag="1" mid="2" limit="10" showcate="1"}
+				<ul class="sub_box hide">
+					{loop:$data[list] $v}
+					<li>
+						<a href="{$v[url]}" target="_blank" title="{$v[title]}">
+							<img src="{$v[pic]}" alt="{$v[title]}" onerror="this.src='{$cfg[tpl]}style/img/nopic.png'">
+							<p>{$v[subject]}</p>
+						</a>
+					</li>
+					{/loop}
+				</ul>
+				{/block}
+			</div>
+		</div>
+
+		<div class="indexRec">
+			<!-- 幻灯片（原生 slider，index.js 驱动） -->
+			<div class="indexRecL slider">
+				{block:list_flag flag="5" mid="2" limit="4"}
+				<ul>
+					{loop:$data[list] $v}
+					<li>
+						<a href="{$v[url]}" target="_blank">
+							<img src="{$v[pic]}" alt="{$v[title]}" onerror="this.src='{$cfg[tpl]}style/img/nopic.png'">
+							<p class="text">{$v[subject]}</p>
+						</a>
+					</li>
+					{/loop}
+				</ul>
+				<div class="dot"></div>
+				{/block}
+			</div>
+
+			<div class="indexRecM">
+				<!-- 最新文章（3 条一组：1 个链接 + 2 个链接） -->
+				<div class="txt_box">
+					{php}
+					$arts = block_list(array('cids' => '1,2', 'limit' => 6));
+					$art_arr = array_values($arts['list']);
+					foreach($art_arr as $ai => $art) {
+						if($ai % 3 == 0) {
+							echo '<a href="' . $art['url'] . '" title="' . $art['title'] . '" target="_blank">' . $art['subject'] . '</a><p>';
+							if(isset($art_arr[$ai+1])) echo '<a href="' . $art_arr[$ai+1]['url'] . '" target="_blank" title="' . $art_arr[$ai+1]['title'] . '">' . $art_arr[$ai+1]['subject'] . '</a>';
+							if(isset($art_arr[$ai+2])) echo ' | <a href="' . $art_arr[$ai+2]['url'] . '" target="_blank" title="' . $art_arr[$ai+2]['title'] . '">' . $art_arr[$ai+2]['subject'] . '</a>';
+							echo '</p>';
+						}
+					}
+					{/php}
+				</div>
+
+				<!-- BT游戏 / 攻略 Tab -->
+				<div class="circleList itabBox">
+					<div class="itabMenu">
+						<span class="current"><i class="ico gl"></i><em>BT游戏</em></span>
+						<span><i class="ico wd"></i><em>攻略</em></span>
+					</div>
+					<div class="itabCont">
+						<!-- BT游戏 -->
+						<ul>
+							{block:list cid="1" mid="2" limit="5" showcate="1"}
+							{loop:$data[list] $v}
+							<li>
+								<a href="{$v[url]}" target="_blank" title="{$v[title]}">
+									<p>【BT游戏】 {$v[subject]}</p>
+									<span>{@date('m-d', $v['dateline'])}</span>
+								</a>
+							</li>
+							{/loop}
+							<div class="line"></div>
+							{/block}
+						</ul>
+						<!-- 攻略 -->
+						<ul class="hide">
+							{block:list cid="2" mid="2" limit="5" showcate="1"}
+							{loop:$data[list] $v}
+							<li>
+								<a href="{$v[url]}" target="_blank" title="{$v[title]}">
+									<p>{$v[cate_name]} {$v[subject]}</p>
+									<span>{@date('m-d', $v['dateline'])}</span>
+								</a>
+							</li>
+							{/loop}
+							<div class="line"></div>
+							{/block}
+						</ul>
+					</div>
+				</div>
+			</div>
+
+			<!-- 编辑推荐 -->
+			<div class="indexRecR">
+				<em>编辑推荐</em>
+				<div>
+					{block:list_flag flag="1" mid="2" limit="2" showcate="1"}
+					{loop:$data[list] $v}
+					<a href="{$v[url]}" target="_blank" title="{$v[title]}">
+						<img src="{$v[pic]}" alt="{$v[title]}" onerror="this.src='{$cfg[tpl]}style/img/nopic.png'">
+						<p>{$v[subject]}</p>
+					</a>
+					{/loop}
+					{/block}
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- ==================== index_two：手机游戏分类 Tab ==================== -->
+<section class="index_two">
+	<div class="hotTab">
+		<div class="titIndex">
+			<em><i class="ico"></i>手机游戏<i class="ico"></i></em>
+			<a href="{$cfg[weburl]}game/" target="_blank">更多<i class="ico"></i></a>
+		</div>
+		<div class="tab_box">
+			<!-- 分类标签栏 -->
+			<div class="tab_menu tabOne">
+				<div class="hidden_box">
+					<ul>
+						<li class="current" data-index="0">全部</li>
+						{block:category cid="1" type="child"}{/block}
+						{php}
+						$cates = block_category(array('cid' => 1, 'type' => 'child'));
+						$ci = 0;
+						foreach($cates as $cate) {
+							$ci++;
+							echo '<li data-index="' . $ci . '" data-cid="' . $cate['cid'] . '">' . $cate['name'] . '</li>';
+						}
+						{/php}
+					</ul>
+				</div>
+				<div class="preNextBox">
+					<em class="pre">&lt;</em>
+					<em class="next">&gt;</em>
+				</div>
+				<div class="dotTabBox dotTabOne"><i class="current"></i></div>
+			</div>
+			<!-- 内容列表区：全部 + 每个子分类 -->
+			<div class="cont">
+				{block:list cid="1" limit="12" showcate="1"}
+				<ul class="sub_box" data-cid="1">
+					{loop:$data[list] $v}
+					<li>
+						<a href="{$v[url]}" target="_blank">
+							<img src="{$v[pic]}" alt="{$v[title]}" onerror="this.src='{$cfg[tpl]}style/img/nopic.png'">
+							<div class="info">
+								<p class="name">{$v[subject]}</p>
+								<p><span>{$v[cate_name]}</span>&nbsp;|&nbsp;<span>{$v[size]}</span></p>
+								<p class="btn">查看</p>
+							</div>
+						</a>
+					</li>
+					{/loop}
+				</ul>
+				{/block}
+				{php}
+				$soncates = block_category(array('cid' => 1, 'type' => 'child'));
+				foreach($soncates as $soncate) {
+					$sonlist = block_list(array('cid' => $soncate['cid'], 'limit' => 12, 'showcate' => 1));
+					echo '<ul class="sub_box hide" data-cid="' . $soncate['cid'] . '">';
+					if(!empty($sonlist['list'])) {
+						foreach($sonlist['list'] as $sv) {
+							echo '<li><a href="' . $sv['url'] . '" target="_blank">';
+							echo '<img src="' . $sv['pic'] . '" alt="' . $sv['title'] . '" onerror="this.src=\'' . $cfg['tpl'] . 'style/img/nopic.png\'">';
+							echo '<div class="info">';
+							echo '<p class="name">' . $sv['subject'] . '</p>';
+							echo '<p><span>' . $sv['cate_name'] . '</span>&nbsp;|&nbsp;<span>' . $sv['size'] . '</span></p>';
+							echo '<p class="btn">查看</p>';
+							echo '</div></a></li>';
+						}
+					}
+					echo '</ul>';
+				}
+				{/php}
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- ==================== index_three：手机应用分类 Tab + 热门标签 ==================== -->
+<section class="index_three">
+	<div class="hotTab">
+		<div class="titIndex">
+			<em><i class="ico"></i>手机应用<i class="ico"></i></em>
+			<a href="{$cfg[weburl]}soft/" target="_blank">更多<i class="ico"></i></a>
+		</div>
+		<div class="tab_box">
+			<!-- 分类标签栏 -->
+			<div class="tab_menu tabTwo">
+				<div class="hidden_box">
+					<ul>
+						<li class="current" data-index="0">全部</li>
+						{block:category cid="2" type="child"}{/block}
+						{php}
+						$cates = block_category(array('cid' => 2, 'type' => 'child'));
+						$ci = 0;
+						foreach($cates as $cate) {
+							$ci++;
+							echo '<li data-index="' . $ci . '" data-cid="' . $cate['cid'] . '">' . $cate['name'] . '</li>';
+						}
+						{/php}
+					</ul>
+				</div>
+				<div class="preNextBox">
+					<em class="pre">&lt;</em>
+					<em class="next">&gt;</em>
+				</div>
+				<div class="dotTabBox dotTabTwo"><i class="current"></i></div>
+			</div>
+			<!-- 内容列表区 -->
+			<div class="cont">
+				{block:list cid="2" limit="12" showcate="1"}
+				<ul class="sub_box" data-cid="2">
+					{loop:$data[list] $v}
+					<li>
+						<a href="{$v[url]}" target="_blank">
+							<img src="{$v[pic]}" alt="{$v[title]}" onerror="this.src='{$cfg[tpl]}style/img/nopic.png'">
+							<div class="info">
+								<p class="name">{$v[subject]}</p>
+								<p><span>{$v[cate_name]}</span>&nbsp;|&nbsp;<span>{$v[size]}</span></p>
+								<p class="btn">查看</p>
+							</div>
+						</a>
+					</li>
+					{/loop}
+				</ul>
+				{/block}
+				{php}
+				$soncates = block_category(array('cid' => 2, 'type' => 'child'));
+				foreach($soncates as $soncate) {
+					$sonlist = block_list(array('cid' => $soncate['cid'], 'limit' => 12, 'showcate' => 1));
+					echo '<ul class="sub_box hide" data-cid="' . $soncate['cid'] . '">';
+					if(!empty($sonlist['list'])) {
+						foreach($sonlist['list'] as $sv) {
+							echo '<li><a href="' . $sv['url'] . '" target="_blank">';
+							echo '<img src="' . $sv['pic'] . '" alt="' . $sv['title'] . '" onerror="this.src=\'' . $cfg['tpl'] . 'style/img/nopic.png\'">';
+							echo '<div class="info">';
+							echo '<p class="name">' . $sv['subject'] . '</p>';
+							echo '<p><span>' . $sv['cate_name'] . '</span>&nbsp;|&nbsp;<span>' . $sv['size'] . '</span></p>';
+							echo '<p class="btn">查看</p>';
+							echo '</div></a></li>';
+						}
+					}
+					echo '</ul>';
+				}
+				{/php}
+			</div>
+		</div>
+		<!-- 热门手游标签 -->
+		<div class="hotTags">
+			<div class="tit">热门手游标签</div>
+			<ul>
+				{block:taglist mid="2" limit="6" orderby="count"}
+				{loop:$data[list] $v}
+				<li class="c{@$v['xuhao']}"><a target="_blank" title="{$v[name]}" href="{$v[url]}">{$v[name]}<i class="triangle"></i><i class="plus"></i></a></li>
+				{/loop}
+				{/block}
+			</ul>
+		</div>
+	</div>
+</section>
+
+<!-- ==================== index_four：专题合集轮播 ==================== -->
+<section class="index_four">
+	<div class="hotTopic">
+		<div class="titIndex"><em><i class="ico"></i>专题合集<i class="ico"></i></em></div>
+		<div class="carousel">
+			<div class="caroList">
+				{block:list mid="2" limit="30"}
+				{loop:$data[list] $v}
+				{if:(($v[xuhao]-1) % 10) == 0}{if:$v[xuhao] > 1}</ul></div>{/if}<div><ul>{/if}
+				<li>
+					<a href="{$v[url]}" target="_blank" title="{$v[title]}">
+						<img src="{$v[pic]}" alt="{$v[title]}" onerror="this.src='{$cfg[tpl]}style/img/nopic.png'">
+						<p>{$v[subject]}<i class="ico"></i></p>
+					</a>
+				</li>
+				{/loop}
+				</ul></div>
+				{/block}
+			</div>
+			<div class="caroArrow">
+				<div class="caroDot"></div>
+				<div class="caroBtn"><span class="caroPre">&lt;</span><span class="caroNext">&gt;</span></div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- ==================== index_five：资讯教程 ==================== -->
+<section class="index_five">
+	<div class="hotArea">
+		<div class="titIndex"><em><i class="ico"></i>资讯教程<i class="ico"></i></em><a href="{$cfg[weburl]}news/" target="_blank">更多<i class="ico"></i></a></div>
+		<div class="cont">
+			<!-- 手游攻略 -->
+			<div class="list">
+				<a href="{$cfg[weburl]}sygl/" target="_blank" title="手游攻略"><img src="{$cfg[tpl]}style/img/sygl.jpg" alt="手游攻略"><p>手游攻略</p></a>
+				<div class="circleList">
+					<ul>
+						{block:list cid="1" limit="5"}
+						{loop:$data[list] $v}
+						<li><a title="{$v[title]}" href="{$v[url]}" target="_blank"><p>{$v[subject]}</p></a></li>
+						{/loop}
+						<div class="line"></div>
+						{/block}
+					</ul>
+				</div>
+			</div>
+			<!-- 游戏攻略 -->
+			<div class="list">
+				<a href="{$cfg[weburl]}yxgl/" target="_blank" title="游戏攻略"><img src="{$cfg[tpl]}style/img/yxgl.jpg" alt="游戏攻略"><p>游戏攻略</p></a>
+				<div class="circleList">
+					<ul>
+						{block:list cid="2" limit="5"}
+						{loop:$data[list] $v}
+						<li><a title="{$v[title]}" href="{$v[url]}" target="_blank"><p>{$v[subject]}</p></a></li>
+						{/loop}
+						<div class="line"></div>
+						{/block}
+					</ul>
+				</div>
+			</div>
+			<!-- 软件教程 -->
+			<div class="list">
+				<a href="{$cfg[weburl]}rjjc/" target="_blank" title="软件教程"><img src="{$cfg[tpl]}style/img/rjjc.jpg" alt="软件教程"><p>软件教程</p></a>
+				<div class="circleList">
+					<ul>
+						{block:list cid="1" limit="5"}
+						{loop:$data[list] $v}
+						<li><a title="{$v[title]}" href="{$v[url]}" target="_blank"><p>{$v[subject]}</p></a></li>
+						{/loop}
+						<div class="line"></div>
+						{/block}
+					</ul>
+				</div>
+			</div>
+			<!-- 系统教程 -->
+			<div class="list">
+				<a href="{$cfg[weburl]}xtjc/" target="_blank" title="系统教程"><img src="{$cfg[tpl]}style/img/xtjc.jpg" alt="系统教程"><p>系统教程</p></a>
+				<div class="circleList">
+					<ul>
+						{block:list cid="2" limit="5"}
+						{loop:$data[list] $v}
+						<li><a title="{$v[title]}" href="{$v[url]}" target="_blank"><p>{$v[subject]}</p></a></li>
+						{/loop}
+						<div class="line"></div>
+						{/block}
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- ==================== index_six：排行榜 ==================== -->
+<section class="index_six">
+	<div class="popRank">
+		<div class="titIndex"><em><i class="ico"></i>排行榜<i class="ico"></i></em></div>
+		<div class="cont">
+			<!-- 手游榜 -->
+			<div class="phbCont">
+				<div>手游榜<span><i class="ico"></i></span></div>
+				<i class="ico"></i>
+				<ul class="tfBox">
+					{block:list_top cid="1" orderby="views" limit="10"}
+					{loop:$data[list] $v}
+					<li>
+						<div class="tBox {if:$v[xuhao] == 1}{else}hide{/if}">
+							<i class="num{if:$v[xuhao] < 4} ico{/if}">{@$v['xuhao']}</i>
+							<a href="{$v[url]}" target="_blank" title="{$v[title]}">
+								<img src="{$v[pic]}" alt="{$v[title]}" onerror="this.src='{$cfg[tpl]}style/img/nopic.png'">
+								<div class="info">
+									<p>{$v[subject]}</p>
+									<p>{$v[intro]}</p>
+									<i class="ico star3"></i>
+								</div>
+							</a>
+						</div>
+						<div class="fBox {if:$v[xuhao] == 1}hide{else}{/if}">
+							<i class="num{if:$v[xuhao] < 4} ico{/if}">{@$v['xuhao']}</i><p>{$v[subject]}</p>
+						</div>
+					</li>
+					{/loop}
+					{/block}
+				</ul>
+			</div>
+			<!-- 软件榜 -->
+			<div class="phbCont">
+				<div>软件榜<span><i class="ico"></i></span></div>
+				<i class="ico"></i>
+				<ul class="tfBox">
+					{block:list_top cid="2" orderby="views" limit="10"}
+					{loop:$data[list] $v}
+					<li>
+						<div class="tBox {if:$v[xuhao] == 1}{else}hide{/if}">
+							<i class="num{if:$v[xuhao] < 4} ico{/if}">{@$v['xuhao']}</i>
+							<a href="{$v[url]}" target="_blank" title="{$v[title]}">
+								<img src="{$v[pic]}" alt="{$v[title]}" onerror="this.src='{$cfg[tpl]}style/img/nopic.png'">
+								<div class="info">
+									<p>{$v[subject]}</p>
+									<p>{$v[intro]}</p>
+									<i class="ico star3"></i>
+								</div>
+							</a>
+						</div>
+						<div class="fBox {if:$v[xuhao] == 1}hide{else}{/if}">
+							<i class="num{if:$v[xuhao] < 4} ico{/if}">{@$v['xuhao']}</i><p>{$v[subject]}</p>
+						</div>
+					</li>
+					{/loop}
+					{/block}
+				</ul>
+			</div>
+			<!-- 电脑软件榜 -->
+			<div class="phbCont">
+				<div>电脑软件榜<span><i class="ico"></i></span></div>
+				<i class="ico"></i>
+				<ul class="tfBox">
+					{block:list_top mid="2" orderby="views" limit="10"}
+					{loop:$data[list] $v}
+					<li>
+						<div class="tBox {if:$v[xuhao] == 1}{else}hide{/if}">
+							<i class="num{if:$v[xuhao] < 4} ico{/if}">{@$v['xuhao']}</i>
+							<a href="{$v[url]}" target="_blank" title="{$v[title]}">
+								<img src="{$v[pic]}" alt="{$v[title]}" onerror="this.src='{$cfg[tpl]}style/img/nopic.png'">
+								<div class="info">
+									<p>{$v[subject]}</p>
+									<p>{$v[intro]}</p>
+									<i class="ico star3"></i>
+								</div>
+							</a>
+						</div>
+						<div class="fBox {if:$v[xuhao] == 1}hide{else}{/if}">
+							<i class="num{if:$v[xuhao] < 4} ico{/if}">{@$v['xuhao']}</i><p>{$v[subject]}</p>
+						</div>
+					</li>
+					{/loop}
+					{/block}
+				</ul>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- ==================== 友情链接 ==================== -->
+<section class="friendLink">
+	<div>
+		<div class="linkTit"><i class="ico"></i>友情链接</div>
+		<div class="linkTags">
+			{block:links}
+			{loop:$data $v}
+			<a href="{$v[url]}" target="_blank" title="{$v[name]}">{$v[name]}</a>
+			{/loop}
+			{/block}
+		</div>
+	</div>
+</section>
+
+</div>
+
+<!-- 参考网站原生 JS（tab 切换、slider 轮播、tfBox、carousel 等交互均在此） -->
+<script src="{$cfg[tpl]}script/index.js"></script>
+<script src="{$cfg[tpl]}script/permission.js"></script>
+<script src="{$cfg[tpl]}script/screenshot.js"></script>
+<script src="{$cfg[tpl]}script/gameDetail.js"></script>
+
+{inc:footer.htm}

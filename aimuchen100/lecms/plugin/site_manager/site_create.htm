@@ -1,0 +1,82 @@
+{inc:header.htm}
+<style>
+/* 弹窗模式紧凑布局（与编辑页一致） */
+.se-form .layui-form-item { margin-bottom: 6px; }
+.se-form .layui-form-label { width: 90px; padding: 7px 10px 7px 0; }
+.se-form .layui-input-inline { width: calc(100% - 100px); }
+</style>
+<div class="layuimini-container">
+	<div class="layuimini-main">
+		<div class="layui-card">
+			<div class="layui-card-header">创建站点</div>
+			<div class="layui-card-body se-form">
+				<form id="form" class="layui-form" action="?site-create-ajax-1" method="post">
+					<input type="hidden" name="FORM_HASH" value="{@form_hash()}" />
+					<div class="layui-form-item">
+						<label class="layui-form-label required">站点名称</label>
+						<div class="layui-input-inline">
+							<input type="text" name="site_name" autocomplete="off" placeholder="请输入站点名称" class="layui-input" lay-verify="required" lay-reqtext="站点名称不能为空" />
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label required">域名</label>
+						<div class="layui-input-inline">
+							<input type="text" name="domain" autocomplete="off" placeholder="请输入域名，如 example.com" class="layui-input" lay-verify="required" lay-reqtext="域名不能为空" />
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">主题</label>
+						<div class="layui-input-inline">
+							<select name="theme">
+								{loop:$themes $t}
+								<option value="{$t}" {if:$t=='default'}selected{/if}>{$t}</option>
+								{/loop}
+							</select>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<div class="layui-input-block">
+							<button class="layui-btn" lay-submit lay-filter="form"><i class="layui-icon">&#xe605;</i> 创建站点</button>
+							<a class="layui-btn layui-btn-primary" id="btn-back" href="javascript:;">返回</a>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+layui.use(['form', 'layer', 'miniTab'], function(){
+	var layer = layui.layer, form = layui.form, miniTab = layui.miniTab;
+
+	form.render();
+
+	// 返回列表：激活后台的站点管理标签页；不在主框架内时回退为跳转
+	$('#btn-back').on('click', function () {
+		if (parent !== window && parent.layui && parent.layui.element) {
+			miniTab.openNewTabByIframe({ href: 'index.php?site-index', title: '站点管理' });
+			miniTab.deleteCurrentByIframe();
+		} else {
+			window.location.href = 'index.php?site-index';
+		}
+	});
+
+	//监听提交
+	form.on('submit(form)', function () {
+		adminAjax.postform('#form', function (data) {
+			var json = toJson(data);
+			layer.msg(json.msg, { icon: json.err == 0 ? 1 : 5 });
+			if (json.err == 0) {
+				setTimeout(function () {
+					// 标签页模式（与文章管理一致）：刷新列表页 iframe 并关闭当前标签
+					miniTab.reloadIframe('index.php?site-index');
+					miniTab.deleteCurrentByIframe();
+				}, 1200);
+			}
+		});
+		return false;
+	});
+});
+</script>
+</body>
+</html>

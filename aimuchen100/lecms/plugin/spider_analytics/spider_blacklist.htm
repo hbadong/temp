@@ -1,0 +1,123 @@
+{inc:header.htm}
+<div class="layuimini-container">
+	<div class="layuimini-main">
+
+		<div class="layui-card">
+		  <div class="layui-card-header">添加黑名单</div>
+		  <div class="layui-card-body">
+		    <form id="form-add" method="post" action="?spider_blacklist-add-ajax-1" class="layui-form">
+		      <input type="hidden" name="FORM_HASH" value="{@form_hash()}" />
+		      <div class="layui-form-item">
+		        <label class="layui-form-label">类型</label>
+		        <div class="layui-input-inline">
+		          <select name="match_type" lay-filter="match_type">
+		            <option value="ua">UA</option>
+		            <option value="ip">IP</option>
+		            <option value="ip_cidr">IP CIDR</option>
+		          </select>
+		        </div>
+		        <label class="layui-form-label">值</label>
+		        <div class="layui-input-inline"><input type="text" name="match_value" required lay-verify="required" class="layui-input"></div>
+		        <label class="layui-form-label">备注</label>
+		        <div class="layui-input-inline"><input type="text" name="note" class="layui-input"></div>
+		        <button type="submit" class="layui-btn" lay-submit lay-filter="form-add-btn"><i class="layui-icon">&#xe608;</i> 添加</button>
+		      </div>
+		    </form>
+		  </div>
+		</div>
+
+		<div class="layui-card">
+		  <div class="layui-card-header">拦截模式 + 导入导出</div>
+		  <div class="layui-card-body">
+		    <p>当前拦截模式：<strong>{$intercept_enabled == '1' ? '开启' : '关闭'}</strong>
+		      <button type="button" id="btn-toggle-intercept" class="layui-btn layui-btn-sm layui-btn-warm" style="display:inline;margin-left:8px;">切换</button>
+		    </p>
+		    <p>
+		      <a class="layui-btn layui-btn-sm layui-btn-normal" href="index.php?spider_blacklist-export"><i class="layui-icon">&#xe61e;</i> 导出 CSV</a>
+		      <button type="button" id="btn-import" class="layui-btn layui-btn-sm">导入 CSV</button>
+		      <input type="file" id="import-file" accept=".csv" style="display:none;">
+		    </p>
+		  </div>
+		</div>
+
+		<div class="layui-card">
+		  <div class="layui-card-header">黑名单列表</div>
+		  <div class="layui-card-body">
+		    <table class="layui-table">
+		      <thead><tr><th>ID</th><th>类型</th><th>值</th><th>备注</th><th>启用</th><th>操作</th></tr></thead>
+		      <tbody>
+		      {loop:$rows $r}
+		        <tr>
+		          <td>{$r['id']}</td>
+		          <td>{$r['match_type']}</td>
+		          <td>{$r['match_value']}</td>
+		          <td>{$r['note']}</td>
+		          <td>{@$r['enabled'] == 1 ? '<span class="layui-badge layui-bg-green">是</span>' : '<span class="layui-badge layui-bg-gray">否</span>'}</td>
+		          <td><a class="layui-btn layui-btn-xs layui-btn-danger js-del" href="javascript:;" data-id="{$r['id']}"><i class="layui-icon">&#xe616;</i> 删除</a></td>
+		        </tr>
+		      {/loop}
+		      </tbody>
+		    </table>
+		  </div>
+		</div>
+
+	</div>
+</div>
+<script>
+layui.use(['layer', 'jquery', 'form'], function() {
+  var layer = layui.layer, $ = layui.$, form = layui.form;
+
+  // 添加黑名单：AJAX 提交，成功后留在本页刷新数据
+  form.on('submit(form-add-btn)', function() {
+    adminAjax.postform('#form-add', function(data) {
+      var json = toJson(data);
+      layer.msg(json.msg, {icon: json.err == 0 ? 1 : 5});
+      if (json.err == 0) {
+        setTimeout(function(){ window.location.reload(); }, 1000);
+      }
+    });
+    return false;
+  });
+
+  // 行内删除
+  $(document).on('click', '.js-del', function() {
+    var id = $(this).data('id');
+    layer.confirm('确认删除？', function(index) {
+      layer.close(index);
+      adminAjax.postd('index.php?spider_blacklist-del-ajax-1', {id: id, FORM_HASH: '{@form_hash()}'});
+    });
+  });
+
+  // 拦截模式切换
+  $('#btn-toggle-intercept').on('click', function() {
+    adminAjax.postd('?spider_blacklist-toggle_intercept-ajax-1', {FORM_HASH: '{@form_hash()}'});
+  });
+
+  // CSV 导入：选择文件后 FormData 提交
+  $('#btn-import').on('click', function() {
+    $('#import-file').val('').click();
+  });
+  $('#import-file').on('change', function() {
+    if (!this.files || !this.files[0]) return;
+    var fd = new FormData();
+    fd.append('file', this.files[0]);
+    fd.append('FORM_HASH', '{@form_hash()}');
+    $.ajax({
+      type: 'POST',
+      url: 'index.php?spider_blacklist-import-ajax-1',
+      data: fd,
+      processData: false,
+      contentType: false,
+      dataType: 'json',
+      success: function(json) {
+        layer.msg(json.msg, {icon: json.err == 0 ? 1 : 5});
+        if (json.err == 0) {
+          setTimeout(function(){ window.location.reload(); }, 1000);
+        }
+      }
+    });
+  });
+});
+</script>
+</body>
+</html>

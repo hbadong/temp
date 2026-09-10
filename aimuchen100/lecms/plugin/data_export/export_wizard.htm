@@ -1,0 +1,28 @@
+{inc:header.htm}
+<div class="layuimini-container">
+  <div class="layuimini-main">
+    <div class="layui-card">
+      <div class="layui-card-header">启动站点导出</div>
+      <div class="layui-card-body">
+        <form method="post" action="index.php?data_export-start" class="layui-form">
+          <input type="hidden" name="FORM_HASH" value="{@form_hash()}" />
+          <div class="layui-form-item">
+            <label class="layui-form-label">站点 ID</label>
+            <div class="layui-input-inline"><input type="number" name="site_id" value="0" required class="layui-input"></div>
+            <label class="layui-form-label">导出模式</label>
+            <div class="layui-input-inline">
+              <select name="mode">
+                <option value="full">完整（程序+DB）</option>
+                <option value="cleanup">完整 + 清理敏感数据（域名出售）</option>
+              </select>
+            </div>
+            <button type="submit" class="layui-btn layui-btn-normal">启动导出</button>
+          </div>
+        </form>
+        <p style="margin-top:20px;color:#999;">注意：完整导出后 ZIP 文件存放于 <code>runtime/data-export/</code>，7 天后自动清理。</p>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

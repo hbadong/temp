@@ -1,0 +1,40 @@
+{inc:header.htm}
+<div class="layuimini-container">
+	<div class="layuimini-main">
+		<div class="layui-card">
+			<div class="layui-card-header">分析报告</div>
+			<div class="layui-card-body">
+				<table class="layui-table">
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th>竞品站点</th>
+							<th>类型</th>
+							<th>域名权重</th>
+							<th>分析时间</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody>
+						{loop:$list $item}
+						<tr>
+							<td>{$item['id']}</td>
+							<td><a href="?competitor-edit&id={$item['competitor_id']}">{$item['competitor_name']}</a></td>
+							<td>{if:$item['report_type'] == 'weekly'}<span class="layui-badge">周报</span>{else}<span class="layui-badge layui-bg-orange">手动</span>{/if}</td>
+							<td>{$item['domain_authority']}</td>
+							<td>{$item['analyzed_at']}</td>
+							<td><a class="layui-btn layui-btn-xs" href="?report-detail&id={$item['id']}">查看详情</a></td>
+						</tr>
+						{/loop}
+						{if:empty($list)}
+						<tr><td colspan="6" style="text-align:center">暂无数据</td></tr>
+						{/if}
+					</tbody>
+				</table>
+				<div class="layui-btn-container" style="margin-top:10px">{$pagebar}</div>
+			</div>
+		</div>
+	</div>
+</div>
+</body>
+</html>

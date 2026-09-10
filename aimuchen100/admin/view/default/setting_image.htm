@@ -1,0 +1,100 @@
+{inc:header.htm}
+<div class="layuimini-container">
+	<div class="layuimini-main">
+		<div class="layui-col-md12">
+			<form id="form" class="layui-form" action="index.php?setting-image-ajax-1" method="post">
+				<div class="layui-card layui-col-space15">
+					<div class="layui-card-header">{lang:thumb_setting}</div>
+					<div class="layui-card-body">
+						<table class="layui-table" lay-size="sm">
+							<colgroup>
+								<col width="110">
+								<col>
+							</colgroup>
+							<tbody>
+							<tr>
+								<th>{lang:thumb_type}</th>
+								<td>{$input[thumb_type]}</td>
+							</tr>
+							<tr>
+								<th class="required">{lang:thumb_quality}</th>
+								<td><div class="layui-input-inline">{$input[thumb_quality]}</div></td>
+							</tr>
+
+							{hook:admin_setting_image_after.htm}
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<div class="layui-card layui-col-space15">
+					<div class="layui-card-header">{lang:watermark_setting}</div>
+					<div class="layui-card-body">
+						<table class="layui-table" lay-size="sm">
+							<colgroup>
+								<col width="110">
+								<col>
+							</colgroup>
+							<tbody>
+							<tr>
+								<th>{lang:watermark_pos}</th>
+								<td>
+									<table class="layui-table" lay-size="sm">
+										<tr>
+											<td><input class="radio" type="radio" name="watermark_pos" title="{lang:close}" value="0"{if:$cfg['watermark_pos']==0} checked=""{/if}></td>
+											<td></td>
+											<td><input class="radio" type="radio" name="watermark_pos" title="{lang:rand}" value="10"{if:$cfg['watermark_pos']==10} checked=""{/if}></td>
+										</tr>
+										<tr>
+											<td><input class="radio" type="radio" name="watermark_pos" title="#1" value="1"{if:$cfg['watermark_pos']==1} checked=""{/if}></td>
+											<td><input class="radio" type="radio" name="watermark_pos" title="#2" value="2"{if:$cfg['watermark_pos']==2} checked=""{/if}></td>
+											<td><input class="radio" type="radio" name="watermark_pos" title="#3" value="3"{if:$cfg['watermark_pos']==3} checked=""{/if}></td>
+										</tr>
+										<tr>
+											<td><input class="radio" type="radio" name="watermark_pos" title="#4" value="4"{if:$cfg['watermark_pos']==4} checked=""{/if}></td>
+											<td><input class="radio" type="radio" name="watermark_pos" title="#5" value="5"{if:$cfg['watermark_pos']==5} checked=""{/if}></td>
+											<td><input class="radio" type="radio" name="watermark_pos" title="#6" value="6"{if:$cfg['watermark_pos']==6} checked=""{/if}></td>
+										</tr>
+										<tr>
+											<td><input class="radio" type="radio" name="watermark_pos" title="#7" value="7"{if:$cfg['watermark_pos']==7} checked=""{/if}></td>
+											<td><input class="radio" type="radio" name="watermark_pos" title="#8" value="8"{if:$cfg['watermark_pos']==8} checked=""{/if}></td>
+											<td><input class="radio" type="radio" name="watermark_pos" title="#9" value="9"{if:$cfg['watermark_pos']==9} checked=""{/if}></td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+							<tr>
+								<th class="required">{lang:watermark_pct}</th>
+								<td><div class="layui-input-inline">{$input[watermark_pct]}</div></td>
+							</tr>
+							<tr>
+								<th>{lang:watermark_file}</th>
+								<td><font color="BD0A01">static/img/watermark.png</font> {lang:watermark_info}</td>
+							</tr>
+
+							{hook:admin_setting_watermark_after.htm}
+							</tbody>
+						</table>
+						<div class="layui-form-item">
+							<label class="layui-form-label"></label>
+							<div class="layui-input-block">
+								<button class="layui-btn" lay-submit lay-filter="form">{lang:submit}</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	layui.use('form', function(){
+		var form = layui.form;
+
+		//监听提交
+		form.on('submit(form)', function(){
+			adminAjax.submit("#form");
+		});
+	});
+</script>
+</body>
+</html>

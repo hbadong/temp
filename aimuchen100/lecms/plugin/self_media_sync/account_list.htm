@@ -1,0 +1,207 @@
+{inc:header.htm}
+<style>
+/* 自媒体同步插件设置页专用样式 */
+.settings-wrap { padding: 0 16px; }
+.settings-card { margin-bottom: 16px; }
+.settings-card .layui-card-header { display: flex; align-items: center; justify-content: space-between; font-weight: 600; }
+.settings-card .layui-card-header i { color: #1E9FFF; margin-right: 8px; }
+.settings-card .layui-card-header .header-tip { font-weight: 400; font-size: 12px; color: #999; }
+.settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 24px; }
+.settings-grid .layui-form-item { display: flex; align-items: center; }
+.settings-grid .layui-form-label { width: 120px; padding: 9px 12px 9px 0; text-align: right; }
+.settings-grid .layui-input-inline { width: auto; flex: 1; }
+.settings-grid .layui-input-block { margin-left: 120px; }
+.settings-actions { position: sticky; bottom: 0; padding: 12px 0; background: #fff; border-top: 1px solid #eee; text-align: right; margin-top: 16px; box-shadow: 0 -2px 6px rgba(0,0,0,.03); z-index: 10; }
+.settings-actions .layui-btn + .layui-btn { margin-left: 8px; }
+.field-hint { display: block; color: #999; font-size: 12px; margin-top: 4px; }
+.platform-row { display: flex; flex-wrap: wrap; gap: 24px; padding: 8px 0; }
+.platform-row .platform-item { min-width: 160px; }
+@media (max-width: 900px) { .settings-grid { grid-template-columns: 1fr; } }
+</style>
+<div class="layuimini-container">
+	<div class="layuimini-main">
+		<div class="layui-tab layui-tab-brief" lay-filter="main">
+			<ul class="layui-tab-title">
+				<li class="layui-this">功能</li>
+				<li>插件设置</li>
+			</ul>
+			<div class="layui-tab-content">
+				<!-- tab1：功能（原页面全部内容） -->
+				<div class="layui-tab-item layui-show">
+					<div class="layui-card">
+						<div class="layui-card-header">平台账号管理</div>
+						<div class="layui-card-body">
+							<div class="layui-btn-container" style="margin-bottom:10px">
+								<a class="layui-btn layui-btn-sm layui-btn-normal" href="javascript:;" onclick="addAccount()"><i class="layui-icon">&#xe608;</i> 添加账号</a>
+							</div>
+							<table class="layui-table">
+								<thead>
+									<tr>
+										<th>ID</th>
+										<th>平台</th>
+										<th>账号名称</th>
+										<th>状态</th>
+										<th>最后同步</th>
+										<th>操作</th>
+									</tr>
+								</thead>
+								<tbody>
+									{loop:$list $item}
+									<tr>
+										<td>{$item['id']}</td>
+										<td>{@isset($platforms[$item['platform']]) ? $platforms[$item['platform']] : $item['platform']}</td>
+										<td>{$item['account_name']}</td>
+										<td>{if:$item['status'] == 1}<span class="layui-badge layui-bg-green">启用</span>{else}<span class="layui-badge layui-bg-gray">停用</span>{/if}</td>
+										<td>{$item['last_sync_at']}</td>
+										<td>
+											<a class="layui-btn layui-btn-xs" href="javascript:;" onclick="editAccount({$item['id']})"><i class="layui-icon">&#xe642;</i> 编辑</a>
+											<a class="layui-btn layui-btn-xs layui-btn-danger" href="javascript:;" onclick="del({$item['id']})"><i class="layui-icon">&#xe616;</i> 删除</a>
+										</td>
+									</tr>
+									{/loop}
+									{if:empty($list)}
+									<tr><td colspan="6">暂无数据</td></tr>
+									{/if}
+								</tbody>
+							</table>
+							{$pagebar}
+						</div>
+					</div>
+				</div>
+
+				<!-- tab2：插件设置（合并自原 settings.htm） -->
+				<div class="layui-tab-item">
+					<div class="settings-wrap">
+						<!-- 默认账号 -->
+						<div class="layui-card settings-card">
+							<div class="layui-card-header">
+								<span><i class="layui-icon">&#xe612;</i> 默认账号</span>
+								<span class="header-tip">占位字段，记录后供前端联动</span>
+							</div>
+							<div class="layui-card-body">
+								<form id="form-settings" class="layui-form" action="?account-settings_post-ajax-1" method="post">
+									<input type="hidden" name="FORM_HASH" value="{@form_hash()}" />
+									<div class="settings-grid">
+										<div class="layui-form-item">
+											<label class="layui-form-label">默认发布账号</label>
+											<div class="layui-input-inline">
+												<select name="default_account_id" lay-search>
+													<option value="0">不指定</option>
+													{loop:$accounts $acc}
+													<option value="{$acc['id']}" {if:$acc['id']==$settings['default_account_id']}selected{/if}>{$acc['platform']} / {$acc['account_name']}（ID:{$acc['id']}）</option>
+													{/loop}
+												</select>
+												<span class="field-hint">占位：sync_queue 当前按 platform 即时拉取账号，此处仅记录默认偏好</span>
+											</div>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+
+						<!-- 平台开关 -->
+						<div class="layui-card settings-card">
+							<div class="layui-card-header">
+								<span><i class="layui-icon">&#xe857;</i> 平台开关</span>
+								<span class="header-tip">占位字段，关闭后该平台不被同步</span>
+							</div>
+							<div class="layui-card-body">
+								<div class="platform-row">
+									<div class="platform-item layui-form-item">
+										<label class="layui-form-label">微信公众号</label>
+										<div class="layui-input-inline">
+											<input type="checkbox" name="platform_switch_wechat" lay-skin="switch" lay-text="启用|禁用" value="1" form="form-settings" {if:$settings['platform_switch_wechat']}checked{/if}>
+											<span class="field-hint">关闭后 trigger_post 不再向微信公众号队列</span>
+										</div>
+									</div>
+									<div class="platform-item layui-form-item">
+										<label class="layui-form-label">知乎</label>
+										<div class="layui-input-inline">
+											<input type="checkbox" name="platform_switch_zhihu" lay-skin="switch" lay-text="启用|禁用" value="1" form="form-settings" {if:$settings['platform_switch_zhihu']}checked{/if}>
+										</div>
+									</div>
+									<div class="platform-item layui-form-item">
+										<label class="layui-form-label">CSDN</label>
+										<div class="layui-input-inline">
+											<input type="checkbox" name="platform_switch_csdn" lay-skin="switch" lay-text="启用|禁用" value="1" form="form-settings" {if:$settings['platform_switch_csdn']}checked{/if}>
+										</div>
+									</div>
+									<div class="platform-item layui-form-item">
+										<label class="layui-form-label">搜狐</label>
+										<div class="layui-input-inline">
+											<input type="checkbox" name="platform_switch_sohu" lay-skin="switch" lay-text="启用|禁用" value="1" form="form-settings" {if:$settings['platform_switch_sohu']}checked{/if}>
+										</div>
+									</div>
+									<div class="platform-item layui-form-item">
+										<label class="layui-form-label">B站</label>
+										<div class="layui-input-inline">
+											<input type="checkbox" name="platform_switch_bilibili" lay-skin="switch" lay-text="启用|禁用" value="1" form="form-settings" {if:$settings['platform_switch_bilibili']}checked{/if}>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- 频率控制 -->
+						<div class="layui-card settings-card">
+							<div class="layui-card-header">
+								<span><i class="layui-icon">&#xe637;</i> 频率控制</span>
+								<span class="header-tip">同步队列节流（占位字段）</span>
+							</div>
+							<div class="layui-card-body">
+								<div class="settings-grid">
+									<div class="layui-form-item">
+										<label class="layui-form-label">发布频率上限</label>
+										<div class="layui-input-inline">
+											<input type="number" name="publish_rate_limit" value="{$settings['publish_rate_limit']}" min="1" max="1000" class="layui-input" form="form-settings">
+											<span class="field-hint">每站点每小时最大同步次数（1-1000），sync_queue.process_queue 后续接入</span>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- 底部操作栏 -->
+						<div class="settings-actions">
+							<button type="submit" lay-submit lay-filter="form-settings" class="layui-btn">
+								<i class="layui-icon">&#xe605;</i> 保存设置
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	layui.use(['layer', 'form', 'miniTab'], function(){
+		var layer = layui.layer, form = layui.form, miniTab = layui.miniTab;
+		form.render();
+		form.on('submit(form-settings)', function () {
+			adminAjax.postform('#form-settings', function (data) {
+				var json = toJson(data);
+				layer.msg(json.msg, { icon: json.err == 0 ? 1 : 5 });
+			});
+			return false;
+		});
+		window.addAccount = function(){
+			miniTab.openNewTabByIframe({
+				href: "index.php?account-edit",
+				title: "添加平台账号",
+			});
+		};
+		window.editAccount = function(id){
+			miniTab.openNewTabByIframe({
+				href: "index.php?account-edit-id-" + id,
+				title: "编辑平台账号",
+			});
+		};
+		window.del = function(id){
+			layer.confirm('确定删除？', function(){
+				adminAjax.postd("index.php?account-delete_post-ajax-1", {"id": id});
+			});
+		};
+	});
+</script>
+</body>
+</html>

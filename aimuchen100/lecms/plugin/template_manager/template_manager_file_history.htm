@@ -1,0 +1,99 @@
+{inc:header.htm}
+<div class="layuimini-container">
+    <div class="layuimini-main">
+        <div class="layui-card">
+            <div class="layui-card-header">
+                版本历史：{@htmlspecialchars(isset($theme_name) ? $theme_name : '', ENT_QUOTES, 'UTF-8')} / {@htmlspecialchars(isset($path) ? $path : '', ENT_QUOTES, 'UTF-8')}
+                <a class="layui-btn layui-btn-xs layui-btn-primary" href="index.php?template_manager-files" style="float:right">返回文件列表</a>
+            </div>
+            <div class="layui-card-body">
+                {if:empty($history)}
+                <div class="layui-word-aux">暂无版本记录，可先在文件列表中对文件执行「保存版本」</div>
+                {else}
+                <table class="layui-table" lay-size="sm">
+                    <thead>
+                    <tr>
+                        <th style="width:90px;">版本号</th>
+                        <th style="width:90px;">状态</th>
+                        <th style="width:170px;">创建时间</th>
+                        <th style="width:110px;">大小(字节)</th>
+                        <th style="width:90px;">操作人</th>
+                        <th>内容预览</th>
+                        <th style="width:140px;">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {loop:$history $v}
+                    <tr>
+                        <td>v{$v[version_no]}</td>
+                        <td>{if:$v[is_current]}<span class="layui-badge layui-bg-green">当前</span>{else}<span class="layui-badge layui-bg-gray">历史</span>{/if}</td>
+                        <td>{@date('Y-m-d H:i:s', $v['created_at'])}</td>
+                        <td>{$v[file_size]}</td>
+                        <td>{$v[created_by]}</td>
+                        <td class="layui-word-aux">{@htmlspecialchars(mb_substr($v['content'], 0, 100))}</td>
+                        <td>
+                            <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="preview" data-path="{@htmlspecialchars($v['path'])}" data-version="{$v[version_no]}">预览</a>
+                            {if:!$v[is_current]}
+                            <a class="layui-btn layui-btn-xs layui-btn-warm" lay-event="rollback" data-path="{@htmlspecialchars($v['path'])}" data-version="{$v[version_no]}">回滚</a>
+                            {/if}
+                        </td>
+                    </tr>
+                    {/loop}
+                    </tbody>
+                </table>
+                {/if}
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+layui.use(['layer', 'table'], function () {
+    var layer = layui.layer;
+
+    $('a[lay-event="preview"]').on('click', function () {
+        var path = $(this).data('path');
+        var version = $(this).data('version');
+        $.post('index.php?template_manager-file_preview_post-ajax-1', {
+            FORM_HASH: '{@form_hash()}',
+            template_id: '{@isset($data_tid) ? $data_tid : 0}',
+            path: path,
+            version_no: version
+        }, function (res) {
+            if (res.status == 0) {
+                var html = '<pre style="margin:0;padding:12px;white-space:pre-wrap;word-break:break-all;max-height:520px;overflow:auto;font-size:12px;">'
+                    + $('<div>').text(res.content).html() + '</pre>';
+                layer.open({
+                    title: 'v' + version + ' 内容预览 - ' + path,
+                    type: 1,
+                    area: ['780px', '560px'],
+                    content: html
+                });
+            } else {
+                layer.msg(res.message, {icon: 5});
+            }
+        });
+    });
+
+    $('a[lay-event="rollback"]').on('click', function () {
+        var path = $(this).data('path');
+        var version = $(this).data('version');
+        layer.confirm('确定要回滚到 v' + version + ' 吗？当前文件内容将被覆盖。', function () {
+            $.post('index.php?template_manager-file_rollback_post-ajax-1', {
+                FORM_HASH: '{@form_hash()}',
+                template_id: '{@isset($data_tid) ? $data_tid : 0}',
+                path: path,
+                version_no: version
+            }, function (res) {
+                if (res.status == 0) {
+                    layer.msg(res.message, {icon: 1});
+                    setTimeout(function () { location.reload(); }, 1200);
+                } else {
+                    layer.msg(res.message, {icon: 5});
+                }
+            });
+        });
+    });
+});
+</script>
+</body>
+</html>

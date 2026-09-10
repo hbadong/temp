@@ -1,0 +1,296 @@
+{inc:header.htm}
+
+<!-- 截图灯箱样式 -->
+<link rel="stylesheet" href="{$cfg[tpl]}style/css/screenshot.css" type="text/css" media="all"/>
+
+<!-- 内容详情数据（生成 $gdata） -->
+{block:global_show show_prev_next="1" dateformat="Y-m-d" field_format="1"}{/block}
+
+<!-- 面包屑导航 -->
+<div class="crumb">
+	<div>
+		<i class="ico"></i>所在位置：
+		<a href="{$cfg[weburl]}" target="_blank">首页</a>
+		&nbsp;&gt;&nbsp;
+		<a href="{$cfg_var[url]}" target="_blank">{$cfg_var[name]}</a>
+		&nbsp;&gt;&nbsp;
+		{$gdata[title]}
+	</div>
+</div>
+
+<div class="wraper">
+	<div class="gaDetail_left">
+		<!-- 游戏介绍区 -->
+		<section class="ga_intro">
+			<div>
+				<img src="{$gdata[pic]}" alt="{$gdata[title]}" onerror="this.src='{$cfg[tpl]}style/img/nopic.png'">
+				<div class="info">
+					<h1>{$gdata[title]}</h1>
+					<p>
+						<span><i class="ico"></i>无广告</span>
+						<span><i class="ico"></i>安全</span>
+						<span><i class="ico"></i>小编亲测</span>
+					</p>
+					<div>
+						<span>游戏类型：<a href="{$cfg_var[url]}" target="_blank">{$cfg_var[name]}</a></span>
+						<span>更新时间：<em>{$gdata[update_time]}</em></span>
+					</div>
+					<div class="app_down downbtn" id="{$gdata[id]}" type="1">
+						<a href="{$gdata[download_url_android]}" rel="nofollow" class="btnAnd" target="_blank">
+							<div class="android_down"><i class="ico"></i><span>安卓下载</span></div>
+						</a>
+						<a href="{$gdata[download_url_ios]}" rel="nofollow" class="btnIos" target="_blank">
+							<div class="ios_down"><i class="ico"></i><span>App store下载</span></div>
+						</a>
+						<a href="{$gdata[download_url_pc]}" rel="nofollow" class="pc" target="_blank">
+							<div class="pcAdd"><i class="ico"></i><p><span>GM盒子下载</span><span>安卓模拟器环境运行</span></p></div>
+						</a>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- 投诉反馈 -->
+		<div class="feBaBtn">
+			<link rel="stylesheet" href="{$cfg[webdir]}static/layui/lib/layui-v2.8.15/css/layui.css" media="all">
+			<script src="{$cfg[webdir]}static/layui/lib/layui-v2.8.15/layui.js"></script>
+			<i id="le_feedback" class="red">投诉反馈</i>
+			<script>
+			$("#le_feedback").click(function(){
+				layer.prompt({title: '请填写反馈内容', formType: 2, value: '您好，请您详细在此处说明一下您遇到了什么样的问题，以便我们为您核实处理。'}, function(text, index){
+					layer.close(index);
+					if(text == ''){
+						layer.msg('请填写反馈内容', {icon: 5});
+					}else{
+						var url = window.location.href;
+						$.post("{$cfg[webdir]}index.php?comment-feedback-ajax-1",{'content':text, 'url':url},function(res){
+							if( res.err == 1){ var icon = 5; }else{ var icon = 1; }
+							layer.msg(res.msg, {icon: icon});
+							return false;
+						},'json');
+					}
+				});
+			});
+			</script>
+		</div>
+
+		<!-- 编辑点评 + 截图区 -->
+		<section class="editSay">
+			<div class="comment"><p>{$gdata[intro]}</p></div>
+			<div class="showImg"></div>
+		</section>
+
+		<!-- 游戏描述 -->
+		<section class="ga_content">
+			<div class="tiTle"><em>游戏介绍</em></div>
+			<div class="yxbTags">
+				{loop:$gdata[tag_arr] $tag}
+				<a href="{$tag[url]}" target="_blank" title="{$tag[name]}">{$tag[name]}</a>
+				{/loop}
+			</div>
+			<div class="contHidden">
+				<div class="cont">
+					{$gdata[content]}
+				</div>
+				<div class="linear"></div>
+			</div>
+			<div class="openDetail">
+				<p>
+					<span><i class="ico"></i>需要网络</span>
+					<span><i class="ico"></i>放心下载</span>
+					<span><i class="ico"></i>免谷歌商店</span>
+				</p>
+				<div class="lop">展开<i class="down"></i></div>
+			</div>
+		</section>
+
+		<!-- 相关版本 -->
+		<section class="bhVersion">
+			<div class="tiTle"><em>相关版本</em></div>
+			<ul>
+				{block:list limit="6"}
+				{loop:$data[list] $v}
+				<li>
+					<a href="{$v[url]}" target="_blank" title="{$v[title]}">
+						<img src="{$v[pic]}" alt="{$v[title]}" onerror="this.src='{$cfg[tpl]}style/img/nopic.png'">
+						<p>{$v[subject]}</p>
+						<p>更新时间：{$v[update_time]}</p>
+						<p>游戏平台：{$v[platform]}</p>
+						<span>查看</span>
+					</a>
+				</li>
+				{/loop}
+				{/block}
+			</ul>
+		</section>
+
+		<!-- 热门软件 -->
+		<section class="ga_hot">
+			<div class="tiTle"><em>热门软件</em></div>
+			<div class="list">
+				<ul>
+					{block:list_top cid="30" orderby="views" limit="6"}
+					{loop:$data[list] $v}
+					<li>
+						<a href="{$v[url]}" target="_blank" title="{$v[title]}">
+							<img src="{$v[pic]}" alt="{$v[title]}" onerror="this.src='{$cfg[tpl]}style/img/nopic.png'">
+							<div><p class="name">{$v[subject]}</p><p>{$v[size]}</p></div>
+						</a>
+					</li>
+					{/loop}
+					{/block}
+				</ul>
+			</div>
+		</section>
+
+		<!-- 同类推荐 -->
+		<section class="ga_same tab_box">
+			<div class="tiTle"><em>同类推荐</em></div>
+			<ul class="tab_menu">
+				<li class="current" data-index="0"><i></i><span>同类游戏</span></li>
+			</ul>
+			<div class="cont">
+				{block:list_rand limit="8"}
+				<div class="sub_box" data-index="0">
+					<ul>
+						{loop:$data[list] $v}
+						<li>
+							<a href="{$v[url]}" target="_blank" title="{$v[title]}">
+								<img src="{$v[pic]}" alt="{$v[title]}" onerror="this.src='{$cfg[tpl]}style/img/nopic.png'">
+								<div class="info">
+									<p class="name">{$v[subject]}</p>
+									<p><span>{$v[size]}</span>&nbsp;|&nbsp;<span>{$v[cate_name]}</span></p>
+									<p class="btn">查看</p>
+								</div>
+							</a>
+						</li>
+						{/loop}
+					</ul>
+				</div>
+				{/block}
+			</div>
+		</section>
+
+		<!-- 游戏攻略 -->
+		<section class="ga_strategy">
+			<div class="tiTle"><em>游戏攻略</em></div>
+			<div class="circleList">
+				<ul>
+					{block:list cid="41" limit="5"}
+					{loop:$data[list] $v}
+					<li><a title="{$v[title]}" href="{$v[url]}" target="_blank"><p>{$v[subject]}</p></a></li>
+					{/loop}
+					<div class="line"></div>
+					{/block}
+				</ul>
+			</div>
+		</section>
+
+		<!-- 软件教程 -->
+		<section class="ga_strategy">
+			<div class="tiTle"><em>软件教程</em></div>
+			<div class="circleList">
+				<ul>
+					{block:list cid="42" limit="5"}
+					{loop:$data[list] $v}
+					<li><a title="{$v[title]}" href="{$v[url]}" target="_blank"><p>{$v[subject]}</p></a></li>
+					{/loop}
+					<div class="line"></div>
+					{/block}
+				</ul>
+			</div>
+		</section>
+
+		<!-- 近期更新 -->
+		<section class="straga_same">
+			<div class="tiTle"><em>近期更新</em></div>
+			<div class="circleList">
+				<ul>
+					{block:list limit="10" orderby="dateline" orderway="-1"}
+					{loop:$data[list] $v}
+					<li>
+						<a href="{$v[url]}" target="_blank" title="{$v[title]}">
+							<img src="{$v[pic]}" alt="{$v[title]}" onerror="this.src='{$cfg[tpl]}style/img/nopic.png'">
+							<div class="info">
+								<p class="name">{$v[subject]}</p>
+								<p><span>{$v[cate_name]}</span>&nbsp;|&nbsp;<span>{$v[size]}</span></p>
+								<p class="btn">查看</p>
+							</div>
+						</a>
+					</li>
+					{/loop}
+					{/block}
+				</ul>
+			</div>
+		</section>
+	</div>
+
+	<div class="gaDetail_right">
+		<!-- 游戏分类 -->
+		<section class="ga_collecte">
+			<div class="title_l"><em>游戏分类</em><a href="{$cfg[weburl]}game/" target="_blank"><i class="ico"></i></a></div>
+			<ul>
+				{block:category cid="15" type="child"}
+				{loop:$data $v}
+				<li><a href="{$v[url]}" target="_blank" title="{$v[name]}">{$v[name]}</a></li>
+				{/loop}
+				{/block}
+				<li><a href="{$cfg[weburl]}game/" target="_blank" title="全部分类">全部分类</a></li>
+			</ul>
+		</section>
+
+		<!-- 同类游戏 -->
+		<section class="ga_rank">
+			<div class="title_l"><em>同类游戏</em><a href="{$cfg[weburl]}game/" target="_blank"><i class="ico"></i></a></div>
+			<ul>
+				{block:list_top orderby="views" limit="8"}
+				{loop:$data[list] $v}
+				<li>
+					<a href="{$v[url]}" target="_blank" title="{$v[title]}">
+						<img src="{$v[pic]}" alt="{$v[title]}" onerror="this.src='{$cfg[tpl]}style/img/nopic.png'">
+						<div class="info">
+							<div class="name">{$v[subject]}</div>
+							<p>{$v[cate_name]} | {$v[size]}</p>
+							<p class="txt">{$v[intro]}</p>
+						</div>
+					</a>
+				</li>
+				{/loop}
+				{/block}
+			</ul>
+		</section>
+
+		<!-- 厂商其它游戏 -->
+		<section class="ga_rank">
+			<div class="title_l"><em>厂商其它游戏</em><a href="{$cfg[weburl]}game/" target="_blank"><i class="ico"></i></a></div>
+			<ul>
+				{block:list limit="10" start="1"}
+				{loop:$data[list] $v}
+				<li>
+					<a href="{$v[url]}" target="_blank" title="{$v[title]}">
+						<img src="{$v[pic]}" alt="{$v[title]}" onerror="this.src='{$cfg[tpl]}style/img/nopic.png'">
+						<div class="info">
+							<div class="name">{$v[subject]}</div>
+							<p>
+								{loop:$v[tag_arr] $tag}
+								<span>{$tag[name]}</span>
+								{/loop}
+							</p>
+							<p class="txt">{$v[intro]}</p>
+						</div>
+					</a>
+				</li>
+				{/loop}
+				{/block}
+			</ul>
+		</section>
+	</div>
+</div>
+
+<!-- 参考网站原生 JS -->
+<script src="{$cfg[tpl]}script/index.js"></script>
+<script src="{$cfg[tpl]}script/permission.js"></script>
+<script src="{$cfg[tpl]}script/screenshot.js"></script>
+<script src="<script src="{$cfg[tpl]}script/gameDetail.js"></script>"></script>
+
+{inc:footer.htm}

@@ -1,0 +1,86 @@
+{inc:header.htm}
+<div class="layuimini-container">
+    <div class="layuimini-main">
+        <div class="layui-card">
+            <div class="layui-card-header">{if:$action=='edit'}编辑标题规则{else}添加标题规则{/if}</div>
+            <div class="layui-card-body layui-row">
+                <form class="layui-form" id="form" method="post" action="?title_rule-{if:$action=='edit'}edit_post{else}create_post{/if}-ajax-1">
+                    <input type="hidden" name="FORM_HASH" value="{@form_hash()}" />
+                    {if:$action=='edit'}<input name="sid" type="hidden" value="{$data['sid']}" />{/if}
+                    <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label required">规则名称</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="name" value="{$data['name']}" placeholder="请输入规则名称" class="layui-input" required lay-verify="required" />
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label required">标题模板</label>
+                            <div class="layui-input-block" style="width: 500px;">
+                                <textarea name="templates" placeholder="每行一个标题模板&#10;支持的变量：{{site_name}} {{category}} {{game_name}} {{date}} {{year}} {{month}} {{random_N}}" class="layui-textarea" rows="8" required lay-verify="required">{$data['templates_text']}</textarea>
+                                <div class="layui-form-mid layui-word-aux">每行一个模板，系统会随机选择一个模板生成标题</div>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">正则替换规则</label>
+                            <div class="layui-input-block" style="width: 500px;">
+                                <textarea name="regex_rules" placeholder="JSON 格式的正则规则数组&#10;示例：[{"pattern":"/Game/", "replacement":"游戏"}]" class="layui-textarea" rows="5">{$data['regex_rules_json']}</textarea>
+                                <div class="layui-form-mid layui-word-aux">JSON 数组格式，留空表示不使用正则替换</div>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">状态</label>
+                            <div class="layui-input-inline">
+                                <input type="checkbox" name="is_active" lay-skin="switch" lay-text="启用|禁用" value="1" {if:$action=='edit' && $data['is_active'] == 1}checked="checked"{/if} />
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-input-block">
+                                <button class="layui-btn" lay-submit lay-filter="form">提交</button>
+                                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                                <button type="button" class="layui-btn layui-btn-primary" id="btn-back">返回</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    layui.use(['form', 'layer'], function () {
+        var layer = layui.layer, form = layui.form;
+        form.render();
+
+        //监听提交（本页为 layer 弹窗内打开，成功后刷新父页面列表）
+        form.on('submit(form)', function () {
+            adminAjax.postform('#form', function (data) {
+                var json = toJson(data);
+                if (json.err == 0) {
+                    var icon = 1;
+                } else {
+                    var icon = 5;
+                }
+                layer.msg(json.msg, {icon: icon});
+                if (json.err == 0) {
+                    setTimeout(function(){
+                        parent.location.reload();
+                    }, 1500);
+                }
+            });
+            return false;
+        });
+
+        // 返回：关闭当前弹窗并刷新父页面
+        $('#btn-back').on('click', function () {
+            parent.location.reload();
+            parent.layer.close(parent.layer.getFrameIndex(window.name));
+        });
+    });
+</script>
+</body>
+</html>

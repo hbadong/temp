@@ -1,0 +1,276 @@
+{inc:header.htm}
+<div class="layuimini-container">
+	<div class="layuimini-main">
+		<style>
+		/* 补丁系统 设置页专用样式（合并自 patch_settings.htm） */
+		.settings-wrap { padding: 0 16px; }
+		.settings-card { margin-bottom: 16px; }
+		.settings-card .layui-card-header { display: flex; align-items: center; justify-content: space-between; font-weight: 600; }
+		.settings-card .layui-card-header i { color: #1E9FFF; margin-right: 8px; }
+		.settings-card .layui-card-header .header-tip { font-weight: 400; font-size: 12px; color: #999; }
+		.settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 24px; }
+		.settings-grid .layui-form-item { display: flex; align-items: center; }
+		.settings-grid .layui-form-label { width: 130px; padding: 9px 12px 9px 0; text-align: right; }
+		.settings-grid .layui-input-inline { width: auto; flex: 1; }
+		.settings-grid .layui-input-block { margin-left: 130px; }
+		.settings-actions { position: sticky; bottom: 0; padding: 12px 0; background: #fff; border-top: 1px solid #eee; text-align: right; margin-top: 16px; box-shadow: 0 -2px 6px rgba(0,0,0,.03); z-index: 10; }
+		.settings-actions .layui-btn + .layui-btn { margin-left: 8px; }
+		.field-hint { display: block; color: #999; font-size: 12px; margin-top: 4px; }
+		@media (max-width: 900px) { .settings-grid { grid-template-columns: 1fr; } }
+		</style>
+		<div class="layui-tab layui-tab-brief" lay-filter="main">
+			<ul class="layui-tab-title"><li class="layui-this">补丁管理</li><li>插件设置</li></ul>
+			<div class="layui-tab-content">
+				<!-- tab1 补丁管理 -->
+				<div class="layui-tab-item layui-show">
+					<!-- 当前版本卡片 -->
+					<div class="layui-card">
+						<div class="layui-card-header">系统更新</div>
+						<div class="layui-card-body">
+							<p>当前版本：<span class="layui-badge layui-bg-blue">{$cms_version}</span></p>
+
+							{if:$latest}
+							<hr />
+							<div>
+								<p><strong>v{$latest['version']}</strong> - {$latest['name']}</p>
+								<p class="layui-text">{$latest['changelog']}</p>
+								<p class="layui-text">应用时间：{$latest['applied_at']}</p>
+							</div>
+							{/if}
+
+							<div class="layui-btn-container" style="margin-top:20px">
+								<label class="layui-btn layui-btn-sm layui-btn-normal">
+									<i class="layui-icon">&#xe67c;</i> 上传补丁包
+									<input type="file" accept=".zip" style="display:none" id="patchFile" onchange="uploadPatch(this)">
+								</label>
+							</div>
+						</div>
+					</div>
+
+					<!-- 补丁信息预览（上传后显示） -->
+					<div class="layui-card" id="patchInfo" style="display:none">
+						<div class="layui-card-header">补丁信息</div>
+						<div class="layui-card-body">
+							<div id="manifestInfo"></div>
+							<div id="fileList" style="margin-top:10px"></div>
+							<div class="layui-btn-container" style="margin-top:20px">
+								<button class="layui-btn layui-btn-sm" id="applyBtn" onclick="applyPatch()">确认应用</button>
+								<button class="layui-btn layui-btn-sm layui-btn-primary" onclick="cancelPatch()">取消</button>
+							</div>
+						</div>
+					</div>
+
+					<!-- 最近操作日志 -->
+					<div class="layui-card" style="margin-top:20px">
+						<div class="layui-card-header">最近操作</div>
+						<div class="layui-card-body">
+							<table class="layui-table">
+								<thead>
+									<tr>
+										<th>操作</th>
+										<th>版本</th>
+										<th>状态</th>
+										<th>时间</th>
+									</tr>
+								</thead>
+								<tbody>
+									{loop:$logs $log}
+									<tr>
+										<td>{$log['action']}</td>
+										<td>{$log['name']}</td>
+										<td>
+											{if:$log['status'] == 0}
+												<span class="layui-badge layui-bg-green">成功</span>
+											{else}
+												<span class="layui-badge layui-bg-red">失败</span>
+											{/if}
+										</td>
+										<td>{$log['created_at']}</td>
+									</tr>
+									{/loop}
+								</tbody>
+							</table>
+							<p style="text-align:right">
+								<a href="{?patch-history}" class="layui-btn layui-btn-sm layui-btn-primary">查看全部历史</a>
+							</p>
+						</div>
+					</div>
+				</div>
+
+				<!-- tab2 插件设置 -->
+				<div class="layui-tab-item">
+					<div class="settings-wrap">
+						<!-- 更新检查 -->
+						<div class="layui-card settings-card">
+							<div class="layui-card-header">
+								<span><i class="layui-icon">&#xe601;</i> 更新检查</span>
+								<span class="header-tip">控制补丁系统的自动更新检查行为</span>
+							</div>
+							<div class="layui-card-body">
+								<form id="form-settings" class="layui-form" action="?patch-settings_post-ajax-1" method="post">
+									<input type="hidden" name="FORM_HASH" value="{@form_hash()}" />
+									<div class="settings-grid">
+										<div class="layui-form-item">
+											<label class="layui-form-label">自动检查更新</label>
+											<div class="layui-input-inline">
+												<input type="radio" name="auto_check" value="1" title="开启" {if:$plugin_settings['auto_check']==1}checked{/if}>
+												<input type="radio" name="auto_check" value="0" title="关闭" {if:$plugin_settings['auto_check']!=1}checked{/if}>
+												<span class="field-hint">开启后由定时任务自动检查远程补丁更新（默认关闭）</span>
+											</div>
+										</div>
+										<div class="layui-form-item">
+											<label class="layui-form-label">远程更新源 URL</label>
+											<div class="layui-input-inline">
+												<input type="text" name="update_source" value="{$plugin_settings['update_source']}" class="layui-input" placeholder="例如 https://example.com/patches">
+												<span class="field-hint">远程补丁清单地址，留空表示不启用远程源</span>
+											</div>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+
+						<!-- 备份策略 -->
+						<div class="layui-card settings-card">
+							<div class="layui-card-header">
+								<span><i class="layui-icon">&#xe611;</i> 备份策略</span>
+								<span class="header-tip">应用补丁前自动备份的保留策略</span>
+							</div>
+							<div class="layui-card-body">
+								<div class="settings-grid">
+									<div class="layui-form-item">
+										<label class="layui-form-label">备份保留份数</label>
+										<div class="layui-input-inline">
+											<input type="number" name="backup_keep" min="0" max="100" value="{$plugin_settings['backup_keep']}" class="layui-input" placeholder="例如 5">
+											<span class="field-hint">超出份数的旧备份将被清理，0 表示永久保留</span>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- 底部操作栏 -->
+						<div class="settings-actions">
+							<button type="submit" lay-submit lay-filter="form-settings" class="layui-btn">
+								<i class="layui-icon">&#xe605;</i> 保存设置
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+layui.use(['layer'], function () {
+	var layer = layui.layer;
+
+	var uploadedFile = null;
+	var FORM_HASH = '{@form_hash()}';
+
+	window.uploadPatch = function(input) {
+		var file = input.files[0];
+		if (!file) return;
+
+		var formData = new FormData();
+		formData.append('patch_file', file);
+		formData.append('FORM_HASH', FORM_HASH);
+
+		$.ajax({
+			url: "{?patch-upload_post}",
+			type: 'POST',
+			data: formData,
+			processData: false,
+			contentType: false,
+			success: function(res) {
+				if (res.status === 0) {
+					uploadedFile = res.data.file_path;
+					showPatchInfo(res.data.manifest);
+				} else {
+					layer.msg(res.message, {icon: 5});
+				}
+			},
+			error: function() {
+				layer.msg('上传失败', {icon: 5});
+			}
+		});
+	};
+
+	window.showPatchInfo = function(manifest) {
+		var html = '<p><strong>' + manifest.name + '</strong></p>' +
+				   '<p>版本：' + manifest.version + '</p>' +
+				   '<p>文件数：' + manifest.files.length + '</p>';
+
+		if (manifest.changelog) {
+			html += '<p>' + manifest.changelog + '</p>';
+		}
+
+		$('#manifestInfo').html(html);
+
+		var fileList = '<ul>';
+		for (var i = 0; i < manifest.files.length; i++) {
+			fileList += '<li>' + manifest.files[i].path + '</li>';
+		}
+		fileList += '</ul>';
+		$('#fileList').html(fileList);
+
+		$('#patchInfo').show();
+	};
+
+	window.applyPatch = function() {
+		if (!uploadedFile) return;
+
+		layer.confirm('确定要应用此补丁吗？应用前系统将自动备份。', function(index) {
+			layer.close(index);
+			$.ajax({
+				url: "{?patch-verify_post}",
+				type: 'POST',
+				data: {file_path: uploadedFile, FORM_HASH: FORM_HASH},
+				success: function(res) {
+					if (res.status !== 0) {
+						layer.msg(res.message, {icon: 5});
+						return;
+					}
+
+					// 验证通过，执行应用
+					$.ajax({
+						url: "{?patch-apply_post}",
+						type: 'POST',
+						data: {file_path: uploadedFile, FORM_HASH: FORM_HASH},
+						success: function(res) {
+							if (res.status === 0) {
+								layer.msg('补丁应用成功！', {icon: 1});
+								location.reload();
+							} else {
+								layer.msg(res.message, {icon: 5});
+							}
+						}
+					});
+				}
+			});
+		});
+	};
+
+	window.cancelPatch = function() {
+		uploadedFile = null;
+		$('#patchInfo').hide();
+		$('#patchFile').val('');
+	};
+});
+
+// 插件设置表单（合并自 patch_settings.htm）
+layui.use(['form', 'layer'], function () {
+	var form = layui.form, layer = layui.layer;
+	form.render();
+	form.on('submit(form-settings)', function () {
+		adminAjax.postform('#form-settings', function (data) {
+			var json = toJson(data);
+			layer.msg(json.msg, { icon: json.err == 0 ? 1 : 5 });
+		});
+		return false;
+	});
+});
+</script>
+</body>
+</html>

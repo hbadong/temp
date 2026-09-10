@@ -1,0 +1,234 @@
+{inc:header.htm}
+<style>
+.settings-wrap { padding: 0 16px; }
+.settings-card { margin-bottom: 16px; }
+.settings-card .layui-card-header { display: flex; align-items: center; justify-content: space-between; font-weight: 600; }
+.settings-card .layui-card-header i { color: #1E9FFF; margin-right: 8px; }
+.settings-card .layui-card-header .header-tip { font-weight: 400; font-size: 12px; color: #999; }
+.settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 24px; }
+.settings-grid .layui-form-item { display: flex; align-items: center; }
+.settings-grid .layui-form-label { width: 130px; padding: 9px 12px 9px 0; text-align: right; }
+.settings-grid .layui-input-inline { width: auto; flex: 1; }
+.settings-grid .layui-input-block { margin-left: 130px; }
+.settings-actions { position: sticky; bottom: 0; padding: 12px 0; background: #fff; border-top: 1px solid #eee; text-align: right; margin-top: 16px; box-shadow: 0 -2px 6px rgba(0,0,0,.03); z-index: 10; }
+.settings-actions .layui-btn + .layui-btn { margin-left: 8px; }
+.field-hint { display: block; color: #999; font-size: 12px; margin-top: 4px; }
+.field-block { grid-column: 1 / -1; }
+.field-block .layui-form-label { width: 130px; }
+.field-block .layui-input-block { margin-left: 130px; }
+@media (max-width: 900px) { .settings-grid { grid-template-columns: 1fr; } .field-block .layui-input-block { margin-left: 0; } }
+</style>
+<div class="layuimini-container">
+	<div class="layuimini-main">
+		<div class="layui-tab layui-tab-brief" lay-filter="main">
+			<ul class="layui-tab-title">
+				<li class="layui-this">功能</li>
+				<li class="{if:$tab=='settings'}layui-this{/if}">插件设置</li>
+			</ul>
+			<div class="layui-tab-content">
+				<!-- Tab 1：功能（原页面内容） -->
+				<div class="layui-tab-item layui-show">
+					<div class="layui-card">
+						<div class="layui-card-header">
+							CPS 推广链接（{$total} 条）
+							<a href="javascript:;" class="layui-btn layui-btn-sm layui-btn-primary" style="float:right" onclick="open_cps_form('新增链接', 'index.php?cps_config-create')"><i class="layui-icon">&#xe654;</i> 新增链接</a>
+						</div>
+						<div class="layui-card-body">
+							<table class="layui-table" lay-skin="line">
+								<thead>
+									<tr>
+										<th>ID</th>
+										<th>站点</th>
+										<th>游戏ID</th>
+										<th>名称</th>
+										<th>推广链接</th>
+										<th>权重</th>
+										<th>状态</th>
+										<th>点击/唯一IP</th>
+										<th>操作</th>
+									</tr>
+								</thead>
+								<tbody>
+									{loop:$list $row}
+									<tr>
+										<td>{$row['id']}</td>
+										<td>{$site_names[$row['site_id']]}</td>
+										<td>{$row['game_id']}</td>
+										<td>{$row['name']}</td>
+										<td style="max-width:220px;word-break:break-all"><a href="{$row['url']}" target="_blank" rel="nofollow">{$row['url']}</a></td>
+										<td>{$row['weight']}</td>
+										<td>
+											{if:$row['enabled']==1}<span class="layui-badge layui-bg-green">启用</span>{/if}
+											{if:$row['enabled']==0}<span class="layui-badge layui-bg-gray">停用</span>{/if}
+										</td>
+										<td>{$row['click_count']} / {$row['unique_ip_count']}</td>
+										<td>
+											<a href="javascript:;" class="layui-btn layui-btn-xs" onclick="open_cps_form('编辑推广链接', 'index.php?cps_config-edit&id={$row['id']}')">编辑</a>
+											<a href="javascript:;" class="layui-btn layui-btn-xs layui-btn-danger" onclick="del_cps({$row['id']})">删除</a>
+										</td>
+									</tr>
+									{/loop}
+									{if:empty($list)}
+									<tr><td colspan="9" style="text-align:center">暂无推广链接，点击右上角新增</td></tr>
+									{/if}
+								</tbody>
+							</table>
+							<div style="margin-top:10px">{$pagebar}</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Tab 2：插件设置（原 settings.htm 内容） -->
+				<div class="layui-tab-item{if:$tab=='settings'} layui-show{/if}">
+					<div class="settings-wrap">
+						<!-- 点击去重与降级 -->
+						<div class="layui-card settings-card">
+							<div class="layui-card-header">
+								<span><i class="layui-icon">&#xe9aa;</i> 点击去重与降级</span>
+								<span class="header-tip">影响同一 IP 重复点击判断与主链接失效回退</span>
+							</div>
+							<div class="layui-card-body">
+								<form id="form-settings" class="layui-form" action="?cps_config-settings_post-ajax-1" method="post">
+									<input type="hidden" name="FORM_HASH" value="{@form_hash()}" />
+									<div class="settings-grid">
+										<div class="layui-form-item">
+											<label class="layui-form-label">去重窗口（小时）</label>
+											<div class="layui-input-inline">
+												<input type="number" name="click_dedupe_hours" value="{$settings['click_dedupe_hours']}" min="0" max="168" class="layui-input">
+												<span class="field-hint">窗口内同 IP 重复点击不再累加 unique_ip_count;0 表示不去重</span>
+											</div>
+										</div>
+										<div class="layui-form-item">
+											<label class="layui-form-label">启用降级</label>
+											<div class="layui-input-inline">
+												<input type="radio" name="auto_degrade" value="1" title="启用" {if:$settings['auto_degrade']}checked{/if}>
+												<input type="radio" name="auto_degrade" value="0" title="停用" {if:!$settings['auto_degrade']}checked{/if}>
+												<span class="field-hint">主链接失败时自动跳 backup_url</span>
+											</div>
+										</div>
+										<div class="layui-form-item field-block">
+											<label class="layui-form-label">默认降级 URL</label>
+											<div class="layui-input-block">
+												<input type="text" name="default_backup_url" value="{$settings['default_backup_url']}" class="layui-input" placeholder="https://... 可留空">
+												<span class="field-hint">新建推广链接时若未填写 backup_url,使用此默认值;留空表示不强制</span>
+											</div>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+
+						<!-- 权重分布 -->
+						<div class="layui-card settings-card">
+							<div class="layui-card-header">
+								<span><i class="layui-icon">&#xe61d;</i> 权重分布</span>
+								<span class="header-tip">影响 get_best_link() 选链策略</span>
+							</div>
+							<div class="layui-card-body">
+								<div class="settings-grid">
+									<div class="layui-form-item">
+										<label class="layui-form-label">默认权重</label>
+										<div class="layui-input-inline">
+											<input type="number" name="default_weight" value="{$settings['default_weight']}" min="0" max="100" form="form-settings" class="layui-input">
+											<span class="field-hint">新建推广链接时未指定权重使用此值;0-100</span>
+										</div>
+									</div>
+									<div class="layui-form-item">
+										<label class="layui-form-label">分发策略</label>
+										<div class="layui-input-inline">
+											<select name="weight_distribution" form="form-settings" lay-search>
+												<option value="balanced" {if:$settings['weight_distribution']=='balanced'}selected{/if}>均衡按权重（默认）</option>
+												<option value="priority" {if:$settings['weight_distribution']=='priority'}selected{/if}>优先级（选最高）</option>
+												<option value="random" {if:$settings['weight_distribution']=='random'}selected{/if}>随机</option>
+											</select>
+											<span class="field-hint">balanced 按 weight DESC,id ASC;priority 完全取首条;random 按权重抽奖</span>
+										</div>
+									</div>
+									<div class="layui-form-item field-block">
+										<label class="layui-form-label">权重使用提示</label>
+										<div class="layui-input-block">
+											<div class="layui-bg-gray" style="padding:10px 12px;border-radius:4px;font-size:12px;color:#666;line-height:1.6;">
+												权重仅用于【同 game_id 的多链接】之间的取舍;最终选择 = ORDER BY weight DESC, id ASC。
+												所有链接 weight=0 时,等价于随机轮播。所有链接 weight 相同时,按创建顺序固定。
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- 点击追踪与日志 -->
+						<div class="layui-card settings-card">
+							<div class="layui-card-header">
+								<span><i class="layui-icon">&#xe60a;</i> 点击追踪与日志</span>
+								<span class="header-tip">写入 pre_cms_cps_click_log</span>
+							</div>
+							<div class="layui-card-body">
+								<div class="settings-grid">
+									<div class="layui-form-item">
+										<label class="layui-form-label">启用点击追踪</label>
+										<div class="layui-input-inline">
+											<input type="radio" name="enable_click_track" value="1" title="启用" {if:$settings['enable_click_track']}checked{/if} form="form-settings">
+											<input type="radio" name="enable_click_track" value="0" title="停用" {if:!$settings['enable_click_track']}checked{/if} form="form-settings">
+											<span class="field-hint">停用则不再写入 click_log,但仍会重定向</span>
+										</div>
+									</div>
+									<div class="layui-form-item">
+										<label class="layui-form-label">记录日志</label>
+										<div class="layui-input-inline">
+											<input type="radio" name="enable_log" value="1" title="启用" {if:$settings['enable_log']}checked{/if} form="form-settings">
+											<input type="radio" name="enable_log" value="0" title="停用" {if:!$settings['enable_log']}checked{/if} form="form-settings">
+										</div>
+									</div>
+									<div class="layui-form-item">
+										<label class="layui-form-label">日志保留（天）</label>
+										<div class="layui-input-inline">
+											<input type="number" name="log_retention_days" value="{$settings['log_retention_days']}" min="7" max="365" form="form-settings" class="layui-input">
+											<span class="field-hint">cms_cron 清理任务依据此字段</span>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- 底部操作栏 -->
+						<div class="settings-actions">
+							<a class="layui-btn layui-btn-primary" href="?cps_config-index">返回列表</a>
+							<button type="submit" lay-submit lay-filter="form-settings" class="layui-btn">
+								<i class="layui-icon">&#xe605;</i> 保存设置
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+layui.use(['layer', 'form', 'element', 'miniTab'], function(){
+	var layer = layui.layer, form = layui.form, miniTab = layui.miniTab;
+	form.render();
+	form.on('submit(form-settings)', function () {
+		adminAjax.postform('#form-settings', function (data) {
+			var json = toJson(data);
+			layer.msg(json.msg, { icon: json.err == 0 ? 1 : 5 });
+		});
+		return false;
+	});
+	window.del_cps = function(id){
+		layer.confirm('确定删除该推广链接？', {icon: 3, title: '删除确认'}, function(index){
+			layer.close(index);
+			// delete 校验 form_submit()，必须 POST + FORM_HASH；成功后 adminAjax.alert 默认刷新本页
+			adminAjax.postd('index.php?cps_config-delete-ajax-1', {id: id, FORM_HASH: '{@form_hash()}'});
+		});
+	};
+	window.open_cps_form = function(title, href){
+		miniTab.openNewTabByIframe({
+			href: href,
+			title: title
+		});
+	};
+});
+</script>
+</body>
+</html>

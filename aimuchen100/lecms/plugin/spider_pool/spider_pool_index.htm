@@ -1,0 +1,258 @@
+{inc:header.htm}
+<style>
+.settings-wrap { padding: 0 16px; }
+.settings-card { margin-bottom: 16px; }
+.settings-card .layui-card-header { display: flex; align-items: center; justify-content: space-between; font-weight: 600; }
+.settings-card .layui-card-header i { color: #1E9FFF; margin-right: 8px; }
+.settings-card .layui-card-header .header-tip { font-weight: 400; font-size: 12px; color: #999; }
+.settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 24px; }
+.settings-grid .layui-form-item { display: flex; align-items: center; }
+.settings-grid .layui-form-label { width: 110px; padding: 9px 12px 9px 0; text-align: right; }
+.settings-grid .layui-input-inline { width: auto; flex: 1; }
+.settings-grid .layui-input-block { margin-left: 110px; }
+.settings-actions { position: sticky; bottom: 0; padding: 12px 16px; background: #fff; border-top: 1px solid #eee; text-align: right; margin-top: 16px; box-shadow: 0 -2px 6px rgba(0,0,0,.03); z-index: 10; }
+.settings-actions .layui-btn + .layui-btn { margin-left: 8px; }
+.field-hint { display: block; color: #999; font-size: 12px; margin-top: 4px; }
+@media (max-width: 900px) { .settings-grid { grid-template-columns: 1fr; } }
+</style>
+<div class="layuimini-container">
+	<div class="layuimini-main">
+		<div class="layui-tab layui-tab-brief" lay-filter="main">
+			<ul class="layui-tab-title">
+				<li class="layui-this">域名管理</li>
+				<li>插件设置</li>
+			</ul>
+			<div class="layui-tab-content">
+
+				<!-- Tab 1：功能（原页面全部内容） -->
+				<div class="layui-tab-item layui-show">
+					<div class="layui-card">
+						<div class="layui-card-header">蜘蛛池域名管理（站点 {$site_id}）</div>
+						<div class="layui-card-body">
+				            <p class="layui-text layui-text-gray">
+				                蜘蛛池域名会注入到页面底部隐藏 div 中，吸引搜索引擎蜘蛛爬取。启用状态表示该域名当前生效。
+				            </p>
+
+				            <!-- 添加域名表单 -->
+				            <fieldset class="layui-elem-field layui-field-title">
+				                <legend>添加新域名</legend>
+				            </fieldset>
+				            <form id="form-add" class="layui-form" method="post" action="?spider_pool-add-ajax-1">
+				                <input type="hidden" name="FORM_HASH" value="{@form_hash()}">
+				                <input type="hidden" name="site_id" value="{$site_id}">
+				                <div class="layui-form-item">
+				                    <label class="layui-form-label">域名</label>
+				                    <div class="layui-input-inline">
+				                        <input type="text" name="domain" required lay-verify="required" placeholder="example.com" class="layui-input">
+				                    </div>
+				                    <label class="layui-form-label">排序</label>
+				                    <div class="layui-input-inline" style="width:120px;">
+				                        <input type="number" name="sort" value="0" min="0" class="layui-input">
+				                    </div>
+				                    <div class="layui-input-inline">
+				                        <button class="layui-btn" lay-submit lay-filter="form-add">添加</button>
+				                    </div>
+				                </div>
+				            </form>
+
+				            <hr class="layui-bg-gray">
+
+				            <!-- 域名列表 + 批量排序 -->
+				            <fieldset class="layui-elem-field layui-field-title">
+				                <legend>域名列表（共 {$total} 条）</legend>
+				            </fieldset>
+				            <form id="form-sort-batch" class="layui-form" method="post" action="?spider_pool-sort_batch-ajax-1">
+				                <input type="hidden" name="FORM_HASH" value="{@form_hash()}">
+				                <input type="hidden" name="site_id" value="{$site_id}">
+				                <table class="layui-table" lay-size="sm">
+				                    <colgroup>
+				                        <col width="80">
+				                        <col>
+				                        <col width="100">
+				                        <col width="100">
+				                        <col width="240">
+				                    </colgroup>
+				                    <thead>
+				                        <tr>
+				                            <th>ID</th>
+				                            <th>域名</th>
+				                            <th>排序</th>
+				                            <th>状态</th>
+				                            <th>操作</th>
+				                        </tr>
+				                    </thead>
+				                    <tbody>
+				                        {loop:$list $item}
+				                        <tr>
+				                            <td>{$item['id']}</td>
+				                            <td>{$item['domain']}</td>
+				                            <td>
+				                                <input type="number" name="sort[{$item['id']}]" value="{$item['sort']}" min="0" class="layui-input" style="width:80px;">
+				                            </td>
+				                            <td>
+				                                {if:$item['status']==1}<span class="layui-badge layui-bg-green">启用</span>{else}<span class="layui-badge layui-bg-gray">停用</span>{/if}
+				                            </td>
+				                            <td>
+				                                <form method="post" action="?spider_pool-toggle" style="display:inline;">
+				                                    <input type="hidden" name="FORM_HASH" value="{@form_hash()}">
+				                                    <input type="hidden" name="id" value="{$item['id']}">
+				                                    <input type="hidden" name="site_id" value="{$site_id}">
+				                                    <button class="layui-btn layui-btn-xs layui-btn-warm" type="submit">启用/停用</button>
+				                                </form>
+				                                <form method="post" action="?spider_pool-delete" style="display:inline;" onsubmit="return confirm('确认删除该域名？');">
+				                                    <input type="hidden" name="FORM_HASH" value="{@form_hash()}">
+				                                    <input type="hidden" name="id" value="{$item['id']}">
+				                                    <input type="hidden" name="site_id" value="{$site_id}">
+				                                    <button class="layui-btn layui-btn-xs layui-btn-danger" type="submit">删除</button>
+				                                </form>
+				                            </td>
+				                        </tr>
+				                        {/loop}
+				                        {if:empty($list)}
+				                        <tr><td colspan="5" style="text-align:center;color:#999;">暂无域名，请添加</td></tr>
+				                        {/if}
+				                    </tbody>
+				                </table>
+				                {if:!empty($list)}
+				                <div class="layui-form-item">
+				                    <button class="layui-btn" lay-submit lay-filter="form-sort-batch">保存排序</button>
+				                </div>
+				                {/if}
+				            </form>
+
+				            <!-- 编辑域名弹窗（行内表单） -->
+				            <fieldset class="layui-elem-field layui-field-title">
+				                <legend>编辑域名</legend>
+				            </fieldset>
+				            <form id="form-edit" class="layui-form" method="post" action="?spider_pool-edit-ajax-1">
+				                <input type="hidden" name="FORM_HASH" value="{@form_hash()}">
+				                <input type="hidden" name="site_id" value="{$site_id}">
+				                <div class="layui-form-item">
+				                    <label class="layui-form-label">记录 ID</label>
+				                    <div class="layui-input-inline" style="width:120px;">
+				                        <input type="number" name="id" min="1" required lay-verify="required" placeholder="ID" class="layui-input">
+				                    </div>
+				                    <label class="layui-form-label">新域名</label>
+				                    <div class="layui-input-inline">
+				                        <input type="text" name="domain" placeholder="example.com" class="layui-input">
+				                    </div>
+				                    <label class="layui-form-label">新排序</label>
+				                    <div class="layui-input-inline" style="width:120px;">
+				                        <input type="number" name="sort" min="0" class="layui-input">
+				                    </div>
+				                    <div class="layui-input-inline">
+				                        <button class="layui-btn layui-btn-normal" lay-submit lay-filter="form-edit">更新</button>
+				                    </div>
+				                </div>
+				            </form>
+						</div>
+					</div>
+				</div>
+
+				<!-- Tab 2：插件设置（原 settings.htm 核心内容） -->
+				<div class="layui-tab-item">
+					<div class="settings-wrap">
+						<!-- 采集行为 -->
+						<div class="layui-card settings-card">
+							<div class="layui-card-header">
+								<span><i class="layui-icon">&#xe637;</i> 采集行为</span>
+								<span class="header-tip">控制蜘蛛池采集频率与部署范围</span>
+							</div>
+							<div class="layui-card-body">
+								<form id="form-spider-pool-settings" class="layui-form" action="?spider_pool-settings_post-ajax-1" method="post">
+									<input type="hidden" name="FORM_HASH" value="{@form_hash()}" />
+									<div class="settings-grid">
+										<div class="layui-form-item">
+											<label class="layui-form-label">采集频率</label>
+											<div class="layui-input-inline">
+												<input type="number" name="collect_interval_min" min="1" max="1440" value="{$settings['collect_interval_min']}" class="layui-input" placeholder="30">
+												<span class="field-hint">分钟/次，建议 30~120 之间</span>
+											</div>
+										</div>
+										<div class="layui-form-item">
+											<label class="layui-form-label">跨站部署开关</label>
+											<div class="layui-input-inline">
+												<input type="radio" name="cross_site_deploy" value="1" title="启用" {if:$settings['cross_site_deploy']}checked{/if}>
+												<input type="radio" name="cross_site_deploy" value="0" title="禁用" {if:!$settings['cross_site_deploy']}checked{/if}>
+												<span class="field-hint">启用后允许池链接跨站点注入</span>
+											</div>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+
+						<!-- 外链引流 -->
+						<div class="layui-card settings-card">
+							<div class="layui-card-header">
+								<span><i class="layui-icon">&#xe62a;</i> 外链引流</span>
+								<span class="header-tip">限制单页外链注入数量，避免过度引流</span>
+							</div>
+							<div class="layui-card-body">
+								<div class="settings-grid">
+									<div class="layui-form-item">
+										<label class="layui-form-label">外链引流上限</label>
+										<div class="layui-input-inline">
+											<input type="number" name="outbound_link_limit" min="0" max="200" value="{$settings['outbound_link_limit']}" class="layui-input" placeholder="10" form="form-spider-pool-settings">
+											<span class="field-hint">单页隐藏链接的最大数量（0 表示不限制）</span>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- 域名白名单 -->
+						<div class="layui-card settings-card">
+							<div class="layui-card-header">
+								<span><i class="layui-icon">&#xe625;</i> 域名白名单</span>
+								<span class="header-tip">不在名单中的域名不会被注入</span>
+							</div>
+							<div class="layui-card-body">
+								<div class="layui-form-item" style="display: block;">
+									<label class="layui-form-label">允许域名</label>
+									<div class="layui-input-block">
+										<textarea name="domain_whitelist" class="layui-textarea" rows="5" placeholder="每行一个域名，例如：example.com" form="form-spider-pool-settings">{if:is_array($settings['domain_whitelist'])}{loop:$settings['domain_whitelist'] as $d}{$d}
+{/loop}{/if}</textarea>
+										<span class="field-hint">支持换行或英文逗号分隔；仅保留字母/数字/点/连字符的合法域名</span>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- 底部操作栏 -->
+						<div class="settings-actions">
+							<button type="submit" lay-submit lay-filter="form-spider-pool-settings" class="layui-btn">
+								<i class="layui-icon">&#xe605;</i> 保存设置
+							</button>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+layui.use(['element', 'form', 'layer'], function () {
+	var element = layui.element, form = layui.form, layer = layui.layer;
+	form.render();
+	form.on('submit(form-spider-pool-settings)', function () {
+		adminAjax.postform('#form-spider-pool-settings', function (data) {
+			var json = toJson(data);
+			layer.msg(json.msg, { icon: json.err == 0 ? 1 : 5 });
+		});
+		return false;
+	});
+	// 支持 ?spider_pool-index-tab-settings 直达设置 tab（tab 序号从 0 开始）
+	var m = /-tab-(\d+)$/.exec(window.location.search) || /-tab-([a-z]+)$/.exec(window.location.search);
+	if (m) {
+		var idx = parseInt(m[1], 10);
+		if (isNaN(idx)) {
+			idx = (m[1] === 'settings') ? 1 : 0;
+		}
+		element.tabChange('main', idx);
+	}
+});
+</script>
+</body>
+</html>

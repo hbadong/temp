@@ -1,0 +1,21 @@
+<div class="container">
+    {if:$game}
+    <div class="page-header">
+        <h2>{$game['name']}</h2>
+    </div>
+    <div class="row">
+        <div class="col-md-8">
+            {if:$game['cover']}
+            <p><img src="{$game['cover']}" alt="{$game['name']}" class="img-thumbnail" style="max-width:320px" /></p>
+            {/if}
+            <p>平台：{if:$game['platform']}{$game['platform']}{else}-{/if}</p>
+            <p>标签：{if:$game['tags']}{$game['tags']}{else}-{/if}</p>
+            <div class="well">
+                {if:$game['description']}{$game['description']}{else}暂无简介{/if}
+            </div>
+        </div>
+    </div>
+    {else}
+    <div class="alert alert-info">未找到该游戏</div>
+    {/if}
+</div>

@@ -1,0 +1,315 @@
+{inc:header.htm}
+<style>
+.settings-wrap { padding: 0 16px; }
+.settings-card { margin-bottom: 16px; }
+.settings-card .layui-card-header { display: flex; align-items: center; justify-content: space-between; font-weight: 600; }
+.settings-card .layui-card-header i { color: #1E9FFF; margin-right: 8px; }
+.settings-card .layui-card-header .header-tip { font-weight: 400; font-size: 12px; color: #999; }
+.settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 24px; }
+.settings-grid .layui-form-item { display: flex; align-items: center; }
+.settings-grid .layui-form-label { width: 120px; padding: 9px 12px 9px 0; text-align: right; }
+.settings-grid .layui-input-inline { width: auto; flex: 1; }
+.settings-grid .layui-input-block { margin-left: 120px; }
+.settings-actions { position: sticky; bottom: 0; padding: 12px 0; background: #fff; border-top: 1px solid #eee; text-align: right; margin-top: 16px; box-shadow: 0 -2px 6px rgba(0,0,0,.03); z-index: 10; }
+.settings-actions .layui-btn + .layui-btn { margin-left: 8px; }
+.field-hint { display: block; color: #999; font-size: 12px; margin-top: 4px; }
+.field-block { grid-column: 1 / -1; }
+.field-block .layui-form-label { width: 120px; }
+.field-block .layui-input-block { margin-left: 120px; }
+.engine-checks { padding: 6px 0; }
+.engine-checks .layui-form-checkbox { margin-right: 18px; }
+@media (max-width: 900px) { .settings-grid { grid-template-columns: 1fr; } .field-block .layui-input-block { margin-left: 0; } }
+</style>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+    <div class="layui-tab layui-tab-brief" lay-filter="main">
+        <ul class="layui-tab-title">
+            <li class="layui-this">功能</li>
+            <li>插件设置</li>
+        </ul>
+        <div class="layui-tab-content">
+
+            <!-- Tab 1：功能（原页面内容） -->
+            <div class="layui-tab-item layui-show">
+            <div class="layui-card">
+                <div class="layui-card-header">SEO 推送日志（站点 {$site_id}）</div>
+                <div class="layui-card-body">
+
+                    <!-- 手动推送表单 -->
+                    <fieldset class="layui-elem-field layui-field-title">
+                        <legend>手动推送 URL</legend>
+                    </fieldset>
+                    <form id="form-push" class="layui-form" method="post" action="?seo_tools-submit-ajax-1">
+                        <input type="hidden" name="FORM_HASH" value="{@form_hash()}">
+                        <input type="hidden" name="site_id" value="{$site_id}">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">搜索引擎</label>
+                            <div class="layui-input-inline">
+                                <select name="engine">
+                                    <option value="all">全部</option>
+                                    <option value="baidu">百度</option>
+                                    <option value="sogou">搜狗</option>
+                                    <option value="360">360</option>
+                                    <option value="bing">Bing</option>
+                                    <option value="toutiao">头条</option>
+                                    <option value="shenma">神马</option>
+                                    <option value="google">Google</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-form-item layui-form-text">
+                            <label class="layui-form-label">URL 列表</label>
+                            <div class="layui-input-block">
+                                <textarea name="urls" placeholder="每行一个 URL" class="layui-textarea" rows="5"></textarea>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-input-block">
+                                <button class="layui-btn" lay-submit lay-filter="form-push">开始推送</button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <hr class="layui-bg-gray">
+
+                    <!-- 推送日志列表 -->
+                    <fieldset class="layui-elem-field layui-field-title">
+                        <legend>推送日志（共 {$total} 条）</legend>
+                    </fieldset>
+                    <form class="layui-form" method="get" action="?seo_tools-index">
+                        <input type="hidden" name="site_id" value="{$site_id}">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">搜索引擎</label>
+                            <div class="layui-input-inline">
+                                <select name="engine" onchange="this.form.submit()">
+                                    <option value="">全部</option>
+                                    <option value="baidu" {if:$engine_filter=='baidu'}selected{/if}>百度</option>
+                                    <option value="sogou" {if:$engine_filter=='sogou'}selected{/if}>搜狗</option>
+                                    <option value="360" {if:$engine_filter=='360'}selected{/if}>360</option>
+                                    <option value="bing" {if:$engine_filter=='bing'}selected{/if}>Bing</option>
+                                    <option value="toutiao" {if:$engine_filter=='toutiao'}selected{/if}>头条</option>
+                                    <option value="shenma" {if:$engine_filter=='shenma'}selected{/if}>神马</option>
+                                    <option value="google" {if:$engine_filter=='google'}selected{/if}>Google</option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+
+                    <table class="layui-table" lay-size="sm">
+                        <colgroup>
+                            <col width="100">
+                            <col>
+                            <col width="80">
+                            <col width="100">
+                            <col>
+                            <col width="160">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>引擎</th>
+                                <th>URL</th>
+                                <th>状态</th>
+                                <th>响应码</th>
+                                <th>响应内容</th>
+                                <th>时间</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {loop:$logs $item}
+                            <tr>
+                                <td>{$item['engine']}</td>
+                                <td><code>{$item['url']}</code></td>
+                                <td>
+                                    {if:$item['status']==1}<span class="layui-badge layui-bg-green">成功</span>{else}<span class="layui-badge layui-bg-red">失败</span>{/if}
+                                </td>
+                                <td></td>
+                                <td title="{$item['response']}">{$item['response']}</td>
+                                <td>{@date('Y-m-d H:i:s', $item['dateline'])}</td>
+                            </tr>
+                        {/loop}
+                        {if:empty($logs)}
+                            <tr><td colspan="6" style="text-align:center;color:#999;">暂无推送日志</td></tr>
+                        {/if}
+                        </tbody>
+                    </table>
+
+                    <!-- 分页 -->
+                    {if:$total > $pagesize}
+                    <div id="page"></div>
+                    <script>
+                        layui.use(['laypage', 'layer'], function() {
+                            var laypage = layui.laypage;
+                            laypage.render({
+                                elem: 'page',
+                                count: {$total},
+                                limit: {$pagesize},
+                                curr: {$page},
+                                jump: function(obj, first) {
+                                    if (!first) {
+                                        var engine = '{$engine_filter}';
+                                        var url = '?seo_tools-index&site_id={$site_id}&page=' + obj.curr + (engine ? '&engine=' + encodeURIComponent(engine) : '');
+                                        location.href = url;
+                                    }
+                                }
+                            });
+                        });
+                    </script>
+                    {/if}
+                </div>
+            </div>
+            </div>
+
+            <!-- Tab 2：插件设置（原 settings.htm 内容合并） -->
+            <div class="layui-tab-item">
+                <div class="settings-wrap">
+                    <!-- 百度推送账号 -->
+                    <div class="layui-card settings-card">
+                        <div class="layui-card-header">
+                            <span><i class="layui-icon">&#xe62e;</i> 百度推送账号</span>
+                            <span class="header-tip">链接提交 token 与站点标识</span>
+                        </div>
+                        <div class="layui-card-body">
+                            <form id="form-settings" class="layui-form" action="?seo_tools-settings_post-ajax-1" method="post">
+                                <input type="hidden" name="FORM_HASH" value="{@form_hash()}" />
+                                <div class="settings-grid">
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label">站点标识</label>
+                                        <div class="layui-input-inline">
+                                            <input type="text" name="baidu_site" value="{$settings['baidu_site']}" class="layui-input" placeholder="例如：www.example.com">
+                                            <span class="field-hint">百度站长平台「站点域名」</span>
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label">推送 Token</label>
+                                        <div class="layui-input-inline">
+                                            <input type="text" name="baidu_token" value="{$settings['baidu_token']}" class="layui-input" placeholder="百度站长平台 token">
+                                            <span class="field-hint">提交时携带，缓存于 runtime KV</span>
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item field-block">
+                                        <label class="layui-form-label">推送端点预览</label>
+                                        <div class="layui-input-block">
+                                            <input type="text" class="layui-input" readonly value="http://data.zz.baidu.com/urls?site=&lt;baidu_site&gt;&token=&lt;baidu_token&gt;">
+                                            <span class="field-hint">运行时由 baidu_submit 拼接;支持 Bing IndexNow/Google sitemap-ping 等 7 引擎</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- 推送策略 -->
+                    <div class="layui-card settings-card">
+                        <div class="layui-card-header">
+                            <span><i class="layui-icon">&#xe61a;</i> 推送策略</span>
+                            <span class="header-tip">配额 / 频率 / 自动触发</span>
+                        </div>
+                        <div class="layui-card-body">
+                            <form id="form-settings-ext">
+                            <div class="settings-grid">
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">日推送配额</label>
+                                    <div class="layui-input-inline">
+                                        <input type="number" name="daily_quota" value="{$settings['daily_quota']}" min="0" max="100000" form="form-settings" class="layui-input">
+                                        <span class="field-hint">每日链接提交上限;0 表示不限</span>
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">推送频率</label>
+                                    <div class="layui-input-inline">
+                                        <select name="push_frequency" form="form-settings">
+                                            <option value="realtime" {if:$settings['push_frequency']=='realtime'}selected{/if}>实时（每次发布）</option>
+                                            <option value="day" {if:$settings['push_frequency']=='day'}selected{/if}>每天一次</option>
+                                            <option value="week" {if:$settings['push_frequency']=='week'}selected{/if}>每周一次</option>
+                                            <option value="month" {if:$settings['push_frequency']=='month'}selected{/if}>每月一次</option>
+                                        </select>
+                                        <span class="field-hint">由 baidu_submit::should_push() 控制</span>
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">推送类型</label>
+                                    <div class="layui-input-inline">
+                                        <input type="radio" name="push_type" value="all" title="全部引擎" {if:$settings['push_type']=='all'}checked{/if} form="form-settings" lay-filter="push_type_all">
+                                        <input type="radio" name="push_type" value="manual" title="仅手动" {if:$settings['push_type']=='manual'}checked{/if} form="form-settings" lay-filter="push_type_manual">
+                                        <span class="field-hint">manual 时只在后台表单主动推送</span>
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">发布自动推送</label>
+                                    <div class="layui-input-inline">
+                                        <input type="radio" name="auto_push_on_publish" value="1" title="启用" {if:$settings['auto_push_on_publish']}checked{/if} form="form-settings" lay-filter="auto_push_on">
+                                        <input type="radio" name="auto_push_on_publish" value="0" title="停用" {if:!$settings['auto_push_on_publish']}checked{/if} form="form-settings" lay-filter="auto_push_off">
+                                        <span class="field-hint">hook cms_content_model_xadd_cms_content_success 触发</span>
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">定时批大小</label>
+                                    <div class="layui-input-inline">
+                                        <input type="number" name="cron_batch_size" value="{$settings['cron_batch_size']}" min="1" max="1000" form="form-settings" class="layui-input">
+                                        <span class="field-hint">cms_cron 推送每批 URL 数</span>
+                                    </div>
+                                </div>
+                                <div class="layui-form-item field-block">
+                                    <label class="layui-form-label">参与推送的引擎</label>
+                                    <div class="layui-input-block engine-checks">
+                                        <input type="checkbox" name="engines[]" value="baidu" title="百度" {if:in_array('baidu',$settings['engines'])}checked{/if} form="form-settings" lay-skin="primary" lay-filter="eng_baidu">
+                                        <input type="checkbox" name="engines[]" value="sogou" title="搜狗" {if:in_array('sogou',$settings['engines'])}checked{/if} form="form-settings" lay-skin="primary" lay-filter="eng_sogou">
+                                        <input type="checkbox" name="engines[]" value="360" title="360" {if:in_array('360',$settings['engines'])}checked{/if} form="form-settings" lay-skin="primary" lay-filter="eng_360">
+                                        <input type="checkbox" name="engines[]" value="bing" title="Bing" {if:in_array('bing',$settings['engines'])}checked{/if} form="form-settings" lay-skin="primary" lay-filter="eng_bing">
+                                        <input type="checkbox" name="engines[]" value="toutiao" title="头条" {if:in_array('toutiao',$settings['engines'])}checked{/if} form="form-settings" lay-skin="primary" lay-filter="eng_toutiao">
+                                        <input type="checkbox" name="engines[]" value="shenma" title="神马" {if:in_array('shenma',$settings['engines'])}checked{/if} form="form-settings" lay-skin="primary" lay-filter="eng_shenma">
+                                        <input type="checkbox" name="engines[]" value="google" title="Google" {if:in_array('google',$settings['engines'])}checked{/if} form="form-settings" lay-skin="primary" lay-filter="eng_google">
+                                        <span class="field-hint">未勾选则回退为默认全选</span>
+                                    </div>
+                                </div>
+                            </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- 底部操作栏 -->
+                    <div class="settings-actions">
+                        <a class="layui-btn layui-btn-primary" href="?seo_tools-index">刷新</a>
+                        <button type="submit" lay-submit lay-filter="form-settings" form="form-settings" class="layui-btn">
+                            <i class="layui-icon">&#xe605;</i> 保存设置
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    </div>
+</div>
+<script type="text/javascript">
+layui.use(['element', 'form', 'layer'], function () {
+    var element = layui.element, form = layui.form, layer = layui.layer;
+
+    // 支持 ?...-tab-settings 直达第二个 tab
+    {if:$active_tab=='settings'}
+    element.tabChange('main', 1);
+    {/if}
+
+    form.render();
+    // 手动推送提交（列表页内嵌面板，成功后刷新本页数据）
+    form.on('submit(form-push)', function () {
+        adminAjax.postform('#form-push', function (data) {
+            var json = toJson(data);
+            layer.msg(json.msg, { icon: json.err == 0 ? 1 : 5 });
+            if (json.err == 0) {
+                setTimeout(function () { window.location.reload(); }, 1000);
+            }
+        });
+        return false;
+    });
+    form.on('submit(form-settings)', function () {
+        adminAjax.postform('#form-settings', function (data) {
+            var json = toJson(data);
+            layer.msg(json.msg, { icon: json.err == 0 ? 1 : 5 });
+        });
+        return false;
+    });
+});
+</script>
+</body>
+</html>

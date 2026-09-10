@@ -1,0 +1,91 @@
+{inc:header.htm}
+        {php}$top_url = isset($cfg_var['place'][0]['url']) ? $cfg_var['place'][0]['url'] : $cfg_var['url'];{/php}
+        <ul class="url-here">
+            <li><a href="{$cfg[weburl]}">首页</a></li>
+            {loop:$cfg_var[place] $p $k}
+            {if:$k < count($cfg_var[place]) - 1}<li><a href="{$p[url]}">{$p[name]}</a></li>{/if}
+            {/loop}
+            <li><h1 class="dis_online">{$cfg_var[name]}</h1></li>
+        </ul>
+        <div class="soft-list2" id="softContent">
+            <div class="list-head fn-clear">
+                <div class="dropdown">
+                    <a class="btn-dropdown">全部<i class="arrow-down"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{$top_url}" class="btn{if:$_GET[cid] == $cfg_var[cid] && $cfg_var[upid] == 0} on{/if}">全部</a></li>
+                        {block:category type="child"}{loop:$data $v}
+                        <li><a href="{$v[url]}" class="btn{if:$_GET[cid] == $v[cid]} on{/if}">{$v[name]}</a></li>
+                        {/loop}{/block}
+                    </ul>
+                </div>
+                <div class="btn-group">
+                    <a class="btn btn-gray on" data-type="1">最热</a>
+                    <a class="btn btn-gray" data-type="2">最新</a>
+                </div>
+            </div>
+            <div class="list-panel" data-panel="1">
+                <div class="list" id="listContent">
+                    {block:list_top orderby="views" mid="3" limit="20" showcate="1"}{loop:$data[list] $v}
+                    <a class="list-item flex" href="{$v[url]}">
+                        <div class="col">
+                            <img class="pic lazy" src="{$v[pic]}" alt="{$v[title]}">
+                        </div>
+                        <div class="con flex-item">
+                            <div class="tit">{$v[subject]}</div>
+                            <div class="star star{$v[star]}"></div>
+                            <div class="txt">
+                                <span class="attr">{$v[cate_name]}</span>
+                                <span class="attr">大小:{$v[size]}</span>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <span class="btn btn-download">查&nbsp;看</span>
+                        </div>
+                    </a>
+                    {/loop}{/block}
+                </div>
+            </div>
+            <div class="list-panel" data-panel="2" style="display:none;">
+                <div class="list">
+                    {block:global_cate pagenum="20" orderby="dateline" orderway="-1" showcate="1"}{loop:$gdata[list] $v}
+                    <a class="list-item flex" href="{$v[url]}">
+                        <div class="col">
+                            <img class="pic lazy" src="{$v[pic]}" alt="{$v[title]}">
+                        </div>
+                        <div class="con flex-item">
+                            <div class="tit">{$v[subject]}</div>
+                            <div class="star star{$v[star]}"></div>
+                            <div class="txt">
+                                <span class="attr">{$v[cate_name]}</span>
+                                <span class="attr">大小:{$v[size]}</span>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <span class="btn btn-download">查&nbsp;看</span>
+                        </div>
+                    </a>
+                    {/loop}{/block}
+                </div>
+                <div class="pagecode">{$gdata[pages]}</div>
+            </div>
+        </div>
+        <div class="soft-list-loader" id="listLoader">没有更多了</div>
+{inc:footer.htm}
+<script type="text/javascript">
+    seajs.use('app/common', function(fn){
+        fn.init();
+        // 分类下拉（原版 gamelist 依赖 /api/sj_game_ajax 接口，仅复刻前端交互）
+        $('#softContent .btn-dropdown').on('click', function(){
+            $(this).parent().toggleClass('open');
+        });
+        // 最热/最新切换
+        $('#softContent .list-head .btn-gray').on('click', function(){
+            var $this = $(this);
+            if($this.hasClass('on')){ return false; }
+            $this.addClass('on').siblings().removeClass('on');
+            var type = $this.attr('data-type');
+            $('#softContent .list-panel').hide().filter('[data-panel="' + type + '"]').show();
+        });
+    });
+</script>
+</div></body></html>

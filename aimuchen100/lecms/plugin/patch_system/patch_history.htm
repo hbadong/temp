@@ -1,0 +1,82 @@
+{inc:header.htm}
+<div class="layuimini-container">
+	<div class="layuimini-main">
+		<div class="layui-card">
+			<div class="layui-card-header">更新历史</div>
+			<div class="layui-card-body">
+				<table class="layui-table">
+					<thead>
+                <tr>
+                    <th>ID</th>
+                    <th>操作</th>
+                    <th>版本</th>
+                    <th>状态</th>
+                    <th>错误信息</th>
+                    <th>时间</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {loop:$list $item}
+                <tr>
+                    <td>{$item['id']}</td>
+                    <td>
+                        {if:$item['action'] == 'upload'}上传
+                        {elseif:$item['action'] == 'apply'}应用
+                        {elseif:$item['action'] == 'rollback'}回滚
+                        {elseif:$item['action'] == 'check'}检查
+                        {else}{$item['action']}{/if}
+                    </td>
+                    <td>{$item['name']}</td>
+                    <td>
+                        {if:$item['status'] == 0}
+                            <span class="layui-badge layui-bg-green">成功</span>
+                        {else}
+                            <span class="layui-badge layui-bg-red">失败</span>
+                        {/if}
+                    </td>
+                    <td>{$item['error_message']}</td>
+                    <td>{$item['created_at']}</td>
+                    <td>
+                        {if:$item['action'] == 'apply' && $item['status'] == 0 && $item['version_id']}
+                            <a href="javascript:;" onclick="rollback({$item['version_id']})" class="layui-btn layui-btn-xs layui-btn-warm">回滚</a>
+                        {/if}
+                    </td>
+                </tr>
+                {/loop}
+            </tbody>
+				</table>
+
+				{$pagebar}
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+layui.use(['layer'], function () {
+	var layer = layui.layer;
+	var FORM_HASH = '{@form_hash()}';
+
+	window.rollback = function(version_id) {
+		layer.confirm('确定要回滚到该版本吗？此操作不可逆。', function(index) {
+			layer.close(index);
+			$.ajax({
+				url: "{?patch-rollback_post}",
+				type: 'POST',
+				data: {version_id: version_id, FORM_HASH: FORM_HASH},
+				success: function(res) {
+					if (res.status === 0) {
+						layer.msg('回滚成功', {icon: 1});
+						location.reload();
+					} else {
+						layer.msg(res.message, {icon: 5});
+					}
+				}
+			});
+		});
+	};
+});
+</script>
+</body>
+</html>

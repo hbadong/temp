@@ -1,0 +1,16 @@
+<div class="layui-card">
+    <div class="layui-card-header">操作结果</div>
+    <div class="layui-card-body">
+        <div class="layui-form-item">
+            <label class="layui-form-label">状态</label>
+            <div class="layui-input-block">
+                {if:$status==0}<span class="layui-badge layui-bg-green">成功</span>{/if}
+                {if:$status==1}<span class="layui-badge layui-bg-red">失败</span>{/if}
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">提示</label>
+            <div class="layui-input-block">{$message}</div>
+        </div>
+    </div>
+</div>

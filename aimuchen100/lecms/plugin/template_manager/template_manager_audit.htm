@@ -1,0 +1,56 @@
+{inc:header.htm}
+<div class="layuimini-container">
+    <div class="layuimini-main">
+        <div class="layui-card">
+            <div class="layui-card-header">
+                审计日志
+                <button class="layui-btn layui-btn-danger layui-btn-sm" id="btn-clear" style="float:right">
+                    <i class="layui-icon">&#xe640;</i> 清空日志
+                </button>
+            </div>
+            <div class="layui-card-body">
+                <table class="layui-hide" id="data-table" lay-filter="data-table-filter"></table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+layui.use(['table', 'layer'], function () {
+    var layer = layui.layer, table = layui.table;
+
+    table.render({
+        elem: '#data-table',
+        url: 'index.php?template_manager-audit_get_list',
+        height: 'full-120',
+        cols: [[
+            {field: 'id', title: 'ID', width: 70, align: 'center'},
+            {field: 'operator_uid', title: '操作人UID', width: 100, align: 'center'},
+            {field: 'action_text', title: '操作', width: 100, align: 'center'},
+            {field: 'path', title: '对象', minWidth: 220},
+            {field: 'old_version', title: '旧版本', width: 90, align: 'center'},
+            {field: 'new_version', title: '新版本', width: 90, align: 'center'},
+            {field: 'ip', title: 'IP', width: 130, align: 'center'},
+            {field: 'created_at', title: '时间', width: 160, align: 'center'}
+        ]],
+        limits: [20, 50, 100],
+        limit: 20,
+        page: true
+    });
+
+    $('#btn-clear').on('click', function () {
+        layer.confirm('确定要清空全部审计日志吗？该操作不可恢复。', function () {
+            // 后端输出 {"err","msg"}（E() 函数格式）
+            adminAjax.postd("index.php?template_manager-audit_clear_post-ajax-1", {FORM_HASH: '{@form_hash()}'}, function (res) {
+                var json = typeof res === "object" ? res : toJson(res);
+                layer.msg(json.msg, {icon: json.err == 0 ? 1 : 5});
+                if (json.err == 0) {
+                    setTimeout(function () { location.reload(); }, 1000);
+                }
+            });
+        });
+    });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+{inc:header.htm}
+<div class="layuimini-container">
+    <div class="layuimini-main">
+        <div class="layui-card">
+            <div class="layui-card-body">
+                <table class="layui-table">
+                    <colgroup>
+                        <col width="100">
+                        <col>
+                    </colgroup>
+                    <tbody>
+                    <tr>
+                        <td>用户组</td>
+                        <td>{$data[groupname]}</td>
+                    </tr>
+                    <tr>
+                        <td>用户名</td>
+                        <td>{$data[username]}</td>
+                    </tr>
+                    <tr>
+                        <td>邮箱</td>
+                        <td>{$data[email]}</td>
+                    </tr>
+                    <tr>
+                        <td>手机号</td>
+                        <td>{$data[mobile]}</td>
+                    </tr>
+                    <tr>
+                        <td>注册信息</td>
+                        <td>{$data[regdate]}（{$data[regip]}）</td>
+                    </tr>
+                    <tr>
+                        <td>上次登录</td>
+                        <td>{$data[lastdate]}（{$data[lastip]}）</td>
+                    </tr>
+                    <tr>
+                        <td>登录次数</td>
+                        <td>{$data[logins]}</td>
+                    </tr>
+                    <tr>
+                        <td>内容数</td>
+                        <td>{$data[contents]}</td>
+                    </tr>
+                    <tr>
+                        <td>积分</td>
+                        <td>{$data[credits]}</td>
+                    </tr>
+                    <tr>
+                        <td>金币</td>
+                        <td>{$data[golds]}</td>
+                    </tr>
+                    <tr>
+                        <td>个人主页</td>
+                        <td>{$data[homepage]}</td>
+                    </tr>
+                    <tr>
+                        <td>个人介绍</td>
+                        <td>{$data[intro]}</td>
+                    </tr>
+                    {hook:admin_user_info_table_tr_after.htm}
+                    </tbody>
+                </table>
+                {hook:admin_user_info_after.htm}
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

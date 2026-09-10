@@ -1,0 +1,29 @@
+{inc:header.htm}
+        <ul class="url-here">
+            <li><a href="{$cfg[weburl]}">首页</a></li>
+            <li><h1>{$cfg_var[name]}</h1></li>
+        </ul>
+        <div class="soft-list2">
+            <div class="list">
+                {block:global_flags pagenum="20" dateformat="Y-m-d" showcate="1"}{loop:$gdata[list] $v}
+                <a class="list-item flex" href="{$v[url]}">
+                    <div class="col">
+                        <img class="pic lazy" src="{$v[pic]}" alt="{$v[title]}">
+                    </div>
+                    <div class="con flex-item">
+                        <div class="tit">{$v[subject]}</div>
+                        <div class="star star{$v[star]}"></div>
+                        <div class="txt">
+                            <span class="attr">{$v[cate_name]}</span>
+                            <span class="attr">大小:{$v[size]}</span>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <span class="btn btn-download">查&nbsp;看</span>
+                    </div>
+                </a>
+                {/loop}{/block}
+            </div>
+            <div class="pagecode">{$gdata[pages]}</div>
+        </div>
+{inc:footer.htm}

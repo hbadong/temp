@@ -1,0 +1,89 @@
+{inc:header.htm}
+{hook:admin_content_set_before.htm}
+<div class="layuimini-container">
+	<div class="layuimini-main">
+		<form id="form" class="layui-form"  action="index.php?content-{$_GET['action']}-mid-{$mid}-ajax-1" method="post">
+			<input name="id" type="hidden" value="{$data[id]}" />
+			{if:isset($field_arr) && $field_arr}
+			{inc:content_set_extend.htm}
+			{else}
+			{inc:content_set_base.htm}
+			{/if}
+			<div class="layui-row">
+				<div class="layui-form-item">
+					<div class="layui-input-block">
+						<button class="layui-btn" lay-submit lay-filter="form">{lang:submit}</button>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+<script type="text/javascript">
+	var mid = "{$mid}";
+	layui.use(['form','layer', 'upload', 'miniTab', 'laydate'], function () {
+		var layer = layui.layer, upload = layui.upload, form = layui.form, miniTab = layui.miniTab, laydate = layui.laydate;
+
+		laydate.render({
+			elem: '#dateline',
+			type: 'datetime',
+			max: '{php}echo date("Y-m-d H:i:s", $data["max_dateline"]);{/php}'
+		});
+
+		//缩略图上传
+		upload.render({
+			elem: '#pic_btn'
+			,url: 'index.php?attach-upload_image-type-pic{$edit_cid_id}'
+			,field:'upfile'
+			,accept: 'images'
+			,acceptMime:'image/*'
+			,done: function(res){
+				if(res.err == 1){
+					layer.msg(res.msg, {icon: 5});
+				}else{
+					$("#pic").val(res.data.path);
+					layer.msg('{lang:upload_successfully}', {icon: 1});
+				}
+			}
+			,error: function(){
+				layer.msg('{lang:request_exception}',{icon: 5});
+			}
+		});
+
+		//当前内容所在列表页数，不在第一页就写入cookie，用于编辑后定位到对应的列表页
+		var currPage = "{$currPage}";
+		if(parseInt(currPage) > 1){
+			$.cookie("currPage", parseInt(currPage), {expires:3600});
+		}
+
+		//监听提交
+		form.on('submit(form)', function () {
+			if (window.hasOwnProperty('editor')) {
+				window.editor.async();
+			}
+			adminAjax.postform('#form',function (data) {
+				var json = toJson(data);
+				if( json.err == 0 ){
+					var icon = 1;
+				}else{
+					var icon = 5;
+				}
+				layer.msg(json.msg, {icon: icon});
+				if(json.err==0) {
+					setTimeout(function(){
+						miniTab.reloadIframe('index.php?content-index-mid-'+mid);
+						miniTab.deleteCurrentByIframe();
+					}, 1500);
+				}
+			});
+			return false;
+		});
+	});
+</script>
+<script src="{$C[admin_static]}admin/js/jquery.dragsort-0.5.2.min.js" charset="utf-8"></script>
+<script type="text/javascript">
+{$field_js}
+</script>
+{hook:admin_content_add_after.htm}
+</body>
+</html>

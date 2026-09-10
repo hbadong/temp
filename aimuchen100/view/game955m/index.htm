@@ -1,0 +1,145 @@
+{inc:header.htm}
+        <!-- 首页焦点图 -->
+        <div class="index-focus-wrap">
+            <div class="index-focus" id="iFocus">
+                <ul class="bd">
+                    {block:list_flag flag="1" mid="3" limit="5"}{loop:$data[list] $v}
+                    <li><a href="{$v[url]}">
+                        <img class="pic" src="{$v[pic]}" alt="{$v[title]}">
+                        <div class="tit">{$v[subject]}</div>
+                    </a></li>
+                    {/loop}{/block}
+                </ul>
+                <ul class="hd"></ul>
+            </div>
+        </div>
+
+        <!-- 火爆游戏 -->
+        <div class="section">
+            <div class="section-hd">
+                <h3 class="title">火爆游戏</h3>
+                <a class="more morewy" href="{$cfg[webdir]}game/">更多+</a>
+            </div>
+            <div class="soft-list">
+                <ul class="list" id='rmwy'>
+                    {block:list mid="3" limit="8" orderby="views" orderway="-1"}{loop:$data[list] $v}
+                    <li class="item">
+                        <a href="{$v[url]}">
+                            <img class="pic lazy" src="{$v[pic]}" alt="{$v[title]}">
+                            <div class="tit tit-aline">{$v[subject]}</div>
+                        </a>
+                    </li>
+                    {/loop}{/block}
+                </ul>
+            </div>
+        </div>
+
+        <!-- 必备游戏 -->
+        <div class="section section-software">
+            <div class="section-hd">
+                <h3 class="title">必备游戏</h3>
+                <a class="more" href="{$cfg[webdir]}game/">更多+</a>
+            </div>
+            <div class="soft-list">
+                <ul class="list" id="rjbb">
+                    {block:list_flag flag="2" mid="3" limit="8"}{loop:$data[list] $v}
+                    <li class="item">
+                        <a href="{$v[url]}">
+                            <img class="pic lazy" src="{$v[pic]}" alt="{$v[title]}">
+                            <div class="tit tit-aline">{$v[subject]}</div>
+                        </a>
+                    </li>
+                    {/loop}{/block}
+                </ul>
+            </div>
+        </div>
+
+        <!-- 游戏资讯 -->
+        <div class="section section-article">
+            <div class="section-hd">
+                <h3 class="title">游戏资讯</h3>
+                <a class="more" href="{$cfg[webdir]}news/">更多+</a>
+            </div>
+            <div class="article-list">
+                {block:list cid="39" mid="2" limit="6"}{loop:$data[list] $v}
+                <a class="item" href="{$v[url]}">
+                    <img class="pic lazy" src="{$v[pic]}" alt="{$v[title]}">
+                    <div class="con">
+                        <h3 class="tit">{$v[subject]}</h3>
+                        <p class="time">{@date('Y-m-d', $v['dateline'])}</p>
+                    </div>
+                </a>
+                {/loop}{/block}
+            </div>
+        </div>
+
+        <!-- 最新手游 -->
+        <div class="section mobile-games-list" id="mobileGamesList">
+            <div class="section-hd">
+                <h3 class="title">最新手游</h3>
+                <a class="more" href="{$cfg[webdir]}game/">更多+</a>
+            </div>
+            <div class="tab-content on">
+                <div class="soft-list2">
+                    <div class="list" id="listContent">
+                        {block:list mid="3" limit="8" orderby="dateline" orderway="-1"}{loop:$data[list] $v}
+                        <a class="list-item flex" href="{$v[url]}">
+                            <div class="col">
+                                <img class="pic lazy" src="{$v[pic]}" alt="{$v[title]}">
+                            </div>
+                            <div class="con flex-item">
+                                <div class="tit">{$v[subject]}</div>
+                                <div class="star star{$v[star]}"></div>
+                                <div class="txt">
+                                    <span class="attr">{$v[cate_name]}</span>
+                                    <span class="attr">大小:{$v[size]}</span>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <span class="btn btn-download">查&nbsp;看</span>
+                            </div>
+                        </a>
+                        {/loop}{/block}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 精选分类 -->
+        <div class="section section-category">
+            <div class="section-hd">
+                <h3 class="title">精选分类</h3>
+            </div>
+            <div class="section-bd">
+                <div class="list">
+                    {block:category cid="15" type="child"}{loop:$data $v}
+                    <a class="item" href="{$v[url]}">{$v[name]}</a>
+                    {/loop}{/block}
+                </div>
+            </div>
+        </div>
+
+        <!-- 友情链接 -->
+        <div class="section friend-link" id="friendLink">
+            <div class="section-hd">
+                <h3 class="title">友情链接</h3>
+            </div>
+            <div class="section-bd">
+                <div class="list">
+                    <ul>
+                        {block:links}{loop:$data $v}
+                        <li class="item"><a href="{$v[url]}" target="_blank">{$v[name]}</a></li>
+                        {/loop}{/block}
+                    </ul>
+                </div>
+            </div>
+        </div>
+{inc:footer.htm}
+<script type="text/javascript">
+    seajs.use('app/common', function(fn){
+        fn.init();
+        fn.index(); //焦点图
+        fn.imgLazyLoad(); //图片延迟加载
+    });
+</script>
+</div></body></html>

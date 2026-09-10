@@ -1,0 +1,38 @@
+{inc:header.htm}
+<div class="layui-card">
+	<div class="layui-card-header">{lang:clear_log}</div>
+	<div class="layui-card-body layui-form">
+		<div class="layui-form-item">
+			<div class="layui-input-inline"><input type="checkbox" id="log_error" title="{lang:log_error}" checked lay-skin="primary" /></div>
+			<div class="layui-form-mid layui-word-aux">{$php_error_file_byte}</div>
+		</div>
+		<div class="layui-form-item">
+			<div class="layui-input-inline"><input type="checkbox" id="log404" title="{lang:log404}" checked lay-skin="primary" /></div>
+			<div class="layui-form-mid layui-word-aux">{$php_error404_file_byte}</div>
+		</div>
+		<div class="layui-form-item">
+			<div class="layui-input-inline"><input type="checkbox" id="log_login" title="{lang:log_login}" checked lay-skin="primary" /></div>
+			<div class="layui-form-mid layui-word-aux">{$login_log_file_byte}</div>
+		</div>
+		<div class="layui-form-item">
+			<div class="layui-input-inline">
+				<button class="layui-btn" id="clearlog">{lang:submit}</button>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	layui.use(['form','layer'], function () {
+		var layer = layui.layer, form = layui.form;
+
+		$("#clearlog").click(function(){
+			var v1 = $("#log_error")[0].checked ? 1 : 0;
+			var v2 = $("#log404")[0].checked ? 1 : 0;
+			var v3 = $("#log_login")[0].checked ? 1 : 0;
+			adminAjax.postd("index.php?tool-log-ajax-1", {"log_error":v1, "log404":v2, "log_login":v3});
+		});
+
+	});
+</script>
+</body>
+</html>

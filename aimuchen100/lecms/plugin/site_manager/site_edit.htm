@@ -1,0 +1,157 @@
+{inc:header.htm}
+<style>
+/* 弹窗模式紧凑布局：缩小区块标题与表单项间距，双列排布 */
+.se-form .layui-elem-field { margin: 10px 8px 0; padding: 0 8px; border-width: 0; border-left: 3px solid #1E9FFF; }
+.se-form .layui-form-item { margin-bottom: 6px; clear: both; }
+.se-form .layui-form-label { width: 90px; padding: 7px 10px 7px 0; }
+.se-form .layui-input-inline { width: calc(100% - 100px); }
+.se-form .layui-input-block { margin-left: 100px; }
+.se-form .layui-form-mid { padding: 7px 0 !important; line-height: 1.4; font-size: 12px; width: auto; }
+.se-two-col { display: flex; gap: 0 12px; }
+.se-two-col > .layui-form-item { flex: 1; min-width: 0; }
+</style>
+<div class="layuimini-container">
+	<div class="layuimini-main">
+		<div class="layui-card">
+			<div class="layui-card-header">编辑站点</div>
+			<div class="layui-card-body se-form">
+				<form id="form" class="layui-form" action="?site-edit-ajax-1" method="post">
+					<input type="hidden" name="FORM_HASH" value="{@form_hash()}" />
+					<input name="sid" type="hidden" value="{$site['sid']}" />
+					<fieldset class="layui-elem-field layui-field-title"><legend>基本信息</legend></fieldset>
+					<div class="se-two-col">
+						<div class="layui-form-item">
+							<label class="layui-form-label required">站点名称</label>
+							<div class="layui-input-inline">
+								<input type="text" name="site_name" value="{$site['site_name']}" autocomplete="off" placeholder="请输入站点名称" class="layui-input" lay-verify="required" lay-reqtext="站点名称不能为空" />
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">主题</label>
+							<div class="layui-input-inline">
+								<select name="theme" lay-filter="theme-select">
+									{loop:$themes $t}
+									<option value="{$t}" {if:$t==$site['theme']}selected{/if}>{$t}</option>
+									{/loop}
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label required">域名</label>
+						<div class="layui-input-inline">
+							<input type="text" name="domain" value="{$site['domain']}" autocomplete="off" placeholder="请输入域名，如 example.com" class="layui-input" lay-verify="required" lay-reqtext="域名不能为空" />
+						</div>
+					</div>
+
+					<fieldset class="layui-elem-field layui-field-title"><legend>品牌设置</legend></fieldset>
+					<div class="se-two-col">
+						<div class="layui-form-item">
+							<label class="layui-form-label">Logo 地址</label>
+							<div class="layui-input-block" style="margin-left: 100px;">
+								<input type="text" name="logo_url" value="{$config['logo_url']}" autocomplete="off" placeholder="https://example.com/logo.png" class="layui-input" />
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">Favicon</label>
+							<div class="layui-input-block" style="margin-left: 100px;">
+								<input type="text" name="favicon_url" value="{$config['favicon_url']}" autocomplete="off" placeholder="站点图标地址" class="layui-input" />
+							</div>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">水印地址</label>
+						<div class="layui-input-block" style="margin-left: 100px;">
+							<input type="text" name="watermark_url" value="{$config['watermark_url']}" autocomplete="off" placeholder="图片水印地址，留空表示不设置" class="layui-input" />
+						</div>
+					</div>
+
+					<fieldset class="layui-elem-field layui-field-title"><legend>主题高级设置</legend></fieldset>
+					<div class="layui-form-item">
+						<label class="layui-form-label">启用主题</label>
+						<div class="layui-input-block" style="margin-left: 100px;">
+							{loop:$themes $t}
+							<input type="checkbox" name="enabled_themes[]" value="{$t}" title="{$t}" lay-skin="primary" {$enabled_map[$t]} />
+							{/loop}
+							<div class="layui-form-mid layui-word-aux">不勾选任何主题表示不限制；仅勾选部分主题时，站点只能应用勾选范围内的主题。</div>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">CSS 变量</label>
+						<div class="layui-input-block" style="margin-left: 100px;">
+							<div id="theme-vars-box">
+								{loop:$theme_vars $tv}
+								<div class="tv-row" style="margin-bottom: 6px;">
+									<input type="text" name="theme_var_keys[]" value="{$tv['k']}" autocomplete="off" placeholder="变量名，如 --primary-color" class="layui-input" style="width: calc(45% - 30px); display: inline-block;" />
+									&nbsp;=&nbsp;
+									<input type="text" name="theme_var_values[]" value="{$tv['v']}" autocomplete="off" placeholder="变量值，如 #1e9fff" class="layui-input" style="width: calc(55% - 60px); display: inline-block;" />
+									<a href="javascript:;" class="layui-btn layui-btn-sm layui-btn-danger tv-del" style="margin-left: 8px;">删除</a>
+								</div>
+								{/loop}
+							</div>
+							<button type="button" id="add-var" class="layui-btn layui-btn-sm layui-btn-primary"><i class="layui-icon">&#xe654;</i> 添加变量</button>
+							<div class="layui-form-mid layui-word-aux">站点级 CSS 变量覆写，可覆盖主题预设的 :root 变量（颜色、字号等）。</div>
+						</div>
+					</div>
+
+					<div class="layui-form-item" style="margin-top: 12px;">
+						<div class="layui-input-block">
+							<button class="layui-btn" lay-submit lay-filter="form"><i class="layui-icon">&#xe605;</i> 保存修改</button>
+							<a class="layui-btn layui-btn-primary" id="btn-back" href="javascript:;">返回</a>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+layui.use(['form', 'layer', 'miniTab', 'jquery'], function(){
+	var layer = layui.layer, form = layui.form, miniTab = layui.miniTab;
+
+	form.render();
+
+	// 添加 CSS 变量行
+	$('#add-var').on('click', function () {
+		var row = '<div class="tv-row" style="margin-bottom: 6px;">'
+			+ '<input type="text" name="theme_var_keys[]" value="" autocomplete="off" placeholder="变量名，如 --primary-color" class="layui-input" style="width: calc(45% - 30px); display: inline-block;" />'
+			+ '&nbsp;=&nbsp;'
+			+ '<input type="text" name="theme_var_values[]" value="" autocomplete="off" placeholder="变量值，如 #1e9fff" class="layui-input" style="width: calc(55% - 60px); display: inline-block;" />'
+			+ '<a href="javascript:;" class="layui-btn layui-btn-sm layui-btn-danger tv-del" style="margin-left: 8px;">删除</a>'
+			+ '</div>';
+		$('#theme-vars-box').append(row);
+	});
+	// 删除 CSS 变量行（事件委托，动态行同样生效）
+	$(document).on('click', '.tv-del', function () {
+		$(this).closest('.tv-row').remove();
+	});
+
+	// 返回列表：激活后台的站点管理标签页；不在主框架内时回退为跳转
+	$('#btn-back').on('click', function () {
+		if (parent !== window && parent.layui && parent.layui.element) {
+			miniTab.openNewTabByIframe({ href: 'index.php?site-index', title: '站点管理' });
+			miniTab.deleteCurrentByIframe();
+		} else {
+			window.location.href = 'index.php?site-index';
+		}
+	});
+
+	//监听提交
+	form.on('submit(form)', function () {
+		adminAjax.postform('#form', function (data) {
+			var json = toJson(data);
+			layer.msg(json.msg, { icon: json.err == 0 ? 1 : 5 });
+			if (json.err == 0) {
+				setTimeout(function () {
+					// 标签页模式（与文章管理一致）：刷新列表页 iframe 并关闭当前标签
+					miniTab.reloadIframe('index.php?site-index');
+					miniTab.deleteCurrentByIframe();
+				}, 1200);
+			}
+		});
+		return false;
+	});
+});
+</script>
+</body>
+</html>

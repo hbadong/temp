@@ -1,0 +1,211 @@
+{inc:header.htm}
+<style>
+.settings-wrap { padding: 0 16px; }
+.settings-card { margin-bottom: 16px; }
+.settings-card .layui-card-header { display: flex; align-items: center; justify-content: space-between; font-weight: 600; }
+.settings-card .layui-card-header i { color: #1E9FFF; margin-right: 8px; }
+.settings-card .layui-card-header .header-tip { font-weight: 400; font-size: 12px; color: #999; }
+.settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 24px; }
+.settings-grid .layui-form-item { display: flex; align-items: center; }
+.settings-grid .layui-form-label { width: 110px; padding: 9px 12px 9px 0; text-align: right; }
+.settings-grid .layui-input-inline { width: auto; flex: 1; }
+.settings-grid .layui-input-block { margin-left: 110px; }
+.settings-actions { position: sticky; bottom: 0; padding: 12px 0; background: #fff; border-top: 1px solid #eee; text-align: right; margin-top: 16px; box-shadow: 0 -2px 6px rgba(0,0,0,.03); z-index: 10; }
+.settings-actions .layui-btn + .layui-btn { margin-left: 8px; }
+.field-hint { display: block; color: #999; font-size: 12px; margin-top: 4px; }
+.engine-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px 16px; }
+@media (max-width: 900px) { .settings-grid { grid-template-columns: 1fr; } .engine-grid { grid-template-columns: repeat(2, 1fr); } }
+</style>
+<div class="layuimini-container">
+	<div class="layuimini-main">
+		<div class="layui-tab layui-tab-brief" lay-filter="main">
+			<ul class="layui-tab-title">
+				<li class="layui-this">功能</li>
+				<li{if:$tab=='settings'} class="layui-this"{/if}>插件设置</li>
+			</ul>
+			<div class="layui-tab-content">
+				<!-- Tab 1：功能（原页面全部内容） -->
+				<div class="layui-tab-item{if:$tab!='settings'} layui-show{/if}">
+					<div class="layui-card">
+						<div class="layui-card-header">访问模式管理</div>
+						<div class="layui-card-body">
+							<fieldset class="layui-elem-field layui-field-title">
+								<legend>当前访问模式</legend>
+							</fieldset>
+							<div class="layui-form-item">
+								<label class="layui-form-label">模式</label>
+								<div class="layui-input-inline">
+									<input type="text" value="{$mode}" readonly class="layui-input">
+								</div>
+								{if:$mode=='normal'}<span class="layui-badge layui-bg-green">正常访问</span>{/if}
+								{if:$mode=='spider_only'}<span class="layui-badge layui-bg-blue">仅蜘蛛模式</span>{/if}
+								{if:$mode=='icp_filing'}<span class="layui-badge layui-bg-orange">ICP 备案模式</span>{/if}
+								{if:$active==1}<span class="layui-badge layui-bg-red">已启用</span>{else}<span class="layui-badge layui-bg-gray">未启用</span>{/if}
+							</div>
+							<div class="layui-form-item">
+								<label class="layui-form-label">说明</label>
+								<div class="layui-input-block">
+									{if:$mode=='normal'}正常模式：所有访问者均可正常访问。{/if}
+									{if:$mode=='spider_only'}仅蜘蛛模式：搜索引擎蜘蛛可见完整内容，人工访问显示受限内容。{/if}
+									{if:$mode=='icp_filing'}ICP 备案模式：搜索引擎蜘蛛可见完整内容，人工访问显示备案页。{/if}
+								</div>
+							</div>
+							<hr class="layui-bg-gray">
+							<form id="form-switch" class="layui-form" method="post" action="?spider_mode-switch-ajax-1">
+								<input type="hidden" name="FORM_HASH" value="{@form_hash()}">
+								<input type="hidden" name="site_id" value="{$site_id}">
+								<div class="layui-form-item">
+									<label class="layui-form-label">切换模式</label>
+									<div class="layui-input-inline">
+										<select name="mode">
+											<option value="normal" {if:$mode=='normal'}selected{/if}>正常访问</option>
+											<option value="spider_only" {if:$mode=='spider_only'}selected{/if}>仅蜘蛛模式</option>
+											<option value="icp_filing" {if:$mode=='icp_filing'}selected{/if}>ICP 备案模式</option>
+										</select>
+									</div>
+									<div class="layui-input-inline">
+										<button class="layui-btn" lay-submit lay-filter="form-switch">保存</button>
+									</div>
+								</div>
+							</form>
+							<hr class="layui-bg-gray">
+							<form id="form-switch-active" class="layui-form" method="post" action="?spider_mode-switch_active-ajax-1">
+								<input type="hidden" name="FORM_HASH" value="{@form_hash()}">
+								<input type="hidden" name="site_id" value="{$site_id}">
+								<div class="layui-form-item">
+									<label class="layui-form-label">启用/禁用</label>
+									<div class="layui-input-inline">
+										<select name="active">
+											<option value="1" {if:$active==1}selected{/if}>启用蜘蛛模式</option>
+											<option value="0" {if:$active==0}selected{/if}>禁用蜘蛛模式</option>
+										</select>
+									</div>
+									<div class="layui-input-inline">
+										<button class="layui-btn layui-btn-warm" lay-submit lay-filter="form-switch-active">保存</button>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+
+				<!-- Tab 2：插件设置（合并自原 settings.htm） -->
+				<div class="layui-tab-item settings-wrap{if:$tab=='settings'} layui-show{/if}">
+					<!-- 蜘蛛识别引擎 -->
+					<div class="layui-card settings-card">
+						<div class="layui-card-header">
+							<span><i class="layui-icon">&#xe628;</i> 蜘蛛识别引擎</span>
+							<span class="header-tip">勾选后才会对对应 UA 进行识别与探测</span>
+						</div>
+						<div class="layui-card-body">
+							<form id="form-spider-mode-settings" class="layui-form" action="?spider_mode-settings_post-ajax-1" method="post">
+								<input type="hidden" name="FORM_HASH" value="{@form_hash()}" />
+								<div class="engine-grid">
+									{loop:$engine_labels $key $label}
+									<input type="checkbox" name="engines[]" value="{$key}" lay-skin="primary" title="{$label}" {if:!$settings['engines'] || in_array($key, $settings['engines'])}checked{/if} />
+									{/loop}
+								</div>
+							</form>
+						</div>
+					</div>
+
+					<!-- 双面渲染 -->
+					<div class="layui-card settings-card">
+						<div class="layui-card-header">
+							<span><i class="layui-icon">&#xe620;</i> 渲染策略</span>
+							<span class="header-tip">蜘蛛看到的页面与人工访问者是否一致</span>
+						</div>
+						<div class="layui-card-body">
+							<div class="settings-grid">
+								<div class="layui-form-item">
+									<label class="layui-form-label">双面渲染开关</label>
+									<div class="layui-input-inline">
+										<input type="radio" name="dual_render" value="1" title="启用" {if:$settings['dual_render']}checked{/if} form="form-spider-mode-settings">
+										<input type="radio" name="dual_render" value="0" title="禁用" {if:!$settings['dual_render']}checked{/if} form="form-spider-mode-settings">
+										<span class="field-hint">启用后蜘蛛与访客看到不同模板（推荐）</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- 备案信息 -->
+					<div class="layui-card settings-card">
+						<div class="layui-card-header">
+							<span><i class="layui-icon">&#xe7ae;</i> 备案信息</span>
+							<span class="header-tip">备案模式下展示给人工访客</span>
+						</div>
+						<div class="layui-card-body">
+							<div class="settings-grid">
+								<div class="layui-form-item">
+									<label class="layui-form-label">备案号</label>
+									<div class="layui-input-inline">
+										<input type="text" name="icp_number" class="layui-input" value="{$settings['icp_number']}" placeholder="例如：京ICP备12345678号" form="form-spider-mode-settings">
+										<span class="field-hint">留空则不展示</span>
+									</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">备案底部链接</label>
+									<div class="layui-input-inline">
+										<input type="text" name="icp_footer_link" class="layui-input" value="{$settings['icp_footer_link']}" placeholder="https://beian.miit.gov.cn" form="form-spider-mode-settings">
+										<span class="field-hint">默认指向工信部备案系统</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- 底部操作栏 -->
+					<div class="settings-actions">
+						<button type="submit" lay-submit lay-filter="form-spider-mode-settings" class="layui-btn">
+							<i class="layui-icon">&#xe605;</i> 保存设置
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+layui.use(['element', 'form', 'layer'], function () {
+	var element = layui.element, form = layui.form, layer = layui.layer;
+	form.render();
+	{if:$tab=='settings'}
+	element.tabChange('main', 1);
+	{/if}
+	form.on('submit(form-spider-mode-settings)', function () {
+		adminAjax.postform('#form-spider-mode-settings', function (data) {
+			var json = toJson(data);
+			layer.msg(json.msg, { icon: json.err == 0 ? 1 : 5 });
+			if (json.err == 0) {
+				setTimeout(function () { window.location.reload(); }, 1000);
+			}
+		});
+		return false;
+	});
+	// 切换访问模式（本页 tab 内提交，成功后留在本页刷新数据）
+	form.on('submit(form-switch)', function () {
+		adminAjax.postform('#form-switch', function (data) {
+			var json = toJson(data);
+			layer.msg(json.msg, { icon: json.err == 0 ? 1 : 5 });
+			if (json.err == 0) {
+				setTimeout(function () { window.location.reload(); }, 1000);
+			}
+		});
+		return false;
+	});
+	// 启用/禁用蜘蛛模式
+	form.on('submit(form-switch-active)', function () {
+		adminAjax.postform('#form-switch-active', function (data) {
+			var json = toJson(data);
+			layer.msg(json.msg, { icon: json.err == 0 ? 1 : 5 });
+			if (json.err == 0) {
+				setTimeout(function () { window.location.reload(); }, 1000);
+			}
+		});
+		return false;
+	});
+});
+</script>
+</body>
+</html>

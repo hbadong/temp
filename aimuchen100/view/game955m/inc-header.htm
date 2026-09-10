@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>{$cfg[titles]}</title>
+    <meta name="description" content="{$cfg[seo_description]}">
+    <meta name="keywords" content="{$cfg[seo_keywords]}">
+    <meta name="applicable-device" content="mobile">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <link rel="shortcut icon" href="{$cfg[webdir]}favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="{$cfg[tpl]}style/css/style.css">
+</head>
+<body>
+<div class="page page-index" id="page">
+    <!-- header -->
+    <header class="page-header fn-clear">
+        <a class="logo-wrap fl" href="{$cfg[weburl]}"><img class="logo" src="{$cfg[tpl]}style/img/logo.png" alt="{$cfg[webname]}"></a>
+        <nav class="nav fr">
+            <a class="nav-link{if:$cfg_var[topcid] == 0} on{/if}" href="{$cfg[weburl]}">首页</a>
+            <a class="nav-link{if:$cfg_var[topcid] == 15} on{/if}" id='service' href="{$cfg[webdir]}game/">手游</a>
+            <a class="nav-link{if:$cfg_var[topcid] == 39} on{/if}" href="{$cfg[webdir]}news/">资讯</a>
+            <a class="nav-search" id="searchTap"><i class="icon icon-search"></i></a>
+        </nav>
+    </header>
+
+    <div class="taptap-search" id="taptapSearch">
+        <div class="search-bar flex">
+            <div class="back" id="searchBack"><i class="icon icon-back"></i></div>
+            <div class="form-group flex flex-item">
+                <div class="icon icon-search2"></div>
+                <form class="flex-item" action="{$cfg[webdir]}index.php" method="get">
+                    <input class="search-input" name="keyword" type="search" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="搜索..." value="{$keyword}">
+                    <input type="hidden" name="u" value="search-index">
+                    <input type="hidden" name="mid" value="3">
+                </form>
+                <div class="clear" id="searchClear"><i class="icon icon-clear"></i></div>
+            </div>
+            <div class="cancel" id="searchCancel">取消</div>
+        </div>
+        <div class="search-box">
+            <div class="search-hotword">
+                <div class="list-hd">
+                    <h3 class="title">热门搜索</h3>
+                </div>
+                <div class="list-bd">
+                    <ul>
+                        {block:list_flag flag="2" mid="3" limit="16"}{loop:$data[list] $v}
+                        <li><a href="{$v[url]}" target="_blank">{$v[subject]}</a></li>
+                        {/loop}{/block}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <section class="page-content">

@@ -1,0 +1,286 @@
+{inc:header.htm}
+<!-- 内容详情数据（生成 $gdata） -->
+{block:global_show show_prev_next="1" dateformat="Y-m-d" field_format="1"}{/block}
+<div class="content wrapper">
+	<div class="url-here">
+		<a href="{$cfg[weburl]}">{$cfg[webname]}</a> &gt;
+		{loop:$cfg_var[place] $p}
+		{if:$p[url]}
+		<a href="{$p[url]}">{$p[name]}</a> &gt;
+		{else}
+		{$p[name]}
+		{/if}
+		{/loop}
+	</div>
+
+	<div class="fn-clear" id="contentMain">
+		<div class="content-l fl">
+			<div class="game-detail-info">
+				<img class="pic" src="{$gdata[pic]}" alt="{$gdata[title]}" onerror="this.src='{$cfg[tpl]}style/img/nopic.png'">
+				<div class="con">
+					<h1 class="title">{$gdata[title]}</h1>
+					<div class="attr">
+						<dl><dt>类型：</dt><dd>{$cfg_var[name]}</dd></dl>
+						<dl><dt>版本：</dt><dd>{$gdata[version]}</dd></dl>
+						<dl><dt>语言：</dt><dd>{$gdata[language]}</dd></dl>
+						<dl><dt>大小：</dt><dd>{$gdata[size]}</dd></dl>
+						<dl><dt>等级：</dt><dd><i class="star star{if:$gdata[star]}{$gdata[star]}{else}4{/if}"></i></dd></dl>
+						<dl><dt>更新：</dt><dd>{$gdata[update_time]}</dd></dl>
+					</div>
+				</div>
+				<div class="btn-group">
+					{if:$gdata[download_url_android]}
+					<a class="btn btn-green" href="{$gdata[download_url_android]}" target="_blank" rel="nofollow">
+						<i class="icon icon-aos"></i>
+						<p class="text"><b>安卓版下载</b><i>Android</i></p>
+					</a>
+					{else}
+					<a class="btn btn-green disabled" href="javascript:void(0);">
+						<i class="icon icon-aos"></i>
+						<p class="text"><b>安卓版下载</b><i>Android</i></p>
+					</a>
+					{/if}
+					{if:$gdata[download_url_ios]}
+					<a class="btn btn-blue" href="{$gdata[download_url_ios]}" target="_blank" rel="nofollow">
+						<i class="icon icon-ios"></i>
+						<p class="text"><b>iPhone版下载</b><i>iOS</i></p>
+					</a>
+					{else}
+					<a class="btn btn-blue disabled" href="javascript:void(0);">
+						<i class="icon icon-ios"></i>
+						<p class="text"><b>需跳转Apple Store下载</b></p>
+					</a>
+					{/if}
+				</div>
+				<div class="code-group">
+					<div class="code-box">
+						<img class="code-img" src="{$cfg[tpl]}static/picture/blank.png" _src="{$gdata[pic]}" alt="">
+						<div class="code-line"></div>
+					</div>
+					<div class="code-tit">手机扫码下载</div>
+				</div>
+			</div>
+
+			<div class="soft-detail-body">
+				<div class="soft-detail-tabs" id="softDetailTabs">
+					<ul>
+						<li class="on" for="#intro"><span>游戏介绍</span></li>
+						<li for="#download"><span>相关下载</span></li>
+						<li for="#version"><span>其它版本</span></li>
+						<li for="#relatedNews"><span>相关文章</span></li>
+						<li for="#recommend"><span>人气推荐</span></li>
+					</ul>
+				</div>
+
+				<!-- 软件介绍 -->
+				<div class="soft-detail-intro" id="intro">
+					{$gdata[content]}
+
+					<!-- 特别说明 -->
+					{loop:$gdata[filelist] $f}
+					{if:$f[isimage]}
+					{/if}
+					{/loop}
+				</div>
+
+				<!-- 相关下载 -->
+				<div class="conbox" id="download">
+					<div class="block-title3">
+						<h3 class="title">相关下载</h3>
+					</div>
+					<div class="soft-list3 main">
+						<ul>
+							{block:list cid="15" limit="8" showcate="1"}
+							{loop:$data[list] $v}
+							<li><a href="{$v[url]}" target="_blank" title="{$v[title]}">
+								<div class="pic-wrap">
+									<img class="pic" src="{$v[pic]}" alt="{$v[title]}" onerror="this.src='{$cfg[tpl]}style/img/nopic.png'">
+								</div>
+								<div class="tit">{$v[subject]}</div>
+								<div class="btn">查看详情</div>
+							</a></li>
+							{/loop}
+							{/block}
+						</ul>
+					</div>
+				</div>
+
+				<!-- 其它版本 -->
+				<div class="conbox" id="version">
+					<div class="block-title3">
+						<h3 class="title">其它版本</h3>
+					</div>
+					<div class="version-list game">
+						<ul>
+							{block:list_rand limit="6" showcate="1"}
+							{loop:$data[list] $v}
+							<li>
+								<a class="tit" href="{$v[url]}" target="_blank" title="{$v[title]}">{$v[subject]}</a>
+								<span class="star star4"></span>
+								<span class="size">{$v[size]}</span>
+								<a class="btn" href="{$v[url]}" target="_blank">查看详情</a>
+							</li>
+							{/loop}
+							{/block}
+						</ul>
+					</div>
+				</div>
+
+				<!-- 相关文章 -->
+				<div class="conbox" id="relatedNews">
+					<div class="block-title3">
+						<h3 class="title">相关文章</h3>
+					</div>
+					<div class="news-list3">
+						<ul>
+							{block:list mid="2" limit="10"}
+							{loop:$data[list] $v}
+							<li><a class="tit" href="{$v[url]}" target="_blank" title="{$v[title]}">{$v[subject]}</a></li>
+							{/loop}
+							{/block}
+						</ul>
+					</div>
+				</div>
+
+				<!-- 人气推荐 -->
+				<div class="conbox" id="recommend">
+					{php}echo '<!--FLAG_DEBUG ' . json_encode(block_list_flag(array('flag'=>'1','mid'=>'3','limit'=>'16'))) . '-->';{/php}
+					<div class="block-title3">
+						<h3 class="title">人气推荐</h3>
+					</div>
+					<div class="soft-list3 main">
+						<ul>
+							{block:list_flag flag="1" cid="15" mid="3" limit="16"}
+							{loop:$data[list] $v}
+							<li><a href="{$v[url]}" target="_blank" title="{$v[title]}">
+								<div class="pic-wrap">
+									<img class="pic" src="{$v[pic]}" alt="{$v[title]}" onerror="this.src='{$cfg[tpl]}style/img/nopic.png'">
+								</div>
+								<div class="tit">{$v[subject]}</div>
+								<div class="btn">查看详情</div>
+							</a></li>
+							{/loop}
+							{/block}
+						</ul>
+					</div>
+				</div>
+
+				<!-- 其他推荐 -->
+			</div>
+		</div>
+		<div class="content-r fr">
+			<!-- 相关游戏 -->
+			<div class="conbox">
+				<div class="block-title4">
+					<h3 class="title">相关游戏</h3>
+				</div>
+				<div class="soft-top-list3">
+					<ul>
+						{block:list_top cid="15" orderby="views" limit="5" showcate="1"}
+						{loop:$data[list] $v}
+						<li>
+							<p class="txt">{$v[size]}</p>
+							<i class="num num{@$v['xuhao']}">{@$v['xuhao']}</i>
+							<p class="tit"><a href="{$v[url]}" target="_blank" title="{$v[title]}">{$v[subject]}</a></p>
+						</li>
+						{/loop}
+						{/block}
+					</ul>
+				</div>
+			</div>
+
+			<!-- 猜您喜欢 -->
+			<div class="conbox js-change">
+				<div class="block-title4">
+					<h3 class="title">猜您喜欢</h3>
+					<span class="btn btn-change">换一换</span>
+				</div>
+				<div class="soft-list like js-tab-cont on">
+					<ul>
+						{block:list_rand limit="9"}
+						{loop:$data[list] $v}
+						<li>
+							<a href="{$v[url]}" target="_blank" title="{$v[title]}">
+								<img class="pic" src="{$v[pic]}" alt="{$v[title]}" onerror="this.src='{$cfg[tpl]}style/img/nopic.png'">
+								<div class="tit">{$v[subject]}</div>
+							</a>
+						</li>
+						{/loop}
+						{/block}
+					</ul>
+				</div>
+				<div class="soft-list like js-tab-cont">
+					<ul>
+						{block:list_rand limit="9"}
+						{loop:$data[list] $v}
+						<li>
+							<a href="{$v[url]}" target="_blank" title="{$v[title]}">
+								<img class="pic" src="{$v[pic]}" alt="{$v[title]}" onerror="this.src='{$cfg[tpl]}style/img/nopic.png'">
+								<div class="tit">{$v[subject]}</div>
+							</a>
+						</li>
+						{/loop}
+						{/block}
+					</ul>
+				</div>
+			</div>
+
+			<!-- 游戏下载排行榜 -->
+			<div class="conbox">
+				<div class="block-title4">
+					<h3 class="title">游戏下载排行榜</h3>
+				</div>
+				<div class="soft-top-list3">
+					<ul>
+						{block:list_top cid="15" orderby="views" limit="8" showcate="1"}
+						{loop:$data[list] $v}
+						<li>
+							<p class="txt">{$v[size]}</p>
+							<i class="num num{@$v['xuhao']}">{@$v['xuhao']}</i>
+							<p class="tit"><a href="{$v[url]}" target="_blank" title="{$v[title]}">{$v[subject]}</a></p>
+						</li>
+						{/loop}
+						{/block}
+					</ul>
+				</div>
+			</div>
+
+			<!-- 同类热门游戏排行榜 -->
+			<div class="conbox">
+				<div class="block-title4">
+					<h3 class="title">同类热门游戏排行榜</h3>
+				</div>
+				<div class="soft-list5">
+					<ul>
+						{block:list_top cid="15" orderby="views" limit="10"}
+						{loop:$data[list] $v}
+						<li>
+							<a href="{$v[url]}" target="_blank" title="{$v[title]}">
+								<img class="pic" src="{$v[pic]}" alt="{$v[title]}" onerror="this.src='{$cfg[tpl]}style/img/nopic.png'">
+								<div class="tit">{$v[subject]}</div>
+							</a>
+						</li>
+						{/loop}
+						{/block}
+					</ul>
+				</div>
+			</div>
+
+			<!-- 热门搜索 -->
+			<div class="conbox">
+				<div class="block-title4">
+					<h3 class="title">热门搜索</h3>
+				</div>
+				<div class="hot-words">
+					{block:taglist mid="3" limit="16" orderby="count"}
+					{loop:$data[list] $v}
+					<a class="c{@$v['xuhao']}" href="{$v[url]}" target="_blank" title="{$v[name]}">{$v[name]}</a>
+					{/loop}
+					{/block}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{inc:footer.htm}

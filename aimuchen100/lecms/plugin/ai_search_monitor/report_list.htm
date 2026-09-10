@@ -1,0 +1,40 @@
+{inc:header.htm}
+<div class="layuimini-container">
+	<div class="layuimini-main">
+		<div class="layui-card">
+			<div class="layui-card-header">监测报告</div>
+			<div class="layui-card-body">
+				<div class="layui-btn-container" style="margin-bottom:10px">
+					<a class="layui-btn layui-btn-sm layui-btn-normal" href="?monitor-export_csv"><i class="layui-icon">&#xe601;</i> 导出CSV</a>
+				</div>
+				<table class="layui-table">
+					<thead>
+						<tr>
+							<th>检查时间</th>
+							<th>平台</th>
+							<th>关键词</th>
+							<th>是否展现</th>
+							<th>位置</th>
+							<th>置信度</th>
+						</tr>
+					</thead>
+					<tbody>
+						{loop:$list $item}
+						<tr>
+							<td>{$item['checked_at']}</td>
+							<td>{$item['platform']}</td>
+							<td>{$item['keyword']}</td>
+							<td>{if:$item['found']}<span class="layui-badge layui-bg-green">是</span>{else}<span class="layui-badge layui-bg-gray">否</span>{/if}</td>
+							<td>{$item['position']}</td>
+							<td>{$item['confidence']}%</td>
+						</tr>
+						{/loop}
+					</tbody>
+				</table>
+				{$pagebar}
+			</div>
+		</div>
+	</div>
+</div>
+</body>
+</html>

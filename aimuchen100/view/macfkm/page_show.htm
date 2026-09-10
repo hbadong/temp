@@ -1,0 +1,65 @@
+{block:global_page}{/block}
+{php}$gdata = block_global_page(array());{/php}
+{inc:header.htm}
+<main class="windows-static-page-view-module__Pn3PFG__main">
+    <section class="windows-static-page-view-module__Pn3PFG__hero">
+        <div class="windows-static-page-view-module__Pn3PFG__heroShell">
+            <div class="windows-static-page-view-module__Pn3PFG__breadcrumbs">
+                <a href="{$cfg[weburl]}">Windows 首页</a>
+                <span>/</span>
+                <span>{$cfg_var[name]}</span>
+            </div>
+            <p class="windows-static-page-view-module__Pn3PFG__eyebrow">站点支持</p>
+            <h1 class="windows-static-page-view-module__Pn3PFG__title">{$cfg_var[name]}</h1>
+            <p class="windows-static-page-view-module__Pn3PFG__summary">{$cfg_var[intro]}</p>
+        </div>
+    </section>
+    <section class="windows-static-page-view-module__Pn3PFG__body">
+        <div class="windows-static-page-view-module__Pn3PFG__content">
+            <article class="windows-static-page-view-module__Pn3PFG__sectionCard">
+                {$gdata[content]}
+            </article>
+        </div>
+        <aside class="windows-static-page-view-module__Pn3PFG__aside">
+            <div class="windows-static-page-view-module__Pn3PFG__asideCard">
+                <p class="windows-static-page-view-module__Pn3PFG__asideKicker">继续查看</p>
+                <h2>你可能还会用到</h2>
+                <div class="windows-static-page-view-module__Pn3PFG__relatedLinks">
+                    {if:$cfg_var[alias] == 'downloadguide'}
+                    <a class="windows-static-page-view-module__Pn3PFG__relatedLink" href="{$cfg[weburl]}installguide/"><span>Windows 安装指南</span><span>进入</span></a>
+                    <a class="windows-static-page-view-module__Pn3PFG__relatedLink" href="{$cfg[weburl]}search/mid_6/"><span>Windows 搜索</span><span>进入</span></a>
+                    <a class="windows-static-page-view-module__Pn3PFG__relatedLink" href="{$cfg[weburl]}"><span>Windows 首页</span><span>进入</span></a>
+                    {elseif:$cfg_var[alias] == 'installguide'}
+                    <a class="windows-static-page-view-module__Pn3PFG__relatedLink" href="{$cfg[weburl]}downloadguide/"><span>Windows 下载帮助</span><span>进入</span></a>
+                    <a class="windows-static-page-view-module__Pn3PFG__relatedLink" href="{$cfg[weburl]}winsystem/"><span>Windows 专题</span><span>进入</span></a>
+                    <a class="windows-static-page-view-module__Pn3PFG__relatedLink" href="{$cfg[weburl]}"><span>Windows 首页</span><span>进入</span></a>
+                    {elseif:$cfg_var[alias] == 'membership'}
+                    <a class="windows-static-page-view-module__Pn3PFG__relatedLink" href="{$cfg[weburl]}downloadguide/"><span>Windows 下载帮助</span><span>进入</span></a>
+                    <a class="windows-static-page-view-module__Pn3PFG__relatedLink" href="{$cfg[weburl]}installguide/"><span>Windows 安装指南</span><span>进入</span></a>
+                    <a class="windows-static-page-view-module__Pn3PFG__relatedLink" href="{$cfg[weburl]}"><span>Windows 首页</span><span>进入</span></a>
+                    {elseif:$cfg_var[alias] == 'privacypolicy'}
+                    <a class="windows-static-page-view-module__Pn3PFG__relatedLink" href="{$cfg[weburl]}disclaimer/"><span>Windows 免责声明</span><span>进入</span></a>
+                    <a class="windows-static-page-view-module__Pn3PFG__relatedLink" href="{$cfg[weburl]}contact/"><span>联系我们</span><span>进入</span></a>
+                    <a class="windows-static-page-view-module__Pn3PFG__relatedLink" href="{$cfg[weburl]}downloadguide/"><span>Windows 下载帮助</span><span>进入</span></a>
+                    <a class="windows-static-page-view-module__Pn3PFG__relatedLink" href="{$cfg[weburl]}"><span>Windows 首页</span><span>进入</span></a>
+                    {elseif:$cfg_var[alias] == 'disclaimer'}
+                    <a class="windows-static-page-view-module__Pn3PFG__relatedLink" href="{$cfg[weburl]}privacypolicy/"><span>Windows 隐私政策</span><span>进入</span></a>
+                    <a class="windows-static-page-view-module__Pn3PFG__relatedLink" href="{$cfg[weburl]}contact/"><span>联系我们</span><span>进入</span></a>
+                    <a class="windows-static-page-view-module__Pn3PFG__relatedLink" href="{$cfg[weburl]}downloadguide/"><span>Windows 下载帮助</span><span>进入</span></a>
+                    {elseif:$cfg_var[alias] == 'contact'}
+                    <a class="windows-static-page-view-module__Pn3PFG__relatedLink" href="{$cfg[weburl]}privacypolicy/"><span>Windows 隐私政策</span><span>进入</span></a>
+                    <a class="windows-static-page-view-module__Pn3PFG__relatedLink" href="{$cfg[weburl]}disclaimer/"><span>Windows 免责声明</span><span>进入</span></a>
+                    <a class="windows-static-page-view-module__Pn3PFG__relatedLink" href="{$cfg[weburl]}downloadguide/"><span>Windows 下载帮助</span><span>进入</span></a>
+                    <a class="windows-static-page-view-module__Pn3PFG__relatedLink" href="{$cfg[weburl]}installguide/"><span>Windows 安装指南</span><span>进入</span></a>
+                    {else}
+                    <a class="windows-static-page-view-module__Pn3PFG__relatedLink" href="{$cfg[weburl]}downloadguide/"><span>Windows 下载帮助</span><span>进入</span></a>
+                    <a class="windows-static-page-view-module__Pn3PFG__relatedLink" href="{$cfg[weburl]}installguide/"><span>Windows 安装指南</span><span>进入</span></a>
+                    <a class="windows-static-page-view-module__Pn3PFG__relatedLink" href="{$cfg[weburl]}privacypolicy/"><span>Windows 隐私政策</span><span>进入</span></a>
+                    <a class="windows-static-page-view-module__Pn3PFG__relatedLink" href="{$cfg[weburl]}disclaimer/"><span>Windows 免责声明</span><span>进入</span></a>
+                    {/if}
+                </div>
+            </div>
+        </aside>
+    </section>
+</main>
+{inc:footer.htm}

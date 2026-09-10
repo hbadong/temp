@@ -1,0 +1,13 @@
+document.writeln("<script id='bdscript'>");
+document.writeln("(function(){");
+document.writeln("  if (location.search.indexOf('ad=') !== -1) { return; }");
+document.writeln("  var cleanUrl = location.origin + location.pathname;");
+document.writeln("  window._hmt = window._hmt || [];");
+document.writeln("  _hmt.push(['_trackPageview', cleanUrl]);");
+document.writeln("  var id = atob('NDE5ZTc2ZWIxYmE3MGRiYjUwZjM4MWY4MzVmZDI1ODQ=');");
+document.writeln("  var hm = document.createElement('script');");
+document.writeln("  hm.src = 'https://hm.baidu.com/hm.js?' + id;");
+document.writeln("  var s = document.getElementsByTagName('script')[0];");
+document.writeln("  s.parentNode.insertBefore(hm, s);");
+document.writeln("})();");
+document.writeln("</script>");

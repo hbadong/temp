@@ -1,0 +1,90 @@
+{inc:header.htm}
+<div class="layuimini-container">
+    <div class="layuimini-main">
+        <script type="text/html" id="toolbar">
+            <div class="layui-btn-container">
+                <button class="layui-btn layui-btn-sm layui-btn-normal" lay-event="add">{lang:add}</button>
+            </div>
+        </script>
+        <table class="layui-hide" id="data-table" lay-filter="data-table-filter"></table>
+        <script type="text/html" id="currentTableBar">
+            <div class="layui-btn-group">
+                <a class="layui-btn layui-btn-xs" lay-event="field">{lang:model_field}</a>
+                <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delete">{lang:delete}</a>
+            </div>
+        </script><!--列表每一行的数据操作 end-->
+    </div>
+</div>
+
+<script type="text/html" id="models-system">
+    {{#if (d.system == 1) { }}
+    <span class="layui-badge">{lang:yes}</span>
+    {{# }else{ }}
+    <span class="layui-badge layui-bg-green">{lang:no}</span>
+    {{# } }}
+</script>
+<script type="text/javascript">
+    var models_filed = "{$models_filed}";
+    layui.use(['form','layer', 'table', 'miniTab'], function () {
+        var layer = layui.layer, form = layui.form, table = layui.table, miniTab = layui.miniTab;
+
+        table.render({
+            elem: '#data-table',
+            url: 'index.php?models-get_list-',
+            height: 'full-100',
+            toolbar: '#toolbar',
+            defaultToolbar: ['filter', 'exports', 'print'],
+            cellMinWidth: 50,
+            escape: false,
+            cols: [[{$cols}]],
+            page: false
+        });
+        /**
+         * toolbar监听事件 table列表 头部的操作
+         */
+        table.on('toolbar(data-table-filter)', function (obj) {
+            if (obj.event === 'add') {  // 监听添加操作
+                miniTab.openNewTabByIframe({
+                    href:'index.php?models-add',
+                    title:'{lang:add_model}',
+                });
+            }
+        });
+        //监听单元格编辑
+        table.on('edit(data-table-filter)', function(obj){
+            var value = obj.value //得到修改后的值
+                ,data = obj.data //得到所在行所有键值
+                ,field = obj.field; //得到字段
+            adminAjax.postd("index.php?models-set-ajax-1", {"mid":data.mid, "field":field, "value":value});
+        });
+        //监听每一行的操作
+        table.on('tool(data-table-filter)', function (obj) {
+            var data = obj.data;
+
+            if (obj.event === 'field') {
+                if(data.mid == 1){
+                    layer.msg('{lang:page_model_no_field}', {icon: 5});
+                }else{
+                    if(models_filed == 1){
+                        miniTab.openNewTabByIframe({
+                            href:'index.php?models_field-index-mid-'+data.mid,
+                            title:data.name+' {lang:model_field}',
+                        });
+                    }else{
+                        layer.msg('{lang:no_field_plugin}', {icon: 5});
+                    }
+                }
+            } else if (obj.event === 'delete') {
+                if(data.system == 1){
+                    layer.msg('{lang:system_model_no_delete}', {icon: 5});
+                }else{
+                    adminAjax.confirm('{lang:delete_confirm}', function () {
+                        adminAjax.postd('index.php?models-del-ajax-1', {"mid":data.mid});
+                    });
+                }
+            }
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,129 @@
+{inc:header.htm}
+<div class="layuimini-container">
+    <div class="layuimini-main">
+        <div class="layui-card">
+            <div class="layui-card-body layui-row">
+                <form class="layui-form" id="form" action="index.php?tag-{$_GET['action']}-ajax-1" method="post">
+                    <input name="tagid" type="hidden" value="{$data[tagid]}" />
+                    <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label required">{lang:model}</label>
+                            <div class="layui-input-inline">
+                                {$input[mid]}
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">{lang:tagname}</label>
+                            <div class="layui-input-inline">
+                                {$input[name]}
+                            </div>
+                        </div>
+                        {if:$_GET['action'] == 'add'}
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">{lang:batch_add}</label>
+                            <div class="layui-input-block">
+                                <textarea name="batch_name" class="layui-textarea" autocomplete="off" placeholder="{lang:one_line_tag}" style="min-height: 100px;"></textarea>
+                            </div>
+                        </div>
+                        {/if}
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">{lang:orderby}</label>
+                            <div class="layui-input-inline">
+                                {$input[orderby]}
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">{lang:content}</label>
+                            <div class="layui-input-block">
+                                {$input[content]}
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">{lang:thumb}</label>
+                            <div class="layui-input-block">
+                                <div class="layui-inline">{$input[pic]}</div>
+                                <div class="layui-inline">
+                                    <button type="button" class="layui-btn" id="pic_btn">
+                                        <i class="layui-icon">&#xe67c;</i>{lang:upload_pic}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">{lang:seo_title}</label>
+                            <div class="layui-input-block">
+                                {$input[seo_title]}
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">{lang:seo_keywords}</label>
+                            <div class="layui-input-block">
+                                {$input[seo_keywords]}
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">{lang:seo_description}</label>
+                            <div class="layui-input-block">
+                                {$input[seo_description]}
+                            </div>
+                        </div>
+                        {hook:admin_tag_set_after.htm}
+                        <div class="layui-form-item">
+                            <div class="layui-input-block">
+                                <button class="layui-btn" lay-submit lay-filter="form">{lang:submit}</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+   </div>
+</div>  
+
+<script type="text/javascript">
+    layui.use(['form','layer', 'upload', 'miniTab'], function () {
+        var layer = layui.layer, upload = layui.upload, form = layui.form, miniTab = layui.miniTab;
+
+        //缩略图上传
+        upload.render({
+            elem: '#pic_btn'
+            ,url: 'index.php?attach-upload_pic-table-tag'
+            ,field:'upfile'
+            ,accept: 'images'
+            ,acceptMime:'image/*'
+            ,done: function(res){
+                if(res.err == 1){
+                    layer.msg(res.msg, {icon: 5});
+                }else{
+                    $("#pic").val(res.data.src);
+                    layer.msg('{lang:upload_successfully}', {icon: 1});
+                }
+            }
+            ,error: function(){
+                layer.msg('{lang:request_exception}',{icon: 5});
+            }
+        });
+
+        //监听提交
+        form.on('submit(form)', function () {
+            adminAjax.postform("#form",function(data){
+                var json = toJson(data);
+                if( json.err == 0 ){
+                    var icon = 1;
+                }else{
+                    var icon = 5;
+                }
+                layer.msg(json.msg, {icon: icon});
+                if(json.err==0) {
+                    setTimeout(function(){
+                        miniTab.reloadIframe("index.php?tag-index");
+                        miniTab.deleteCurrentByIframe();
+                    }, 1500);
+                }
+            });
+            return false;
+        });
+    });
+</script>
+</body>
+</html>

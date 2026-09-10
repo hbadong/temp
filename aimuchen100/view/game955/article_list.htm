@@ -1,0 +1,101 @@
+{inc:header.htm}
+<div class="content wrapper">
+	<div class="url-here">
+		{loop:$cfg_var[place] $p}
+		{if:$p[url]}
+		<a href="{$p[url]}">{$p[name]}</a> &gt;
+		{else}
+		{$p[name]}
+		{/if}
+		{/loop}
+	</div>
+	<!-- 分类标签栏 -->
+	<div class="sec-nav">
+		<a {if:$_GET[cid] == $cfg_var[cid]}class="on"{/if} href="{$cfg_var[url]}">全部</a>
+		{block:category type="child"}
+		{loop:$data $v}
+		<a {if:$_GET[cid] == $v[cid]}class="on"{/if} href="{$v[url]}">{$v[name]}</a>
+		{/loop}
+		{/block}
+	</div>
+
+	<div class="fn-clear">
+		<div class="content-l fl">
+			<div class="news-list2">
+				{block:global_cate pagenum="15" dateformat="Y-m-d" intronum="50" showcate="1"}
+				{loop:$gdata[list] $v}
+				{if:$v[xuhao] <= 2}
+				<ul class="focus">
+					<li>
+						<a class="pic-wrap" href="{$v[url]}" target="_blank" title="{$v[title]}">
+							<img class="pic" src="{$v[pic]}" alt="{$v[title]}" onerror="this.src='{$cfg[tpl]}style/img/nopic.png'">
+						</a>
+						<a class="tit" href="{$v[url]}" target="_blank" title="{$v[title]}">{$v[subject]}</a>
+					</li>
+				</ul>
+				{else}
+				<ul>
+					<li><a class="tit" href="{$v[url]}" target="_blank" title="{$v[title]}">{$v[subject]}</a></li>
+				</ul>
+				{/if}
+				{/loop}
+				{/block}
+			</div>
+			<div class="laypage_main">
+				{$gdata[pages]}
+			</div>
+		</div>
+		<div class="content-r fr">
+			<!-- 最新资讯 -->
+			<div class="conbox">
+				<div class="block-title4">
+					<h3 class="title">最新资讯</h3>
+				</div>
+				<div class="news-list3">
+					<ul>
+						{block:list mid="2" limit="10"}
+						{loop:$data[list] $v}
+						<li><a class="tit" href="{$v[url]}" target="_blank" title="{$v[title]}">{$v[subject]}</a></li>
+						{/loop}
+						{/block}
+					</ul>
+				</div>
+			</div>
+			<!-- 同类热门游戏排行榜 -->
+			<div class="conbox">
+				<div class="block-title4">
+					<h3 class="title">同类热门游戏排行榜</h3>
+				</div>
+				<div class="soft-list5">
+					<ul>
+						{block:list_top orderby="views" limit="10"}
+						{loop:$data[list] $v}
+						<li>
+							<a href="{$v[url]}" target="_blank" title="{$v[title]}">
+								<img class="pic" src="{$v[pic]}" alt="{$v[title]}" onerror="this.src='{$cfg[tpl]}style/img/nopic.png'">
+								<div class="tit">{$v[subject]}</div>
+							</a>
+						</li>
+						{/loop}
+						{/block}
+					</ul>
+				</div>
+			</div>
+			<!-- 热门搜索 -->
+			<div class="conbox">
+				<div class="block-title4">
+					<h3 class="title">热门搜索</h3>
+				</div>
+				<div class="hot-words">
+					{block:taglist mid="3" limit="16" orderby="count"}
+					{loop:$data[list] $v}
+					<a class="c{@$v['xuhao']}" href="{$v[url]}" target="_blank" title="{$v[name]}">{$v[name]}</a>
+					{/loop}
+					{/block}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{inc:footer.htm}

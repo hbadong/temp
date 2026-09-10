@@ -1,0 +1,75 @@
+{inc:header.htm}
+<div class="layuimini-container">
+	<div class="layuimini-main">
+		<div class="layui-card">
+			<div class="layui-card-header">{if:$site['id']}编辑竞品站点{else}添加竞品站点{/if}</div>
+			<div class="layui-card-body">
+				<form id="form" class="layui-form" action="?competitor-edit_post-ajax-1" method="post">
+					<input type="hidden" name="id" value="{$site['id']}">
+					<input type="hidden" name="FORM_HASH" value="{@form_hash()}">
+					<div class="layui-form-item">
+						<label class="layui-form-label required">站点名称</label>
+						<div class="layui-input-inline">
+							<input type="text" name="name" value="{$site['name']}" autocomplete="off" placeholder="请输入站点名称" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label required">URL</label>
+						<div class="layui-input-inline">
+							<input type="url" name="url" value="{$site['url']}" autocomplete="off" placeholder="请输入 http(s) 协议 URL" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">分组</label>
+						<div class="layui-input-inline">
+							<select name="group">
+								<option value="direct" {if:$site['group'] == 'direct'}selected{/if}>直接竞品</option>
+								<option value="indirect" {if:$site['group'] == 'indirect'}selected{/if}>间接竞品</option>
+								<option value="benchmark" {if:$site['group'] == 'benchmark'}selected{/if}>标杆站点</option>
+							</select>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">状态</label>
+						<div class="layui-input-inline">
+							<select name="status">
+								<option value="1" {if:$site['status'] == 1}selected{/if}>启用</option>
+								<option value="0" {if:$site['status'] == 0}selected{/if}>停用</option>
+							</select>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<div class="layui-input-block">
+							<button class="layui-btn" lay-submit lay-filter="form">保存</button>
+							<a class="layui-btn layui-btn-primary" href="?competitor-index">返回</a>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+layui.use(['form','layer','miniTab'], function(){
+	var layer = layui.layer, form = layui.form, miniTab = layui.miniTab;
+
+	form.render();
+
+	//监听提交
+	form.on('submit(form)', function () {
+		adminAjax.postform('#form', function (data) {
+			var json = toJson(data);
+			layer.msg(json.msg, {icon: json.err == 0 ? 1 : 5});
+			if(json.err == 0) {
+				setTimeout(function(){
+					miniTab.reloadIframe('index.php?competitor-index');
+					miniTab.deleteCurrentByIframe();
+				}, 1500);
+			}
+		});
+		return false;
+	});
+});
+</script>
+</body>
+</html>

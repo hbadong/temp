@@ -1,0 +1,160 @@
+{block:global_show show_prev_next="1" dateformat="Y-m-d" field_format="1"}{/block}
+{inc:header.htm}
+<div class="page-module__CBPw8q__compactActionCard" id="compactActionCard">
+    <div class="page-module__CBPw8q__compactIdentity">
+        <img alt="{$gdata[title]}" class="page-module__CBPw8q__compactIcon" draggable="false" src="{$gdata[pic]}"/>
+        <div class="page-module__CBPw8q__compactCopy">
+            <div class="page-module__CBPw8q__compactTitle">{$gdata[title]}</div>
+            <div class="page-module__CBPw8q__compactMeta">{if:$gdata[intro]}{$gdata[intro]}{/if}</div>
+        </div>
+    </div>
+    {if:$gdata[download_url_pc]}
+    <a class="page-module__CBPw8q__compactShareButton" href="{$gdata[download_url_pc]}" target="_blank" rel="nofollow">下载</a>
+    {else}
+    <button class="page-module__CBPw8q__compactShareButton" type="button">下载</button>
+    {/if}
+</div>
+<section class="page-module__CBPw8q__hero">
+    <div class="page-module__CBPw8q__heroBackdrop">
+    </div>
+    <div class="page-module__CBPw8q__heroShell">
+        <div class="page-module__CBPw8q__heroInner">
+            <div class="page-module__CBPw8q__heroContent">
+                <div class="page-module__CBPw8q__titleRow">
+                    <img alt="{$gdata[title]}" class="page-module__CBPw8q__appIcon" draggable="false" src="{$gdata[pic]}"/>
+                    <div class="page-module__CBPw8q__titleCopy">
+                        <h1 class="page-module__CBPw8q__appTitle">{$gdata[title]}</h1>
+                        <p class="page-module__CBPw8q__appDeveloper">{$gdata[intro]}</p>
+                    </div>
+                </div>
+                <div class="page-module__CBPw8q__providerCard">
+                    <span aria-hidden="true" class="page-module__CBPw8q__providerWindowsIcon">
+                        <span></span><span></span><span></span><span></span>
+                    </span>
+                    <span>仅支持 Windows 系统</span>
+                </div>
+                <p class="page-module__CBPw8q__heroSummary">{php}
+                $desc = preg_replace('#<p[^>]*>\s*<img[^>]+>\s*</p>#i', '', (string)$gdata['content']);
+                $desc = preg_replace('#<[^>]+>#', ' ', $desc);
+                $desc = trim(preg_replace('/\s+/u', ' ', $desc));
+                $out = '';
+                foreach(preg_split('/(?<=。|！|？)/u', $desc) as $sent){
+                    if(mb_strlen($out . $sent) > 90) break;
+                    $out .= $sent;
+                }
+                echo $out ? $out : mb_substr($desc, 0, 90);
+                {/php}</p>
+                <div class="page-module__CBPw8q__quickFactRow">
+                    <span class="page-module__CBPw8q__quickFactChip">{@implode(' / ', (array)$gdata['tags'])}</span>
+                    <span class="page-module__CBPw8q__quickFactChip">{if:$gdata[version]}{$gdata[version]}{/if}</span>
+                    <span class="page-module__CBPw8q__quickFactChip">{if:$gdata[update_time]}{$gdata[update_time]}{/if}</span>
+                    <span class="page-module__CBPw8q__quickFactChip">VIP 免费 / 单买 5</span>
+                </div>
+                <div class="page-module__CBPw8q__supportList">
+                    <div class="page-module__CBPw8q__supportItem"><span class="page-module__CBPw8q__supportBullet"></span><span>适用于 Windows 桌面系统</span></div>
+                    <div class="page-module__CBPw8q__supportItem"><span class="page-module__CBPw8q__supportBullet"></span><span>资源与安装说明已整理</span></div>
+                    <div class="page-module__CBPw8q__supportItem"><span class="page-module__CBPw8q__supportBullet"></span><span>请按页面说明完成安装</span></div>
+                </div>
+                {if:$gdata[download_url_pc]}
+                <a class="page-module__CBPw8q__shareButton" href="{$gdata[download_url_pc]}" target="_blank" rel="nofollow">下载</a>
+                {else}
+                <button class="page-module__CBPw8q__shareButton" type="button">下载</button>
+                {/if}
+            </div>
+            <div aria-hidden="true" class="page-module__CBPw8q__heroArtwork">
+                <div class="page-module__CBPw8q__heroArtworkGlowPrimary"></div>
+                <div class="page-module__CBPw8q__heroArtworkGlowSecondary"></div>
+                <div class="page-module__CBPw8q__heroArtworkGlass">
+                    <div class="page-module__CBPw8q__heroArtworkHalo"></div>
+                    <img alt="" class="page-module__CBPw8q__heroArtworkIcon" draggable="false" src="{$gdata[pic]}"/>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<div class="page-module__CBPw8q__shell">
+<main class="page-module__CBPw8q__main">
+    <section class="page-module__CBPw8q__contentLayout">
+        <div class="page-module__CBPw8q__primaryColumn">
+            <section class="page-module__CBPw8q__card" data-sticky-anchor="true">
+                <div class="page-module__CBPw8q__cardHeader">
+                    <h2 class="page-module__CBPw8q__sectionTitle">屏幕截图</h2>
+                </div>
+                <div class="page-module__CBPw8q__screenshotGallery">
+                    <div class="page-module__CBPw8q__screenshotViewport">
+                        <div class="page-module__CBPw8q__screenshotRail">
+                            {php}
+                            if (!empty($gdata['content']) && preg_match_all('/<img[^>]+src="([^"]+)"/', $gdata['content'], $m) && !empty($m[1])) {
+                                foreach ($m[1] as $img) {
+                                    echo '<div class="page-module__CBPw8q__screenshotThumb"><img alt="' . htmlspecialchars($gdata['title']) . '" class="page-module__CBPw8q__screenshotImage" draggable="false" src="' . $img . '"/></div>';
+                                }
+                            }
+                            {/php}
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="page-module__CBPw8q__card">
+                <div class="page-module__CBPw8q__cardHeader">
+                    <h2 class="page-module__CBPw8q__sectionTitle">说明</h2>
+                </div>
+                <div class="page-module__CBPw8q__richText">{php}
+                $desc = preg_replace('#<p[^>]*>\s*<img[^>]+>\s*</p>#i', '', (string)$gdata['content']);
+                $desc = preg_replace('#<img[^>]+>#i', '', $desc);
+                $desc = preg_replace('#<p[^>]*>\s*</p>#i', '', $desc);
+                echo $desc;
+                {/php}</div>
+            </section>
+            <section class="page-module__CBPw8q__card">
+                <div class="page-module__CBPw8q__cardHeader">
+                    <h2 class="page-module__CBPw8q__sectionTitle">其他信息</h2>
+                </div>
+                <div class="page-module__CBPw8q__detailInfoGrid">
+                    <div class="page-module__CBPw8q__detailInfoItem">
+                        <div class="page-module__CBPw8q__detailInfoLabel">开发者</div>
+                        <div class="page-module__CBPw8q__detailInfoValue">{if:$gdata[developer]}{$gdata[developer]}{/if}</div>
+                    </div>
+                    <div class="page-module__CBPw8q__detailInfoItem">
+                        <div class="page-module__CBPw8q__detailInfoLabel">类别</div>
+                        <div class="page-module__CBPw8q__detailInfoValue">{@implode(' / ', (array)$gdata['tags'])}</div>
+                    </div>
+                    <div class="page-module__CBPw8q__detailInfoItem">
+                        <div class="page-module__CBPw8q__detailInfoLabel">发布时间</div>
+                        <div class="page-module__CBPw8q__detailInfoValue">{if:$gdata[update_time]}{$gdata[update_time]}{else}{$gdata[date]}{/if}</div>
+                    </div>
+                    <div class="page-module__CBPw8q__detailInfoItem">
+                        <div class="page-module__CBPw8q__detailInfoLabel">版本号</div>
+                        <div class="page-module__CBPw8q__detailInfoValue">{if:$gdata[version]}{$gdata[version]}{/if}</div>
+                    </div>
+                    <div class="page-module__CBPw8q__detailInfoItem">
+                        <div class="page-module__CBPw8q__detailInfoLabel">系统要求</div>
+                        <div class="page-module__CBPw8q__detailInfoValue">{if:$gdata[system_req]}{$gdata[system_req]}{else}Windows 10 以上{/if}</div>
+                    </div>
+                    <div class="page-module__CBPw8q__detailInfoItem">
+                        <div class="page-module__CBPw8q__detailInfoLabel">文件大小</div>
+                        <div class="page-module__CBPw8q__detailInfoValue">{if:$gdata[size]}{$gdata[size]}{/if}</div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <aside class="page-module__CBPw8q__sidebar">
+            <div class="page-module__CBPw8q__discoverTitle">发现更多 &gt;</div>
+            <div class="page-module__CBPw8q__discoverList">
+                {block:list cid="92" mid="6" limit="6" orderby="lasttime" field_format="1"}
+                {loop:$data[list] $v}
+                <a class="page-module__CBPw8q__discoverItem" href="{$v[url]}">
+                    <img alt="{$v[title]}" class="page-module__CBPw8q__discoverIcon" draggable="false" src="{$v[pic]}"/>
+                    <div class="page-module__CBPw8q__discoverCopy">
+                        <div class="page-module__CBPw8q__discoverName">{$v[subject]}</div>
+                        <div class="page-module__CBPw8q__discoverMeta">{@$v['developer']}</div>
+                    </div>
+                    <span class="page-module__CBPw8q__discoverAction">下载</span>
+                </a>
+                {/loop}
+                {/block}
+            </div>
+        </aside>
+    </section>
+</main>
+</div>
+{inc:footer.htm}

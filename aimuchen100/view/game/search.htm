@@ -1,0 +1,38 @@
+{inc:header.htm}
+
+<div class="crumb">
+	<div><i class="ico"></i>所在位置：
+		<a href="{$cfg[weburl]}" target="_blank">首页</a> &gt;
+		搜索 "<em>{$keyword}</em>"
+	</div>
+</div>
+
+<div class="wraper">
+	<!-- 搜索结果列表 -->
+	<section class="softWareList">
+		<ul>
+			{block:global_search pagenum="15" dateformat="Y-m-d" intronum="50" showviews="1"}
+			{loop:$gdata[list] $v}
+			<li>
+				<a href="{$v[url]}" target="_blank" class="pic">
+					<img src="{$v[pic]}" alt="{$v[title]}" onerror="this.src='{$cfg[tpl]}style/img/nopic.png'">
+				</a>
+				<div>
+					<a href="{$v[url]}" target="_blank">{$v[subject]}</a>
+					<p>所属分类：<span>{$v[cate_name]}</span></p>
+					<p>更新时间：<span>{$v[date]}</span></p>
+					<p>{$v[intro]}</p>
+				</div>
+				<a target="_blank" href="{$v[url]}" class="down">查看详情</a>
+			</li>
+			{/loop}
+			{/block}
+		</ul>
+		<!-- 分页 -->
+		<div class="pagecode">
+			{$gdata[pages]}
+		</div>
+	</section>
+</div>
+
+{inc:footer.htm}

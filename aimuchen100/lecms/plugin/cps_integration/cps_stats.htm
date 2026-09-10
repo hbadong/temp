@@ -1,0 +1,99 @@
+{inc:header.htm}
+<div class="layuimini-container">
+	<div class="layuimini-main">
+		<div class="layui-card">
+			<div class="layui-card-header">
+				CPS 点击统计（{$from_date} ~ {$to_date}）
+			</div>
+			<div class="layui-card-body">
+			<div style="margin-bottom:15px">
+				<a href="?cps_stats-index&dim=day&days=7" class="layui-btn layui-btn-sm {if:$dim=='day'}layui-btn-primary{/if}">近7天</a>
+				<a href="?cps_stats-index&dim=week&days=28" class="layui-btn layui-btn-sm {if:$dim=='week'}layui-btn-primary{/if}">近4周</a>
+				<a href="?cps_stats-index&dim=month&days=90" class="layui-btn layui-btn-sm {if:$dim=='month'}layui-btn-primary{/if}">近3月</a>
+			</div>
+
+			<div class="layui-row layui-col-space20" style="margin-bottom:20px">
+				<div class="layui-col-md4">
+					<div class="layui-card" style="background:#f0f7ff">
+						<div class="layui-card-body" style="text-align:center">
+							<div style="font-size:34px;font-weight:700;color:#1e90ff">{$stats['clicks']}</div>
+							<div style="color:#888">总点击</div>
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md4">
+					<div class="layui-card" style="background:#f0fff0">
+						<div class="layui-card-body" style="text-align:center">
+							<div style="font-size:34px;font-weight:700;color:#2ecc71">{$stats['unique_ips']}</div>
+							<div style="color:#888">唯一IP（24h去重）</div>
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md4">
+					<div class="layui-card" style="background:#fff8f0">
+						<div class="layui-card-body" style="text-align:center">
+							{php}$conv = ($stats['clicks'] > 0) ? round($stats['unique_ips'] / $stats['clicks'] * 100, 1) : 0;{/php}
+							<div style="font-size:34px;font-weight:700;color:#e67e22">{$conv}%</div>
+							<div style="color:#888">转化率</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="layui-tab layui-tab-brief" lay-filter="stats">
+				<ul class="layui-tab-title">
+					<li class="layui-this">按天趋势</li>
+					<li>按游戏</li>
+					<li>按链接</li>
+				</ul>
+				<div class="layui-tab-content">
+					<div class="layui-tab-item layui-show">
+						<table class="layui-table" lay-skin="line">
+							<thead><tr><th>日期</th><th>点击</th><th>唯一IP</th></tr></thead>
+							<tbody>
+							{loop:$stats['per_day'] $row}
+							<tr><td>{$row['day']}</td><td>{$row['clicks']}</td><td>{$row['unique_ips']}</td></tr>
+							{/loop}
+							{if:empty($stats['per_day'])}
+							<tr><td colspan="3" style="text-align:center">暂无数据</td></tr>
+							{/if}
+							</tbody>
+						</table>
+					</div>
+					<div class="layui-tab-item">
+						<table class="layui-table" lay-skin="line">
+							<thead><tr><th>游戏ID</th><th>点击</th><th>唯一IP</th></tr></thead>
+							<tbody>
+							{loop:$stats['per_game'] $row}
+							<tr><td>{$row['game_id']}</td><td>{$row['clicks']}</td><td>{$row['unique_ips']}</td></tr>
+							{/loop}
+							{if:empty($stats['per_game'])}
+							<tr><td colspan="3" style="text-align:center">暂无数据</td></tr>
+							{/if}
+							</tbody>
+						</table>
+					</div>
+					<div class="layui-tab-item">
+						<table class="layui-table" lay-skin="line">
+							<thead><tr><th>CPS链接ID</th><th>点击</th><th>唯一IP</th><th>降级次数</th></tr></thead>
+							<tbody>
+							{loop:$stats['per_cps'] $row}
+							<tr><td>{$row['cps_id']}</td><td>{$row['clicks']}</td><td>{$row['unique_ips']}</td><td>{$row['degraded_count']}</td></tr>
+							{/loop}
+							{if:empty($stats['per_cps'])}
+							<tr><td colspan="4" style="text-align:center">暂无数据</td></tr>
+							{/if}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+layui.use('element', function(){ var element = layui.element; });
+</script>
+</body>
+</html>

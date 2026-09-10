@@ -1,0 +1,453 @@
+{inc:header.htm}
+<div class="windows-homepage-module__n3qHYq__shell">
+<main class="windows-homepage-module__n3qHYq__main">
+    <!-- hero -->
+    <section class="windows-homepage-module__n3qHYq__heroSection">
+        <div class="windows-homepage-module__n3qHYq__heroFrame">
+            <div class="windows-homepage-module__n3qHYq__heroGrid">
+                <div class="windows-homepage-module__n3qHYq__heroPrimarySlot">
+                    <div class="windows-homepage-module__n3qHYq__heroPrimaryStage">
+                        {block:list_flag flag="1" cid="92" mid="6" limit="1" field_format="1"}
+                        {loop:$data[list] $v}
+                        <a class="windows-homepage-module__n3qHYq__heroCard windows-homepage-module__n3qHYq__heroCardNoWhiteOverlay windows-homepage-module__n3qHYq__heroPrimary windows-homepage-module__n3qHYq__heroPrimaryLayer windows-homepage-module__n3qHYq__heroPrimaryCurrent windows-homepage-module__n3qHYq__heroPrimaryEnterNext" style="background:linear-gradient(180deg, rgba(9, 18, 33, 0.18), rgba(9, 18, 33, 0.36)), url(&quot;{$cfg[webdir]}upload/macfk/banner1.jpg&quot;) center / cover no-repeat, linear-gradient(135deg, #2563eb 0%, #2563ebdd 100%)" href="{$v[url]}">
+                            <div class="windows-homepage-module__n3qHYq__heroPrimaryContent windows-homepage-module__n3qHYq__heroPrimaryContentEnterNext">
+                                <span class="windows-homepage-module__n3qHYq__heroBadge">MacFk 推荐</span>
+                                <span class="windows-homepage-module__n3qHYq__heroCardTitle">{$v[subject]}</span>
+                                <span class="windows-homepage-module__n3qHYq__heroCardSubtitle">{$v[intro]}</span>
+                                <span class="windows-homepage-module__n3qHYq__heroCardAction">获取</span>
+                            </div>
+                        </a>
+                        {/loop}
+                        {/block}
+                    </div>
+                    <div class="windows-homepage-module__n3qHYq__heroPrimaryControls">
+                        <div class="windows-homepage-module__n3qHYq__heroDots">
+                            <span class="windows-homepage-module__n3qHYq__heroDot windows-homepage-module__n3qHYq__heroDotActive"></span>
+                        </div>
+                    </div>
+                </div>
+                {block:list_flag flag="1" cid="92" mid="6" start="1" limit="1" field_format="1"}
+                {loop:$data[list] $v}
+                <a class="windows-homepage-module__n3qHYq__heroCard windows-homepage-module__n3qHYq__heroCardNoWhiteOverlay windows-homepage-module__n3qHYq__heroSecondary" style="background:linear-gradient(180deg, rgba(9, 18, 33, 0.18), rgba(9, 18, 33, 0.38)), url(&quot;{$v[pic]}&quot;) center / cover no-repeat, linear-gradient(135deg, #2563eb 0%, #2563ebdd 100%)" href="{$v[url]}">
+                    <span class="windows-homepage-module__n3qHYq__heroCardTitle">{$v[subject]}</span>
+                    <span class="windows-homepage-module__n3qHYq__heroCardSubtitle">{$v[intro]}</span>
+                    <span class="windows-homepage-module__n3qHYq__heroCardAction">获取</span>
+                </a>
+                {/loop}
+                {/block}
+                {block:list_flag flag="1" cid="92" mid="6" start="2" limit="2" field_format="1"}
+                {loop:$data[list] $v}
+                <a class="windows-homepage-module__n3qHYq__heroCard windows-homepage-module__n3qHYq__heroCardNoWhiteOverlay windows-homepage-module__n3qHYq__heroSmallA" style="background:linear-gradient(180deg, rgba(9, 18, 33, 0.18), rgba(9, 18, 33, 0.38)), url(&quot;{$v[pic]}&quot;) center / cover no-repeat, linear-gradient(135deg, #2563eb 0%, #2563ebdd 100%)" href="{$v[url]}">
+                    <span class="windows-homepage-module__n3qHYq__heroCardTitle">{$v[subject]}</span>
+                </a>
+                {/loop}
+                {/block}
+            </div>
+        </div>
+    </section>
+
+    <!-- 办公 -->
+    <section class="windows-homepage-module__n3qHYq__moduleSection">
+        <div class="windows-homepage-module__n3qHYq__sectionHeader">
+            <h2 class="windows-homepage-module__n3qHYq__sectionTitle">办公</h2>
+            <a class="windows-homepage-module__n3qHYq__sectionMore" href="{$cfg[weburl]}winoffice/">查看更多</a>
+        </div>
+        <div class="windows-homepage-module__n3qHYq__officeCollection">
+            <div class="windows-homepage-module__n3qHYq__officeCollectionShell">
+                <div class="windows-homepage-module__n3qHYq__officeCollectionViewport">
+                    <ul class="windows-homepage-module__n3qHYq__officeCollectionTrack">
+                        {block:list cid="93" mid="6" limit="12" showcate="1" intronum="30" field_format="1"}
+                        {loop:$data[list] $v}
+                        <li class="windows-homepage-module__n3qHYq__officeCollectionItem">
+                            <a class="windows-homepage-module__n3qHYq__officeCard" href="{$v[url]}">
+                                <div class="windows-homepage-module__n3qHYq__officeCardHero" style="background:linear-gradient(135deg, #ede9fe 0%, #f5f3ff 100%)">
+                                    <img alt="{$v[title]}" class="windows-homepage-module__n3qHYq__officeCardHeroIcon" draggable="false" src="{$v[pic]}"/>
+                                </div>
+                                <div class="windows-homepage-module__n3qHYq__officeCardBody">
+                                    <div class="windows-homepage-module__n3qHYq__officeCardCopy">
+                                        <div class="windows-homepage-module__n3qHYq__officeCardTitle">{$v[subject]}</div>
+                                        <div class="windows-homepage-module__n3qHYq__officeCardDesc">{@$v['cate_name']} · {@$v['developer']}</div>
+                                    </div>
+                                    <span class="windows-homepage-module__n3qHYq__officeCardButton">查看</span>
+                                </div>
+                            </a>
+                        </li>
+                        {/loop}
+                        {/block}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 设计 -->
+    <section class="windows-homepage-module__n3qHYq__moduleSection">
+        <div class="windows-homepage-module__n3qHYq__sectionHeader">
+            <h2 class="windows-homepage-module__n3qHYq__sectionTitle">设计</h2>
+            <a class="windows-homepage-module__n3qHYq__sectionMore" href="{$cfg[weburl]}windesign/">查看更多</a>
+        </div>
+        <div class="windows-homepage-module__n3qHYq__designCollection">
+            <div class="windows-homepage-module__n3qHYq__designCollectionShell">
+                <div class="windows-homepage-module__n3qHYq__designCollectionViewport">
+                    <ul class="windows-homepage-module__n3qHYq__designCollectionTrack">
+                        {block:list cid="95" mid="6" limit="12" showcate="1" intronum="20" field_format="1"}
+                        {loop:$data[list] $v}
+                        <li class="windows-homepage-module__n3qHYq__designCollectionItem">
+                            <a class="windows-homepage-module__n3qHYq__designCard" href="{$v[url]}">
+                                <div class="windows-homepage-module__n3qHYq__designCardCover" style="background-image:url({$v[pic]})"></div>
+                                <div class="windows-homepage-module__n3qHYq__designCardBody">
+                                    <div class="windows-homepage-module__n3qHYq__designCardMeta">
+                                        <img alt="{$v[title]}" class="windows-homepage-module__n3qHYq__designCardIcon" draggable="false" src="{$v[pic]}"/>
+                                        <div class="windows-homepage-module__n3qHYq__designCardCopy">
+                                            <div class="windows-homepage-module__n3qHYq__designCardTitle">{$v[subject]}</div>
+                                            <div class="windows-homepage-module__n3qHYq__designCardSubtitle">{$v[cate_name]}</div>
+                                        </div>
+                                    </div>
+                                    <span class="windows-homepage-module__n3qHYq__designCardButton">下载</span>
+                                </div>
+                            </a>
+                        </li>
+                        {/loop}
+                        {/block}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 排行榜 -->
+    <section class="windows-homepage-module__n3qHYq__moduleSection windows-homepage-module__n3qHYq__rankingModuleSection">
+        <div class="windows-homepage-module__n3qHYq__sectionHeader windows-homepage-module__n3qHYq__rankingSectionHeader">
+            <h2 class="windows-homepage-module__n3qHYq__sectionTitle">排行榜</h2>
+            <a class="windows-homepage-module__n3qHYq__sectionMore" href="{$cfg[weburl]}winoffice/">查看更多</a>
+        </div>
+        <div class="windows-homepage-module__n3qHYq__rankingPanels">
+            <section class="windows-homepage-module__n3qHYq__rankingPanel">
+                <h3 class="windows-homepage-module__n3qHYq__rankingPanelTitle">浏览榜</h3>
+                <div class="windows-homepage-module__n3qHYq__rankingPanelViewport">
+                    <div class="windows-homepage-module__n3qHYq__rankingPanelTrack" style="transform:translateX(-0%)">
+                        <div class="windows-homepage-module__n3qHYq__rankingPanelPage">
+                            <div class="windows-homepage-module__n3qHYq__rankingPanelList">
+                                {block:list_top cid="92" mid="6" orderby="views" limit="6" field_format="1"}
+                                {loop:$data[list] $v}
+                                {if:$v[xuhao] == 1 || $v[xuhao] == 2 || $v[xuhao] == 3}
+                                <div class="windows-homepage-module__n3qHYq__rankingPanelItem">
+                                    <a class="windows-homepage-module__n3qHYq__rankingPanelItemMain" href="{$v[url]}">
+                                        <img alt="{$v[title]}" class="windows-homepage-module__n3qHYq__rankingPanelIcon" draggable="false" src="{$v[pic]}"/>
+                                        <div class="windows-homepage-module__n3qHYq__rankingPanelCopy">
+                                            <div class="windows-homepage-module__n3qHYq__rankingPanelItemTitle">{$v[subject]}</div>
+                                            <div class="windows-homepage-module__n3qHYq__rankingPanelItemSubtitle">{$v[cate_name]} · {@$v['developer']}</div>
+                                        </div>
+                                    </a>
+                                    <a class="windows-homepage-module__n3qHYq__rankingPanelButton" href="{$v[url]}">下载</a>
+                                </div>
+                                {/if}
+                                {/loop}
+                                {/block}
+                            </div>
+                        </div>
+                        <div class="windows-homepage-module__n3qHYq__rankingPanelPage">
+                            <div class="windows-homepage-module__n3qHYq__rankingPanelList">
+                                {block:list_top cid="92" mid="6" orderby="views" limit="6" field_format="1"}
+                                {loop:$data[list] $v}
+                                {if:$v[xuhao] == 4 || $v[xuhao] == 5 || $v[xuhao] == 6}
+                                <div class="windows-homepage-module__n3qHYq__rankingPanelItem">
+                                    <a class="windows-homepage-module__n3qHYq__rankingPanelItemMain" href="{$v[url]}">
+                                        <img alt="{$v[title]}" class="windows-homepage-module__n3qHYq__rankingPanelIcon" draggable="false" src="{$v[pic]}"/>
+                                        <div class="windows-homepage-module__n3qHYq__rankingPanelCopy">
+                                            <div class="windows-homepage-module__n3qHYq__rankingPanelItemTitle">{$v[subject]}</div>
+                                            <div class="windows-homepage-module__n3qHYq__rankingPanelItemSubtitle">{$v[cate_name]} · {@$v['developer']}</div>
+                                        </div>
+                                    </a>
+                                    <a class="windows-homepage-module__n3qHYq__rankingPanelButton" href="{$v[url]}">下载</a>
+                                </div>
+                                {/if}
+                                {/loop}
+                                {/block}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="windows-homepage-module__n3qHYq__rankingPanelNavRow">
+                    <span class="windows-homepage-module__n3qHYq__rankingPanelPageInfo">1 / 2</span>
+                    <button aria-label="浏览榜上一页" class="windows-homepage-module__n3qHYq__rankingPanelNav windows-homepage-module__n3qHYq__rankingPanelNavPrev" disabled="" type="button">‹</button>
+                    <button aria-label="浏览榜下一页" class="windows-homepage-module__n3qHYq__rankingPanelNav windows-homepage-module__n3qHYq__rankingPanelNavNext" type="button">›</button>
+                </div>
+            </section>
+            <section class="windows-homepage-module__n3qHYq__rankingPanel">
+                <h3 class="windows-homepage-module__n3qHYq__rankingPanelTitle">下载榜</h3>
+                <div class="windows-homepage-module__n3qHYq__rankingPanelViewport">
+                    <div class="windows-homepage-module__n3qHYq__rankingPanelTrack" style="transform:translateX(-0%)">
+                        <div class="windows-homepage-module__n3qHYq__rankingPanelPage">
+                            <div class="windows-homepage-module__n3qHYq__rankingPanelList">
+                                {block:list_flag flag="2" cid="92" mid="6" limit="6" field_format="1"}
+                                {loop:$data[list] $v}
+                                {if:$v[xuhao] == 1 || $v[xuhao] == 2 || $v[xuhao] == 3}
+                                <div class="windows-homepage-module__n3qHYq__rankingPanelItem">
+                                    <a class="windows-homepage-module__n3qHYq__rankingPanelItemMain" href="{$v[url]}">
+                                        <img alt="{$v[title]}" class="windows-homepage-module__n3qHYq__rankingPanelIcon" draggable="false" src="{$v[pic]}"/>
+                                        <div class="windows-homepage-module__n3qHYq__rankingPanelCopy">
+                                            <div class="windows-homepage-module__n3qHYq__rankingPanelItemTitle">{$v[subject]}</div>
+                                            <div class="windows-homepage-module__n3qHYq__rankingPanelItemSubtitle">{$v[cate_name]} · {@$v['developer']}</div>
+                                        </div>
+                                    </a>
+                                    <a class="windows-homepage-module__n3qHYq__rankingPanelButton" href="{$v[url]}">下载</a>
+                                </div>
+                                {/if}
+                                {/loop}
+                                {/block}
+                            </div>
+                        </div>
+                        <div class="windows-homepage-module__n3qHYq__rankingPanelPage">
+                            <div class="windows-homepage-module__n3qHYq__rankingPanelList">
+                                {block:list_flag flag="2" cid="92" mid="6" limit="6" field_format="1"}
+                                {loop:$data[list] $v}
+                                {if:$v[xuhao] == 4 || $v[xuhao] == 5 || $v[xuhao] == 6}
+                                <div class="windows-homepage-module__n3qHYq__rankingPanelItem">
+                                    <a class="windows-homepage-module__n3qHYq__rankingPanelItemMain" href="{$v[url]}">
+                                        <img alt="{$v[title]}" class="windows-homepage-module__n3qHYq__rankingPanelIcon" draggable="false" src="{$v[pic]}"/>
+                                        <div class="windows-homepage-module__n3qHYq__rankingPanelCopy">
+                                            <div class="windows-homepage-module__n3qHYq__rankingPanelItemTitle">{$v[subject]}</div>
+                                            <div class="windows-homepage-module__n3qHYq__rankingPanelItemSubtitle">{$v[cate_name]} · {@$v['developer']}</div>
+                                        </div>
+                                    </a>
+                                    <a class="windows-homepage-module__n3qHYq__rankingPanelButton" href="{$v[url]}">下载</a>
+                                </div>
+                                {/if}
+                                {/loop}
+                                {/block}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="windows-homepage-module__n3qHYq__rankingPanelNavRow">
+                    <span class="windows-homepage-module__n3qHYq__rankingPanelPageInfo">1 / 2</span>
+                    <button aria-label="下载榜上一页" class="windows-homepage-module__n3qHYq__rankingPanelNav windows-homepage-module__n3qHYq__rankingPanelNavPrev" disabled="" type="button">‹</button>
+                    <button aria-label="下载榜下一页" class="windows-homepage-module__n3qHYq__rankingPanelNav windows-homepage-module__n3qHYq__rankingPanelNavNext" type="button">›</button>
+                </div>
+            </section>
+            <section class="windows-homepage-module__n3qHYq__rankingPanel">
+                <h3 class="windows-homepage-module__n3qHYq__rankingPanelTitle">最新更新</h3>
+                <div class="windows-homepage-module__n3qHYq__rankingPanelViewport">
+                    <div class="windows-homepage-module__n3qHYq__rankingPanelTrack" style="transform:translateX(-0%)">
+                        <div class="windows-homepage-module__n3qHYq__rankingPanelPage">
+                            <div class="windows-homepage-module__n3qHYq__rankingPanelList">
+                                {block:list cid="92" mid="6" limit="6" orderby="lasttime" field_format="1"}
+                                {loop:$data[list] $v}
+                                {if:$v[xuhao] == 1 || $v[xuhao] == 2 || $v[xuhao] == 3}
+                                <div class="windows-homepage-module__n3qHYq__rankingPanelItem">
+                                    <a class="windows-homepage-module__n3qHYq__rankingPanelItemMain" href="{$v[url]}">
+                                        <img alt="{$v[title]}" class="windows-homepage-module__n3qHYq__rankingPanelIcon" draggable="false" src="{$v[pic]}"/>
+                                        <div class="windows-homepage-module__n3qHYq__rankingPanelCopy">
+                                            <div class="windows-homepage-module__n3qHYq__rankingPanelItemTitle">{$v[subject]}</div>
+                                            <div class="windows-homepage-module__n3qHYq__rankingPanelItemSubtitle">{$v[cate_name]} · {@$v['developer']}</div>
+                                        </div>
+                                    </a>
+                                    <a class="windows-homepage-module__n3qHYq__rankingPanelButton" href="{$v[url]}">下载</a>
+                                </div>
+                                {/if}
+                                {/loop}
+                                {/block}
+                            </div>
+                        </div>
+                        <div class="windows-homepage-module__n3qHYq__rankingPanelPage">
+                            <div class="windows-homepage-module__n3qHYq__rankingPanelList">
+                                {block:list cid="92" mid="6" limit="6" orderby="lasttime" field_format="1"}
+                                {loop:$data[list] $v}
+                                {if:$v[xuhao] == 4 || $v[xuhao] == 5 || $v[xuhao] == 6}
+                                <div class="windows-homepage-module__n3qHYq__rankingPanelItem">
+                                    <a class="windows-homepage-module__n3qHYq__rankingPanelItemMain" href="{$v[url]}">
+                                        <img alt="{$v[title]}" class="windows-homepage-module__n3qHYq__rankingPanelIcon" draggable="false" src="{$v[pic]}"/>
+                                        <div class="windows-homepage-module__n3qHYq__rankingPanelCopy">
+                                            <div class="windows-homepage-module__n3qHYq__rankingPanelItemTitle">{$v[subject]}</div>
+                                            <div class="windows-homepage-module__n3qHYq__rankingPanelItemSubtitle">{$v[cate_name]} · {@$v['developer']}</div>
+                                        </div>
+                                    </a>
+                                    <a class="windows-homepage-module__n3qHYq__rankingPanelButton" href="{$v[url]}">下载</a>
+                                </div>
+                                {/if}
+                                {/loop}
+                                {/block}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="windows-homepage-module__n3qHYq__rankingPanelNavRow">
+                    <span class="windows-homepage-module__n3qHYq__rankingPanelPageInfo">1 / 2</span>
+                    <button aria-label="最新更新上一页" class="windows-homepage-module__n3qHYq__rankingPanelNav windows-homepage-module__n3qHYq__rankingPanelNavPrev" disabled="" type="button">‹</button>
+                    <button aria-label="最新更新下一页" class="windows-homepage-module__n3qHYq__rankingPanelNav windows-homepage-module__n3qHYq__rankingPanelNavNext" type="button">›</button>
+                </div>
+            </section>
+        </div>
+    </section>
+
+    <!-- 系统 -->
+    <section class="windows-homepage-module__n3qHYq__moduleSection">
+        <div class="windows-homepage-module__n3qHYq__sectionHeader">
+            <h2 class="windows-homepage-module__n3qHYq__sectionTitle">系统</h2>
+            <a class="windows-homepage-module__n3qHYq__sectionMore" href="{$cfg[weburl]}winsystem/">查看更多</a>
+        </div>
+        <div class="windows-homepage-module__n3qHYq__officeCollection">
+            <div class="windows-homepage-module__n3qHYq__officeCollectionShell">
+                <div class="windows-homepage-module__n3qHYq__officeCollectionViewport">
+                    <ul class="windows-homepage-module__n3qHYq__officeCollectionTrack">
+                        {block:list cid="97" mid="6" limit="12" showcate="1" intronum="30" field_format="1"}
+                        {loop:$data[list] $v}
+                        <li class="windows-homepage-module__n3qHYq__officeCollectionItem">
+                            <a class="windows-homepage-module__n3qHYq__officeCard" href="{$v[url]}">
+                                <div class="windows-homepage-module__n3qHYq__officeCardHero" style="background:linear-gradient(135deg, #ede9fe 0%, #f5f3ff 100%)">
+                                    <img alt="{$v[title]}" class="windows-homepage-module__n3qHYq__officeCardHeroIcon" draggable="false" src="{$v[pic]}"/>
+                                </div>
+                                <div class="windows-homepage-module__n3qHYq__officeCardBody">
+                                    <div class="windows-homepage-module__n3qHYq__officeCardCopy">
+                                        <div class="windows-homepage-module__n3qHYq__officeCardTitle">{$v[subject]}</div>
+                                        <div class="windows-homepage-module__n3qHYq__officeCardDesc">{$v[cate_name]} · {@$v['developer']}</div>
+                                    </div>
+                                    <span class="windows-homepage-module__n3qHYq__officeCardButton">查看</span>
+                                </div>
+                            </a>
+                        </li>
+                        {/loop}
+                        {/block}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 媒体 -->
+    <section class="windows-homepage-module__n3qHYq__moduleSection">
+        <div class="windows-homepage-module__n3qHYq__sectionHeader">
+            <h2 class="windows-homepage-module__n3qHYq__sectionTitle">媒体</h2>
+            <a class="windows-homepage-module__n3qHYq__sectionMore" href="{$cfg[weburl]}winmedia/">查看更多</a>
+        </div>
+        <div class="windows-homepage-module__n3qHYq__spotlightCollection">
+            <div class="windows-homepage-module__n3qHYq__spotlightCollectionShell">
+                <div class="windows-homepage-module__n3qHYq__spotlightCollectionViewport">
+                    <ul class="windows-homepage-module__n3qHYq__spotlightCollectionTrack">
+                        {block:list cid="94" mid="6" limit="12" showcate="1" intronum="30" field_format="1"}
+                        {loop:$data[list] $v}
+                        <li class="windows-homepage-module__n3qHYq__spotlightCollectionItem">
+                            <a class="windows-homepage-module__n3qHYq__spotlightCard" href="{$v[url]}">
+                                <span class="windows-homepage-module__n3qHYq__spotlightCardHero" style="background-image:url({$v[pic]})"></span>
+                                <span class="windows-homepage-module__n3qHYq__spotlightCardFade"></span>
+                                <span class="windows-homepage-module__n3qHYq__spotlightCardContent">
+                                    <span class="windows-homepage-module__n3qHYq__spotlightCardMeta">
+                                        <span class="windows-homepage-module__n3qHYq__spotlightCardIconWrap"><img alt="" class="windows-homepage-module__n3qHYq__spotlightCardIcon" draggable="false" src="{$v[pic]}"/></span>
+                                        <span class="windows-homepage-module__n3qHYq__spotlightCardText">
+                                            <span class="windows-homepage-module__n3qHYq__spotlightCardTitle">{$v[subject]}</span>
+                                            <span class="windows-homepage-module__n3qHYq__spotlightCardDesc">{$v[cate_name]} · {@$v['developer']}</span>
+                                        </span>
+                                    </span>
+                                    <span class="windows-homepage-module__n3qHYq__spotlightCardButton">查看</span>
+                                </span>
+                            </a>
+                        </li>
+                        {/loop}
+                        {/block}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 影视 -->
+    <section class="windows-homepage-module__n3qHYq__moduleSection">
+        <div class="windows-homepage-module__n3qHYq__sectionHeader">
+            <h2 class="windows-homepage-module__n3qHYq__sectionTitle">影视</h2>
+            <a class="windows-homepage-module__n3qHYq__sectionMore" href="{$cfg[weburl]}winmotion/">查看更多</a>
+        </div>
+        <div class="windows-homepage-module__n3qHYq__designCollection">
+            <div class="windows-homepage-module__n3qHYq__designCollectionShell">
+                <div class="windows-homepage-module__n3qHYq__designCollectionViewport">
+                    <ul class="windows-homepage-module__n3qHYq__designCollectionTrack">
+                        {block:list cid="96" mid="6" limit="12" showcate="1" intronum="20" field_format="1"}
+                        {loop:$data[list] $v}
+                        <li class="windows-homepage-module__n3qHYq__designCollectionItem">
+                            <a class="windows-homepage-module__n3qHYq__designCard" href="{$v[url]}">
+                                <div class="windows-homepage-module__n3qHYq__designCardCover" style="background-image:url({$v[pic]})"></div>
+                                <div class="windows-homepage-module__n3qHYq__designCardBody">
+                                    <div class="windows-homepage-module__n3qHYq__designCardMeta">
+                                        <img alt="{$v[title]}" class="windows-homepage-module__n3qHYq__designCardIcon" draggable="false" src="{$v[pic]}"/>
+                                        <div class="windows-homepage-module__n3qHYq__designCardCopy">
+                                            <div class="windows-homepage-module__n3qHYq__designCardTitle">{$v[subject]}</div>
+                                            <div class="windows-homepage-module__n3qHYq__designCardSubtitle">{$v[cate_name]}</div>
+                                        </div>
+                                    </div>
+                                    <span class="windows-homepage-module__n3qHYq__designCardButton">下载</span>
+                                </div>
+                            </a>
+                        </li>
+                        {/loop}
+                        {/block}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 专题 -->
+    <section class="windows-homepage-module__n3qHYq__moduleSection">
+        <div class="windows-homepage-module__n3qHYq__sectionHeader">
+            <h2 class="windows-homepage-module__n3qHYq__sectionTitle">专题</h2>
+            <a class="windows-homepage-module__n3qHYq__sectionMore" href="{$cfg[weburl]}winoffice/">查看更多</a>
+        </div>
+        <div class="windows-homepage-module__n3qHYq__topicGrid">
+            <a class="windows-homepage-module__n3qHYq__topicCard" href="{$cfg[weburl]}winoffice/">
+                <div class="windows-homepage-module__n3qHYq__topicCardHero" style="background:linear-gradient(180deg, rgba(9, 18, 33, 0.12), rgba(9, 18, 33, 0.32)), url(&quot;{$cfg[webdir]}upload/macfk/banner2.png&quot;) center / cover no-repeat, linear-gradient(135deg, #0f172a 0%, #0369a1 100%)"></div>
+                <div class="windows-homepage-module__n3qHYq__topicCardBody">
+                    <h3 class="windows-homepage-module__n3qHYq__topicCardTitle">Windows 办公效率专题</h3>
+                    <p class="windows-homepage-module__n3qHYq__topicCardSummary">提升日常办公效率的精选 Windows 应用合集。</p>
+                    <div class="windows-homepage-module__n3qHYq__topicCardMeta"><span>12 款软件</span></div>
+                </div>
+            </a>
+            <a class="windows-homepage-module__n3qHYq__topicCard" href="{$cfg[weburl]}windesign/">
+                <div class="windows-homepage-module__n3qHYq__topicCardHero" style="background:linear-gradient(180deg, rgba(9, 18, 33, 0.12), rgba(9, 18, 33, 0.32)), url(&quot;{$cfg[webdir]}upload/macfk/banner2.png&quot;) center / cover no-repeat, linear-gradient(135deg, #0f172a 0%, #0369a1 100%)"></div>
+                <div class="windows-homepage-module__n3qHYq__topicCardBody">
+                    <h3 class="windows-homepage-module__n3qHYq__topicCardTitle">Windows 设计创作专题</h3>
+                    <p class="windows-homepage-module__n3qHYq__topicCardSummary">设计师装机必备的创作工具合集。</p>
+                    <div class="windows-homepage-module__n3qHYq__topicCardMeta"><span>4 款软件</span></div>
+                </div>
+            </a>
+            <a class="windows-homepage-module__n3qHYq__topicCard" href="{$cfg[weburl]}winsystem/">
+                <div class="windows-homepage-module__n3qHYq__topicCardHero" style="background:linear-gradient(180deg, rgba(9, 18, 33, 0.12), rgba(9, 18, 33, 0.32)), url(&quot;{$cfg[webdir]}upload/macfk/banner2.png&quot;) center / cover no-repeat, linear-gradient(135deg, #0f172a 0%, #0369a1 100%)"></div>
+                <div class="windows-homepage-module__n3qHYq__topicCardBody">
+                    <h3 class="windows-homepage-module__n3qHYq__topicCardTitle">Windows 系统工具专题</h3>
+                    <p class="windows-homepage-module__n3qHYq__topicCardSummary">系统维护与效率提升工具合集。</p>
+                    <div class="windows-homepage-module__n3qHYq__topicCardMeta"><span>3 款软件</span></div>
+                </div>
+            </a>
+            <a class="windows-homepage-module__n3qHYq__topicCard" href="{$cfg[weburl]}winsystem/">
+                <div class="windows-homepage-module__n3qHYq__topicCardHero" style="background:linear-gradient(180deg, rgba(9, 18, 33, 0.12), rgba(9, 18, 33, 0.32)), url(&quot;{$cfg[webdir]}upload/macfk/banner2.png&quot;) center / cover no-repeat, linear-gradient(135deg, #0f172a 0%, #0369a1 100%)"></div>
+                <div class="windows-homepage-module__n3qHYq__topicCardBody">
+                    <h3 class="windows-homepage-module__n3qHYq__topicCardTitle">Windows 开发工具专题</h3>
+                    <p class="windows-homepage-module__n3qHYq__topicCardSummary">程序员开发环境与效率工具合集。</p>
+                    <div class="windows-homepage-module__n3qHYq__topicCardMeta"><span>3 款软件</span></div>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <!-- 编辑精选 -->
+    <section class="windows-homepage-module__n3qHYq__moduleSection windows-homepage-module__n3qHYq__headlineSection">
+        <div class="windows-homepage-module__n3qHYq__headlineCopy">
+            <h2 class="windows-homepage-module__n3qHYq__headlineTitle">为你推荐的编辑精选</h2>
+            <p class="windows-homepage-module__n3qHYq__headlineSubtitle">按老站首页的收尾大标题模块保留位置，后续可接专题或运营集合。</p>
+            <a class="windows-homepage-module__n3qHYq__headlineButton" href="{$cfg[weburl]}winoffice/">查看集合</a>
+        </div>
+        <div aria-hidden="true" class="windows-homepage-module__n3qHYq__headlineArtwork">
+            <span class="windows-homepage-module__n3qHYq__headlineShape windows-homepage-module__n3qHYq__headlineShapeTriangle"></span>
+            <span class="windows-homepage-module__n3qHYq__headlineShape windows-homepage-module__n3qHYq__headlineShapeCircleLarge"></span>
+            <span class="windows-homepage-module__n3qHYq__headlineShape windows-homepage-module__n3qHYq__headlineShapeCircleSmall"></span>
+            <span class="windows-homepage-module__n3qHYq__headlineShape windows-homepage-module__n3qHYq__headlineShapeDot"></span>
+            <span class="windows-homepage-module__n3qHYq__headlineShape windows-homepage-module__n3qHYq__headlineShapeArcLeft"></span>
+            <span class="windows-homepage-module__n3qHYq__headlineShape windows-homepage-module__n3qHYq__headlineShapeArcRight"></span>
+            <span class="windows-homepage-module__n3qHYq__headlineShape windows-homepage-module__n3qHYq__headlineShapeLeafMain"></span>
+            <span class="windows-homepage-module__n3qHYq__headlineShape windows-homepage-module__n3qHYq__headlineShapeLeafSub"></span>
+            <span class="windows-homepage-module__n3qHYq__headlineShape windows-homepage-module__n3qHYq__headlineShapeSpark"></span>
+            <span class="windows-homepage-module__n3qHYq__headlineShape windows-homepage-module__n3qHYq__headlineShapePuzzle"></span>
+        </div>
+    </section>
+</main>
+</div>
+{inc:footer.htm}

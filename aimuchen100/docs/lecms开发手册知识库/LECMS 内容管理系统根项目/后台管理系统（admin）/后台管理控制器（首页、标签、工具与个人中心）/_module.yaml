@@ -1,0 +1,12 @@
+schema_version: 1
+module_path: admin_panel/tools_and_utilities
+title: 后台管理控制器（首页、标签、工具与个人中心）
+scope:
+    - admin/control/tool_control.class.php
+    - admin/control/tag_control.class.php
+    - admin/control/my_control.class.php
+    - admin/control/index_control.class.php
+source_files: []
+depends_on: []
+related_to:
+    - path: runtime_cache

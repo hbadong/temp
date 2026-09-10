@@ -1,0 +1,10 @@
+<tr data-id="{$item['id']}">
+    <td>{$item['engine']}</td>
+    <td><code>{$item['url']}</code></td>
+    <td>
+        {if:$item['status']==1}<span class="layui-badge layui-bg-green">成功</span>{else}<span class="layui-badge layui-bg-red">失败</span>{/if}
+    </td>
+    <td></td>
+    <td title="{$item['response']}">{$item['response']}</td>
+    <td>{@date('Y-m-d H:i:s', $item['dateline'])}</td>
+</tr>

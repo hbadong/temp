@@ -1,0 +1,94 @@
+{inc:header.htm}
+<div class="layui-card">
+	<div class="layui-card-header">{lang:home_seo_setting}</div>
+	<div class="layui-card-body">
+		<form id="form" class="layui-form" action="index.php?setting-seo-ajax-1" method="post">
+			<div class="layui-form-item">
+				<label class="layui-form-label">{lang:seo_title}</label>
+				<div class="layui-input-block">
+					{$input[seo_title]}
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">{lang:seo_keywords}</label>
+				<div class="layui-input-block">
+					{$input[seo_keywords]}
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">{lang:seo_description}</label>
+				<div class="layui-input-block">
+					{$input[seo_description]}
+				</div>
+			</div>
+			{hook:admin_setting_seo_after.htm}
+			<div class="layui-form-item">
+				<div class="layui-input-block">
+					<button class="layui-btn" lay-submit lay-filter="form">{lang:submit}</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+<div class="layui-card">
+	<div class="layui-card-header">{lang:show_seo_setting}</div>
+	<div class="layui-card-body">
+		<form id="form1" class="layui-form" action="index.php?setting-seo_rule-ajax-1" method="post">
+			<div class="layui-form-item">
+				<label class="layui-form-label required">{lang:seo_title}</label>
+				<div class="layui-input-block">
+					{$input[show_seo_title_rule]}
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label required">{lang:seo_keywords}</label>
+				<div class="layui-input-block">
+					{$input[show_seo_keywords_rule]}
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label required">{lang:seo_description}</label>
+				<div class="layui-input-block">
+					{$input[show_seo_description_rule]}
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">{lang:variable}</label>
+				<div class="layui-input-block">
+					<pre class="layui-code">{lang:variable1}</pre>
+					<pre class="layui-code">{lang:variable2}</pre>
+					<pre class="layui-code">{lang:variable3}</pre>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">{lang:tips}</label>
+				<div class="layui-input-block">
+					<div class="layui-form-mid layui-word-aux">{lang:content_seo_rule_tips}</div>
+				</div>
+			</div>
+			{hook:admin_setting_seo_rule_after.htm}
+			<div class="layui-form-item">
+				<div class="layui-input-block">
+					<button class="layui-btn" lay-submit lay-filter="form1">{lang:submit}</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+<script type="text/javascript">
+	layui.use('form', function(){
+		var form = layui.form;
+
+		//监听提交
+		form.on('submit(form)', function(){
+			adminAjax.submit("#form");
+		});
+		form.on('submit(form1)', function(){
+			adminAjax.submit("#form1");
+		});
+	});
+</script>
+</body>
+</html>

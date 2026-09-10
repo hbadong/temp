@@ -1,0 +1,274 @@
+{inc:header.htm}
+<style>
+/* 站点设置页专用样式 */
+.settings-wrap { padding: 0 16px; }
+.settings-card { margin-bottom: 16px; }
+.settings-card .layui-card-header { display: flex; align-items: center; justify-content: space-between; font-weight: 600; }
+.settings-card .layui-card-header i { color: #1E9FFF; margin-right: 8px; }
+.settings-card .layui-card-header .header-tip { font-weight: 400; font-size: 12px; color: #999; }
+.settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 24px; }
+.settings-grid .layui-form-item { display: flex; align-items: center; }
+.settings-grid .layui-form-label { width: 110px; padding: 9px 12px 9px 0; text-align: right; }
+.settings-grid .layui-input-inline { width: auto; flex: 1; }
+.settings-grid .layui-input-block { margin-left: 110px; }
+.settings-actions { position: sticky; bottom: 0; padding: 12px 0; background: #fff; border-top: 1px solid #eee; text-align: right; margin-top: 16px; box-shadow: 0 -2px 6px rgba(0,0,0,.03); z-index: 10; }
+.settings-actions .layui-btn + .layui-btn { margin-left: 8px; }
+.field-hint { display: block; color: #999; font-size: 12px; margin-top: 4px; }
+@media (max-width: 900px) { .settings-grid { grid-template-columns: 1fr; } }
+</style>
+<div class="layuimini-container">
+	<div class="layuimini-main">
+		<div class="layui-tab layui-tab-brief" lay-filter="main">
+			<ul class="layui-tab-title">
+				<li class="layui-this">功能</li>
+				<li>插件设置</li>
+			</ul>
+			<input type="hidden" id="active-tab" value="{$active_tab}" />
+			<div class="layui-tab-content">
+
+				<!-- Tab 1：站点列表（原页面内容） -->
+				<div class="layui-tab-item layui-show">
+					<fieldset class="table-search-fieldset">
+						<legend>站点列表</legend>
+						<div>
+							<form class="layui-form layui-form-pane">
+								<div class="layui-form-item">
+									<div class="layui-inline">
+										<label class="layui-form-label">站点名称</label>
+										<div class="layui-input-inline">
+											<input placeholder="请输入站点名称" autocomplete="off" type="text" class="layui-input" name="keyword" />
+										</div>
+									</div>
+									<div class="layui-inline">
+										<button type="submit" class="layui-btn layui-btn-primary" lay-submit lay-filter="site-search-btn"><i class="layui-icon">&#xe615;</i> 搜索</button>
+									</div>
+								</div>
+							</form>
+						</div>
+					</fieldset>
+					<table class="layui-hide" id="data-table" lay-filter="data-table-filter"></table>
+
+					<script type="text/html" id="toolbar">
+						<div class="layui-btn-container">
+							<button class="layui-btn layui-btn-sm layui-btn-normal" lay-event="add"><i class="layui-icon">&#xe608;</i> 添加站点</button>
+							<button class="layui-btn layui-btn-sm layui-btn-warm" id="btn-sync"><i class="layui-icon">&#xe669;</i> 一键同步</button>
+						</div>
+					</script>
+				</div>
+
+				<!-- Tab 2：插件设置 -->
+				<div class="layui-tab-item">
+					<div class="settings-wrap">
+						<!-- 基础设置 -->
+						<div class="layui-card settings-card">
+							<div class="layui-card-header">
+								<span><i class="layui-icon">&#xe620;</i> 基础设置</span>
+								<span class="header-tip">新建站点时的默认值</span>
+							</div>
+							<div class="layui-card-body">
+								<form id="form-settings" class="layui-form" action="?site-settings_post-ajax-1" method="post">
+									<input type="hidden" name="FORM_HASH" value="{@form_hash()}" />
+									<div class="settings-grid">
+										<div class="layui-form-item">
+											<label class="layui-form-label">默认主题</label>
+											<div class="layui-input-inline">
+												<select name="default_theme" lay-search>
+													{loop:$themes $t}
+													<option value="{$t}" {if:$t==$settings['default_theme']}selected{/if}>{$t}</option>
+													{/loop}
+												</select>
+												<span class="field-hint">新建站点未指定主题时使用此值</span>
+											</div>
+										</div>
+										<div class="layui-form-item">
+											<label class="layui-form-label">默认站点名称</label>
+											<div class="layui-input-inline">
+												<input type="text" name="default_site_name" class="layui-input" value="{$settings['default_site_name']}" placeholder="例如：默认站点">
+												<span class="field-hint">后台创建站点时的占位名</span>
+											</div>
+										</div>
+										<div class="layui-form-item">
+											<label class="layui-form-label">默认状态</label>
+											<div class="layui-input-inline">
+												<input type="radio" name="default_status" value="1" title="启用" {if:$settings['default_status']}checked{/if}>
+												<input type="radio" name="default_status" value="0" title="禁用" {if:!$settings['default_status']}checked{/if}>
+												<span class="field-hint">新建站点默认是否启用</span>
+											</div>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+
+						<!-- 域名路由 -->
+						<div class="layui-card settings-card">
+							<div class="layui-card-header">
+								<span><i class="layui-icon">&#xe9aa;</i> 域名路由</span>
+								<span class="header-tip">控制请求如何匹配到具体站点</span>
+							</div>
+							<div class="layui-card-body">
+								<div class="settings-grid">
+									<div class="layui-form-item">
+										<label class="layui-form-label">泛域名解析</label>
+										<div class="layui-input-inline">
+											<input type="radio" name="wildcard_domain" value="1" title="启用" {if:$settings['wildcard_domain']}checked{/if} form="form-settings">
+											<input type="radio" name="wildcard_domain" value="0" title="禁用" {if:!$settings['wildcard_domain']}checked{/if} form="form-settings">
+											<span class="field-hint">支持 *.domain.com 格式自动路由</span>
+										</div>
+									</div>
+									<div class="layui-form-item">
+										<label class="layui-form-label">域名匹配方式</label>
+										<div class="layui-input-inline">
+											<input type="radio" name="domain_match" value="wildcard" title="通配符" {if:$settings['domain_match']=='wildcard'}checked{/if} form="form-settings">
+											<input type="radio" name="domain_match" value="exact" title="精确匹配" {if:$settings['domain_match']=='exact'}checked{/if} form="form-settings">
+											<span class="field-hint">通配符更宽松，精确更严格</span>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- 底部操作栏 -->
+						<div class="settings-actions">
+							<a class="layui-btn layui-btn-primary" href="?site-index">返回列表</a>
+							<button type="submit" lay-submit lay-filter="form-settings" class="layui-btn">
+								<i class="layui-icon">&#xe605;</i> 保存设置
+							</button>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+	layui.use(['form', 'layer', 'table', 'element', 'miniTab'], function () {
+		var layer = layui.layer, form = layui.form, table = layui.table, element = layui.element, miniTab = layui.miniTab;
+
+		// 兼容旧设置页入口：?site-index-tab-settings 时激活第二个 tab
+		if (document.getElementById('active-tab') && document.getElementById('active-tab').value === 'settings') {
+			element.tabChange('main', '1');
+		}
+
+		table.render({
+			elem: '#data-table',
+			height: 'full-145',
+			toolbar: '#toolbar',
+			defaultToolbar: ['filter', 'exports', 'print'],
+			cellMinWidth: 50,
+			cols: [[
+				{field: 'sid', title: 'ID', width: 80, sort: true, align: 'center'},
+				{field: 'site_name', title: '站点名称', minwidth: 120},
+				{field: 'domain', title: '域名', minwidth: 150},
+				{field: 'theme', title: '主题', width: 100, align: 'center'},
+				{title: '状态', width: 100, templet: '#status-tpl', align: 'center'},
+				{field: 'created_at', title: '创建时间', width: 170, align: 'center'},
+				{title: '操作', width: 280, toolbar: '#toolbar-tpl', align: 'center'}
+			]],
+			limits: [10, 15, 20, 50],
+			limit: 15,
+			page: true,
+			data: []
+		});
+
+		var sites = {$sites_json};
+		table.reload('data-table', {
+			data: sites
+		});
+
+		// 打开站点创建/编辑页（独立标签页，与文章管理一致）
+		// miniTab 依赖后台主框架的 .layuimini-tab 容器；列表页不在主框架 iframe 内时
+		// （如独立打开）自动回退为当前窗口跳转，避免点击无反应
+		function openForm(sid, title) {
+			var href = 'index.php?site-' + (sid ? 'edit-sid-' + sid : 'create');
+			if (parent !== window && parent.layui && parent.layui.element) {
+				miniTab.openNewTabByIframe({ href: href, title: title });
+			} else {
+				window.location.href = href;
+			}
+		}
+
+		form.on('submit(site-search-btn)', function (data) {
+			var keyword = data.field.keyword.toLowerCase();
+			var filtered = sites.filter(function (item) {
+				return item.site_name.toLowerCase().indexOf(keyword) !== -1
+					|| item.domain.toLowerCase().indexOf(keyword) !== -1;
+			});
+			table.reload('data-table', { data: filtered });
+			return false;
+		});
+
+		table.on('toolbar(data-table-filter)', function (obj) {
+			if (obj.event === 'add') {
+				openForm(0, '添加站点');
+			} else if (obj.event === 'batch_delete') {
+				var checkStatus = table.checkStatus('data-table');
+				var data = checkStatus.data;
+				if (data.length === 0) {
+					layer.msg('请选择要删除的站点', { icon: 5 });
+					return false;
+				}
+				layer.confirm('确定删除选中的 ' + data.length + ' 个站点吗？', function () {
+					var id_arr = data.map(function (item) { return item.sid; });
+					adminAjax.postd("index.php?site-batch_delete-ajax-1", { id_arr: id_arr });
+				});
+			}
+		});
+
+		// 一键同步（REQ-01-AC8）：sync 校验 form_submit()，必须 POST + FORM_HASH
+		document.getElementById('btn-sync').addEventListener('click', function () {
+			layer.confirm('确定同步全部站点？', {icon: 3, title: '确认'}, function(){
+				adminAjax.postd("index.php?site-sync-ajax-1", {FORM_HASH: '{@form_hash()}'});
+			});
+		});
+
+		table.on('tool(data-table-filter)', function (obj) {
+			var data = obj.data;
+			if (obj.event === 'edit') {
+				openForm(data.sid, '编辑站点');
+			} else if (obj.event === 'toggle') {
+				adminAjax.postd("index.php?site-toggle-ajax-1", {sid: data.sid, FORM_HASH: '{@form_hash()}'});
+			} else if (obj.event === 'delete') {
+				layer.confirm('确定删除该站点？', function () {
+					adminAjax.postd("index.php?site-delete-ajax-1", {sid: data.sid, FORM_HASH: '{@form_hash()}'});
+				});
+			}
+		});
+
+		// 插件设置表单提交
+		form.render();
+		form.on('submit(form-settings)', function () {
+			adminAjax.postform('#form-settings', function (data) {
+				var json = toJson(data);
+				layer.msg(json.msg, { icon: json.err == 0 ? 1 : 5 });
+			});
+			return false;
+		});
+	});
+</script>
+
+<script type="text/html" id="status-tpl">
+	{{# if (d.status == 1) { }}
+		<span class="layui-badge layui-bg-green">启用</span>
+	{{# } else if (d.status == 0) { }}
+		<span class="layui-badge layui-bg-gray">禁用</span>
+	{{# } else { }}
+		<span class="layui-badge layui-bg-red">删除</span>
+	{{# } }}
+</script>
+
+<script type="text/html" id="toolbar-tpl">
+	<div class="layui-btn-group">
+		<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+		{{# if (d.status == 1) { }}
+		<a class="layui-btn layui-btn-xs layui-btn-warm" lay-event="toggle">禁用</a>
+		{{# } else if (d.status == 0) { }}
+		<a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="toggle">启用</a>
+		{{# } }}
+		<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delete">删除</a>
+	</div>
+</script>
+</body>
+</html>

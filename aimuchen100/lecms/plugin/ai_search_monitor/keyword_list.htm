@@ -1,0 +1,78 @@
+{inc:header.htm}
+<div class="layuimini-container">
+	<div class="layuimini-main">
+		<div class="layui-card">
+			<div class="layui-card-header">品牌词管理</div>
+			<div class="layui-card-body">
+				<div class="layui-btn-container" style="margin-bottom:10px">
+					<a class="layui-btn layui-btn-sm layui-btn-normal" href="?keyword-edit"><i class="layui-icon">&#xe608;</i> 添加品牌词</a>
+					<span class="layui-form-mid layui-word-aux" style="margin-left:12px">共 <b style="color:#16baaa">{$total}</b> 个品牌词</span>
+				</div>
+				<table class="layui-table" lay-skin="line">
+					<colgroup>
+						<col width="80">
+						<col>
+						<col width="260">
+						<col width="180">
+						<col width="120">
+					</colgroup>
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th>品牌词</th>
+							<th>词变体</th>
+							<th>创建时间</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody>
+						{loop:$keywords $keyword}
+						<tr>
+							<td>{$keyword['id']}</td>
+							<td>{$keyword['keyword']}</td>
+							<td>
+								{if:$keyword['keyword_variant']}
+									<span class="layui-badge layui-bg-gray" style="margin-right:4px">{$keyword['keyword_variant']}</span>
+								{else}
+									<span class="layui-badge-rim">无</span>
+								{/if}
+							</td>
+							<td>{@date('Y-m-d H:i', $keyword['created_at'])}</td>
+							<td>
+								<a class="layui-btn layui-btn-xs layui-btn-danger" href="javascript:;" onclick="del({$keyword['id']})"><i class="layui-icon">&#xe616;</i> 删除</a>
+							</td>
+						</tr>
+						{/loop}
+						{if:empty($keywords)}
+						<tr>
+							<td colspan="5" style="text-align:center; color:#999; padding:40px 0">
+								<i class="layui-icon layui-icon-face-cry" style="font-size:32px; display:block; margin-bottom:8px; color:#ccc"></i>
+								暂无品牌词，<a class="layui-link" href="?keyword-edit">点击添加</a>
+							</td>
+						</tr>
+						{/if}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+layui.use(['layer'], function(){
+	var layer = layui.layer;
+	function del(id){
+		layer.confirm('确定删除？', {icon: 3, title: '删除确认'}, function(){
+			var f = document.createElement('form');
+			f.method = 'POST';
+			f.action = '?keyword-delete_post';
+			f.style.display = 'none';
+			f.innerHTML = '<input type="hidden" name="id" value="' + id + '">' +
+				'<input type="hidden" name="FORM_HASH" value="{@form_hash()}">';
+			document.body.appendChild(f);
+			f.submit();
+		});
+	}
+});
+</script>
+</body>
+</html>

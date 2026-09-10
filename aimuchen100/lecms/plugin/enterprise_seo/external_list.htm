@@ -1,0 +1,54 @@
+{inc:header.htm}
+<div class="layuimini-container">
+	<div class="layuimini-main">
+		<div class="layui-card">
+			<div class="layui-card-header">外链管理</div>
+			<div class="layui-card-body">
+				<div class="layui-btn-container" style="margin-bottom:10px">
+					<a href="?enterprise-index" class="layui-btn layui-btn-sm layui-btn-primary"><i class="layui-icon">&#xe603;</i> 返回企业站点列表</a>
+				</div>
+				<table class="layui-table">
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th>企业名称</th>
+							<th>平台</th>
+							<th>平台URL</th>
+							<th>状态</th>
+							<th>最后检查</th>
+							<th>创建时间</th>
+						</tr>
+					</thead>
+					<tbody>
+						{loop:$list $item}
+						<tr>
+							<td>{$item['id']}</td>
+							<td>{$item['enterprise_name']}</td>
+							<td>
+								{if:$item['platform'] == 'aiqicha'}爱企查{/if}
+								{if:$item['platform'] == 'qcc'}企查查{/if}
+								{if:$item['platform'] == 'tianyancha'}天眼查{/if}
+							</td>
+							<td>{$item['platform_url'] ?: '(待提交)'}</td>
+							<td>
+								{if:$item['status'] == 0}<span class="layui-badge layui-bg-gray">待提交</span>{/if}
+								{if:$item['status'] == 1}<span class="layui-badge layui-bg-blue">已提交</span>{/if}
+								{if:$item['status'] == 2}<span class="layui-badge layui-bg-green">已收录</span>{/if}
+								{if:$item['status'] == 3}<span class="layui-badge layui-bg-red">失败</span>{/if}
+							</td>
+							<td>{$item['last_check_at']}</td>
+							<td>{$item['created_at']}</td>
+						</tr>
+						{/loop}
+						{if:empty($list)}
+						<tr><td colspan="7">暂无数据</td></tr>
+						{/if}
+					</tbody>
+				</table>
+				{$pagebar}
+			</div>
+		</div>
+	</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,25 @@
+<div class="layui-card">
+    <div class="layui-card-header">切换结果</div>
+    <div class="layui-card-body">
+        <div class="layui-form-item">
+            <label class="layui-form-label">状态</label>
+            <div class="layui-input-block">
+                {if:$status==0}<span class="layui-badge layui-bg-green">切换成功</span>{/if}
+                {if:$status==1}<span class="layui-badge layui-bg-red">切换失败</span>{/if}
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">提示</label>
+            <div class="layui-input-block">{$message}</div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">当前模式</label>
+            <div class="layui-input-block">
+                {$mode}
+                {if:$mode=='normal'}<span class="layui-badge layui-bg-green">正常访问</span>{/if}
+                {if:$mode=='spider_only'}<span class="layui-badge layui-bg-blue">仅蜘蛛模式</span>{/if}
+                {if:$mode=='icp_filing'}<span class="layui-badge layui-bg-orange">ICP 备案模式</span>{/if}
+            </div>
+        </div>
+    </div>
+</div>

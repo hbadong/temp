@@ -1,0 +1,164 @@
+{inc:header.htm}
+<style>
+/* 插件设置 tab 专用样式（自 settings.htm 合并） */
+.settings-wrap { padding: 0 16px; }
+.settings-card { margin-bottom: 16px; }
+.settings-card .layui-card-header { display: flex; align-items: center; justify-content: space-between; font-weight: 600; }
+.settings-card .layui-card-header i { color: #1E9FFF; margin-right: 8px; }
+.settings-card .layui-card-header .header-tip { font-weight: 400; font-size: 12px; color: #999; }
+.settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 24px; }
+.settings-grid .layui-form-item { display: flex; align-items: center; }
+.settings-grid .layui-form-label { width: 130px; padding: 9px 12px 9px 0; text-align: right; }
+.settings-grid .layui-input-inline { width: auto; flex: 1; }
+.settings-grid .layui-input-block { margin-left: 130px; }
+.settings-actions { position: sticky; bottom: 0; padding: 12px 0; background: #fff; border-top: 1px solid #eee; text-align: right; margin-top: 16px; box-shadow: 0 -2px 6px rgba(0,0,0,.03); z-index: 10; }
+.settings-actions .layui-btn + .layui-btn { margin-left: 8px; }
+.field-hint { display: block; color: #999; font-size: 12px; margin-top: 4px; }
+@media (max-width: 900px) { .settings-grid { grid-template-columns: 1fr; } }
+</style>
+<div class="layuimini-container">
+  <div class="layuimini-main">
+    <div class="layui-tab layui-tab-brief" lay-filter="main">
+      <ul class="layui-tab-title">
+        <li class="layui-this">功能</li>
+        <li>插件设置</li>
+      </ul>
+      <div class="layui-tab-content">
+        <!-- tab1：功能（原主页面内容） -->
+        <div class="layui-tab-item layui-show">
+          <div class="layui-card">
+            <div class="layui-card-header">站点数据导出</div>
+            <div class="layui-card-body">
+              <div class="layui-btn-container" style="margin-bottom:10px">
+                <a class="layui-btn layui-btn-sm layui-btn-normal" href="javascript:;" onclick="start_export()"><i class="layui-icon">&#xe608;</i> 启动新导出</a>
+              </div>
+              <table class="layui-table">
+                <thead><tr><th>ID</th><th>site_id</th><th>模式</th><th>状态</th><th>进度</th><th>当前文件</th><th>开始时间</th><th>完成时间</th><th>大小</th><th>操作</th></tr></thead>
+                <tbody>
+                {loop:$rows $r}
+                  <tr>
+                    <td>{$r['id']}</td>
+                    <td>{$r['site_id']}</td>
+                    <td>{$r['mode']}</td>
+                    <td>
+                      {if:$r['status'] == 'done'}<span class="layui-badge layui-bg-green">{$r['status']}</span>
+                      {elseif:$r['status'] == 'running'}<span class="layui-badge layui-bg-orange">{$r['status']}</span>
+                      {elseif:$r['status'] == 'deleted'}<span class="layui-badge layui-bg-gray">{$r['status']}</span>
+                      {else}<span class="layui-badge layui-bg-red">{$r['status']}</span>
+                      {/if}
+                    </td>
+                    <td>{$r['progress']}%</td>
+                    <td>{$r['current_file']}</td>
+                    <td>{@date('Y-m-d H:i:s', $r['started_at'])}</td>
+                    <td>{@($r['finished_at'] ? date('Y-m-d H:i:s', $r['finished_at']) : '-')}</td>
+                    <td>{@($r['file_size'] ? round($r['file_size']/1024/1024, 2).' MB' : '-')}</td>
+                    <td>
+                      {if:$r['status'] == 'done' && $r['file_path']}<a class="layui-btn layui-btn-xs" href="{$r['file_path']}"><i class="layui-icon">&#xe601;</i> 下载</a>{/if}
+                      {if:$r['status'] == 'running'}<a class="layui-btn layui-btn-xs layui-btn-warm" href="index.php?data_export-progress-id-{$r['id']}">详情</a>{/if}
+                      <a class="layui-btn layui-btn-xs layui-btn-danger" href="javascript:;" onclick="del({$r['id']})"><i class="layui-icon">&#xe616;</i> 删除</a>
+                    </td>
+                  </tr>
+                {/loop}
+                {if:empty($rows)}
+                  <tr><td colspan="10">暂无导出记录</td></tr>
+                {/if}
+                </tbody>
+              </table>
+              <div style="margin-top:10px">{$pagebar}</div>
+            </div>
+          </div>
+        </div>
+        <!-- tab2：插件设置（自 settings.htm 合并） -->
+        <div class="layui-tab-item">
+          <div class="settings-wrap">
+            <!-- 导出行为 -->
+            <div class="layui-card settings-card">
+              <div class="layui-card-header">
+                <span><i class="layui-icon">&#xe601;</i> 导出行为</span>
+                <span class="header-tip">控制新建导出任务时的默认参数</span>
+              </div>
+              <div class="layui-card-body">
+                <form id="form-settings" class="layui-form" action="?data_export-settings_post-ajax-1" method="post">
+                  <input type="hidden" name="FORM_HASH" value="{@form_hash()}" />
+                  <div class="settings-grid">
+                    <div class="layui-form-item">
+                      <label class="layui-form-label">默认导出模式</label>
+                      <div class="layui-input-inline">
+                        <input type="radio" name="default_mode" value="full" title="完整导出" {if:$settings['default_mode']=='full'}checked{/if}>
+                        <input type="radio" name="default_mode" value="cleanup" title="敏感数据清理" {if:$settings['default_mode']=='cleanup'}checked{/if}>
+                        <span class="field-hint">完整导出：全量数据；清理：脱敏后导出，便于域名出售</span>
+                      </div>
+                    </div>
+                    <div class="layui-form-item">
+                      <label class="layui-form-label">ZIP 压缩级别</label>
+                      <div class="layui-input-inline">
+                        <input type="number" name="zip_level" min="0" max="9" value="{$settings['zip_level']}" class="layui-input" placeholder="0-9">
+                        <span class="field-hint">0=不压缩，9=最高压缩（耗时较长），推荐 6</span>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <!-- 清理策略 -->
+            <div class="layui-card settings-card">
+              <div class="layui-card-header">
+                <span><i class="layui-icon">&#xe611;</i> 清理策略</span>
+                <span class="header-tip">过期导出包的自动清理</span>
+              </div>
+              <div class="layui-card-body">
+                <div class="settings-grid">
+                  <div class="layui-form-item">
+                    <label class="layui-form-label">保留天数</label>
+                    <div class="layui-input-inline">
+                      <input type="number" name="retention_days" min="1" max="365" value="{$settings['retention_days']}" class="layui-input" placeholder="例如 30">
+                      <span class="field-hint">超过此天数的导出包将由 cron 自动清理</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 底部操作栏 -->
+            <div class="settings-actions">
+              <button type="submit" lay-submit lay-filter="form-settings" class="layui-btn">
+                <i class="layui-icon">&#xe605;</i> 保存设置
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+layui.use(['layer', 'jquery', 'form', 'element', 'miniTab'], function(){
+  var layer = layui.layer, $ = layui.$;
+  layui.form.render();
+  layui.form.on('submit(form-settings)', function () {
+    adminAjax.postform('#form-settings', function (data) {
+      var json = toJson(data);
+      layer.msg(json.msg, { icon: json.err == 0 ? 1 : 5 });
+    });
+    return false;
+  });
+  // 兼容 ?data_export-index-tab-settings 重定向：自动切到「插件设置」tab
+  if (/tab-settings/.test(location.search)) {
+    $('.layui-tab[lay-filter="main"] .layui-tab-title li').eq(1).trigger('click');
+  }
+  window.del = function(id){
+    layer.confirm('确认删除？', function(index){
+      layer.close(index);
+      // delete 校验 form_submit()，必须 POST + FORM_HASH；成功后 adminAjax.alert 默认刷新本页
+      adminAjax.postd('index.php?data_export-delete-ajax-1', {id: id, FORM_HASH: '{@form_hash()}'});
+    });
+  };
+  window.start_export = function(){
+    // start 校验 form_submit()，必须 POST + FORM_HASH；成功后 adminAjax.alert 默认刷新本页
+    adminAjax.postd('index.php?data_export-start-ajax-1', {site_id: 0, mode: 'full', FORM_HASH: '{@form_hash()}'});
+  };
+});
+</script>
+</body>
+</html>

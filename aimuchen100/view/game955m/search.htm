@@ -1,0 +1,42 @@
+{inc:header.htm}
+        <ul class="url-here">
+            <li><a href="{$cfg[weburl]}">首页</a></li>
+            <li><h1>搜索"{$keyword}"</h1></li>
+        </ul>
+        <div class="soft-list2">
+            <div class="list-tabs">
+                <a href="{$cfg[webdir]}index.php?u=search-index&keyword={$keyword}&mid=3" class="item{if:$_GET[mid] == 3 || !$_GET[mid]} on{/if}">游戏</a>
+                <a href="{$cfg[webdir]}index.php?u=search-index&keyword={$keyword}&mid=2" class="item{if:$_GET[mid] == 2} on{/if}">资讯</a>
+                <a href="{$cfg[webdir]}index.php?u=search-index&keyword={$keyword}&mid=6" class="item{if:$_GET[mid] == 6} on{/if}">软件</a>
+            </div>
+            <div class="list">
+                {block:global_search pagenum="15" dateformat="Y-m-d" showcate="1"}{loop:$gdata[list] $v}
+                <a class="list-item flex" href="{$v[url]}">
+                    <div class="col">
+                        <img class="pic lazy" src="{$v[pic]}" alt="{$v[title]}">
+                    </div>
+                    <div class="con flex-item">
+                        <div class="tit">{$v[subject]}</div>
+                        <div class="star star{$v[star]}"></div>
+                        <div class="txt">
+                            <span class="attr">{$v[cate_name]}</span>
+                            <span class="attr">{$v[date]}</span>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <span class="btn btn-download">查&nbsp;看</span>
+                    </div>
+                </a>
+                {/loop}{/block}
+            </div>
+            <div class="pagecode">{$gdata[pages]}</div>
+            <div class="soft-list-loader" id="listLoader">没有更多了</div>
+        </div>
+{inc:footer.htm}
+<script type="text/javascript">
+    seajs.use('app/common', function(fn){
+        fn.init();
+        fn.imgLazyLoad();
+    });
+</script>
+</div></body></html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="utf-8">
+	<title>{$cfg[titles]}</title>
+	<meta name="keywords" content="{$cfg[seo_keywords]}">
+	<meta name="description" content="{$cfg[seo_description]}">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="shortcut icon" href="{$cfg[webdir]}favicon.ico" type="image/x-icon">
+	<link rel="stylesheet" href="{$cfg[tpl]}style/css/css.css">
+</head>
+<body>
+<div class="page" id="page">
+	<div class="header">
+		<div class="header-main wrapper">
+			<a class="logo" href="{$cfg[weburl]}"><img src="{$cfg[tpl]}style/img/logo.png" alt="{$cfg[webname]}"></a>
+			<div class="nav">
+				{php}
+				$navon_cid = isset($cfg_var['topcid']) ? $cfg_var['topcid'] : -1;
+				{/php}
+				<a {if:$cfg_var[topcid] == 0}class="on"{/if} href="{$cfg[weburl]}">首页</a>
+				{block:navigate}
+				{loop:$data $v}
+				{if:$v[cid] > 0}
+				<a {if:$cfg_var[topcid] == $v[cid] || ($v[cid] == 30 && $cfg_var[topcid] == 38)}class="on"{/if} href="{$v[url]}" target="{$v[target]}">{$v[name]}</a>
+				{/if}
+				{/loop}
+				{/block}
+			</div>
+			<form class="search-box" action="{$cfg[webdir]}index.php" method="get" id="searchBox" target="_blank">
+				<div class="input-wrap">
+					<input class="input" type="text" name="keyword" value="{$keyword}" maxlength="30">
+					<input type="hidden" name="u" value="search-index">
+					<input class="button" type="submit" value="搜索">
+				</div>
+			</form>
+		</div>
+	</div>

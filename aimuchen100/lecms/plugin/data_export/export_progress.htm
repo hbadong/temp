@@ -1,0 +1,39 @@
+{inc:header.htm}
+<div class="layuimini-container">
+  <div class="layuimini-main">
+    <div class="layui-card">
+      <div class="layui-card-header">导出进度</div>
+      <div class="layui-card-body">
+        <div class="layui-progress" lay-showPercent="true">
+          <div class="layui-progress-bar" id="bar" lay-percent="0%"></div>
+        </div>
+        <p>状态：<span id="status">-</span></p>
+        <p>当前文件：<span id="current">-</span></p>
+        <p>错误：<span id="error" style="color:red;">-</span></p>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+layui.use(['jquery'], function(){
+  var $ = layui.jquery;
+  function poll() {
+    $.ajax({
+      url: 'index.php?data_export-progress-id-{@intval($_GET['id'])}-1',
+      dataType: 'json',
+      success: function(resp) {
+        var d = (resp && resp.message) ? JSON.parse(resp.message) : {};
+        $('#bar').css('width', (d.progress || 0) + '%').attr('lay-percent', (d.progress || 0) + '%').text((d.progress || 0) + '%');
+        $('#status').text(d.status || '-');
+        $('#current').text(d.current_file || '-');
+        $('#error').text(d.error_msg || '-');
+        if (d.status === 'running') setTimeout(poll, 2000);
+        else if (d.status === 'done') setTimeout(function(){ location.href = 'index.php?data_export-index'; }, 3000);
+      }
+    });
+  }
+  poll();
+});
+</script>
+</body>
+</html>

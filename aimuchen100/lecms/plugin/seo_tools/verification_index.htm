@@ -1,0 +1,83 @@
+{inc:header.htm}
+<div class="layuimini-container">
+    <div class="layuimini-main">
+    <div class="layui-card">
+        <div class="layui-card-header">SEO 搜索引擎验证文件（站点 {$site_id}）</div>
+        <div class="layui-card-body">
+            <p class="layui-text layui-text-gray">上传后文件会保存到 runtime/seo-tools/verification，并可供对应搜索引擎直接访问。</p>
+            <form id="form-verify" class="layui-form" method="post" action="?verification-save-ajax-1">
+                <input type="hidden" name="FORM_HASH" value="{@form_hash()}">
+                <input type="hidden" name="site_id" value="{$site_id}">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">搜索引擎</label>
+                    <div class="layui-input-inline">
+                        <select name="engine" required lay-verify="required">
+                            <option value="baidu">百度</option>
+                            <option value="google">Google</option>
+                            <option value="sogou">搜狗</option>
+                            <option value="360">360</option>
+                            <option value="bing">Bing</option>
+                            <option value="toutiao">头条</option>
+                            <option value="shenma">神马</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">文件名</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="filename" required lay-verify="required" placeholder="例如 baidu_verify_xxx.html" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item layui-form-text">
+                    <label class="layui-form-label">文件内容</label>
+                    <div class="layui-input-block">
+                        <textarea name="content" required lay-verify="required" placeholder="粘贴搜索引擎提供的验证文件内容" class="layui-textarea"></textarea>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button class="layui-btn" lay-submit lay-filter="form-verify">保存验证文件</button>
+                    </div>
+                </div>
+            </form>
+
+            <fieldset class="layui-elem-field layui-field-title"><legend>已注册验证文件</legend></fieldset>
+            <table class="layui-table" lay-size="sm">
+                <thead><tr><th>搜索引擎</th><th>文件名</th><th>访问路径</th><th>更新时间</th></tr></thead>
+                <tbody>
+                {loop:$list $item}
+                    <tr>
+                        <td>{$item['engine']}</td>
+                        <td>{$item['filename']}</td>
+                        <td><code>/{$item['filename']}</code></td>
+                        <td>{$item['dateline']}</td>
+                    </tr>
+                {/loop}
+                {if:empty($list)}
+                    <tr><td colspan="4" style="text-align:center;color:#999;">暂无验证文件</td></tr>
+                {/if}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    </div>
+</div>
+<script type="text/javascript">
+layui.use(['form', 'layer'], function () {
+    var form = layui.form, layer = layui.layer;
+    form.render();
+    // 保存验证文件（本页内嵌列表，成功后刷新本页）
+    form.on('submit(form-verify)', function () {
+        adminAjax.postform('#form-verify', function (data) {
+            var json = toJson(data);
+            layer.msg(json.msg, { icon: json.err == 0 ? 1 : 5 });
+            if (json.err == 0) {
+                setTimeout(function () { window.location.reload(); }, 1000);
+            }
+        });
+        return false;
+    });
+});
+</script>
+</body>
+</html>

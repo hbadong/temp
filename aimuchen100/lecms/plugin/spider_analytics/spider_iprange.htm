@@ -1,0 +1,82 @@
+{inc:header.htm}
+<div class="layuimini-container">
+	<div class="layuimini-main">
+
+		<div class="layui-card">
+		  <div class="layui-card-header">添加 IP 段</div>
+		  <div class="layui-card-body">
+		    <form id="form-add" method="post" action="?spider_iprange-add-ajax-1" class="layui-form">
+		      <input type="hidden" name="FORM_HASH" value="{@form_hash()}" />
+		      <div class="layui-form-item">
+		        <label class="layui-form-label">引擎</label>
+		        <div class="layui-input-inline">
+		          <select name="engine" lay-filter="engine">
+		            <option value="baidu">百度</option>
+		            <option value="google">Google</option>
+		            <option value="bing">Bing</option>
+		            <option value="sogou">搜狗</option>
+		            <option value="360">360</option>
+		            <option value="sm">神马</option>
+		          </select>
+		        </div>
+		        <label class="layui-form-label">CIDR</label>
+		        <div class="layui-input-inline"><input type="text" name="cidr" placeholder="110.242.68.0/24" required lay-verify="required" class="layui-input"></div>
+		        <label class="layui-form-label">备注</label>
+		        <div class="layui-input-inline"><input type="text" name="note" class="layui-input"></div>
+		        <button type="submit" class="layui-btn" lay-submit lay-filter="form-add-btn"><i class="layui-icon">&#xe608;</i> 添加</button>
+		      </div>
+		    </form>
+		  </div>
+		</div>
+
+		<div class="layui-card">
+		  <div class="layui-card-header">IP 段列表</div>
+		  <div class="layui-card-body">
+		    <table class="layui-table">
+		      <thead><tr><th>ID</th><th>引擎</th><th>CIDR</th><th>备注</th><th>启用</th><th>操作</th></tr></thead>
+		      <tbody>
+		      {loop:$rows $r}
+		        <tr>
+		          <td>{$r['id']}</td>
+		          <td>{$r['engine']}</td>
+		          <td>{$r['cidr']}</td>
+		          <td>{$r['note']}</td>
+		          <td>{@$r['enabled'] == 1 ? '<span class="layui-badge layui-bg-green">是</span>' : '<span class="layui-badge layui-bg-gray">否</span>'}</td>
+		          <td><a class="layui-btn layui-btn-xs layui-btn-danger js-del" href="javascript:;" data-id="{$r['id']}"><i class="layui-icon">&#xe616;</i> 删除</a></td>
+		        </tr>
+		      {/loop}
+		      </tbody>
+		    </table>
+		  </div>
+		</div>
+
+	</div>
+</div>
+<script>
+layui.use(['layer', 'jquery', 'form'], function() {
+  var layer = layui.layer, $ = layui.$, form = layui.form;
+
+  // 添加 IP 段：AJAX 提交，成功后留在本页刷新数据
+  form.on('submit(form-add-btn)', function() {
+    adminAjax.postform('#form-add', function(data) {
+      var json = toJson(data);
+      layer.msg(json.msg, {icon: json.err == 0 ? 1 : 5});
+      if (json.err == 0) {
+        setTimeout(function(){ window.location.reload(); }, 1000);
+      }
+    });
+    return false;
+  });
+
+  // 行内删除
+  $(document).on('click', '.js-del', function() {
+    var id = $(this).data('id');
+    layer.confirm('确认删除？', function(index) {
+      layer.close(index);
+      adminAjax.postd('index.php?spider_iprange-del-ajax-1', {id: id, FORM_HASH: '{@form_hash()}'});
+    });
+  });
+});
+</script>
+</body>
+</html>

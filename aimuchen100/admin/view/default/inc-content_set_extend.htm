@@ -1,0 +1,154 @@
+<div class="layui-tab">
+    <ul class="layui-tab-title">
+        <li class="layui-this">{lang:basic_info}</li>
+        <li>{lang:extend_info}</li>
+    </ul>
+    <div class="layui-tab-content">
+        <div class="layui-tab-item layui-show">
+            <div class="layui-row layui-col-space10">
+                <div class="layui-col-md9">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label required">{lang:category}</label>
+                            <div class="layui-input-inline">
+                                {$input[cid]}
+                            </div>
+                        </div>
+                    </div>
+                    {hook:admin_content_set_category_after.htm}
+                    <div class="layui-form-item">
+                        <label class="layui-form-label required">{lang:title}</label>
+                        <div class="layui-input-block">
+                            {$input[title]}
+                        </div>
+                    </div>
+                    {hook:admin_content_set_title_after.htm}
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{lang:intro}</label>
+                        <div class="layui-input-block">
+                            {$input[intro]}
+                        </div>
+                    </div>
+                    <div class="layui-form-item" style="margin-bottom: 0px;">
+                        <label class="layui-form-label required">{lang:content}</label>
+                        <div class="layui-input-block">
+                            {$input[content]}
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label"></label>
+                        <div class="layui-input-block">
+                            <input name="isremote" type="checkbox" value="1" title="{lang:isremote}" lay-skin="primary">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{lang:tag}</label>
+                        <div class="layui-input-block">
+                            {$input[tags]}
+                            {hook:admin_content_set_tags_input_after.htm}
+                        </div>
+                    </div>
+                    {hook:admin_content_set_tags_after.htm}
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{lang:alias}</label>
+                        <div class="layui-input-inline">
+                            {$input[alias]}
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">{lang:alias_tips}</div>
+                    </div>
+                    {hook:admin_content_set_left_after.htm}
+                </div>
+                <div class="layui-col-md3">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{lang:thumb}</label>
+                        <div class="layui-input-block">
+                            <div class="layui-inline">{$input[pic]}</div>
+                            <div class="layui-inline">
+                                <button type="button" class="layui-btn layui-btn-sm" id="pic_btn">
+                                    <i class="layui-icon">&#xe67c;</i>{lang:upload_pic}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{lang:flag}</label>
+                        <div class="layui-input-block">
+                            {$input[flags]}
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{lang:author}</label>
+                        <div class="layui-input-block">
+                            {$input[author]}
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{lang:source}</label>
+                        <div class="layui-input-block">
+                            {$input[source]}
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{lang:views}</label>
+                        <div class="layui-input-block">
+                            {$input[views]}
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{lang:seo_title}</label>
+                        <div class="layui-input-block">
+                            {$input[seo_title]}
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{lang:seo_keywords}</label>
+                        <div class="layui-input-block">
+                            {$input[seo_keywords]}
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{lang:seo_description}</label>
+                        <div class="layui-input-block">
+                            {$input[seo_description]}
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{lang:jump_url}</label>
+                        <div class="layui-input-block">
+                            {$input[jumpurl]}
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{lang:comment}</label>
+                        <div class="layui-input-block">
+                            {$input[iscomment]}
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{lang:date}</label>
+                        <div class="layui-input-block">
+                            {$input[dateline]}
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{lang:show_tpl}</label>
+                        <div class="layui-input-block">
+                            {$input[show_tpl]}
+                        </div>
+                    </div>
+                    {hook:admin_content_set_right_after.htm}
+                </div>
+            </div>
+        </div>
+        <div class="layui-tab-item">
+            {loop:$field_arr $v}
+                <div class="layui-form-item">
+                    <label class="layui-form-label {if:$v[required]}required{/if}">{$v[name]}</label>
+                    <div class="layui-input-block">
+                        {$v[html]}
+                    </div>
+                </div>
+            {/loop}
+        </div>
+    </div>
+</div>

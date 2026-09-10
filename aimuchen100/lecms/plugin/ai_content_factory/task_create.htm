@@ -1,0 +1,71 @@
+{inc:header.htm}
+<div class="layuimini-container">
+    <div class="layuimini-main">
+        <div class="layui-card">
+        <div class="layui-card-header">创建 AI 任务</div>
+        <div class="layui-card-body">
+            <form id="form" class="layui-form" action="?ai_task-create_post-ajax-1" method="post">
+                <input type="hidden" name="FORM_HASH" value="{@form_hash()}" />
+                <div class="layui-form-item">
+                    <label class="layui-form-label">选择站点</label>
+                    <div class="layui-input-block">
+                        <select name="site_id" required lay-verify="required">
+                            <option value="">请选择站点</option>
+                            {loop:$sites $site}
+                            <option value="{$site['sid']}">{$site['site_name']} ({$site['domain']})</option>
+                            {/loop}
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">分类ID</label>
+                    <div class="layui-input-block">
+                        <input type="number" name="category_id" value="0" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">生成数量</label>
+                    <div class="layui-input-block">
+                        <input type="number" name="count" value="50" min="1" max="1000" required lay-verify="required" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">Prompt模板</label>
+                    <div class="layui-input-block">
+                        <textarea name="prompt_template" placeholder="自定义Prompt模板（可选）" class="layui-textarea"></textarea>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button class="layui-btn" lay-submit lay-filter="form">创建任务</button>
+                        <a href="?ai_task-index" class="layui-btn layui-btn-primary">返回</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+	layui.use(['form','layer', 'miniTab'], function () {
+		var layer = layui.layer, form = layui.form, miniTab = layui.miniTab;
+
+		//监听提交
+		form.on('submit(form)', function () {
+			adminAjax.postform('#form', function (data) {
+				var json = toJson(data);
+				layer.msg(json.msg, {icon: json.err == 0 ? 1 : 5});
+				if(json.err == 0) {
+					setTimeout(function(){
+						miniTab.reloadIframe('index.php?ai_task-index');
+						miniTab.deleteCurrentByIframe();
+					}, 1500);
+				}
+			});
+			return false;
+		});
+	});
+</script>
+</body>
+</html>

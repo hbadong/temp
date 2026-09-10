@@ -1,0 +1,27 @@
+{inc:header.htm}
+        {block:global_page}{/block}
+        {php}$gdata = block_global_page(array());{/php}
+        <ul class="url-here">
+            <li><a href="{$cfg[weburl]}">首页</a></li>
+            <li><h1>{$cfg_var[name]}</h1></li>
+        </ul>
+        <!-- 单页内容 -->
+        <div class="section">
+            <div class="section-hd">
+                <h3 class="title">{$cfg_var[name]}</h3>
+            </div>
+            <div class="news-detail">
+                <div class="news-detail-bd">
+                    <div class="text">
+                        {$gdata[content]}
+                    </div>
+                </div>
+            </div>
+        </div>
+{inc:footer.htm}
+<script type="text/javascript">
+    seajs.use('app/common', function(fn){
+        fn.init();
+    });
+</script>
+</div></body></html>

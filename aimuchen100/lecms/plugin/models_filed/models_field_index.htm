@@ -1,0 +1,109 @@
+{inc:header.htm}
+<div class="layuimini-container">
+    <div class="layuimini-main">
+        <script type="text/html" id="toolbar">
+            <div class="layui-btn-container">
+                <button class="layui-btn layui-btn-normal layui-btn-sm" lay-event="add">添加字段</button>
+                <button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="delete">批量删除</button>
+            </div>
+        </script>
+        <table class="layui-hide" id="data-table" lay-filter="data-table-filter"></table>
+
+        <script type="text/html" id="currentTableBar">
+            <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delete">删除</a>
+        </script>
+    </div>
+</div>
+<script type="text/html" id="required-system">
+    {{#if (d.required == 1) { }}
+    <span class="layui-badge">是</span>
+    {{# }else{ }}
+    <span class="layui-badge layui-bg-green">否</span>
+    {{# } }}
+</script>
+<script type="text/html" id="isbase-system">
+    {{#if (d.isbase == 1) { }}
+    <span class="layui-badge">主表</span>
+    {{# }else{ }}
+    <span class="layui-badge layui-bg-green">附表</span>
+    {{# } }}
+</script>
+<script type="text/javascript">
+    var mid = "{$mid}";
+    layui.use(['form','layer', 'table', 'miniTab'], function () {
+        var layer = layui.layer, form = layui.form, table = layui.table, miniTab = layui.miniTab;
+        var mid = {$mid};
+        table.render({
+            elem: '#data-table',
+            url: 'index.php?models_field-get_list-mid-'+mid+'-',
+            height: 'full',
+            toolbar: '#toolbar',
+            defaultToolbar: ['filter', 'exports', 'print'],
+            cellMinWidth: 50,
+            cols: [[
+                {type: "checkbox", width: 50, fixed: 'left'},
+                {field: 'field', width: 120, title: '数据表字段名', align: "center"},
+                {field: 'name', width: 150, title: '显示名称', align: "center", edit: 'text'},
+                {field: 'inputtypename', width: 100,  title: '类型', align: "center"},
+                {field: 'setting', title: '类型设置', edit: 'text'},
+                {field: 'tips', title: '提示词', edit: 'text'},
+                {field: 'orderby', width: 80, title: '排序值', edit: 'number', align: "center"},
+                {field: 'isbase', width: 90,  title: '主表附表', templet: '#isbase-system', align: "center"},
+                {field: 'required', width: 90,  title: '是否必填', templet: '#required-system', align: "center"},
+                {title: '操作', width: 65, toolbar: '#currentTableBar', align: "center"}
+            ]],
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 15,
+            page: true
+        });
+        /**
+         * toolbar监听事件 table列表 头部的操作
+         */
+        table.on('toolbar(data-table-filter)', function (obj) {
+            if (obj.event === 'add') {  // 监听添加操作
+                miniTab.openNewTabByIframe({
+                    href:'index.php?models_field-add-mid-'+mid,
+                    title:"添加字段",
+                });
+            } else if (obj.event === 'delete') {  // 监听删除操作
+                var checkStatus = table.checkStatus('data-table')
+                    , data = checkStatus.data;
+                var len = data.length;
+                if(len == 0){
+                    layer.msg('请选择数据！',{icon:5});
+                    return false;
+                }else{
+                    layer.confirm('删除不可恢复，确定删除？', function () {
+                        var id_arr = [];
+                        for (var i in data) {
+                            id_arr[i] = data[i]['id'];
+                        }
+                        adminAjax.postd("index.php?models_field-batch_del-ajax-1", {"id_arr": id_arr});
+                    });
+                }
+            }
+        });
+        //监听单元格编辑
+        table.on('edit(data-table-filter)', function(obj){
+            var value = obj.value //得到修改后的值
+                ,data = obj.data //得到所在行所有键值
+                ,field = obj.field; //得到字段
+            adminAjax.postd("index.php?models_field-set-ajax-1", {"id":data.id, "field":field, "value":value});
+        });
+        //监听每一行的操作
+        table.on('tool(data-table-filter)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'delete') {
+                if( data.system == 1 ){
+                    layer.msg('系统内置字段，不能删除！', {"icon":5});
+                    return false;
+                }
+                layer.confirm('数据表字段也将删除，确定执行？', function () {
+                    adminAjax.postd("index.php?models_field-del-ajax-1", {"id":data.id});
+                });
+            }
+        });
+    });
+</script>
+</body>
+</html>

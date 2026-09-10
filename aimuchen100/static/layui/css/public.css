@@ -1,0 +1,182 @@
+body {
+    margin: 10px;
+    background: #f2f2f2;
+}
+.mr3 {
+    margin-right: 3px;
+}
+.layuimini-container {
+    border: 1px solid #f2f2f2;
+    border-radius: 5px;
+    background-color: #ffffff
+}
+
+.layuimini-main {
+    margin: 10px 10px 10px 10px;
+}
+
+/**必填红点 */
+.layuimini-form > .layui-form-item > .required:after {
+    content: '*';
+    color: red;
+    position: absolute;
+    margin-left: 4px;
+    font-weight: bold;
+    line-height: 1.8em;
+    top: 6px;
+    right: 5px;
+}
+
+.layuimini-form > .layui-form-item > .layui-form-label {
+    width: 120px !important;
+}
+
+.layuimini-form > .layui-form-item > .layui-input-block {
+    margin-left: 150px !important;
+}
+
+.layuimini-form > .layui-form-item > .layui-input-block > tip {
+    display: inline-block;
+    margin-top: 10px;
+    line-height: 10px;
+    font-size: 10px;
+    color: #a29c9c;
+}
+
+/**搜索框*/
+.layuimini-container .table-search-fieldset {
+    margin: 0;
+    border: 1px solid #e6e6e6;
+    padding: 10px 20px 5px 20px;
+    color: #6b6b6b;
+}
+
+/**自定义滚动条样式 */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px
+}
+
+::-webkit-scrollbar-track {
+    background-color: transparent;
+    -webkit-border-radius: 2em;
+    -moz-border-radius: 2em;
+    border-radius: 2em;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #9c9da0;
+    -webkit-border-radius: 2em;
+    -moz-border-radius: 2em;
+    border-radius: 2em
+}
+
+/*公共*/
+.un{display:none}
+.dis{display:block}
+.cf:after{content:"";display:block;clear:both;height:0;overflow:hidden}
+.cf{zoom:1}
+.required::after {
+    content: '*';
+    color: red;
+    position: absolute;
+    margin-left: 4px;
+    font-weight: bold;
+    line-height: 1.8em;
+}
+
+/*主题设置*/
+.thm{display:inline;float:left;overflow:hidden;width:234px;padding:5px;margin:8px 8px 0 0;border:1px solid #CEE5F0;background:#F4F9FB;border-radius:4px}
+.thm_x{border:1px solid #9AC4DC;background:#E5F0F6}
+.thm .to{width:234px;height:162px;overflow:hidden;padding-bottom:4px;margin-bottom:2px;border-bottom:1px dotted #BCD8E8}
+.thm .tu{width:234px;height:162px;border-radius:4px}
+.thm .full{display:none;width:230px;height:158px;line-height:1.5;padding:2px;overflow:auto}
+.thm .full b{display:block;padding-bottom:5px}
+
+
+.project-list-item {
+    background-color: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all .2s;
+}
+.project-list-item:hover {
+    box-shadow: 2px 0 4px rgba(0, 21, 41, .35);
+}
+.project-list-item .project-list-item-cover {
+    height: 180px;
+    display: block;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    padding: 10px;
+}
+.project-list-item .project-list-item-cover img{width: 100%;height: 100%;object-fit: cover;}
+.project-list-item-body {
+    padding: 10px;
+}
+.project-list-item .project-list-item-body>h2 {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.project-list-item .project-list-item-text {
+    font-size: 12px;
+    height: 40px;
+    overflow: hidden;
+    margin-bottom: 5px;
+}
+
+.project-list-item .project-list-item-desc {
+    position: relative;
+    margin-bottom: 5px;
+}
+
+.project-list-item .project-list-item-desc .time {
+    color: #999;
+    font-size: 12px;
+}
+
+.project-list-item .project-list-item-desc .ew-head-list {
+    position: absolute;
+    right: 0;
+    top: 0;
+    color: #999;
+    font-size: 12px;
+}
+.project-list-item .author,.project-list-item .gsm{height:35px;line-height:35px;overflow:hidden;font-size:12px}
+#theme .project-list-item{border: 1px solid #e8e8e8;}
+#theme .used .project-list-item{border: 1px solid #1E9FFF;}
+
+/*插件*/
+#plugin{padding-top:0}
+.plu_cont{height:52px;line-height:14px;overflow:hidden;font-size: 12px;}
+.plu_b{font-weight:bold}
+.plu_i{color:#555}
+.plu_bottom{margin-top:4px;}
+.plu_bottom .but2{margin:0 8px 0 0}
+.plu_bottom div{font-size: 12px;}
+.plu_cont{padding: 5px;}
+
+.layui-form-select dl{z-index: 1000;}
+
+.images dl {
+    float: left;
+    position: relative;
+}
+.images dl dd {
+    position: absolute;
+    top: 5px;
+    cursor: pointer;
+    background: #666;
+    color: #fff;
+    padding: 2px;
+}
+.images img {
+    max-height: 100px;
+    margin: 5px 0;
+}
+
+.layui-table, .layui-table-view {
+    margin: 10px 0;
+}

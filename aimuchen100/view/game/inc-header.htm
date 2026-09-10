@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>{$cfg[titles]}</title>
+	<meta name="keywords" content="{$cfg[seo_keywords]}" />
+	<meta name="description" content="{$cfg[seo_description]}" />
+	<link rel="shortcut icon" type="image/x-icon" href="{$cfg[webdir]}favicon.ico" />
+	<link rel="stylesheet" href="{$cfg[tpl]}style/css/css.css" type="text/css" media="all"/>
+	<script src="{$cfg[tpl]}script/jquery1.9.1.min.js"></script>
+</head>
+<body>
+<!-- top navigation bar -->
+<div id="topnav">
+	<div>
+		<span class="t1"><a href="{$cfg[weburl]}" target="_blank">{$cfg[webname]}</a> |</span>
+		<span class="t2"><a href="{$cfg[weburl]}game/" target="_blank">手游库</a> |</span>
+		<span class="t4"><a href="{$cfg[weburl]}" target="_blank">手机版</a> |</span>
+		<span class="t5"><em></em>网站地图
+			<ul>
+				<li><em>资讯教程</em><p>
+					<a href="{$cfg[weburl]}sygl/" target="_blank">手游攻略</a>
+					<a href="{$cfg[weburl]}yxgl/" target="_blank">游戏攻略</a>
+					<a href="{$cfg[weburl]}rjjc/" target="_blank">软件教程</a>
+					<a href="{$cfg[weburl]}xtjc/" target="_blank">系统教程</a>
+				</p></li>
+				<li><em class="dtcol3">手机游戏</em><p>
+					<a href="{$cfg[weburl]}xiuxianyizhi/" target="_blank">休闲益智</a>
+					<a href="{$cfg[weburl]}saichejingsu/" target="_blank">赛车竞速</a>
+					<a href="{$cfg[weburl]}qipaizhuoyou/" target="_blank">棋牌桌游</a>
+					<a href="{$cfg[weburl]}juesebanyan/" target="_blank">角色扮演</a>
+					<a href="{$cfg[weburl]}dongzuosheji/" target="_blank">动作射击</a>
+				</p></li>
+				<li><em class="dtcol4">电脑软件</em><p>
+					<a href="{$cfg[weburl]}net/" target="_blank">网络软件</a>
+					<a href="{$cfg[weburl]}xtgj/" target="_blank">系统工具</a>
+					<a href="{$cfg[weburl]}yyrj/" target="_blank">应用软件</a>
+					<a href="{$cfg[weburl]}dmt/" target="_blank">媒体软件</a>
+					<a href="{$cfg[weburl]}ltrj/" target="_blank">聊天软件</a>
+				</p></li>
+				<li><em class="dtcol2">精品游戏</em><p>
+					{block:list mid="2" limit="13"}
+					<cite>
+						{loop:$data[list] $v}
+						<a href="{$v[url]}" target="_blank" title="{$v[title]}">{$v[subject]}</a>
+						{/loop}
+					</cite>
+					{/block}
+				</p></li>
+			</ul>
+		</span>
+	</div>
+</div>
+
+<!-- header with logo, nav, search -->
+<header>
+	<div class="cfix">
+		<a href="{$cfg[weburl]}" target="_self" title="{$cfg[webname]}" class="logo">
+			<img src="{$cfg[tpl]}style/img/logo.png" alt="{$cfg[webname]}">
+		</a>
+		<!-- navigation menu -->
+		{block:navigate}
+		<ul>
+			<li {if:empty($cfg_var['topcid'])} class="current"{/if}>
+				<a href="{$cfg[weburl]}" target="_self" title="{$cfg[webname]}">首页</a>
+			</li>
+			{loop:$data $v}
+			<li{if:$cfg_var['topcid'] == $v['cid']} class="current"{/if}>
+				<a href="{$v[url]}" target="{$v[target]}" title="{$v[name]}">{$v[name]}</a>
+			</li>
+			{/loop}
+		</ul>
+		{/block}
+		<!-- search form -->
+		<form class="searchs" method="get" action="{$cfg[webdir]}index.php" target="_blank" autocomplete="off">
+			<input type="hidden" name="u" value="search-index" />
+			<input type="hidden" name="mid" value="2" />
+			<input type="text" name="keyword" class="search" value="{$keyword}" placeholder="关键字" />
+			<input type="submit" name="" value="" class="button" />
+		</form>
+	</div>
+</header>

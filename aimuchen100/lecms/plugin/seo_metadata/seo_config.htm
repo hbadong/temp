@@ -1,0 +1,232 @@
+{inc:header.htm}
+<style>
+.settings-wrap { padding: 0 16px; }
+.settings-card { margin-bottom: 16px; }
+.settings-card .layui-card-header { display: flex; align-items: center; justify-content: space-between; font-weight: 600; }
+.settings-card .layui-card-header i { color: #1E9FFF; margin-right: 8px; }
+.settings-card .layui-card-header .header-tip { font-weight: 400; font-size: 12px; color: #999; }
+.settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 24px; }
+.settings-grid .layui-form-item { display: flex; align-items: center; }
+.settings-grid .layui-form-label { width: 120px; padding: 9px 12px 9px 0; text-align: right; }
+.settings-grid .layui-input-inline { width: auto; flex: 1; }
+.settings-grid .layui-input-block { margin-left: 120px; }
+.settings-actions { position: sticky; bottom: 0; padding: 12px 0; background: #fff; border-top: 1px solid #eee; text-align: right; margin-top: 16px; box-shadow: 0 -2px 6px rgba(0,0,0,.03); z-index: 10; }
+.settings-actions .layui-btn + .layui-btn { margin-left: 8px; }
+.field-hint { display: block; color: #999; font-size: 12px; margin-top: 4px; }
+.field-block { grid-column: 1 / -1; }
+.field-block .layui-form-label { width: 120px; }
+.field-block .layui-input-block { margin-left: 120px; }
+@media (max-width: 900px) { .settings-grid { grid-template-columns: 1fr; } .field-block .layui-input-block { margin-left: 0; } }
+</style>
+<div class="layuimini-container">
+	<div class="layuimini-main">
+		<div class="layui-tab layui-tab-brief" lay-filter="main">
+			<ul class="layui-tab-title">
+				<li class="layui-this">功能</li>
+				<li>插件设置</li>
+			</ul>
+			<div class="layui-tab-content">
+				<!-- Tab 1：功能（原页面全部内容） -->
+				<div class="layui-tab-item layui-show">
+					<div class="layui-card">
+						<div class="layui-card-header">SEO 默认配置</div>
+						<div class="layui-card-body">
+							<form id="form-config" class="layui-form" action="?seo_config-index_post-ajax-1" method="post">
+								<input type="hidden" name="FORM_HASH" value="{@form_hash()}" />
+								<div class="layui-form-item">
+									<label class="layui-form-label">默认标题</label>
+									<div class="layui-input-block">
+										<input type="text" name="seo_title" value="{$config['title']}" class="layui-input">
+									</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">默认关键词</label>
+									<div class="layui-input-block">
+										<input type="text" name="seo_keywords" value="{$config['keywords']}" class="layui-input">
+									</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">默认描述</label>
+									<div class="layui-input-block">
+										<textarea name="seo_description" class="layui-textarea">{$config['description']}</textarea>
+									</div>
+								</div>
+								<div class="layui-form-item">
+									<div class="layui-input-block">
+										<button class="layui-btn" lay-submit lay-filter="form-config">保存配置</button>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+
+				<!-- Tab 2：插件设置（原独立设置页内容） -->
+				<div class="layui-tab-item">
+					<div class="settings-wrap">
+						<!-- 默认元数据 -->
+						<div class="layui-card settings-card">
+							<div class="layui-card-header">
+								<span><i class="layui-icon">&#xe620;</i> 全局默认元数据</span>
+								<span class="header-tip">三级继承的最末兜底</span>
+							</div>
+							<div class="layui-card-body">
+								<form id="form-settings" class="layui-form" action="?seo_config-settings_post-ajax-1" method="post">
+									<input type="hidden" name="FORM_HASH" value="{@form_hash()}" />
+									<div class="settings-grid">
+										<div class="layui-form-item">
+											<label class="layui-form-label">默认标题</label>
+											<div class="layui-input-inline">
+												<input type="text" name="default_title" value="{$settings['default_title']}" class="layui-input" placeholder="例如：沐尘资源站">
+												<span class="field-hint">当内容/分类级 SEO 都未设置时使用</span>
+											</div>
+										</div>
+										<div class="layui-form-item">
+											<label class="layui-form-label">默认关键词</label>
+											<div class="layui-input-inline">
+												<input type="text" name="default_keywords" value="{$settings['default_keywords']}" class="layui-input" placeholder="关键词1,关键词2">
+												<span class="field-hint">英文逗号分隔，整体兜底</span>
+											</div>
+										</div>
+										<div class="layui-form-item field-block">
+											<label class="layui-form-label">默认描述</label>
+											<div class="layui-input-block">
+												<textarea name="default_description" class="layui-textarea" rows="3" placeholder="一句话描述站点主旨">{$settings['default_description']}</textarea>
+												<span class="field-hint">建议长度 80-160 字符</span>
+											</div>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+
+						<!-- 模板 -->
+						<div class="layui-card settings-card">
+							<div class="layui-card-header">
+								<span><i class="layui-icon">&#xe62a;</i> 页面模板</span>
+								<span class="header-tip">支持占位符：{site_name} {category_name} {content_title} {content_keywords} {category_description}</span>
+							</div>
+							<div class="layui-card-body">
+								<div class="settings-grid">
+									<div class="layui-form-item">
+										<label class="layui-form-label">分类页标题</label>
+										<div class="layui-input-inline">
+											<input type="text" name="category_title_tpl" value="{$settings['category_title_tpl']}" form="form-settings" class="layui-input">
+											<span class="field-hint">列表/分类页 title 字段</span>
+										</div>
+									</div>
+									<div class="layui-form-item">
+										<label class="layui-form-label">分类页关键词</label>
+										<div class="layui-input-inline">
+											<input type="text" name="category_keywords_tpl" value="{$settings['category_keywords_tpl']}" form="form-settings" class="layui-input">
+										</div>
+									</div>
+									<div class="layui-form-item field-block">
+										<label class="layui-form-label">分类页描述</label>
+										<div class="layui-input-block">
+											<input type="text" name="category_description_tpl" value="{$settings['category_description_tpl']}" form="form-settings" class="layui-input">
+											<span class="field-hint">可用 {category_description} 引用分类自身描述</span>
+										</div>
+									</div>
+									<div class="layui-form-item">
+										<label class="layui-form-label">详情页标题</label>
+										<div class="layui-input-inline">
+											<input type="text" name="detail_title_tpl" value="{$settings['detail_title_tpl']}" form="form-settings" class="layui-input">
+										</div>
+									</div>
+									<div class="layui-form-item">
+										<label class="layui-form-label">详情页关键词</label>
+										<div class="layui-input-inline">
+											<input type="text" name="detail_keywords_tpl" value="{$settings['detail_keywords_tpl']}" form="form-settings" class="layui-input">
+										</div>
+									</div>
+									<div class="layui-form-item field-block">
+										<label class="layui-form-label">详情页描述</label>
+										<div class="layui-input-block">
+											<input type="text" name="detail_description_tpl" value="{$settings['detail_description_tpl']}" form="form-settings" class="layui-input">
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- Sitemap + robots -->
+						<div class="layui-card settings-card">
+							<div class="layui-card-header">
+								<span><i class="layui-icon">&#xe609;</i> Sitemap 与 robots.txt</span>
+								<span class="header-tip">控制搜索引擎抓取</span>
+							</div>
+							<div class="layui-card-body">
+								<div class="settings-grid">
+									<div class="layui-form-item">
+										<label class="layui-form-label">启用 Sitemap</label>
+										<div class="layui-input-inline">
+											<input type="radio" name="sitemap_enabled" value="1" title="启用" {if:$settings['sitemap_enabled']}checked{/if} form="form-settings">
+											<input type="radio" name="sitemap_enabled" value="0" title="停用" {if:!$settings['sitemap_enabled']}checked{/if} form="form-settings">
+											<span class="field-hint">停用则不会生成 /sitemap.xml</span>
+										</div>
+									</div>
+									<div class="layui-form-item">
+										<label class="layui-form-label">更新频率</label>
+										<div class="layui-input-inline">
+											<select name="sitemap_freq" lay-search form="form-settings">
+												{loop:$sitemap_freqs $v}
+												<option value="{$v}" {if:$settings['sitemap_freq']==$v}selected{/if}>{$v}</option>
+												{/loop}
+											</select>
+											<span class="field-hint">Sitemap.xml 中 &lt;changefreq&gt; 默认值</span>
+										</div>
+									</div>
+									<div class="layui-form-item field-block">
+										<label class="layui-form-label">robots.txt 默认内容</label>
+										<div class="layui-input-block">
+											<textarea name="robots_txt" class="layui-textarea" rows="5" form="form-settings">{$settings['robots_txt']}</textarea>
+											<span class="field-hint">支持 User-agent / Allow / Disallow / Sitemap 指令</span>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- 底部操作栏 -->
+						<div class="settings-actions">
+							<a class="layui-btn layui-btn-primary" href="?seo_config-index">刷新页面</a>
+							<button type="submit" lay-submit lay-filter="form-settings" form="form-settings" class="layui-btn">
+								<i class="layui-icon">&#xe605;</i> 保存设置
+							</button>
+								<i class="layui-icon">&#xe605;</i> 保存设置
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+layui.use(['form', 'element', 'layer'], function () {
+	var form = layui.form, layer = layui.layer;
+	form.render();
+	// Tab1：SEO 默认配置提交（本页内嵌面板，成功后刷新本页）
+	form.on('submit(form-config)', function () {
+		adminAjax.postform('#form-config', function (data) {
+			var json = toJson(data);
+			layer.msg(json.msg, { icon: json.err == 0 ? 1 : 5 });
+			if (json.err == 0) {
+				setTimeout(function () { window.location.reload(); }, 1000);
+			}
+		});
+		return false;
+	});
+	// Tab2：插件设置提交（本页内嵌面板，成功后留在本页）
+	form.on('submit(form-settings)', function () {
+		adminAjax.postform('#form-settings', function (data) {
+			var json = toJson(data);
+			layer.msg(json.msg, { icon: json.err == 0 ? 1 : 5 });
+		});
+		return false;
+	});
+});
+</script>
+</body>
+</html>

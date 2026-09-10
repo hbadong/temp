@@ -1,0 +1,12 @@
+schema_version: 1
+module_path: lecms_core
+title: LeCMS 内容管理系统核心框架
+scope:
+    - lecms/
+source_files: []
+depends_on: []
+related_to:
+    - path: admin_panel
+    - path: install_system
+    - path: runtime_cache
+    - path: themes

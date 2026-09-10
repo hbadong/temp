@@ -1,0 +1,191 @@
+{inc:header.htm}
+<style>
+.settings-wrap { padding: 0 16px; }
+.settings-card { margin-bottom: 16px; }
+.settings-card .layui-card-header { display: flex; align-items: center; justify-content: space-between; font-weight: 600; }
+.settings-card .layui-card-header i { color: #1E9FFF; margin-right: 8px; }
+.settings-card .layui-card-header .header-tip { font-weight: 400; font-size: 12px; color: #999; }
+.settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 24px; }
+.settings-grid .layui-form-item { display: flex; align-items: center; }
+.settings-grid .layui-form-label { width: 120px; padding: 9px 12px 9px 0; text-align: right; }
+.settings-grid .layui-input-inline { width: auto; flex: 1; }
+.settings-grid .layui-input-block { margin-left: 120px; }
+.settings-actions { position: sticky; bottom: 0; padding: 12px 0; background: #fff; border-top: 1px solid #eee; text-align: right; margin-top: 16px; box-shadow: 0 -2px 6px rgba(0,0,0,.03); z-index: 10; }
+.settings-actions .layui-btn + .layui-btn { margin-left: 8px; }
+.field-hint { display: block; color: #999; font-size: 12px; margin-top: 4px; }
+.settings-section-wide { padding: 4px 0; }
+@media (max-width: 900px) { .settings-grid { grid-template-columns: 1fr; } }
+</style>
+<div class="layuimini-container">
+	<div class="layuimini-main">
+		<div class="layui-tab layui-tab-brief" lay-filter="main">
+			<ul class="layui-tab-title">
+				<li class="layui-this">功能</li>
+				<li>插件设置</li>
+			</ul>
+			<div class="layui-tab-content">
+				<!-- Tab 1：功能（原语言列表页内容） -->
+				<div class="layui-tab-item layui-show">
+					<div class="layui-card">
+						<div class="layui-card-header">全局默认配置</div>
+						<div class="layui-card-body">
+							<table class="layui-table">
+								<thead>
+									<tr>
+										<th>语言代码</th>
+										<th>语言名称</th>
+										<th>是否启用</th>
+										<th>子域名</th>
+										<th>排序</th>
+									</tr>
+								</thead>
+								<tbody>
+									{loop:$global_langs $lang}
+									<tr>
+										<td>{$lang['language']}</td>
+										<td>{$lang['language_name']}</td>
+										<td>{if:$lang['is_enabled']}<span class="layui-badge layui-bg-green">是</span>{else}<span class="layui-badge layui-bg-gray">否</span>{/if}</td>
+										<td>{if:$lang['subdomain_enabled']}<span class="layui-badge layui-bg-green">是</span>{else}<span class="layui-badge layui-bg-gray">否</span>{/if}</td>
+										<td>{$lang['sort']}</td>
+									</tr>
+									{/loop}
+									{if:empty($global_langs)}
+									<tr><td colspan="5">暂无数据</td></tr>
+									{/if}
+								</tbody>
+							</table>
+						</div>
+					</div>
+
+					<div class="layui-card">
+						<div class="layui-card-header">站点配置（{$site_id}）</div>
+						<div class="layui-card-body">
+							<div class="layui-btn-container" style="margin-bottom:10px">
+								<a href="javascript:;" class="layui-btn layui-btn-sm layui-btn-normal" onclick="openLanguageEdit()"><i class="layui-icon">&#xe608;</i> 编辑站点语言配置</a>
+							</div>
+							<table class="layui-table">
+								<thead>
+									<tr>
+										<th>语言代码</th>
+										<th>语言名称</th>
+										<th>默认</th>
+										<th>启用</th>
+										<th>子域名</th>
+										<th>排序</th>
+									</tr>
+								</thead>
+								<tbody>
+									{loop:$site_langs $lang}
+									<tr>
+										<td>{$lang['language']}</td>
+										<td>{$lang['language_name']}</td>
+										<td>{$lang['is_default'] ? '★' : ''}</td>
+										<td>{if:$lang['is_enabled']}<span class="layui-badge layui-bg-green">是</span>{else}<span class="layui-badge layui-bg-gray">否</span>{/if}</td>
+										<td>{if:$lang['subdomain_enabled']}<span class="layui-badge layui-bg-green">是</span>{else}<span class="layui-badge layui-bg-gray">否</span>{/if}</td>
+										<td>{$lang['sort']}</td>
+									</tr>
+									{/loop}
+									{if:empty($site_langs)}
+									<tr><td colspan="6">尚未配置站点级语言，<a href="javascript:;" onclick="openLanguageEdit()">点击配置</a></td></tr>
+									{/if}
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+
+				<!-- Tab 2：插件设置（合并自原 settings.htm） -->
+				<div class="layui-tab-item settings-wrap">
+					<!-- 默认与批量 -->
+					<div class="layui-card settings-card">
+						<div class="layui-card-header">
+							<span><i class="layui-icon">&#xe716;</i> 默认与批量</span>
+							<span class="header-tip">控制 translation_batch.translate_post 入口</span>
+						</div>
+						<div class="layui-card-body">
+							<form id="form-settings" class="layui-form" action="?language-settings_post-ajax-1" method="post">
+								<input type="hidden" name="FORM_HASH" value="{@form_hash()}" />
+								<div class="settings-grid">
+									<div class="layui-form-item">
+										<label class="layui-form-label">默认目标语言</label>
+										<div class="layui-input-inline">
+											<select name="default_target_language" lay-search>
+												{loop:$common_targets $code $name}
+												<option value="{$code}" {if:$code==$settings['default_target_language']}selected{/if}>{$name}（{$code}）</option>
+												{/loop}
+											</select>
+											<span class="field-hint">批量翻译未指定语言时使用（仅参考值，实际以 language_config.is_default 为准）</span>
+										</div>
+									</div>
+									<div class="layui-form-item">
+										<label class="layui-form-label">批量翻译上限</label>
+										<div class="layui-input-inline">
+											<input type="number" name="batch_translate_limit" class="layui-input" value="{$settings['batch_translate_limit']}" min="1" max="500">
+											<span class="field-hint">单次批量翻译最多文章数（1-500），translation_queue.batch_translate 入口限制</span>
+										</div>
+									</div>
+									<div class="layui-form-item">
+										<label class="layui-form-label">翻译引擎</label>
+										<div class="layui-input-inline">
+											<input type="radio" name="translation_engine" value="ai" title="AI 翻译（当前唯一可用）" {if:$settings['translation_engine']=='ai'}checked{/if}>
+											<span class="field-hint">占位字段；后续可接入本地/Google/DeepL 等引擎</span>
+										</div>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+
+					<!-- 术语表 -->
+					<div class="layui-card settings-card">
+						<div class="layui-card-header">
+							<span><i class="layui-icon">&#xe60a;</i> 术语表</span>
+							<span class="header-tip">每行一条：原文=译文</span>
+						</div>
+						<div class="layui-card-body settings-section-wide">
+							<div class="layui-form-item">
+								<label class="layui-form-label">术语对照</label>
+								<div class="layui-input-block">
+									<textarea name="glossary" form="form-settings" class="layui-textarea" rows="8" placeholder="游戏=Game&#10;攻略=Guide&#10;角色=Character">{$settings['glossary']}</textarea>
+									<span class="field-hint">占位字段：暂未写入 translation_engine.translate()，预留供后续 prompt 注入</span>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- 底部操作栏 -->
+					<div class="settings-actions">
+						<button type="submit" lay-submit lay-filter="form-settings" class="layui-btn">
+							<i class="layui-icon">&#xe605;</i> 保存设置
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+layui.use(['element', 'form', 'layer'], function () {
+	var element = layui.element, form = layui.form, layer = layui.layer;
+	form.render();
+	form.on('submit(form-settings)', function () {
+		adminAjax.postform('#form-settings', function (data) {
+			var json = toJson(data);
+			layer.msg(json.msg, { icon: json.err == 0 ? 1 : 5 });
+		});
+		return false;
+	});
+});
+
+// 新标签页打开站点语言配置编辑
+function openLanguageEdit() {
+	layui.use(['miniTab'], function () {
+		layui.miniTab.openNewTabByIframe({
+			href: "index.php?language-edit",
+			title: "编辑站点语言配置"
+		});
+	});
+}
+</script>
+</body>
+</html>

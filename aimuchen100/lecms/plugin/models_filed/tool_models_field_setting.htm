@@ -1,0 +1,14 @@
+{inc:header.htm}
+<div class="layuimini-container">
+	<div class="layuimini-main">
+		<div class="layui-card">
+			<div class="layui-card-header">前台模板里面字段调用说明</div>
+			<div class="layui-card-body">
+				<blockquote class="layui-elem-quote">单选框、多选框、下拉框、多图上传、附件上传 内容页调用： {$gdata[字段名_format]}，其他类型：{$gdata[字段名]}，其他页面修改$gdata即可！</blockquote>
+				<blockquote class="layui-elem-quote">主表的字段可以在任意内容相关的block调用，附表字段只能是内容页调用。自己斟酌使用，不要全部丢主表，会影响效率。</blockquote>
+			</div>
+		</div>
+	</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,11 @@
+schema_version: 1
+module_path: themes
+title: LECMS 前端主题资源（通用发行版：blog_Quietlee / default / justnews；aimuchen100 项目实际：game / game955 / game955m / macfkm）
+scope:
+    - view/
+source_files: []
+depends_on: []
+related_to:
+    - path: lecms_core
+    - path: lottery_templates
+    - path: static_assets

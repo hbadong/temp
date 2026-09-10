@@ -176,3 +176,9 @@ error_log.php
 *.lz
 *.lzma
 *.iso
+
+# LECMS dev-only artifacts
+aimuchen100/runcache.bak/
+aimuchen100/runcache.bak2/
+aimuchen100/**/*.bak_debug
+aimuchen100/upload/

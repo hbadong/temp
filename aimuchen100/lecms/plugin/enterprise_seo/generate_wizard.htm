@@ -1,0 +1,88 @@
+{inc:header.htm}
+<div class="layuimini-container">
+	<div class="layuimini-main">
+		<div class="layui-card">
+			<div class="layui-card-header">快速生成企业站点</div>
+			<div class="layui-card-body">
+				<form id="form" class="layui-form" method="post" action="?generate-create_post-ajax-1">
+					<input type="hidden" name="FORM_HASH" value="{@form_hash()}" />
+					<div class="layui-form-item">
+						<label class="layui-form-label required">企业名称</label>
+						<div class="layui-input-block">
+							<input type="text" name="enterprise_name" class="layui-input" required placeholder="请输入企业名称" />
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">所属行业</label>
+						<div class="layui-input-block">
+							<input type="text" name="industry" class="layui-input" placeholder="如：互联网、制造业、服务业" />
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">企业地址</label>
+						<div class="layui-input-block">
+							<input type="text" name="address" class="layui-input" placeholder="请输入企业地址" />
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">联系电话</label>
+						<div class="layui-input-block">
+							<input type="text" name="phone" class="layui-input" placeholder="请输入联系电话" />
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">邮箱</label>
+						<div class="layui-input-block">
+							<input type="email" name="email" class="layui-input" placeholder="请输入邮箱" />
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">企业简介</label>
+						<div class="layui-input-block">
+							<textarea name="description" class="layui-textarea" rows="5" placeholder="请输入企业简介"></textarea>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">选择模板</label>
+						<div class="layui-input-block">
+							<select name="template_id">
+								<option value="1">企业官网模板 A</option>
+								<option value="2">企业官网模板 B</option>
+								<option value="3">企业官网模板 C</option>
+							</select>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<div class="layui-input-block">
+							<button lay-submit lay-filter="form" class="layui-btn">生成企业站点</button>
+							<a href="?enterprise-index" class="layui-btn layui-btn-primary">取消</a>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+layui.use(['form', 'layer', 'miniTab'], function(){
+	var form = layui.form, layer = layui.layer, miniTab = layui.miniTab;
+	form.render();
+
+	//监听提交
+	form.on('submit(form)', function () {
+		adminAjax.postform('#form', function (data) {
+			var json = toJson(data);
+			layer.msg(json.msg, {icon: json.err == 0 ? 1 : 5});
+			if (json.err == 0) {
+				setTimeout(function(){
+					miniTab.reloadIframe('index.php?enterprise-index');
+					miniTab.deleteCurrentByIframe();
+				}, 1500);
+			}
+		});
+		return false;
+	});
+});
+</script>
+</body>
+</html>

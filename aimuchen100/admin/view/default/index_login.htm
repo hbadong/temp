@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>{lang:admin_login}</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta http-equiv="Access-Control-Allow-Origin" content="*">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="format-detection" content="telephone=no">
+	<link rel="stylesheet" href="{$C[admin_static]}layui/lib/layui-v2.8.15/css/layui.css" media="all">
+	<!--[if lt IE 9]>
+	<script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+	<script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+	<![endif]-->
+	<style>
+		body {background-repeat:no-repeat;background-color: whitesmoke;background-size: 100%;height: 100%;}
+		.layui-form {width: 320px !important;margin: auto !important;margin-top: 160px !important;}
+		.layui-form-checked[lay-skin=primary] i {border-color: #5FB878 !important;background-color: #5FB878 !important;color: #fff !important;}
+		.layui-form-item {margin-top: 20px !important;position: relative;}
+		.layui-input {padding-left: 36px !important;border-radius: 3px !important;}
+		.layui-input:focus {box-shadow: 0px 0px 2px 1px #5FB878 !important;}
+		.logo {width: 60px !important;margin-top: 10px !important;margin-bottom: 10px !important;margin-left: 20px !important;}
+		.title {font-size: 30px !important;font-weight: 600 !important;margin-left: 20px !important;color: #16baaa !important;display: inline-block !important;height: 60px !important;line-height: 60px !important;margin-top: 10px !important;position: absolute !important;}
+		.title .version{margin-left: 10px; font-weight: 300; font-size: 20px;}
+		.codeImage {cursor: pointer;height: 38px;float: right;}
+		.layui-form-item .layui-icon {position: absolute;left: 1px;top: 1px;width: 38px;line-height: 36px;text-align: center;color: #d2d2d2;}
+		@media (max-width:768px){
+			body{background-position:center;}
+		}
+	</style>
+</head>
+<body background="{$C[admin_static]}admin/images/background.svg" style="background-size: cover;">
+<form class="layui-form" name="login_form" action="index.php?index-login-ajax-1" method="post">
+	<input type="hidden" name="FORM_HASH" value="{$C[FORM_HASH]}" />
+	<div class="layui-form-item">
+		<img class="logo" src="{$C[admin_static]}admin/images/logo-login.png">
+		<div class="title">LECMS<span class="version">{$C[version]}</span></div>
+	</div>
+	<div class="layui-form-item">
+		<label class="layui-icon layui-icon-username" for="username"></label>
+		<input type="text" name="username" placeholder="{lang:please_input_username}" lay-verify="required" lay-reqText="{lang:please_input_username}" class="layui-input">
+	</div>
+	<div class="layui-form-item">
+		<label class="layui-icon layui-icon-password" for="password"></label>
+		<input type="password" name="password" placeholder="{lang:please_input_password}" lay-verify="required" lay-reqText="{lang:please_input_password}" class="layui-input" autocomplete="off">
+	</div>
+	{if:$cfg[admin_vcode]}
+	<div class="layui-form-item">
+		<div class="layui-input-inline">
+			<label class="layui-icon layui-icon-vercode" for="code"></label>
+			<input type="text" name="vcode" placeholder="{lang:please_input_vcode}" lay-verify="required" lay-reqText="{lang:please_input_vcode}" class="layui-input" autocomplete="off">
+		</div>
+		<img class="codeImage" src="index.php?index-vcode" onclick="this.src='index.php?index-vcode-r-'+Math.random();" alt="{lang:vcode}" />
+	</div>
+	{/if}
+	<div class="layui-form-item">
+		<button type="button" id="login_btn" class="layui-btn layui-btn-fluid login" lay-submit="" lay-filter="login">{lang:login1}</button>
+	</div>
+</form>
+
+<script src="{$C[admin_static]}js/jquery.js" charset="utf-8"></script>
+<script src="{$C[admin_static]}layui/lib/layui-v2.8.15/layui.js" charset="utf-8"></script>
+<script type="text/javascript">
+	document.login_form.username.focus();
+	layui.use(['form'], function () {
+		var form = layui.form,layer = layui.layer;
+
+		if (top.location != self.location) top.location = self.location;
+
+		document.onkeydown = function (e) {
+			var theEvent = window.event || e;
+			var code = theEvent.keyCode || theEvent.which || theEvent.charCode;
+			if (code == 13) {
+				$("#login_btn").trigger("click");
+				return false;
+			}
+		};
+
+		form.on('submit(login)', function (data) {
+			data = data.field;
+			if (data.username == '') {
+				layer.msg('{lang:please_input_username}', {icon: 5});
+			}else if (data.password == '') {
+				layer.msg('{lang:please_input_password}', {icon: 5});
+			}else{
+				if($('input[name="vcode"]').length && data.vcode == ''){
+					layer.msg('{lang:please_input_vcode}', {icon: 5});
+					return false;
+				}
+				$.post("index.php?index-login-ajax-1",data,function(res){
+					if( res.err == 1){
+						var icon = 5;
+					}else{
+						var icon = 1;
+					}
+					layer.msg(res.msg, {icon: icon});
+					if(res.err==0) setTimeout(function(){ location.href="./"; }, 1000);
+					return false;
+				},'json');
+			}
+			return false;
+		});
+	});
+</script>
+</body>
+</html>

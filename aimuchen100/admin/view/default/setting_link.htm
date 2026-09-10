@@ -1,0 +1,302 @@
+{inc:header.htm}
+<style>
+	.un {
+		display: none;
+	}
+	.tabtop{margin-top: 10px;}
+	.layui-elem-field legend{font-size: 14px;}
+</style>
+<div class="layuimini-container">
+	<div class="layuimini-main">
+		<div class="layui-card">
+			<div class="layui-card-header">{lang:link_setting}</div>
+			<div class="layui-card-body">
+				<div class="layui-tab">
+					<ul class="layui-tab-title">
+						<li {if:$do == 0} class="layui-this"{/if}>{lang:link_setting}</li>
+						<li {if:$do == 1} class="layui-this"{/if}>{lang:url_rewrite}</li>
+					</ul>
+					<div class="layui-tab-content">
+						<div class="layui-tab-item {if:$do == 0}layui-show{/if}">
+							<form class="layui-form" action="index.php?setting-link-ajax-1" method="post">
+								<table class="layui-table">
+									<colgroup>
+										<col width="120">
+										<col>
+									</colgroup>
+									<thead>
+										<tr>
+											<td>{lang:url_option}</td>
+											<td>{$input[parseurl]}</td>
+										</tr>
+									</thead>
+
+									<tbody id="parseurl_dis" style="display:none">
+									<tr>
+										<td>{lang:content_url}</td>
+										<td>
+											{$input[content_url]}
+											{hook:admin_setting_link_url_type_after.htm}
+											<div style="padding-top:8px">
+												<div class="layui-inline">
+													<label>{$weburl}</label>
+													<div class="layui-input-inline">
+														{$input[link_show]}
+													</div>
+													<a href="https://www.lecms.cc/index.php?thread-844.htm" target="_blank" title="帮助"><i class="layui-icon layui-icon-help"></i></a>
+												</div>
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td>{lang:link_tag_type}</td>
+										<td>{$input[link_tag_type]}</td>
+									</tr>
+									<tr>
+										<td>{lang:category_url}</td>
+										<td>
+											<div class="layui-inline">
+												<label class="layui-form-label required">{lang:prefix}</label>
+												<div class="layui-input-inline">
+													{$input[link_cate_page_pre]}
+												</div>
+											</div>
+											<div class="layui-inline">
+												<label class="layui-form-label required">{lang:suffix}</label>
+												<div class="layui-input-inline">
+													{$input[link_cate_page_end]}
+												</div>
+											</div>
+											<div class="layui-inline">
+												<label class="layui-form-label required">{lang:category_homepage_url}</label>
+												<div class="layui-input-inline">
+													{$input[link_cate_end]}
+												</div>
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td>{lang:tag_url}</td>
+										<td>
+											<div class="layui-inline">
+												<label class="layui-form-label required">{lang:prefix}</label>
+												<div class="layui-input-inline">
+													{$input[link_tag_pre]}
+												</div>
+											</div>
+											<div class="layui-inline">
+												<label class="layui-form-label required">{lang:suffix}</label>
+												<div class="layui-input-inline">
+													{$input[link_tag_end]}
+												</div>
+											</div>
+											<div class="layui-inline">
+												<label class="layui-form-label required">{lang:tag_top}</label>
+												<div class="layui-input-inline">
+													{$input[link_tag_top]}
+												</div>
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td>{lang:comment_url}</td>
+										<td>
+											<div class="layui-inline">
+												<label class="layui-form-label required">{lang:prefix}</label>
+												<div class="layui-input-inline">
+													{$input[link_comment_pre]}
+												</div>
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td>{lang:space_url}</td>
+										<td>
+											<div class="layui-inline">
+												<label class="layui-form-label required">{lang:prefix}</label>
+												<div class="layui-input-inline">
+													{$input[link_space_pre]}
+												</div>
+											</div>
+											<div class="layui-inline">
+												<label class="layui-form-label required">{lang:suffix}</label>
+												<div class="layui-input-inline">
+													{$input[link_space_end]}
+												</div>
+											</div>
+										</td>
+									</tr>
+									{hook:admin_setting_link_after.htm}
+									</tbody>
+								</table>
+								<div class="layui-form-item">
+									<div class="layui-input-block" style="margin-left: 120px;">
+										<input type="submit" value="{lang:submit}" class="layui-btn" />
+									</div>
+								</div>
+							</form>
+						</div>
+						<div class="layui-tab-item {if:$do == 1}layui-show{/if}">
+							<fieldset class="layui-elem-field">
+								<legend>{lang:tips}</legend>
+								<div class="layui-field-box">
+									{lang:your_server} {$software}
+								</div>
+							</fieldset>
+							<div class="layui-tab layui-tab-brief" id="tab_tit">
+								<ul class="layui-tab-title">
+									<li><a href="javascript:;" class="layui-this">Nginx</a></li>
+									<li><a href="javascript:;">Apache</a></li>
+									<li><a href="javascript:;">IIS7,8</a></li>
+									<li><a href="javascript:;">IIS6</a></li>
+								</ul>
+							</div>
+							<div  class="layui-tab-content" id="tab_main">
+								<div class="tab_cont">
+									<textarea class="layui-textarea" readonly="" style="min-height: 220px;">{$nginx}</textarea>
+									<div class="tabtop">{lang:nginx_info}</div>
+								</div>
+
+								<div class="tab_cont un">
+									<textarea class="layui-textarea" readonly="" style="min-height: 280px;">{$apache}</textarea>
+									<div class="tabtop layui-btn-group">
+										<a class="layui-btn layui-btn-sm" href="javascript:mk_rewrite('htaccess');">{lang:create} .htaccess</a>
+										<a class="layui-btn layui-btn-sm layui-btn-danger" href="javascript:del_rewrite('htaccess');">{lang:delete} .htaccess</a>
+									</div>
+									<div class="tabtop">
+										{if:empty($is_file_apache)}
+										<b style="color:#BD0A01">{lang:htaccess_no_exists}</b>
+										{else}
+										<b style="color:green">{lang:htaccess_is_exists}</b>
+										{/if}
+									</div>
+								</div>
+
+								<div class="tab_cont un">
+									<textarea class="layui-textarea" readonly="" style="height:360px">{$iis}</textarea>
+									<div class="tabtop layui-btn-group">
+										<a class="layui-btn layui-btn-sm" href="javascript:mk_rewrite('web_config');">{lang:create} web.config</a>
+										<a class="layui-btn layui-btn-sm layui-btn-danger" href="javascript:del_rewrite('web_config');">{lang:delete} web.config</a>
+									</div>
+									<div class="tabtop">
+										{if:empty($is_file_iis)}
+										<b style="color:#BD0A01">{lang:webconfig_no_exists}</b>
+										{else}
+										<b style="color:green">{lang:webconfig_is_exists}</b>
+										{/if}
+									</div>
+								</div>
+
+								<div class="tab_cont un">
+									<textarea class="layui-textarea" readonly="" style="min-height: 150px;">{$iis6}</textarea>
+									<div class="tabtop layui-btn-group">
+										<a class="layui-btn layui-btn-sm" href="javascript:mk_rewrite('httpd_ini');">{lang:create} httpd.ini</a>
+										<a class="layui-btn layui-btn-sm layui-btn-danger" href="javascript:del_rewrite('httpd_ini');">{lang:delete} httpd.ini</a>
+									</div>
+									<div class="tabtop">
+										{if:empty($is_file_iis6)}
+										<b style="color:#BD0A01">{lang:httpdini_no_exists}</b>
+										{else}
+										<b style="color:green">{lang:httpdini_is_exists}</b>
+										{/if}
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+	layui.use(['form','layer', 'element'], function () {
+		var layer = layui.layer, form = layui.form, element = layui.element;
+
+		var parseurl_def = $("input[name='parseurl']:checked").val();
+		if(parseurl_def == 1){
+			$("#parseurl_dis").show();
+		}
+
+		form.on('radio(parseurl)', function (data) {
+			var value = data.value;   //  当前选中的value值
+			if(value == 1){
+				$("#parseurl_dis").show();
+			}else{
+				$("#parseurl_dis").hide();
+			}
+		});
+
+		function link_show_redonly(title){
+			if (title.includes("灵活型") || title.includes("Custom")) {
+				$("input[name='link_show']").removeAttr("readonly");
+			}else{
+				$("input[name='link_show']").attr("readonly", "readonly");
+			}
+		}
+
+		form.on('radio(content_url)', function (data) {
+			var value = data.value;   //  当前选中的value值
+			$("input[name='link_show']").val(value);
+			var title = data.elem.title;
+			link_show_redonly(title);
+		});
+
+		$(document).ready(function(){
+			var title = $('input[name="content_url"]:checked').attr("title");
+			link_show_redonly(title);
+		});
+
+		// 提交表单
+		$("form:first").submit(function(){
+			var obj = $(this);
+			var d = obj.serializeArray();
+			var parseurl;
+
+			for(i in d) {
+				if(d[i]['name'] == "parseurl") {
+					parseurl = d[i]['value'];
+					break;
+				}
+			}
+			$.post(obj.attr("action"), d, function(response){
+				var json = toJson(response);
+				if(json.err) {
+					layer.msg(json.msg, {icon: 5});
+				}else{
+					layer.msg(json.msg, {icon: 1});
+					if( parseurl == "1" ){
+						setTimeout(function(){ window.location = 'index.php?setting-link-do-1'; }, 1000);
+					}else{
+						setTimeout(function(){ window.location.reload(); }, 1000);
+					}
+
+				}
+			});
+			return false;
+		});
+	});
+
+	// 伪静态规则切换
+	$("#tab_tit>ul>li>a").click(function(){
+		$("#tab_tit>ul>li>a").removeAttr("class");
+		$(this).addClass("layui-this");
+
+		var i = $(this).parent().index();
+		$("#tab_main>.tab_cont").hide();
+		$("#tab_main>.tab_cont").eq(i).show();
+	});
+
+	// 创建伪静态文件
+	function mk_rewrite(mk) {
+		adminAjax.postd("index.php?setting-link-mk-"+mk+"-ajax-1", {});
+	}
+
+	// 删除伪静态文件
+	function del_rewrite(del) {
+		adminAjax.postd("index.php?setting-link-del-"+del+"-ajax-1", {});
+	}
+</script>
+</body>
+</html>

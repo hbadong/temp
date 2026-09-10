@@ -1,0 +1,56 @@
+{inc:header.htm}
+
+<div class="wraper">
+	<!-- 游戏/软件分类标签 -->
+	<section class="gameTags">
+		<div class="line"></div>
+		<div class="tags_wrap">
+			{block:category type="child"}{/block}
+			{php}
+			$run = $GLOBALS['run'];
+			$topcid = 0;
+			if(!empty($_GET['cid'])) {
+				$cate = $run->category->get_cache((int)$_GET['cid']);
+				if(!empty($cate['topcid'])) $topcid = (int)$cate['topcid'];
+			}
+			$tags = $topcid ? block_category(array('cid' => $topcid, 'type' => 'child')) : array();
+			if($tags) {
+				echo '<ul>';
+				foreach($tags as $tag) {
+					$cur = (!empty($_GET['cid']) && $_GET['cid'] == $tag['cid']) ? ' class="current"' : '';
+					echo '<li' . $cur . '><a href="' . $tag['url'] . '" title="' . $tag['name'] . '"><i class="ico"></i><p><span>' . $tag['name'] . '</span><br>' . $tag['count'] . '款</p></a></li><i>+</i>';
+				}
+				echo '<li><p>更多其它分类</p></li></ul>';
+			}
+			{/php}
+		</div>
+		<i></i>
+	</section>
+
+	<!-- 游戏/软件列表 -->
+	<section class="softWareList">
+		{block:global_cate pagenum="20" dateformat="Y-m-d" intronum="50" showcate="1"}{/block}
+		<ul>
+			{loop:$gdata[list] $v}
+			<li>
+				<a href="{$v[url]}" target="_blank" class="pic">
+					<img src="{$v[pic]}" alt="{$v[title]}" onerror="this.src='{$cfg[tpl]}style/img/nopic.png'">
+				</a>
+				<div>
+					<a href="{$v[url]}" target="_blank">{$v[subject]}</a>
+					<p>游戏大小：<span>{$v[size]}</span></p>
+					<p>更新时间：<span>{$v[date]}</span></p>
+					<p>{$v[intro]}</p>
+				</div>
+				<a target="_blank" href="{$v[url]}" class="down">查看详情</a>
+			</li>
+			{/loop}
+		</ul>
+		<!-- 分页 -->
+		<div class="pagecode">
+			{$gdata[pages]}
+		</div>
+	</section>
+</div>
+
+{inc:footer.htm}

@@ -1,0 +1,20 @@
+{inc:header.htm}
+        <div class="section">
+            <div class="section-hd">
+                <h3 class="title">搜索</h3>
+            </div>
+            <div class="section-bd" style="padding:0.3rem;">
+                <form action="{$cfg[webdir]}index.php" method="get">
+                    <input class="search-input" name="keyword" type="search" placeholder="请输入关键词..." value="{$keyword}" style="width:100%;border:1px solid #e8e8e8;border-radius:0.1rem;padding:0.15rem;font-size:0.28rem;box-sizing:border-box;">
+                    <input type="hidden" name="u" value="search-index">
+                    <button type="submit" class="btn btn-gs" style="display:block;width:100%;margin-top:0.3rem;border:0;">搜索</button>
+                </form>
+            </div>
+        </div>
+{inc:footer.htm}
+<script type="text/javascript">
+    seajs.use('app/common', function(fn){
+        fn.init();
+    });
+</script>
+</div></body></html>

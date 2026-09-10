@@ -1,0 +1,195 @@
+{inc:header.htm}
+<style>
+/* 竞品分析 设置页专用样式 */
+.settings-wrap { padding: 0 16px; }
+.settings-card { margin-bottom: 16px; }
+.settings-card .layui-card-header { display: flex; align-items: center; justify-content: space-between; font-weight: 600; }
+.settings-card .layui-card-header i { color: #1E9FFF; margin-right: 8px; }
+.settings-card .layui-card-header .header-tip { font-weight: 400; font-size: 12px; color: #999; }
+.settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 24px; }
+.settings-grid .layui-form-item { display: flex; align-items: center; }
+.settings-grid .layui-form-label { width: 130px; padding: 9px 12px 9px 0; text-align: right; }
+.settings-grid .layui-input-inline { width: auto; flex: 1; }
+.settings-grid .layui-input-block { margin-left: 130px; }
+.settings-actions { position: sticky; bottom: 0; padding: 12px 0; background: #fff; border-top: 1px solid #eee; text-align: right; margin-top: 16px; box-shadow: 0 -2px 6px rgba(0,0,0,.03); z-index: 10; }
+.settings-actions .layui-btn + .layui-btn { margin-left: 8px; }
+.field-hint { display: block; color: #999; font-size: 12px; margin-top: 4px; }
+@media (max-width: 900px) { .settings-grid { grid-template-columns: 1fr; } }
+</style>
+<div class="layuimini-container">
+	<div class="layuimini-main">
+		<div class="layui-tab layui-tab-brief" lay-filter="main">
+			<ul class="layui-tab-title">
+				<li class="layui-this">功能</li>
+				<li>插件设置</li>
+			</ul>
+			<div class="layui-tab-content">
+				<!-- Tab 1：功能（原页面内容） -->
+				<div class="layui-tab-item layui-show">
+					<div class="layui-card">
+						<div class="layui-card-header">竞品站点管理</div>
+						<div class="layui-card-body">
+							<form class="layui-form layui-form-pane" action="?competitor-competitor" method="get">
+								<div class="layui-form-item">
+									<div class="layui-inline">
+										<label class="layui-form-label">分组</label>
+										<div class="layui-input-inline">
+											<select name="group">
+												<option value="">全部</option>
+												{loop:$groups $gk $gv}
+												<option value="{$gk}" {if:$current_group == $gk}selected{/if}>{$gv}</option>
+												{/loop}
+											</select>
+										</div>
+									</div>
+									<div class="layui-inline">
+										<button type="submit" class="layui-btn layui-btn-primary"><i class="layui-icon">&#xe615;</i> 查询</button>
+									</div>
+								</div>
+							</form>
+							<div class="layui-btn-container" style="margin-bottom:10px">
+								<a class="layui-btn layui-btn-sm layui-btn-normal" href="javascript:;" onclick="addSite()"><i class="layui-icon">&#xe608;</i> 添加竞品站点</a>
+							</div>
+							<table class="layui-table">
+								<thead>
+									<tr>
+										<th>ID</th>
+										<th>站点名称</th>
+										<th>URL</th>
+										<th>分组</th>
+										<th>状态</th>
+										<th>最后分析</th>
+										<th>操作</th>
+									</tr>
+								</thead>
+								<tbody>
+									{loop:$list $item}
+									<tr>
+										<td>{$item['id']}</td>
+										<td>{$item['name']}</td>
+										<td><a href="{$item['url']}" target="_blank">{$item['url']}</a></td>
+										<td>
+											{if:$item['group'] == 'direct'}直接竞品{/if}
+											{if:$item['group'] == 'indirect'}间接竞品{/if}
+											{if:$item['group'] == 'benchmark'}标杆站点{/if}
+										</td>
+										<td>{if:$item['status'] == 1}<span class="layui-badge layui-bg-green">启用</span>{else}<span class="layui-badge layui-bg-gray">停用</span>{/if}</td>
+										<td>{$item['last_analyzed_at']}</td>
+										<td>
+											<a class="layui-btn layui-btn-xs" href="javascript:;" onclick="editSite({$item['id']})">编辑</a>
+											<a class="layui-btn layui-btn-xs layui-btn-danger" href="javascript:;" onclick="del({$item['id']})">删除</a>
+										</td>
+									</tr>
+									{/loop}
+									{if:empty($list)}
+									<tr><td colspan="7" style="text-align:center">暂无数据</td></tr>
+									{/if}
+								</tbody>
+							</table>
+							<div class="layui-btn-container" style="margin-top:10px">{$pagebar}</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Tab 2：插件设置（原 settings.htm 核心内容） -->
+				<div class="layui-tab-item">
+					<div class="settings-wrap">
+						<!-- 采集策略 -->
+						<div class="layui-card settings-card">
+							<div class="layui-card-header">
+								<span><i class="layui-icon">&#xe628;</i> 采集策略</span>
+								<span class="header-tip">控制分析任务的执行频率与并发</span>
+							</div>
+							<div class="layui-card-body">
+								<form id="form-settings" class="layui-form" action="?competitor-settings_post-ajax-1" method="post">
+									<input type="hidden" name="FORM_HASH" value="{@form_hash()}" />
+									<div class="settings-grid">
+										<div class="layui-form-item">
+											<label class="layui-form-label">采集间隔(小时)</label>
+											<div class="layui-input-inline">
+												<input type="number" name="collect_interval_hours" min="1" max="720" value="{$plugin_settings['collect_interval_hours']}" class="layui-input" placeholder="例如 24">
+												<span class="field-hint">两次自动分析之间的间隔，1=每小时，24=每天</span>
+											</div>
+										</div>
+										<div class="layui-form-item">
+											<label class="layui-form-label">单次采集上限</label>
+											<div class="layui-input-inline">
+												<input type="number" name="max_collect_per_run" min="1" max="200" value="{$plugin_settings['max_collect_per_run']}" class="layui-input" placeholder="例如 20">
+												<span class="field-hint">单次任务最多分析的竞品站点数量</span>
+											</div>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+
+						<!-- 相似度阈值 -->
+						<div class="layui-card settings-card">
+							<div class="layui-card-header">
+								<span><i class="layui-icon">&#xe60a;</i> 相似度阈值</span>
+								<span class="header-tip">AI 优化建议的触发门槛</span>
+							</div>
+							<div class="layui-card-body">
+								<div class="settings-grid">
+									<div class="layui-form-item">
+										<label class="layui-form-label">相似度阈值(%)</label>
+										<div class="layui-input-inline">
+											<input type="number" name="similarity_threshold" min="0" max="100" value="{$plugin_settings['similarity_threshold']}" class="layui-input" placeholder="例如 70">
+											<span class="field-hint">当目标站与竞品相似度超过此值时触发 AI 优化建议</span>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- 底部操作栏 -->
+						<div class="settings-actions">
+							<button type="submit" lay-submit lay-filter="form-settings" class="layui-btn">
+								<i class="layui-icon">&#xe605;</i> 保存设置
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+layui.use(['layer', 'form', 'miniTab'], function(){
+	var layer = layui.layer, form = layui.form, miniTab = layui.miniTab;
+
+	form.render();
+
+	window.addSite = function(){
+		miniTab.openNewTabByIframe({
+			href: "index.php?competitor-edit",
+			title: "添加竞品站点",
+		});
+	};
+
+	window.editSite = function(id){
+		miniTab.openNewTabByIframe({
+			href: "index.php?competitor-edit-id-" + id,
+			title: "编辑竞品站点",
+		});
+	};
+
+	window.del = function(id){
+		layer.confirm('确定删除？', {icon: 3, title: '删除确认'}, function(){
+			// delete_post 校验 form_submit()，必须 POST + FORM_HASH
+			adminAjax.postd("index.php?competitor-delete_post-ajax-1", {"id": id, "FORM_HASH": "{@form_hash()}"});
+		});
+	};
+
+	// 设置表单提交（原 settings.htm 逻辑）
+	form.on('submit(form-settings)', function () {
+		adminAjax.postform('#form-settings', function (data) {
+			var json = toJson(data);
+			layer.msg(json.msg, { icon: json.err == 0 ? 1 : 5 });
+		});
+		return false;
+	});
+});
+</script>
+</body>
+</html>

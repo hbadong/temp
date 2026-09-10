@@ -1,0 +1,104 @@
+{inc:header.htm}
+
+<div class="layui-card">
+	<div class="layui-card-header">{lang:admin_security_setting}</div>
+	<div class="layui-card-body">
+		<form id="form" class="layui-form" action="index.php?setting-security-ajax-1" method="post">
+			<div class="layui-form-item">
+				<label class="layui-form-label">{lang:admin_vcode}</label>
+				<div class="layui-input-inline">
+					{$input[admin_vcode]}
+				</div>
+				<div class="layui-form-mid layui-word-aux">{lang:open_user_login_vcode}</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">{lang:admin_safe_entrance}</label>
+				<div class="layui-input-inline">
+					{$input[admin_safe_entrance]}
+				</div>
+				<div class="layui-form-mid layui-word-aux">{lang:admin_safe_entrance_tips}</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label required">{lang:admin_safe_auth}</label>
+				<div class="layui-input-inline">
+					{$input[admin_safe_auth]}
+				</div>
+				<div class="layui-input-inline">
+					<div class="layui-btn-group">
+					<button type="button" class="layui-btn layui-btn-primary" id="admin_safe_auth_reset">{lang:admin_safe_auth_reset}</button>
+					<button type="button" class="layui-btn layui-btn-normal" id="admin_safe_url">{lang:admin_safe_url}</button>
+					</div>
+				</div>
+			</div>
+			{hook:admin_setting_security_after.htm}
+			<div class="layui-form-item">
+				<label class="layui-form-label"></label>
+				<div class="layui-input-block">
+					<button class="layui-btn" lay-submit lay-filter="form">{lang:submit}</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+{if:$show_tips}
+<div class="layui-card">
+	<div class="layui-card-header">{lang:tips}</div>
+	<div class="layui-card-body">
+		{if:$debug_tips}<p><i style="color: #FF5722;" class="fa fa-exclamation-circle" aria-hidden="true" /></i> {$debug_tips}</p>{/if}
+		{if:$install_tips}<p><i style="color: #FFB800;" class="fa fa-exclamation-circle" aria-hidden="true" /></i> {$install_tips}</p>{/if}
+		{if:$default_admin_dir_tips}<p><i style="color: #FFB800;" class="fa fa-exclamation-circle" aria-hidden="true" /></i> {$default_admin_dir_tips}</p>{/if}
+		{if:$url_rewrite_tips}<p><i style="color: #FFB800;" class="fa fa-exclamation-circle" aria-hidden="true" /></i> {$url_rewrite_tips}</p>{/if}
+	</div>
+</div>
+{/if}
+<script src="{$C[admin_static]}js/clipboard.min.js"></script>
+<script type="text/javascript">
+	layui.use('form', function(){
+		var form = layui.form;
+
+		//监听提交
+		form.on('submit(form)', function(){
+			adminAjax.submit("#form");
+		});
+
+		$("#admin_safe_auth_reset").click(function () {
+			$.post("index.php?setting-security_auth-ajax-1",{do: 1},function(res){
+				if( res.err == 1){
+					var icon = 5;
+				}else{
+					var icon = 1;
+				}
+				layer.msg(res.msg, {icon: icon});
+				if(res.err==0){
+					$('input[name="admin_safe_auth"]').val(res.data);
+				}
+				return false;
+			},'json');
+		});
+
+		$("#admin_safe_url").click(function () {
+			$.post("index.php?setting-security_safe_url-ajax-1",{safe_auth: $('input[name="admin_safe_auth"]').val()},function(res){
+				if( res.err == 1){
+					layer.msg(res.msg, {icon: 5});
+				}else{
+					layer.confirm('<div id="copy">'+res.msg+'</div>', {
+						btn: ['{lang:copy}','{lang:cancel}'],
+						title:'{lang:admin_safe_entrance}'
+					}, function(){
+						$("a.layui-layer-btn0").attr("data-clipboard-target","#copy")
+						var clipboard = new ClipboardJS("a.layui-layer-btn0");
+						clipboard.on('success', function(e) {
+							layer.msg("{lang:copy_successfully}",{"icon":1});
+						});
+						clipboard.on('error', function(e) {
+							layer.msg("{lang:copy_failed}",{"icon":5});
+						});
+					}, function(){});
+				}
+				return false;
+			},'json');
+		});
+	});
+</script>
+</body>
+</html>

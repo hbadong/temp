@@ -1,0 +1,67 @@
+{inc:header.htm}
+<div class="layuimini-container">
+    <div class="layuimini-main">
+        <div class="layui-card">
+            <div class="layui-card-header">{@isset($data['id']) && $data['id'] ? '编辑 Block 配置' : '添加 Block 配置'}</div>
+            <div class="layui-card-body">
+                <!-- AJAX 提交：后端 E() 输出 {"err","msg"}，成功后自动关闭弹窗并刷新父页列表 -->
+                <form id="form-block-edit" class="layui-form" method="post" action="index.php?template_manager-block_save_post-ajax-1">
+                    <input type="hidden" name="FORM_HASH" value="{@form_hash()}" />
+                    <input type="hidden" name="id" value="{@isset($data['id']) ? $data['id'] : 0}" />
+                    <input type="hidden" name="site_id" value="{@isset($data['site_id']) ? $data['site_id'] : 0}" />
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">Block 名称</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="block_name" value="{@htmlspecialchars(isset($data['block_name']) ? $data['block_name'] : '', ENT_QUOTES, 'UTF-8')}" class="layui-input" placeholder="如 game_detail / game_download_box" />
+                            <div class="layui-form-mid layui-word-aux">对应 BlockRender 的渲染方法后缀</div>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">页面/URL</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="target" value="{@htmlspecialchars(isset($data['target']) ? $data['target'] : '', ENT_QUOTES, 'UTF-8')}" class="layui-input" placeholder="留空表示全局，支持如 /game/123.html" />
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">参数 JSON</label>
+                        <div class="layui-input-block">
+                            <textarea name="params" class="layui-textarea" rows="8" placeholder="{&quot;limit&quot;: 6, &quot;period&quot;: &quot;weekly&quot;}">{@htmlspecialchars(isset($data['params_text']) ? $data['params_text'] : '', ENT_QUOTES, 'UTF-8')}</textarea>
+                            <div class="layui-form-mid layui-word-aux">JSON 对象格式，覆盖模板渲染时的默认参数</div>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button type="submit" lay-submit lay-filter="form-block-edit" class="layui-btn layui-btn-normal"><i class="layui-icon">&#xe605;</i> 保存</button>
+                            <button type="button" class="layui-btn layui-btn-primary" onclick="parent.layer.close(parent.layer.getFrameIndex(window.name));">取消</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+layui.use(['form', 'layer'], function () {
+    var form = layui.form, layer = layui.layer;
+    form.render();
+    form.on('submit(form-block-edit)', function () {
+        adminAjax.postform('#form-block-edit', function (data) {
+            var json = typeof data === "object" ? data : toJson(data);
+            layer.msg(json.msg, {icon: json.err == 0 ? 1 : 5});
+            if (json.err == 0) {
+                // 关闭自身 iframe 弹窗；父页面列表通过弹窗 end 回调自动刷新
+                setTimeout(function () {
+                    parent.layer.close(parent.layer.getFrameIndex(window.name));
+                }, 800);
+            }
+        });
+        return false;
+    });
+});
+</script>
+</body>
+</html>

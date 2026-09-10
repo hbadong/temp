@@ -1,0 +1,11 @@
+schema_version: 1
+module_path: admin_panel/settings
+title: 后台设置与主题管理控制器
+scope:
+    - admin/control/setting_control.class.php
+    - admin/control/theme_control.class.php
+    - admin/control/db_control.class.php
+source_files: []
+depends_on: []
+related_to:
+    - path: admin_panel/content_management

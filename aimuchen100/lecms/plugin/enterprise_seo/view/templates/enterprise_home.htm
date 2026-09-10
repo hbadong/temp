@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?php echo htmlspecialchars($enterprise_name); ?> - 官方网站</title>
+    <meta name="description" content="<?php echo htmlspecialchars($description); ?>">
+    <link href="{$theme_path}/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{$theme_path}/css/enterprise.css" rel="stylesheet">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-default">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/"><?php echo htmlspecialchars($enterprise_name); ?></a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="/">首页</a></li>
+                <li><a href="/products">产品展示</a></li>
+                <li><a href="/cases">案例展示</a></li>
+                <li><a href="/news">新闻动态</a></li>
+                <li><a href="/about">关于我们</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 公司简介 -->
+    <section class="about-section">
+        <div class="container">
+            <h2>关于我们</h2>
+            <div class="row">
+                <div class="col-md-12">
+                    <p><?php echo htmlspecialchars($description); ?></p>
+                    <p><strong>行业：</strong><?php echo htmlspecialchars($industry); ?></p>
+                    <p><strong>地址：</strong><?php echo htmlspecialchars($address); ?></p>
+                    <p><strong>电话：</strong><?php echo htmlspecialchars($phone); ?></p>
+                    <p><strong>邮箱：</strong><?php echo htmlspecialchars($email); ?></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 产品展示 -->
+    <section class="products-section">
+        <div class="container">
+            <h2>产品展示</h2>
+            <div class="row">
+                {loop:$$products $product}
+                <div class="col-md-4">
+                    <div class="product-card">
+                        <h3><?php echo htmlspecialchars($product['name']); ?></h3>
+                        <p><?php echo htmlspecialchars($product['description']); ?></p>
+                    </div>
+                </div>
+                {/loop}
+            </div>
+        </div>
+    </section>
+
+    <!-- 案例展示 -->
+    <section class="cases-section">
+        <div class="container">
+            <h2>案例展示</h2>
+            <div class="row">
+                {loop:$$cases $case}
+                <div class="col-md-4">
+                    <div class="case-card">
+                        <h3><?php echo htmlspecialchars($case['title']); ?></h3>
+                        <p><?php echo htmlspecialchars($case['description']); ?></p>
+                    </div>
+                </div>
+                {/loop}
+            </div>
+        </div>
+    </section>
+
+    <!-- 新闻动态 -->
+    <section class="news-section">
+        <div class="container">
+            <h2>新闻动态</h2>
+            <ul class="news-list">
+                {loop:$$news $item}
+                <li><a href="/news/<?php echo (int)$item['id']; ?>"><?php echo htmlspecialchars($item['title']); ?></a> - <?php echo htmlspecialchars($item['date']); ?></li>
+                {/loop}
+            </ul>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; <?php echo htmlspecialchars($enterprise_name); ?> 版权所有</p>
+        </div>
+    </footer>
+</body>
+</html>

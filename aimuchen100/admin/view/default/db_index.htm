@@ -1,0 +1,116 @@
+{inc:header.htm}
+<div class="layuimini-container">
+    <div class="layuimini-main">
+        <fieldset class="table-search-fieldset">
+            <legend>{lang:tips}</legend>
+            <div class="layui-field-box">
+                {lang:db_tips}
+            </div>
+        </fieldset>
+        <script type="text/html" id="toolbar">
+            <div class="layui-btn-container">
+                <button class="layui-btn layui-btn-normal layui-btn-sm" lay-event="optimize_table">{lang:optimize_table}</button>
+                <button class="layui-btn layui-btn-sm" lay-event="repair_table">{lang:repair_table}</button>
+                <button class="layui-btn layui-btn-sm layui-btn-primary" lay-event="check_table">{lang:check_table}</button>
+            </div>
+        </script>
+        <table class="layui-hide" id="data-table" lay-filter="data-table-filter"></table>
+
+        <script type="text/html" id="currentTableBar">
+            <a class="layui-btn layui-btn-xs layui-btn-primary" lay-event="table_structure">{lang:table_structure}</a>
+        </script>
+
+    </div>
+</div>
+
+<script type="text/javascript">
+    layui.use(['form','layer', 'table'], function () {
+        var layer = layui.layer, form = layui.form, table = layui.table;
+
+        table.render({
+            elem: '#data-table',
+            url: 'index.php?db-get_list-',
+            height: 'full-100',
+            toolbar: '#toolbar',
+            defaultToolbar: ['filter', 'exports', 'print'],
+            cellMinWidth: 50,
+            cols: [[
+                {type: "checkbox", width: 50, fixed: 'left'},
+                {field: 'Name', width: 200, title: '{lang:db_table_name}'},
+                {field: 'Comment', minwidth: 100, title: '{lang:db_table_comment}'},
+                {field: 'Rows', width: 100, title: '{lang:db_table_rows}'},
+                {field: 'Data_length', width: 120, title: '{lang:db_table_data_size}'},
+                {field: 'Data_free', width: 120, title: '{lang:db_table_data_free}'},
+                {field: 'Engine', width: 100, title: '{lang:db_table_engine}'},
+                {field: 'Collation', width: 150, title: '{lang:db_table_collation}'},
+                {field: 'Update_time', width: 165, title: '{lang:db_table_update_time}'},
+                {title: '{lang:opt}', width: 75, toolbar: '#currentTableBar', align: "center"}
+            ]],
+            page: false
+        });
+        /**
+         * toolbar监听事件 table列表 头部的操作
+         */
+        table.on('toolbar(data-table-filter)', function (obj) {
+            if (obj.event === 'optimize_table') {
+                var checkStatus = table.checkStatus('data-table'), data = checkStatus.data;
+                var len = data.length;
+                if(len == 0){
+                    layer.msg('{lang:select_data}',{icon:5});
+                    return false;
+                }else{
+                    var id_arr = [];
+                    for (var i in data) {
+                        id_arr[i] = data[i]['Name'];
+                    }
+                    adminAjax.postd("index.php?db-optimize_table-ajax-1", {"id_arr": id_arr});
+                }
+            }else if (obj.event === 'repair_table') {
+                var checkStatus = table.checkStatus('data-table'), data = checkStatus.data;
+                var len = data.length;
+                if(len == 0){
+                    layer.msg('{lang:select_data}',{icon:5});
+                    return false;
+                }else{
+                    var id_arr = [];
+                    for (var i in data) {
+                        id_arr[i] = data[i]['Name'];
+                    }
+                    adminAjax.postd("index.php?db-repair_table-ajax-1", {"id_arr": id_arr});
+                }
+            }else if (obj.event === 'check_table') {
+                var checkStatus = table.checkStatus('data-table'), data = checkStatus.data;
+                var len = data.length;
+                if(len == 0){
+                    layer.msg('{lang:select_data}',{icon:5});
+                    return false;
+                }else{
+                    var id_arr = [];
+                    for (var i in data) {
+                        id_arr[i] = data[i]['Name'];
+                    }
+                    adminAjax.postd("index.php?db-check_table-ajax-1", {"id_arr": id_arr});
+                }
+            }
+        });
+
+        //监听每一行的操作
+        table.on('tool(data-table-filter)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'table_structure') {
+                layer.open({
+                    type: 2,
+                    title: data.Name+' {lang:table_structure}',
+                    area: ['80%', '80%'],
+                    shade: 0.6,
+                    shadeClose: true,
+                    maxmin: true,
+                    anim: 0,
+                    content: "index.php?db-table_structure-table-"+data.Name
+                });
+            }
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+{inc:header.htm}
+<div class="layui-card">
+	<div class="layui-card-header">{lang:sitemap_setting}（{lang:url_option_1}）</div>
+	<div class="layui-card-body">
+		<form id="form" class="layui-form" action="index.php?setting-sitemap-ajax-1" method="post">
+			<div class="layui-form-item">
+				<div class="layui-inline">
+					<label class="layui-form-label">{lang:home}</label>
+					<div class="layui-input-inline">
+						{$input[baidu_changefreq_index]}
+					</div>
+					<div class="layui-input-inline">
+						{$input[baidu_priority_index]}
+					</div>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<div class="layui-inline">
+					<label class="layui-form-label">{lang:category}</label>
+					<div class="layui-input-inline">
+						{$input[baidu_changefreq_category]}
+					</div>
+					<div class="layui-input-inline">
+						{$input[baidu_priority_category]}
+					</div>
+				</div>
+			</div>
+			{loop:$models_arr $model}
+			{php}$mid = $model['mid'];{/php}
+			<div class="layui-form-item">
+				<div class="layui-inline">
+					<label class="layui-form-label">{$model[name]}{lang:content}</label>
+					<div class="layui-input-inline">
+						{php}echo $input['baidu_changefreq_content_'.$mid];{/php}
+					</div>
+					<div class="layui-input-inline">
+						{php}echo $input['baidu_priority_content_'.$mid];{/php}
+					</div>
+					<div class="layui-input-inline">
+						{php}echo $input['content_count_'.$mid];{/php}
+					</div>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<div class="layui-inline">
+					<label class="layui-form-label">{$model[name]}{lang:tag}</label>
+					<div class="layui-input-inline">
+						{php}echo $input['baidu_changefreq_tag_'.$mid];{/php}
+					</div>
+					<div class="layui-input-inline">
+						{php}echo $input['baidu_priority_tag_'.$mid];{/php}
+					</div>
+					<div class="layui-input-inline">
+						{php}echo $input['tag_count_'.$mid];{/php}
+					</div>
+				</div>
+			</div>
+			{/loop}
+			{hook:admin_setting_sitemap_after.htm}
+			<div class="layui-form-item">
+				<div class="layui-input-block">
+					<button class="layui-btn" lay-submit lay-filter="form">{lang:submit}</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+<script type="text/javascript">
+	layui.use('form', function(){
+		var form = layui.form;
+
+		//监听提交
+		form.on('submit(form)', function(){
+			adminAjax.submit("#form");
+		});
+	});
+</script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+schema_version: 1
+module_path: install_system
+title: LECMS 安装向导模块
+scope:
+    - install/
+source_files: []
+depends_on: []
+related_to:
+    - path: lecms_core

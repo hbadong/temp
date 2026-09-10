@@ -1,0 +1,105 @@
+{inc:header.htm}
+<div class="layuimini-container">
+    <div class="layuimini-main">
+        <script type="text/html" id="toolbar">
+            <div class="layui-btn-container">
+                <button class="layui-btn layui-btn-normal layui-btn-sm" lay-event="add">{lang:add}</button>
+                <button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="delete">{lang:batch_delete}</button>
+            </div>
+        </script>
+        <table class="layui-hide" id="data-table" lay-filter="data-table-filter"></table>
+
+        <script type="text/html" id="currentTableBar">
+            <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delete">{lang:delete}</a>
+        </script>
+    </div>
+</div>
+<script id="edit_code" type="text/html">
+    <div class="layui-form">
+        <div class="layui-form-item">
+            <label class="layui-form-label required">{lang:user_group}</label>
+            <div class="layui-input-block">
+                <input id="t_name" name="groupname" type="text" required="required" class="layui-input" maxlength="20" />
+            </div>
+        </div>
+    </div>
+</script>
+<script type="text/html" id="models-system">
+    {{#if (d.system == 1) { }}
+    <span class="layui-badge">{lang:yes}</span>
+    {{# }else{ }}
+    <span class="layui-badge layui-bg-green">{lang:no}</span>
+    {{# } }}
+</script>
+<script type="text/javascript">
+    layui.use(['form','layer', 'table'], function () {
+        var layer = layui.layer, form = layui.form, table = layui.table;
+
+        table.render({
+            elem: '#data-table',
+            url: 'index.php?user_group-get_list',
+            height: 'full-100',
+            toolbar: '#toolbar',
+            defaultToolbar: ['filter', 'exports', 'print'],
+            cellMinWidth: 50,
+            escape: false,
+            cols: [[{$cols}]],
+            page: false
+        });
+        /**
+         * toolbar监听事件 table列表 头部的操作
+         */
+        table.on('toolbar(data-table-filter)', function (obj) {
+            if (obj.event === 'add') {  // 监听添加操作
+                adminAjax.confirm($('#edit_code').html(),function (index) {
+                    var groupname = $("#t_name").val();
+                    if(groupname == ''){
+                        layer.msg('{lang:groupname_no_empty}', {icon:5});
+                    }else{
+                        adminAjax.postd("index.php?user_group-add-ajax-1", {"groupname":groupname});
+                    }
+                },function () {
+
+                },'{lang:add_group}');
+            } else if (obj.event === 'delete') {  // 监听删除操作
+                var checkStatus = table.checkStatus('data-table')
+                    , data = checkStatus.data;
+                var len = data.length;
+                if(len == 0){
+                    layer.msg('{lang:select_data}',{icon:5});
+                    return false;
+                }else{
+                    adminAjax.confirm('{lang:delete_confirm}', function () {
+                        var id_arr = [];
+                        for (var i in data) {
+                            id_arr[i] = data[i]['groupid'];
+                        }
+                        adminAjax.postd("index.php?user_group-batch_del-ajax-1", {"id_arr": id_arr});
+                    });
+                }
+            }
+        });
+        //监听单元格编辑
+        table.on('edit(data-table-filter)', function(obj){
+            var value = obj.value //得到修改后的值
+                ,data = obj.data //得到所在行所有键值
+                ,field = obj.field; //得到字段
+            adminAjax.postd("index.php?user_group-set-ajax-1", {"groupid":data.groupid, "field":field, "value":value});
+        });
+        //监听每一行的操作
+        table.on('tool(data-table-filter)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'delete') {
+                if( data.system == 1 ){
+                    layer.msg('{lang:system_group_no_delete}', {"icon":5});
+                    return false;
+                }
+                adminAjax.confirm('{lang:delete_confirm}', function () {
+                    adminAjax.postd("index.php?user_group-del-ajax-1", {"groupid":data.groupid});
+                });
+            }
+        });
+    });
+</script>
+</body>
+</html>

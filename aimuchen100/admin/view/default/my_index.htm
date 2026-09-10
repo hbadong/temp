@@ -1,0 +1,206 @@
+{inc:header.htm}
+<style>
+	.layui-card {border:1px solid #f2f2f2;border-radius:5px;}
+	.layuimini-qiuck-module {text-align:center;}
+	.layuimini-qiuck-module a i {display:inline-block;width:100%;height:55px;line-height:55px;text-align:center;border-radius:2px;font-size:30px;background-color:#F8F8F8;color:#333;transition:all .3s;-webkit-transition:all .3s;}
+	.layuimini-qiuck-module a i:hover {box-shadow: 2px 0 8px 0 lightgray !important;}
+	.layuimini-qiuck-module a cite {position:relative;top:2px;display:block;color:#666;text-overflow:ellipsis;overflow:hidden;white-space:nowrap;font-size:14px;}
+	.welcome-module {width:100%;}
+	.icon {margin-right:10px;color:#1E9FFF;}
+</style>
+<div class="layui-row layui-col-space10">
+	<div class="layui-col-md4">
+		<div class="layui-card">
+			<div class="layui-card-header"><i class="fa fa-credit-card icon"></i>{lang:common_manage}</div>
+			<div class="layui-card-body">
+				<div class="welcome-module">
+					<div class="layui-row layui-col-space10 layuimini-qiuck">
+						{loop:$used_array $v}
+						<div class="layui-col-xs3 layuimini-qiuck-module">
+							<a href="javascript:;" layuimini-content-href="{$v[url]}" data-title="{$v[name]}" data-icon="{$v[icon]}">
+								<i class="{$v[icon]}"></i>
+								<cite>{$v[name]}</cite>
+							</a>
+						</div>
+						{/loop}
+						{hook:admin_my_index_used_after.htm}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="layui-col-md4">
+		<div class="layui-card">
+			<div class="layui-card-header"><i class="fa fa-database icon" aria-hidden="true"></i>{lang:statistics}</div>
+			<div class="layui-card-body">
+				<table class="layui-table">
+					<colgroup>
+						<col width="135">
+						<col>
+					</colgroup>
+					<tbody>
+						<tr>
+							<td>{lang:category_total}</td><td>{$stat[category]}</td>
+						</tr>
+						{loop:$stat[content] $v $k}
+						<tr>
+							<td>{$k}{lang:count}</td><td>{$v}</td>
+						</tr>
+						{/loop}
+						<tr>
+							<td>{lang:comment_total}</td><td>{$stat[comment]}</td>
+						</tr>
+						<tr>
+							<td>{lang:user_total}</td><td>{$stat[user]}</td>
+						</tr>
+						{hook:admin_my_index_stat_after.htm}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div class="layui-col-md4">
+		<div class="layui-card">
+			<div class="layui-card-header"><i class="fa fa-fire icon"></i>{lang:cms_info}</div>
+			<div class="layui-card-body">
+				<table class="layui-table">
+					<colgroup>
+						<col width="120">
+						<col>
+					</colgroup>
+					<tbody>
+					<tr>
+						<td>{lang:cms_version}</td><td>lecms {$C[version]} <span class="layui-font-12">Release {$C[release]}</span></td>
+					</tr>
+					<tr>
+						<td>{lang:developer}</td><td>{lang:developer_author}</td>
+					</tr>
+					<tr>
+						<td>{lang:bbs}</td><td><a target="_blank" href="https://www.lecms.cc">lecms</a></td>
+					</tr>
+					<tr>
+						<td>{lang:thanks_much}</td><td><a target="_blank" rel="nofollow" href="http://layuimini.99php.cn">layuimini</a>，XiunoPHP</td>
+					</tr>
+					{hook:admin_my_index_cms_after.htm}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="layui-row layui-col-space10">
+	<div class="layui-col-md6">
+		<div class="layui-card">
+			<div class="layui-card-header"><i class="fa fa-user-circle icon" aria-hidden="true"></i>{lang:my_info}</div>
+			<div class="layui-card-body">
+				<table class="layui-table">
+					<colgroup>
+						<col width="135">
+						<col>
+					</colgroup>
+					<tbody>
+					<tr>
+						<td>{lang:login_username}</td><td>{$_user[username]}（{$_group[groupname]}）</td>
+					</tr>
+					<tr>
+						<td>{lang:contents_count}</td><td>{$_user[contents]}</td>
+					</tr>
+					<tr>
+						<td>{lang:logins_count}</td><td>{$_user[logins]}</td>
+					</tr>
+					<tr>
+						<td>{lang:this_login}</td><td>{$_user[logindate]}（{$_user[loginip]}）</td>
+					</tr>
+					<tr>
+						<td>{lang:last_login}</td><td>{$_user[lastdate]}（{$_user[lastip]}）</td>
+					</tr>
+					<tr>
+						<td>{lang:reg_time}</td><td>{$_user[regdate]}（{$_user[regip]}）</td>
+					</tr>
+					{hook:admin_my_index_user_after.htm}
+					<tr>
+						<td>{lang:browser}</td><td><div id="browser"></div></td>
+					</tr>
+					<tr>
+						<td>Auth Key</td><td>{php}echo C('auth_key');{/php}</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div class="layui-col-md6">
+		<div class="layui-card">
+			<div class="layui-card-header"><i class="fa fa-television icon" aria-hidden="true"></i>{lang:server_info}</div>
+			<div class="layui-card-body">
+				<table class="layui-table">
+					<colgroup>
+						<col width="130">
+						<col>
+					</colgroup>
+					<tbody>
+					<tr>
+						<td>{lang:os_info}</td><td>{$info[os]}</td>
+					</tr>
+					<tr>
+						<td>{lang:software_info}</td><td>{$info[software]}</td>
+					</tr>
+					<tr>
+						<td>{lang:php_info}</td><td>{$info[php]}</td>
+					</tr>
+					<tr>
+						<td>{lang:mysql_info}</td><td>{$info[mysql]}</td>
+					</tr>
+					<tr>
+						<td>{lang:filesize_info}</td><td>{$info[filesize]}</td>
+					</tr>
+					<tr>
+						<td>{lang:exectime_info}</td><td>{$info[exectime]}{lang:second}</td>
+					</tr>
+					<tr>
+						<td>{lang:space_info}</td><td>{$info[space]}</td>
+					</tr>
+					<tr>
+						<td>{lang:other_info}</td><td>{$info[other]}</td>
+					</tr>
+					{hook:admin_my_index_info_after.htm}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	{hook:admin_my_index_layui_col_md6_after.htm}
+</div>
+<script type="text/javascript">
+	layui.use(['layer', 'miniTab'], function () {
+		var $ = layui.jquery,layer = layui.layer,miniTab = layui.miniTab;
+
+		miniTab.listen();
+
+		getBrowser();
+	});
+	function appInfo() {
+		var browser = {
+				msie: false, firefox: false, opera: false, safari: false,
+				chrome: false, netscape: false, appname: '未知', version: ''
+			},
+			userAgent = window.navigator.userAgent.toLowerCase();
+		if (/(msie|firefox|opera|chrome|netscape)\D+(\d[\d.]*)/.test(userAgent)){
+			browser[RegExp.$1] = true;
+			browser.appname = RegExp.$1;
+			browser.version = RegExp.$2;
+		}else if(/version\D+(\d[\d.]*).*safari/.test(userAgent)){
+			browser.safari = true;
+			browser.appname = 'safari';
+			browser.version = RegExp.$2;
+		}
+		return browser;
+	}
+
+	function getBrowser() {
+		var myos = appInfo();
+		$("#browser").html(myos.appname +" "+myos.version);
+	}
+</script>
+</body>
+</html>

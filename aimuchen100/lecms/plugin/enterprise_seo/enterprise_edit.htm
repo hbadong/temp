@@ -1,0 +1,89 @@
+{inc:header.htm}
+<div class="layuimini-container">
+	<div class="layuimini-main">
+		<div class="layui-card">
+			<div class="layui-card-header">编辑企业站点</div>
+			<div class="layui-card-body">
+				<form id="form" class="layui-form" method="post" action="?enterprise-edit_post-ajax-1">
+					<input type="hidden" name="id" value="{$site['id']}" />
+					<input type="hidden" name="FORM_HASH" value="{@form_hash()}" />
+					<div class="layui-form-item">
+						<label class="layui-form-label required">企业名称</label>
+						<div class="layui-input-block">
+							<input type="text" name="enterprise_name" class="layui-input" value="{$site['enterprise_name']}" required />
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">所属行业</label>
+						<div class="layui-input-block">
+							<input type="text" name="industry" class="layui-input" value="{$site['industry']}" />
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">企业地址</label>
+						<div class="layui-input-block">
+							<input type="text" name="address" class="layui-input" value="{$site['address']}" />
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">联系电话</label>
+						<div class="layui-input-block">
+							<input type="text" name="phone" class="layui-input" value="{$site['phone']}" />
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">邮箱</label>
+						<div class="layui-input-block">
+							<input type="email" name="email" class="layui-input" value="{$site['email']}" />
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">企业简介</label>
+						<div class="layui-input-block">
+							<textarea name="description" class="layui-textarea" rows="5">{$site['description']}</textarea>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">状态</label>
+						<div class="layui-input-block">
+							<select name="status">
+								<option value="0" {if:$site['status']==0}selected{/if}>草稿</option>
+								<option value="1" {if:$site['status']==1}selected{/if}>已发布</option>
+								<option value="2" {if:$site['status']==2}selected{/if}>已下线</option>
+							</select>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<div class="layui-input-block">
+							<button lay-submit lay-filter="form" class="layui-btn">保存</button>
+							<a href="?enterprise-index" class="layui-btn layui-btn-primary">返回</a>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+layui.use(['form', 'layer', 'miniTab'], function(){
+	var form = layui.form, layer = layui.layer, miniTab = layui.miniTab;
+	form.render();
+
+	//监听提交
+	form.on('submit(form)', function () {
+		adminAjax.postform('#form', function (data) {
+			var json = toJson(data);
+			layer.msg(json.msg, {icon: json.err == 0 ? 1 : 5});
+			if (json.err == 0) {
+				setTimeout(function(){
+					miniTab.reloadIframe('index.php?enterprise-index');
+					miniTab.deleteCurrentByIframe();
+				}, 1500);
+			}
+		});
+		return false;
+	});
+});
+</script>
+</body>
+</html>

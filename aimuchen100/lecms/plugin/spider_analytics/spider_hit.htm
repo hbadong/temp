@@ -1,0 +1,30 @@
+{inc:header.htm}
+<div class="layuimini-container">
+	<div class="layuimini-main">
+
+		<div class="layui-card">
+		  <div class="layui-card-header">黑名单命中记录</div>
+		  <div class="layui-card-body">
+		    <table class="layui-table">
+		      <thead><tr><th>ID</th><th>时间</th><th>类型</th><th>值</th><th>URL</th><th>UA</th><th>拦截</th></tr></thead>
+		      <tbody>
+		      {loop:$rows $r}
+		        <tr>
+		          <td>{$r['id']}</td>
+		          <td>{@date('Y-m-d H:i:s', $r['hit_at'])}</td>
+		          <td>{$r['match_type']}</td>
+		          <td>{$r['match_value']}</td>
+		          <td>{$r['url']}</td>
+		          <td>{$r['user_agent']}</td>
+		          <td>{@$r['is_intercepted'] == 1 ? '<span class="layui-badge layui-bg-red">是</span>' : '<span class="layui-badge layui-bg-gray">否</span>'}</td>
+		        </tr>
+		      {/loop}
+		      </tbody>
+		    </table>
+		  </div>
+		</div>
+
+	</div>
+</div>
+</body>
+</html>

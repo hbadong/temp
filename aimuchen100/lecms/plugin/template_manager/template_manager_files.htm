@@ -1,0 +1,103 @@
+{inc:header.htm}
+<div class="layuimini-container">
+    <div class="layuimini-main">
+        <div class="layui-card">
+            <div class="layui-card-header">模板文件版本</div>
+            <div class="layui-card-body">
+                <div class="layui-form layui-inline" style="margin-bottom:12px;">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label" style="width:80px;">选择主题</label>
+                        <div class="layui-input-inline" style="width:220px;">
+                            <select id="theme-select" lay-filter="theme-filter">
+                                <option value="">请选择主题</option>
+                                {loop:$themes $t}
+                                <option value="{$t['id']}" {if:isset($selected) && $selected == $t['id']}selected{/if}>{$t['name']}{@isset($t['title']) && $t['title'] !== '' ? '（' . $t['title'] . '）' : ''}</option>
+                                {/loop}
+                            </select>
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">选择主题后，可对模板文件保存版本 / 查看历史 / 回滚</div>
+                    </div>
+                </div>
+                <table class="layui-hide" id="data-table" lay-filter="data-table-filter"></table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/html" id="op-bar">
+    <div class="layui-btn-group">
+        <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="save">保存版本</a>
+        <a class="layui-btn layui-btn-xs" lay-event="history">历史</a>
+    </div>
+</script>
+
+<script type="text/javascript">
+layui.use(['table', 'layer', 'form', 'miniTab'], function () {
+    var layer = layui.layer, table = layui.table, form = layui.form, miniTab = layui.miniTab;
+    var initId = '{@isset($selected) ? $selected : 0}';
+
+    var ins = table.render({
+        elem: '#data-table',
+        url: 'index.php?template_manager-file_get_list',
+        where: {template_id: initId},
+        height: 'full-180',
+        cols: [[
+            {field: 'path', title: '文件路径', minWidth: 280},
+            {field: 'version', title: '当前版本', width: 100, align: 'center'},
+            {field: 'versions', title: '版本数', width: 90, align: 'center'},
+            {field: 'file_size', title: '大小(字节)', width: 110, align: 'center'},
+            {title: '操作', width: 160, toolbar: '#op-bar', align: 'center'}
+        ]],
+        limits: [20, 50, 100],
+        limit: 20,
+        page: false,
+        parseData: function (res) {
+            // 未选主题时后端返回空列表；此处仅透传，避免 done 里 reload 自己造成死循环
+            return {
+                "code": res.code,
+                "msg": res.msg,
+                "count": res.count,
+                "data": res.data
+            };
+        }
+    });
+
+    form.on('select(theme-filter)', function (data) {
+        table.reload('data-table', {
+            where: {template_id: data.value},
+            page: {curr: 1}
+        });
+    });
+
+    table.on('tool(data-table-filter)', function (obj) {
+        var data = obj.data;
+        var template_id = $('select#theme-select').val();
+        if (!template_id) {
+            layer.msg('请先选择主题', {icon: 5});
+            return;
+        }
+        if (obj.event === 'save') {
+            layer.confirm('将文件当前内容保存为新版本？', function () {
+                adminAjax.postd("index.php?template_manager-file_save_version_post-ajax-1", {FORM_HASH: '{@form_hash()}', template_id: template_id, path: data.path}, function (res) {
+                    var json = typeof res === "object" ? res : toJson(res);
+                    layer.msg(json.msg, {icon: json.err == 0 ? 1 : 5});
+                    if (json.err == 0) {
+                        setTimeout(function () {
+                            table.reload('data-table');
+                        }, 800);
+                    }
+                });
+            });
+        } else if (obj.event === 'history') {
+            // dash URL 按 '-' 拆分且不解码，需把 '/' 与 '-' 一并编码（服务端 rawurldecode 还原）
+            var enc = encodeURIComponent(data.path).replace(/-/g, '%2D');
+            miniTab.openNewTabByIframe({
+                href: "index.php?template_manager-file_history-template_id-" + template_id + "-path-" + enc,
+                title: "版本历史",
+            });
+        }
+    });
+});
+</script>
+</body>
+</html>

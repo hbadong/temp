@@ -1,0 +1,82 @@
+{inc:header.htm}
+<div class="layuimini-container">
+    <div class="layuimini-main">
+        <div class="layui-card">
+            <div class="layui-card-header">
+                导入历史管理
+                <button class="layui-btn layui-btn-sm layui-btn-normal" lay-event="add" id="btn-upload" style="float:right">
+                    <i class="layui-icon">&#xe67c;</i> 导入文章
+                </button>
+            </div>
+            <div class="layui-card-body">
+                <table class="layui-hide" id="data-table" lay-filter="data-table-filter"></table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/html" id="status-tpl">
+    {{# if(d.status == 1) { }}
+    <span class="layui-badge layui-bg-green">完成</span>
+    {{# } else if(d.status == 0) { }}
+    <span class="layui-badge layui-bg-orange">处理中</span>
+    {{# } else { }}
+    <span class="layui-badge layui-bg-red">失败</span>
+    {{# } }}
+</script>
+
+<script type="text/html" id="op-bar">
+    <div class="layui-btn-group">
+        <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="view">查看</a>
+    </div>
+</script>
+
+<script type="text/javascript">
+layui.use(['table', 'layer', 'miniTab'], function () {
+    var layer = layui.layer, table = layui.table, miniTab = layui.miniTab;
+
+    table.render({
+        elem: '#data-table',
+        url: 'index.php?import-get_list',
+        height: 'full-120',
+        cols: [[
+            {field: 'id', width: 80, title: 'ID', align: 'center'},
+            {field: 'filename', minWidth: 200, title: '文件名'},
+            {field: 'total_rows', width: 100, title: '总数', align: 'center'},
+            {field: 'imported', width: 100, title: '成功', align: 'center'},
+            {field: 'skipped', width: 100, title: '跳过', align: 'center'},
+            {field: 'status', width: 100, title: '状态', align: 'center', templet: '#status-tpl'},
+            {field: 'created_at', width: 170, title: '导入时间', align: 'center'},
+            {title: '操作', width: 120, toolbar: '#op-bar', align: 'center'}
+        ]],
+        limits: [10, 15, 20, 50, 100],
+        limit: 20,
+        page: true
+    });
+
+    // Upload button
+    $('#btn-upload').on('click', function(){
+        var index = layer.open({
+            title: '导入文章',
+            type: 2,
+            area: ['600px', '500px'],
+            content: 'index.php?import-upload'
+        });
+    });
+
+    // Table toolbar events
+    table.on('tool(data-table-filter)', function(obj) {
+        var data = obj.data;
+        if (obj.event === 'view') {
+            var index = layer.open({
+                title: '导入详情 - ' + data.filename,
+                type: 2,
+                area: ['650px', '450px'],
+                content: 'index.php?import-view-id-' + data.id
+            });
+        }
+    });
+});
+</script>
+</body>
+</html>

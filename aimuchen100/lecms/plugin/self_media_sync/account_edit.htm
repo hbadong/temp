@@ -1,0 +1,82 @@
+{inc:header.htm}
+<div class="layuimini-container">
+	<div class="layuimini-main">
+		<div class="layui-card">
+			<div class="layui-card-header">{if:$account['id']}编辑平台账号{else}添加平台账号{/if}</div>
+			<div class="layui-card-body">
+				<form id="form" class="layui-form" action="?account-edit_post-ajax-1" method="post">
+					<input type="hidden" name="id" value="{$account['id']}" />
+					<input type="hidden" name="FORM_HASH" value="{@form_hash()}" />
+					<div class="layui-form-item">
+						<label class="layui-form-label required">平台</label>
+						<div class="layui-input-block">
+							<select name="platform">
+								<option value="wechat" {if:$account['platform'] == 'wechat'}selected{/if}>微信公众号</option>
+								<option value="zhihu" {if:$account['platform'] == 'zhihu'}selected{/if}>知乎</option>
+								<option value="csdn" {if:$account['platform'] == 'csdn'}selected{/if}>CSDN</option>
+								<option value="sohu" {if:$account['platform'] == 'sohu'}selected{/if}>搜狐</option>
+								<option value="bilibili" {if:$account['platform'] == 'bilibili'}selected{/if}>B站</option>
+							</select>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">账号名称</label>
+						<div class="layui-input-block">
+							<input type="text" name="account_name" value="{$account['account_name']}" autocomplete="off" class="layui-input" />
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">Access Token</label>
+						<div class="layui-input-block">
+							<textarea name="access_token" rows="3" autocomplete="off" class="layui-textarea">{$account['access_token']}</textarea>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">Refresh Token</label>
+						<div class="layui-input-block">
+							<textarea name="refresh_token" rows="3" autocomplete="off" class="layui-textarea">{$account['refresh_token']}</textarea>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">状态</label>
+						<div class="layui-input-block">
+							<select name="status">
+								<option value="1" {if:$account['status'] == 1}selected{/if}>启用</option>
+								<option value="0" {if:$account['status'] == 0}selected{/if}>停用</option>
+							</select>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<div class="layui-input-block">
+							<button class="layui-btn" lay-submit lay-filter="form">保存</button>
+							<a class="layui-btn layui-btn-primary" href="?account-index">返回</a>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+	layui.use(['form','layer', 'miniTab'], function () {
+		var layer = layui.layer, form = layui.form, miniTab = layui.miniTab;
+
+		//监听提交
+		form.on('submit(form)', function () {
+			adminAjax.postform('#form', function (data) {
+				var json = toJson(data);
+				layer.msg(json.msg, {icon: json.err == 0 ? 1 : 5});
+				if(json.err == 0) {
+					setTimeout(function(){
+						miniTab.reloadIframe('index.php?account-index');
+						miniTab.deleteCurrentByIframe();
+					}, 1500);
+				}
+			});
+			return false;
+		});
+	});
+</script>
+</body>
+</html>

@@ -1,0 +1,106 @@
+{inc:header.htm}
+<style>
+.tm-toolbar .layui-btn { margin-left: 0; }
+.tm-tip { color: #999; font-size: 12px; }
+</style>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+        <div class="layui-card">
+            <div class="layui-card-header">
+                Block 配置
+                <span class="tm-tip" style="margin-left:8px;">为指定页面注入 Block 组件渲染参数（全局生效，site_id=0）</span>
+                <button class="layui-btn layui-btn-sm layui-btn-normal" id="btn-add" style="float:right">
+                    <i class="layui-icon">&#xe654;</i> 添加配置
+                </button>
+            </div>
+            <div class="layui-card-body">
+                <table class="layui-hide" id="data-table" lay-filter="data-table-filter"></table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/html" id="status-tpl">
+    {{# if(d.enabled == 1) { }}
+    <span class="layui-badge layui-bg-green">启用</span>
+    {{# } else { }}
+    <span class="layui-badge">禁用</span>
+    {{# } }}
+</script>
+
+<script type="text/html" id="target-tpl">
+    {{# if(d.target) { }}<code>{{ d.target }}</code>{{# } else { }}<span class="layui-badge layui-bg-blue">全局</span>{{# } }}
+</script>
+
+<script type="text/html" id="op-bar">
+    <div class="layui-btn-group">
+        <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit">编辑</a>
+        <a class="layui-btn layui-btn-xs" lay-event="toggle">{{# if(d.enabled == 1) { }}禁用{{# } else { }}启用{{# } }}</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    </div>
+</script>
+
+<script type="text/javascript">
+layui.use(['table', 'layer'], function () {
+    var layer = layui.layer, table = layui.table;
+
+    // 打开 Block 编辑弹窗（新增/编辑共用），关闭后自动刷新列表
+    function openEdit(id) {
+        layer.open({
+            title: id ? '编辑 Block 配置' : '添加 Block 配置',
+            type: 2,
+            area: ['520px', '460px'],
+            content: 'index.php?template_manager-block_edit' + (id ? '-id-' + id : ''),
+            end: function () { table.reload('data-table'); }
+        });
+    }
+
+    table.render({
+        elem: '#data-table',
+        url: 'index.php?template_manager-block_get_list',
+        height: 'full-120',
+        cols: [[
+            {field: 'id', title: 'ID', width: 70, align: 'center'},
+            {field: 'site_id', title: '站点', width: 80, align: 'center'},
+            {field: 'block_name', title: 'Block 名称', minWidth: 160},
+            {field: 'target', title: '页面/URL', minWidth: 180, align: 'center', templet: '#target-tpl'},
+            {field: 'param_count', title: '参数数', width: 90, align: 'center'},
+            {field: 'enabled', title: '状态', width: 90, align: 'center', templet: '#status-tpl'},
+            {field: 'updated_at', title: '更新时间', width: 150, align: 'center'},
+            {title: '操作', width: 200, toolbar: '#op-bar', align: 'center'}
+        ]],
+        limits: [10, 20, 50, 100],
+        limit: 20,
+        page: true
+    });
+
+    $('#btn-add').on('click', function () {
+        openEdit(0);
+    });
+
+    table.on('tool(data-table-filter)', function (obj) {
+        var data = obj.data;
+        // 后端统一输出 {"err","msg"}（E() 函数格式），勿按 status/message 解析
+        function onRes(res) {
+            var json = typeof res === "object" ? res : toJson(res);
+            layer.msg(json.msg, {icon: json.err == 0 ? 1 : 5});
+            if (json.err == 0) {
+                setTimeout(function () { table.reload('data-table'); }, 800);
+            }
+        }
+        if (obj.event === 'edit') {
+            openEdit(data.id);
+        } else if (obj.event === 'toggle') {
+            layer.confirm('确定要' + (data.enabled == 1 ? '禁用' : '启用') + '该配置吗？', function () {
+                adminAjax.postd("index.php?template_manager-block_toggle_post-ajax-1", {FORM_HASH: '{@form_hash()}', id: data.id}, onRes);
+            });
+        } else if (obj.event === 'del') {
+            layer.confirm('确定要删除该配置吗？', function () {
+                adminAjax.postd("index.php?template_manager-block_delete_post-ajax-1", {FORM_HASH: '{@form_hash()}', id: data.id}, onRes);
+            });
+        }
+    });
+});
+</script>
+</body>
+</html>

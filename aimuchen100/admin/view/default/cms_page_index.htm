@@ -1,0 +1,90 @@
+{inc:header.htm}
+<div class="layuimini-container">
+	<div class="layuimini-main">
+		<script type="text/html" id="toolbar">
+			<div class="layui-btn-container">
+				<button class="layui-btn layui-btn-sm layui-btn-normal" lay-event="add" id="add">{lang:add}</button>
+				<button class="layui-btn layui-btn-sm" lay-event="batch_add" id="batch_add">{lang:batch_add}</button>
+			</div>
+		</script>
+		<table id="data-table" class="layui-table" lay-filter="data-table-filter"></table>
+	</div>
+</div>
+<!-- 操作列 -->
+<script type="text/html" id="currentTableBar">
+	<div class="layui-btn-group">
+		<a class="layui-btn layui-btn-xs" lay-event="edit">{lang:edit}</a>
+		<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="view">{lang:view}</a>
+		<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="delete">{lang:delete}</a>
+	</div>
+</script>
+
+<script type="text/javascript">
+layui.use(['form','layer','table', 'treetable', 'miniTab'], function () {
+	var layer = layui.layer, form = layui.form , miniTab = layui.miniTab;
+	var $ = layui.jquery;
+	var table = layui.table;
+	var treetable = layui.treetable;
+
+	// 渲染表格
+	treetable.render({
+		treeColIndex: 1,
+		treeSpid: -1,
+		treeIdName: 'cid',
+		treePidName: 'upid',
+		elem: '#data-table',
+		url: 'index.php?cms_page-get_list',
+		height: 'full',
+		toolbar: '#toolbar',
+		defaultToolbar: ['filter', 'exports', 'print'],
+		page: false,
+		escape: false,
+		cols: [[{$cols}]]
+	});
+
+	//监听单元格编辑
+	table.on('edit(data-table-filter)', function(obj){
+		var value = obj.value //得到修改后的值
+				,data = obj.data //得到所在行所有键值
+				,field = obj.field; //得到字段
+		adminAjax.postd("index.php?cms_page-set_field-ajax-1", {"cid":data.cid, "field":field, "value":value});
+	});
+
+	/**
+	 * toolbar监听事件 table列表 头部的操作
+	 */
+	table.on('toolbar(data-table-filter)', function (obj) {
+		if (obj.event === 'add') {  // 监听添加操作
+			miniTab.openNewTabByIframe({
+				href:"index.php?cms_page-add",
+				title:"{lang:add_page_cate}",
+			});
+		}else if (obj.event === 'batch_add') {  // 监听批量添加操作
+			miniTab.openNewTabByIframe({
+				href:"index.php?cms_page-batch_add",
+				title:"{lang:add_page_cate}",
+			});
+		}
+	});
+
+	//监听每一行的操作
+	table.on('tool(data-table-filter)', function (obj) {
+		var data = obj.data;
+
+		if (obj.event === 'edit') {
+            miniTab.openNewTabByIframe({
+                href:"index.php?cms_page-edit-cid-"+data.cid,
+                title:"{lang:edit_page_cate}",
+            });
+		} else if (obj.event === 'view') {
+			window.open(data.url);
+		} else if (obj.event === 'delete') {
+			layer.confirm('{lang:delete_confirm}', function (index) {
+				adminAjax.postd("index.php?cms_page-del-ajax-1", {"cid":data.cid});
+			});
+		}
+	});
+});
+</script>
+</body>
+</html>

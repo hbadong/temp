@@ -1,0 +1,406 @@
+{inc:header.htm}
+<div class="content wrapper">
+	<div class="soft-list index-soft-list">
+		<ul>
+			{block:list mid="3" limit="10" showcate="1"}
+			{loop:$data[list] $v}
+			<li><a href="{$v[url]}" target="_blank">
+				<img class="pic" src="{$v[pic]}" alt="{$v[title]}" onerror="this.src='{$cfg[tpl]}style/img/nopic.png'">
+				<div class="tit">{$v[subject]}</div>
+			</a></li>
+			{/loop}
+			{/block}
+		</ul>
+	</div>
+
+	<div class="index-tags-group">
+		<dl>
+			<dt class="icon-tag1">推荐游戏</dt>
+			<dd>
+				{block:list_flag flag="1" mid="3" limit="9"}
+				{loop:$data[list] $v}
+				<a href="{$v[url]}" target="_blank" alt="{$v[title]}">{$v[subject]}</a>
+				{/loop}
+				{/block}
+			</dd>
+		</dl>
+		<dl>
+			<dt class="icon-tag2">单机游戏</dt>
+			<dd>
+				{block:list cid="29" mid="3" limit="11"}
+				{loop:$data[list] $v}
+				<a href="{$v[url]}" target="_blank" alt="{$v[title]}">{$v[subject]}</a>
+				{/loop}
+				{/block}
+			</dd>
+		</dl>
+	</div>
+
+	<div class="index-focus-block fn-clear">
+		<div class="index-focus-l">
+			<div class="index-focus-slide" id="focusSlide">
+				<div class="bd">
+					<ul>
+						{block:list_flag flag="5" mid="3" limit="5" showcate="1"}
+						{loop:$data[list] $v}
+						<li class="{if:$v[xuhao] == 1}kwicks-selected{/if}">
+							<a class="" href="{$v[url]}" title="{$v[title]}">
+								<div class="num icon-num-bg">{@$v['xuhao']}</div>
+								<img class="pic" src="{$v[pic]}" alt="{$v[title]}" onerror="this.src='{$cfg[tpl]}style/img/nopic.png'">
+								<div class="tit">{$v[subject]}</div>
+							</a>
+						</li>
+						{/loop}
+						{/block}
+					</ul>
+				</div>
+			</div>
+
+			<div class="index-focus-news">
+				<div class="block-title2">
+					<h3 class="title">最新资讯</h3>
+				</div>
+				<ul>
+					{block:list mid="2" limit="12"}
+					{loop:$data[list] $v}
+					<li><a href="{$v[url]}" title="{$v[title]}">{$v[subject]}</a></li>
+					{/loop}
+					{/block}
+				</ul>
+			</div>
+		</div>
+		<div class="index-focus-r">
+			<div class="index-focus-tabs">
+				<div class="hd">
+					{block:list mid="2" limit="1" titlenum="30"}
+					{loop:$data[list] $v}
+					<h3 class="title"><a href="{$v[url]}" target="_blank" title="{$v[title]}">{$v[subject]}</a></h3>
+					{/loop}
+					{/block}
+					<ul class="link">
+						{block:list mid="2" limit="2" start="1" titlenum="20"}
+						{loop:$data[list] $v}
+						<li><a href="{$v[url]}" target="_blank" title="{$v[title]}">{$v[subject]}</a></li>
+						{/loop}
+						{/block}
+					</ul>
+				</div>
+				<div class="bd" id="focusTabsBd">
+					<ul class="on">
+						{block:list mid="3" limit="7" showcate="1"}
+						{loop:$data[list] $v}
+						<li>
+							<a class="type" href="{$v[cate_url]}" target="_blank">【{$v[cate_name]}】</a>
+							<a class="pic-wrap" href="{$v[url]}" target="_blank"><img class="pic" src="{$v[pic]}" alt="{$v[title]}" onerror="this.src='{$cfg[tpl]}style/img/nopic.png'"></a>
+							<a class="tit" href="{$v[url]}" target="_blank" title="{$v[title]}">{$v[subject]}</a>
+							<p class="time red">{@date('m/d', $v['dateline'])}</p>
+						</li>
+						{/loop}
+						{/block}
+					</ul>
+					<ul>
+						{block:list_top cid="15" orderby="views" limit="7" showcate="1"}
+						{loop:$data[list] $v}
+						<li>
+							<a class="type" href="{$v[cate_url]}" target="_blank">【{$v[cate_name]}】</a>
+							<a class="pic-wrap" href="{$v[url]}" target="_blank"><img class="pic" src="{$v[pic]}" alt="{$v[title]}" onerror="this.src='{$cfg[tpl]}style/img/nopic.png'"></a>
+							<a class="tit" href="{$v[url]}" target="_blank" title="{$v[title]}">{$v[subject]}</a>
+							<p class="time">{@date('m/d', $v['dateline'])}</p>
+						</li>
+						{/loop}
+						{/block}
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- 热门手游 -->
+	<div class="index-seciton">
+		<div class="block-title">
+			<h3 class="title">热门手游</h3>
+			<a class="more" href="{$cfg[weburl]}game/">更多+</a>
+		</div>
+		<div class="index-seciton-l">
+			<div class="soft-list index-soft-list3">
+				<ul>
+					{block:list cid="15" limit="17" showcate="1"}
+					{loop:$data[list] $v}
+					<li>
+						<a href="{$v[url]}" target="_blank" title="{$v[title]}">
+							<img class="pic" src="{$v[pic]}" alt="{$v[title]}" onerror="this.src='{$cfg[tpl]}style/img/nopic.png'">
+							<div class="tit">{$v[subject]}</div>
+							<div class="txt">{$v[cate_name]}</div>
+						</a>
+					</li>
+					{/loop}
+					{/block}
+				</ul>
+			</div>
+		</div>
+		<div class="index-seciton-r">
+			<div class="soft-top-list">
+				<div class="block-title2">
+					<h3 class="title"><i class="icon icon-top2"></i>必备游戏排行榜</h3>
+				</div>
+				<ul class="list js-hover-list">
+					{block:list_top cid="15" orderby="views" limit="9"}
+					{loop:$data[list] $v}
+					<li class="item {if:$v[xuhao] == 1}on{/if}">
+						<div class="item-hd">
+							<p class="num num{@$v['xuhao']}">{@$v['xuhao']}</p>
+							<a class="title" href="{$v[url]}" target="_blank" title="{$v[title]}">{$v[subject]}</a>
+						</div>
+						<div class="item-bd">
+							<a href="{$v[url]}">
+								<img class="pic" src="{$v[pic]}" alt="{$v[title]}" onerror="this.src='{$cfg[tpl]}style/img/nopic.png'">
+								<div class="txt">{$v[size]} / <i class="star star4"></i></div>
+								<div class="btn">查看</div>
+							</a>
+						</div>
+					</li>
+					{/loop}
+					{/block}
+				</ul>
+			</div>
+		</div>
+	</div>
+
+	<!-- 必备软件 -->
+	<div class="index-seciton">
+		<div class="block-title">
+			<h3 class="title">必备软件</h3>
+			<a class="more" href="{$cfg[weburl]}soft/">更多+</a>
+		</div>
+		<div class="index-seciton-l">
+			<div class="soft-list index-soft-list3">
+				<ul>
+					{block:list cid="30" limit="17" showcate="1"}
+					{loop:$data[list] $v}
+					<li>
+						<a href="{$v[url]}" target="_blank" title="{$v[title]}">
+							<img class="pic" src="{$v[pic]}" alt="{$v[title]}" onerror="this.src='{$cfg[tpl]}style/img/nopic.png'">
+							<div class="tit">{$v[subject]}</div>
+							<div class="txt">{$v[cate_name]}</div>
+						</a>
+					</li>
+					{/loop}
+					{/block}
+				</ul>
+			</div>
+		</div>
+		<div class="index-seciton-r">
+			<div class="soft-top-list">
+				<div class="block-title2">
+					<h3 class="title"><i class="icon icon-top"></i>电脑软件排行榜</h3>
+				</div>
+				<ul class="list js-hover-list">
+					{block:list_top cid="38" orderby="views" limit="9"}
+					{loop:$data[list] $v}
+					<li class="item {if:$v[xuhao] == 1}on{/if}">
+						<div class="item-hd">
+							<p class="num num{@$v['xuhao']}">{@$v['xuhao']}</p>
+							<a class="title" href="{$v[url]}" target="_blank" title="{$v[title]}">{$v[subject]}</a>
+						</div>
+						<div class="item-bd">
+							<a href="{$v[url]}">
+								<img class="pic" src="{$v[pic]}" alt="{$v[title]}" onerror="this.src='{$cfg[tpl]}style/img/nopic.png'">
+								<div class="txt">{$v[size]} / <i class="star star4"></i></div>
+								<div class="btn">查看</div>
+							</a>
+						</div>
+					</li>
+					{/loop}
+					{/block}
+				</ul>
+			</div>
+		</div>
+	</div>
+
+	<!-- 精选游戏 -->
+	<div class="index-seciton js-tab">
+		<div class="block-title">
+			<h3 class="title">精选游戏</h3>
+			<ul class="tabs js-tab-head"><li class="on">最新</li><li>最火</li></ul>
+		</div>
+		<div class="index-seciton-l">
+			<div class="soft-list index-soft-list3 js-tab-cont on">
+				<ul>
+					{block:list mid="3" limit="17" showcate="1"}
+					{loop:$data[list] $v}
+					<li>
+						<a href="{$v[url]}" target="_blank" title="{$v[title]}">
+							<img class="pic" src="{$v[pic]}" alt="{$v[title]}" onerror="this.src='{$cfg[tpl]}style/img/nopic.png'">
+							<div class="tit">{$v[subject]}</div>
+							<div class="txt">{$v[cate_name]}</div>
+						</a>
+					</li>
+					{/loop}
+					{/block}
+				</ul>
+			</div>
+			<div class="soft-list index-soft-list3 js-tab-cont">
+				<ul>
+					{block:list mid="3" orderby="views" limit="17" showcate="1"}
+					{loop:$data[list] $v}
+					<li>
+						<a href="{$v[url]}" target="_blank" title="{$v[title]}">
+							<img class="pic" src="{$v[pic]}" alt="{$v[title]}" onerror="this.src='{$cfg[tpl]}style/img/nopic.png'">
+							<div class="tit">{$v[subject]}</div>
+							<div class="txt">{$v[cate_name]}</div>
+						</a>
+					</li>
+					{/loop}
+					{/block}
+				</ul>
+			</div>
+		</div>
+		<div class="index-seciton-r">
+			<div class="soft-top-list">
+				<div class="block-title2">
+					<h3 class="title"><i class="icon icon-top2"></i>火爆游戏排行榜</h3>
+				</div>
+				<ul class="list js-hover-list">
+					{block:list_top orderby="views" limit="9"}
+					{loop:$data[list] $v}
+					<li class="item {if:$v[xuhao] == 1}on{/if}">
+						<div class="item-hd">
+							<p class="num num{@$v['xuhao']}">{@$v['xuhao']}</p>
+							<a class="title" href="{$v[url]}" target="_blank" title="{$v[title]}">{$v[subject]}</a>
+						</div>
+						<div class="item-bd">
+							<a href="{$v[url]}">
+								<img class="pic" src="{$v[pic]}" alt="{$v[title]}" onerror="this.src='{$cfg[tpl]}style/img/nopic.png'">
+								<div class="txt">{$v[size]} / <i class="star star4"></i></div>
+								<div class="btn">查看</div>
+							</a>
+						</div>
+					</li>
+					{/loop}
+					{/block}
+				</ul>
+			</div>
+		</div>
+	</div>
+
+	<!-- 资讯攻略 -->
+	<div class="index-seciton">
+		<div class="block-title">
+			<h3 class="title">资讯攻略</h3>
+			<a class="more" href="{$cfg[weburl]}news/">更多+</a>
+		</div>
+		<div class="index-news-group">
+			<div class="index-news-list1">
+				{block:list mid="2" limit="2"}
+				{loop:$data[list] $v}
+				<a class="pic-wrap" href="{$v[url]}" target="_blank" title="{$v[title]}">
+					<img class="pic" src="{$v[pic]}" alt="{$v[title]}" onerror="this.src='{$cfg[tpl]}style/img/nopic.png'">
+				</a>
+				<a class="tit" href="{$v[url]}" target="_blank" title="{$v[title]}">{$v[subject]}</a>
+				{/loop}
+				{/block}
+			</div>
+			<div class="index-news-list2">
+				{block:list mid="2" limit="3" start="2"}
+				{loop:$data[list] $v}
+				{if:$v[xuhao] == 1}
+				<h3 class="title"><a href="{$v[url]}" target="_blank" title="{$v[title]}">{$v[subject]}</a></h3>
+				{/if}
+				{/loop}
+				{/block}
+				{block:list mid="2" limit="4" start="2"}
+				{loop:$data[list] $v}
+				{if:$v[xuhao] == 1}
+				<h3 class="title rec-title"><span class="tag">推荐</span><a href="{$v[url]}" target="_blank" title="{$v[title]}">{$v[subject]}</a></h3>
+				{/if}
+				{/loop}
+				{/block}
+				{block:list mid="2" limit="7" start="2"}
+				<ul>
+					{loop:$data[list] $v}
+					<li><a href="{$v[url]}" target="_blank" title="{$v[title]}">{$v[subject]}</a><span class="time">{@date('m-d', $v['dateline'])}</span></li>
+					{/loop}
+				</ul>
+				{/block}
+			</div>
+			<div class="index-news-list3">
+				{block:list mid="2" limit="8" start="9"}
+				<ul>
+					{loop:$data[list] $v}
+					<li><a href="{$v[url]}" target="_blank" title="{$v[title]}">{$v[subject]}</a><span class="time">{@date('m-d', $v['dateline'])}</span></li>
+					{/loop}
+				</ul>
+				{/block}
+			</div>
+		</div>
+	</div>
+
+	<!-- 手游推荐 -->
+	<div class="index-seciton js-tab">
+		<div class="block-title news">
+			<h3 class="title">手游推荐</h3>
+			{block:category cid="15" type="child"}{/block}
+			{php}
+			$cates = block_category(array('cid' => 15, 'type' => 'child'));
+			echo '<ul class="tabs js-tab-head"><li class="on">全部</li>';
+			$ci = 0;
+			foreach($cates as $cate) {
+				$ci++;
+				if($ci > 6) break;
+				echo '<li>' . $cate['name'] . '</li>';
+			}
+			echo '</ul>';
+			{/php}
+		</div>
+		{php}
+		$cates = block_category(array('cid' => 15, 'type' => 'child'));
+		$list = block_list(array('cid' => 15, 'limit' => 24, 'showcate' => 1));
+		echo '<div class="soft-list index-soft-list3 js-tab-cont on"><ul>';
+		if(!empty($list['list'])) {
+			foreach($list['list'] as $v) {
+				echo '<li><a href="' . $v['url'] . '" target="_blank" title="' . $v['title'] . '">';
+				echo '<img class="pic" src="' . $v['pic'] . '" alt="' . $v['title'] . '" onerror="this.src=\'' . $cfg['tpl'] . 'style/img/nopic.png\'">';
+				echo '<div class="tit">' . $v['subject'] . '</div>';
+				echo '<div class="txt">' . $v['cate_name'] . '</div>';
+				echo '</a></li>';
+			}
+		}
+		echo '</ul></div>';
+		$ci = 0;
+		foreach($cates as $cate) {
+			$ci++;
+			if($ci > 6) break;
+			$clist = block_list(array('cid' => $cate['cid'], 'limit' => 24, 'showcate' => 1));
+			echo '<div class="soft-list index-soft-list3 js-tab-cont"><ul>';
+			if(!empty($clist['list'])) {
+				foreach($clist['list'] as $v) {
+					echo '<li><a href="' . $v['url'] . '" target="_blank" title="' . $v['title'] . '">';
+					echo '<img class="pic" src="' . $v['pic'] . '" alt="' . $v['title'] . '" onerror="this.src=\'' . $cfg['tpl'] . 'style/img/nopic.png\'">';
+					echo '<div class="tit">' . $v['subject'] . '</div>';
+					echo '<div class="txt">' . $v['cate_name'] . '</div>';
+					echo '</a></li>';
+				}
+			}
+			echo '</ul></div>';
+		}
+		{/php}
+	</div>
+
+	<!-- 友情链接 -->
+	<div class="index-seciton">
+		<div class="block-title link">
+			<h3 class="title">友情链接</h3>
+		</div>
+		<div class="index-link-list">
+			<ul>
+				{block:links}
+				{loop:$data $v}
+				<li><a href="{$v[url]}" target="_blank" title="{$v[name]}">{$v[name]}</a></li>
+				{/loop}
+				{/block}
+			</ul>
+		</div>
+	</div>
+</div>
+
+{inc:footer.htm}
