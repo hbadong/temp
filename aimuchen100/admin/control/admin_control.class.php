@@ -129,17 +129,23 @@ class admin_control extends control {
     }
 
     // 生成分页条（插件控制器通用）
-    protected function get_pagebar($total, $pagenum, $page, $show_pages = 5) {
+    protected function get_pagebar($total, $pagenum, $page, $show_pages = 5, $extra = array()) {
         if($total <= $pagenum) return '';
         $pages = max(1, (int)ceil($total / $pagenum));
         $page = max(1, min((int)$page, $pages));
         $control = isset($_GET['control']) ? $_GET['control'] : '';
         $action = isset($_GET['action']) ? $_GET['action'] : '';
         $base = "index.php?{$control}-{$action}-page-";
+        $qs = '';
+        if(!empty($extra) && is_array($extra)) {
+            foreach($extra as $k => $v) {
+                $qs .= '&' . $k . '=' . urlencode($v);
+            }
+        }
 
         $html = '<div class="pagination" style="margin:10px 0;text-align:center;">';
         if($page > 1) {
-            $html .= '<a class="layui-btn layui-btn-xs" href="'.$base.($page-1).'">&laquo; 上一页</a> ';
+            $html .= '<a class="layui-btn layui-btn-xs" href="'.$base.($page-1).$qs.'">&laquo; 上一页</a> ';
         }
         $start = max(1, $page - $show_pages);
         $end = min($pages, $page + $show_pages);
@@ -147,11 +153,11 @@ class admin_control extends control {
             if($i == $page) {
                 $html .= '<span class="layui-btn layui-btn-xs layui-btn-primary">'.$i.'</span> ';
             } else {
-                $html .= '<a class="layui-btn layui-btn-xs" href="'.$base.$i.'">'.$i.'</a> ';
+                $html .= '<a class="layui-btn layui-btn-xs" href="'.$base.$i.$qs.'">'.$i.'</a> ';
             }
         }
         if($page < $pages) {
-            $html .= '<a class="layui-btn layui-btn-xs" href="'.$base.($page+1).'">&raquo; 下一页</a>';
+            $html .= '<a class="layui-btn layui-btn-xs" href="'.$base.($page+1).$qs.'">&raquo; 下一页</a>';
         }
         $html .= '</div>';
         return $html;

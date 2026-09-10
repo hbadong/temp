@@ -30,10 +30,17 @@ class sensitive_control extends admin_control {
         $page = max(1, (int)R('page', 'R'));
         $pagenum = 20;
         $site_id = (int)$this->site_id;
+        $keyword = trim(R('keyword', 'R'));
 
         $sql = "SELECT * FROM `{$this->tablepre}sensitive_words`
-                WHERE site_id = {$site_id}
-                ORDER BY id DESC";
+                WHERE site_id = {$site_id}";
+        $extra = array();
+        if($keyword !== '') {
+            $kw = addslashes($keyword);
+            $sql .= " AND (word LIKE '%{$kw}%' OR category LIKE '%{$kw}%')";
+            $extra['keyword'] = $keyword;
+        }
+        $sql .= " ORDER BY id DESC";
 
         $total_row = $this->db->fetch_first("SELECT COUNT(*) AS cnt FROM ({$sql}) t");
         $total = $total_row ? $total_row['cnt'] : 0;
@@ -43,7 +50,8 @@ class sensitive_control extends admin_control {
 
         $this->assign('list', $list);
         $this->assign('total', $total);
-        $pagebar = $this->get_pagebar($total, $pagenum, $page); $this->assign('pagebar', $pagebar);
+        $this->assign('keyword', $keyword);
+        $pagebar = $this->get_pagebar($total, $pagenum, $page, 5, $extra); $this->assign('pagebar', $pagebar);
 
         // 插件设置（合并自原 settings() 页面，作为第二个 tab 展示）
         $setting_file = PLUGIN_PATH . 'sensitive_word_filter/setting.php';
@@ -130,12 +138,19 @@ class sensitive_control extends admin_control {
         $page = max(1, (int)R('page', 'R'));
         $pagenum = 20;
         $site_id = (int)$this->site_id;
+        $keyword = trim(R('keyword', 'R'));
 
         $sql = "SELECT l.*, w.category
                 FROM `{$this->tablepre}sensitive_log` l
                 LEFT JOIN `{$this->tablepre}sensitive_words` w ON l.word = w.word
-                WHERE l.site_id = {$site_id}
-                ORDER BY l.id DESC";
+                WHERE l.site_id = {$site_id}";
+        $extra = array();
+        if($keyword !== '') {
+            $kw = addslashes($keyword);
+            $sql .= " AND (l.word LIKE '%{$kw}%' OR l.content LIKE '%{$kw}%')";
+            $extra['keyword'] = $keyword;
+        }
+        $sql .= " ORDER BY l.id DESC";
 
         $total_row = $this->db->fetch_first("SELECT COUNT(*) AS cnt FROM ({$sql}) t");
         $total = $total_row ? $total_row['cnt'] : 0;
@@ -145,7 +160,8 @@ class sensitive_control extends admin_control {
 
         $this->assign('list', $list);
         $this->assign('total', $total);
-        $pagebar = $this->get_pagebar($total, $pagenum, $page); $this->assign('pagebar', $pagebar);
+        $this->assign('keyword', $keyword);
+        $pagebar = $this->get_pagebar($total, $pagenum, $page, 5, $extra); $this->assign('pagebar', $pagebar);
         $this->display('sensitive_logs.htm');
     }
 

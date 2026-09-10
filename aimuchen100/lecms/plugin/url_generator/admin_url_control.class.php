@@ -14,24 +14,32 @@ class admin_url_control extends admin_control {
     public function index() {
         $page = max(1, (int)R('page', 'R'));
         $pagenum = 20;
+        $tablepre = $_ENV['_config']['db']['master']['tablepre'];
 
-        $site_id = R('site_id', 'R') ?: 0;
-        $status = R('status', 'R') ?: 0;
+        $site_id = (int)(R('site_id', 'R') ?: 0);
+        $status = (int)(R('status', 'R') ?: 0);
+        $keyword = trim(R('keyword', 'R'));
 
         // 构建查询条件
-        $where = array();
-        if($site_id > 0) $where['site_id'] = $site_id;
-        if($status > 0) $where['status'] = $status;
+        $sql = "SELECT * FROM `{$tablepre}cms_url_map` WHERE 1";
+        $extra = array();
+        if($site_id > 0) { $sql .= " AND site_id = {$site_id}"; $extra['site_id'] = $site_id; }
+        if($status > 0) { $sql .= " AND status = {$status}"; $extra['status'] = $status; }
+        if($keyword !== '') {
+            $kw = addslashes($keyword);
+            $sql .= " AND (url LIKE '%{$kw}%' OR control LIKE '%{$kw}%' OR action LIKE '%{$kw}%')";
+            $extra['keyword'] = $keyword;
+        }
+        $sql .= " ORDER BY id DESC";
+
+        $total_row = $this->db->fetch_first("SELECT COUNT(*) AS cnt FROM ({$sql}) t");
+        $total = $total_row ? $total_row['cnt'] : 0;
+
+        $sql .= " LIMIT {$pagenum} OFFSET " . (($page - 1) * $pagenum);
+        $urls = $this->db->fetch_all($sql);
 
         // 获取站点列表（用于筛选）
         $sites = $this->site_manager->get_list();
-
-        // 获取URL列表
-        $urls = $this->url_generator->find_fetch(
-            $where, array('id' => -1), ($page - 1) * $pagenum, $pagenum
-        );
-
-        $total = $this->url_generator->find_count($where);
 
         // 读取插件设置（供「插件设置」tab 渲染）
         $settings = $this->runtime->xget('url_generator_settings');
@@ -56,7 +64,9 @@ class admin_url_control extends admin_control {
         $this->assign('sites', $sites);
         $this->assign('total', $total);
         $this->assign('page', $page);
+        $this->assign('keyword', $keyword);
         $this->assign('settings', $settings);
+        $pagebar = $this->get_pagebar($total, $pagenum, $page, 5, $extra); $this->assign('pagebar', $pagebar);
         $this->display('admin_url_list.htm');
     }
 

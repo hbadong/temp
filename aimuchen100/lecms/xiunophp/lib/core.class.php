@@ -160,7 +160,7 @@ class core{
 
 			$num = count($uarr);
 			for($i=0; $i<$num; $i+=2){
-				isset($uarr[$i+1]) && $_GET[$uarr[$i]] = $uarr[$i+1];
+				isset($uarr[$i+1]) && $_GET[$uarr[$i]] = urldecode($uarr[$i+1]);
 			}
 		}
 
