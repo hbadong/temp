@@ -22,8 +22,9 @@ class url_generator extends model {
     const TYPE_FLEXIBLE = 7;   // 灵活型: /cid/id/date/game.html
     const TYPE_HASHID = 8;     // HashId型: /{short-hash}.html
 
-    // TYPE_DETAIL 跨批次递增游标（基于 cms_game 表真实 ID，避免同批/跨批生成相同URL）
-    private $_detail_seq = array();
+    // TYPE_DETAIL 等详情类型基于 cms_game 已存在 ID 生成（方案A），跨类型共享查询结果
+    private $_game_ids = array();
+    private $_game_aliases = array();
 
     /**
      * 批量生成URL（主入口）
@@ -141,9 +142,12 @@ class url_generator extends model {
         $sql = "INSERT IGNORE INTO `{$tablepre}cms_url_map`
             (`site_id`, `url`, `url_hash`, `type`, `control`, `action`, `params`, `score`, `status`)
             VALUES " . implode(',', $values);
-        $count_inserted = $this->db->exec($sql);
+        $this->db->exec($sql);
 
-        return $count_inserted === false ? 0 : (int)$count_inserted;
+        // 注意：db_pdo_mysql::exec() 对 INSERT 开头的 SQL 返回 last_insert_id() 而非受影响行数，
+        // 不能把返回值当插入条数累加（会产生 4501 之类荒谬总数）。此处按本批生成的 URL 条目数返回；
+        // INSERT IGNORE 会按 uk_site_hash 静默去重，实际落库唯一 URL 可能少于本批条数。
+        return count($urls);
     }
 
     /**
@@ -168,7 +172,10 @@ class url_generator extends model {
                 );
 
             case self::TYPE_DETAIL:
-                $game_id = $this->next_game_id($site_id);
+                // 基于已存在游戏生成（方案A：不再用 MAX(id)+1 预占不存在的 id）
+                $games = $this->get_game_ids($site_id);
+                if(!isset($games[$index])) return array('url' => '', 'params' => array());
+                $game_id = $games[$index];
                 return array(
                     'url' => '/' . $game_id . '.html',
                     'params' => array('id' => $game_id),
@@ -200,30 +207,32 @@ class url_generator extends model {
                 );
 
             case self::TYPE_ALIAS:
-                $game_names = array(
-                    'elden-ring', 'zelda-breath-wild', 'god-of-war', 'spider-man-miles',
-                    'cyberpunk-2077', 'witcher-3', 'red-dead-2', 'gta-v',
-                    'mario-odyssey', 'halo-infinite', 'forza-horizon', 'final-fantasy-xvi'
-                );
-                $name = $game_names[$index % count($game_names)];
+                // 基于 only_alias 中真实存在的别名生成（INNER JOIN 限定已入库游戏）
+                $aliases = $this->get_game_aliases($site_id);
+                if(!isset($aliases[$index])) return array('url' => '', 'params' => array());
+                $alias = $aliases[$index];
                 return array(
-                    'url' => '/' . $name . '.html',
-                    'params' => array('alias' => $name),
+                    'url' => '/' . $alias . '.html',
+                    'params' => array('alias' => $alias),
                 );
 
             case self::TYPE_FLEXIBLE:
+                $games = $this->get_game_ids($site_id);
+                if(!isset($games[$index])) return array('url' => '', 'params' => array());
+                $game_id = $games[$index];
                 $date = date('Ymd', $_ENV['_time']);
                 return array(
-                    'url' => '/1/' . ($index + 1) . '/' . $date . '/game.html',
-                    'params' => array('cid' => 1, 'id' => $index + 1, 'date' => $date),
+                    'url' => '/1/' . $game_id . '/' . $date . '/game.html',
+                    'params' => array('cid' => 1, 'id' => $game_id, 'date' => $date),
                 );
 
             case self::TYPE_HASHID:
-                // hashid 型：对真实 game_id 做 base36 编码，与 game_control::decode_hashid
-                // 的 base_convert($hash, 36, 10) 解码对称；原随机 6 位 hash 解码出的
-                // id 几乎必然不存在，导致 hashid 型 URL 永远 404（两端不一致 bug）
-                $game_id = $this->next_game_id($site_id);
-                $hash = base_convert((string)$game_id, 10, 36);
+                // 前缀 'g' + base36(id)：与 type2 数字 URL 区分，避免 id 小时 hash 为纯数字
+                // 与 /{id}.html 冲突；解码端 game_control::decode_hashid 剥前缀后对称解码
+                $games = $this->get_game_ids($site_id);
+                if(!isset($games[$index])) return array('url' => '', 'params' => array());
+                $game_id = $games[$index];
+                $hash = 'g' . base_convert((string)$game_id, 10, 36);
                 return array(
                     'url' => '/' . $hash . '.html',
                     'params' => array('hash' => $hash),
@@ -235,27 +244,31 @@ class url_generator extends model {
     }
 
     /**
-     * 生成短HashId
+     * 获取站点下已存在的游戏ID列表（升序），跨类型共享，只查询一次
      */
-    private function generate_hashid($length = 6) {
-        $chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
-        $result = '';
-        for($i = 0; $i < $length; $i++) {
-            $result .= $chars[random_int(0, strlen($chars) - 1)];
+    private function get_game_ids($site_id) {
+        if(!isset($this->_game_ids[$site_id])) {
+            $tablepre = $_ENV['_config']['db']['master']['tablepre'];
+            $rows = $this->db->fetch_all("SELECT id FROM `{$tablepre}cms_game`
+                WHERE site_id = " . (int)$site_id . " ORDER BY id ASC");
+            $this->_game_ids[$site_id] = array_map('intval', array_column($rows, 'id'));
         }
-        return $result;
+        return $this->_game_ids[$site_id];
     }
 
     /**
-     * 获取下一个游戏ID（基于 cms_game 表真实最大ID，跨调用递增）
+     * 获取站点下已入库游戏的真实别名列表（INNER JOIN 过滤掉指向不存在游戏的别名）
      */
-    private function next_game_id($site_id) {
-        if(!isset($this->_detail_seq[$site_id])) {
+    private function get_game_aliases($site_id) {
+        if(!isset($this->_game_aliases[$site_id])) {
             $tablepre = $_ENV['_config']['db']['master']['tablepre'];
-            $row = $this->db->fetch_first("SELECT MAX(id) AS num FROM `{$tablepre}cms_game` WHERE site_id = " . (int)$site_id);
-            $this->_detail_seq[$site_id] = ($row && $row['num'] !== null) ? (int)$row['num'] : 0;
+            $rows = $this->db->fetch_all("SELECT a.alias FROM `{$tablepre}only_alias` a
+                INNER JOIN `{$tablepre}cms_game` g ON g.id = a.id
+                WHERE g.site_id = " . (int)$site_id . " AND a.alias != ''
+                ORDER BY a.alias ASC");
+            $this->_game_aliases[$site_id] = array_values(array_map('strval', array_column($rows, 'alias')));
         }
-        return ++$this->_detail_seq[$site_id];
+        return $this->_game_aliases[$site_id];
     }
 
     /**

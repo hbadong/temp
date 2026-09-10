@@ -247,6 +247,11 @@ class game_control extends base_control {
         // 简单实现：将 base36 解码为 ID
         // 生产环境建议使用 Hashids 扩展
         if(!preg_match('/^[a-z0-9]+$/i', $hash)) return 0;
+        // 生成端（url_generator_model）为区分 type8 与 type2 数字 URL，hash 带 'g' 前缀
+        // （如 id=1 -> 'g1'），此处剥前缀后对称解码；无前缀（旧数据/单字符）按原样解码
+        if(substr($hash, 0, 1) === 'g' && strlen($hash) > 1) {
+            $hash = substr($hash, 1);
+        }
         return base_convert($hash, 36, 10);
     }
 

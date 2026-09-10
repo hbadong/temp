@@ -98,8 +98,9 @@ Entries discovered by the Agent during task execution should follow this format:
   - `R($k)` 不带第二参数时默认读 `$_GET`（'G'），POST 提交的值会读不到返回空。spider_iprange_control::add() 原写 `R('engine')` 导致 engine/cidr 插入空值；spider_iprange_control::del() 与 data_export_control::delete() 原写 `R('id')` 导致 POST 删的是 id=0、DB 无行。统一改成 `R($k,'P')`
   - 插件模型 delete() 若 `execute()` 后不 `return $stmt->execute(...)` 会返回 null，控制器 `if(!$res)` 恒真报"删除失败"（DELETE 实际已执行，属假失败）。spider_blacklist::delete / spider_iprange::delete 已补 return
   - `db_pdo_mysql` 的 `rlink`/`wlink` 是 `__get` 魔术属性懒加载，**绝不能用 `isset($this->db->rlink)` 判断**——isset 不触发 __get 恒为 false，pdo 拿成 null 导致 `prepare() on null`。直接 `$pdo = $this->db->rlink;` 才会触发连接。data_export_control 原写 `isset($this->db->pdo)`（属性名也错）已修
+  - `db_pdo_mysql::exec()` 对以 INSERT/REPLACE 开头的 SQL 返回 `last_insert_id()` 而非受影响行数，依赖其返回值统计"插入条数"会被误导（url_generator 批量生成曾报 4501/5917 荒谬总数）。批量插入统计应改用自统计（如 `count($urls)`）
   - data_export 导出产物流：start 同步执行写入 le_export_log（status=done progress=100），progress 接口返回 `{"progress":"100","current_file":"finalize","status":"done"}`，zip 落在 `runtime/data_export/site-{id}-{ts}.zip`，delete 置 status='deleted' 并 unlink 文件
-  - spider 系列插件（blacklist/iprange/pool 等）模型通过 `spider_runtime::init($this->db->rlink, tablepre)` 注入 PDO，控制器已统一用 `R($k,'P')` 读 POST；模型文件不走 runcache 编译（控制器直接 require_once 源码），改模型即时生效，只有改控制器才需 mv `runcache/admin_control/对应_control.class.php`
+  - spider 系列插件（blacklist/iprange/pool 等）模型通过 `spider_runtime::init($this->db->rlink, tablepre)` 注入 PDO，控制器已统一用 `R($k,'P')` 读 POST；模型文件不走 runcache 编译（控制器直接 require_once 源码），改模型即时生效，只有改控制器才需 mv `runcache/admin_control/对应_control.class.php`。注意"模型不走 runcache"仅限 spider 系列：url_generator 等经 `runcache/lecms_model/*.class.php` 编译，改模型须 mv 对应缓存才生效
   - multi_language 的 language-edit_post 期望 `$_POST['languages']` 嵌套数组（如 `languages[fr][language_name]=法语`），不是扁平字段，且 `save_site_config` 按 site_id 整体替换配置
 
 [LECMS patch/sync 插件缺失依赖注入与模型 require]
