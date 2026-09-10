@@ -14,26 +14,26 @@
 
 			<div class="layui-row layui-col-space20" style="margin-bottom:20px">
 				<div class="layui-col-md4">
-					<div class="layui-card" style="background:#f0f7ff">
+					<div class="layui-card stat-card" style="background:#f0f7ff">
 						<div class="layui-card-body" style="text-align:center">
-							<div style="font-size:34px;font-weight:700;color:#1e90ff">{$stats['clicks']}</div>
+							<div class="stat-num" style="color:#1e90ff">{$stats['clicks']}</div>
 							<div style="color:#888">总点击</div>
 						</div>
 					</div>
 				</div>
 				<div class="layui-col-md4">
-					<div class="layui-card" style="background:#f0fff0">
+					<div class="layui-card stat-card" style="background:#f0fff0">
 						<div class="layui-card-body" style="text-align:center">
-							<div style="font-size:34px;font-weight:700;color:#2ecc71">{$stats['unique_ips']}</div>
+							<div class="stat-num" style="color:#2ecc71">{$stats['unique_ips']}</div>
 							<div style="color:#888">唯一IP（24h去重）</div>
 						</div>
 					</div>
 				</div>
 				<div class="layui-col-md4">
-					<div class="layui-card" style="background:#fff8f0">
+					<div class="layui-card stat-card" style="background:#fff8f0">
 						<div class="layui-card-body" style="text-align:center">
 							{php}$conv = ($stats['clicks'] > 0) ? round($stats['unique_ips'] / $stats['clicks'] * 100, 1) : 0;{/php}
-							<div style="font-size:34px;font-weight:700;color:#e67e22">{$conv}%</div>
+							<div class="stat-num" style="color:#e67e22">{$conv}%</div>
 							<div style="color:#888">转化率</div>
 						</div>
 					</div>
@@ -92,6 +92,12 @@
 		</div>
 	</div>
 </div>
+<style>
+.stat-num { font-size: 34px; font-weight: 700; line-height: 1.2; }
+.stat-card { transition: box-shadow .2s; }
+.stat-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+@media (max-width: 768px) { .stat-num { font-size: 26px; } }
+</style>
 <script>
 layui.use('element', function(){ var element = layui.element; });
 </script>

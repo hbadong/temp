@@ -17,7 +17,14 @@
 		.settings-actions .layui-btn + .layui-btn { margin-left: 8px; }
 		.field-hint { display: block; color: #999; font-size: 12px; margin-top: 4px; }
 		@media (max-width: 900px) { .settings-grid { grid-template-columns: 1fr; } }
-		</style>
+		
+@media (max-width: 600px) {
+  .settings-grid .layui-form-item { flex-direction: column; align-items: stretch; }
+  .settings-grid .layui-form-label { width: auto; float: none; display: block; text-align: left; padding: 0 0 6px; line-height: 20px; }
+  .settings-grid .layui-input-inline { width: 100%; flex: none; }
+  .settings-grid .layui-input-block { margin-left: 0; }
+}
+</style>
 		<div class="layui-tab layui-tab-brief" lay-filter="main">
 			<ul class="layui-tab-title"><li class="layui-this">补丁管理</li><li>插件设置</li></ul>
 			<div class="layui-tab-content">
