@@ -149,3 +149,12 @@ Entries discovered by the Agent during task execution should follow this format:
   - 后台隔夜登录态过期（admauth/session），重登走 /tmp/admin_login.php 流程：先 GET /admin/ 抓页面内 FORM_HASH（登录页有真实 input hidden），POST `index-login-ajax-1`（action 是 login 不是 login_post）
 
 
+
+[LECMS 后台语言包加载与模板缓存]
+- Date: 2026-09-10
+- Context: Discovered by Agent while 统一插件 UI 语言时发现后台大量 `lang[xxx]` 字面占位符
+- Category: Troubleshooting & Debugging
+- Instructions:
+  - `lecms/config/config.inc.php` 的 `admin_lang` 若为空串，`core::init_lang` 的 F_APP_NAME 分支 `is_file(FRAMEWORK_PATH.'lang/.php')` 恒 false，语言包**完全不加载**（$_SERVER['lang'] 空），后台所有 `{lang:xxx}` 显示成字面 `lang[xxx]`；设为 'zh-cn' 后正常。前台 `lang` 同理
+  - 后台语言包 = `lecms/xiunophp/lang/{admin_lang}.php` + `lecms/lang/{admin_lang}_admin.php` 两文件合并
+  - **模板编译缓存写死语言值**：view.class.php 的 `process_lang` 在编译模板时就把 `{lang:xxx}` 替换成当时的语言文本，模板缓存 `runcache/admin_view/{theme},{模板}.htm.php` 只判 `is_file`（不校验源 mtime/语言文件 mtime）。改语言文件或 {lang:} 标签后，必须 mv 掉对应 admin_view 编译缓存（整目录清空可一并重建），否则页面仍显示旧占位符
