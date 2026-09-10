@@ -136,6 +136,7 @@ return array(
     'isremote_failed_tip_1'=>'，但远程抓取图片失败：',
     'isremote_failed_tip_2'=>'张',
     'title_exists'=>'标题已经存在',
+    'admin_manage'=>'后台管理',
 
     // hook xiunophp_lang_zh_cn.php
 );

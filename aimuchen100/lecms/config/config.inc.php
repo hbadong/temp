@@ -3,8 +3,8 @@ $_ENV['_config'] = array(
 	'plugin_disable' => 0,			// 禁止掉所有插件
     'route_open' => 0,			    // 是否启用自定义路由，需搭配插件和config/route.inc.php里面的规则
 	'zone' => 'Asia/Shanghai',		// 时区
-    'lang' => '',  //前台语言
-    'admin_lang' => '',  //后台语言
+    'lang' => 'zh-cn',  //前台语言
+    'admin_lang' => 'zh-cn',  //后台语言
 	'gzip' => 1,	// 开启 GZIP 压缩
 	'auth_key' => 'yxbe49fo8s5c5o4inqf1qj718pebuil3',	// 加密KEY
 

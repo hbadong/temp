@@ -8,27 +8,27 @@
 					<input type="hidden" name="FORM_HASH" value="{@form_hash()}" />
 					<input name="id" type="hidden" value="{$data['id']}" />
 					<div class="layui-form-item">
-						<label class="layui-form-label required">{lang:links_name}</label>
+						<label class="layui-form-label required">链接名称</label>
 						<div class="layui-input-inline">
-							<input type="text" name="title" value="{$data['name']}" autocomplete="off" placeholder="{lang:links_name}" class="layui-input" lay-verify="required" lay-reqtext="{lang:links_name_no_empty}" />
+							<input type="text" name="title" value="{$data['name']}" autocomplete="off" placeholder="链接名称" class="layui-input" lay-verify="required" lay-reqtext="链接名称不能为空" />
 						</div>
 					</div>
 					<div class="layui-form-item">
-						<label class="layui-form-label required">{lang:links}</label>
+						<label class="layui-form-label required">链接</label>
 						<div class="layui-input-block">
-							<input type="text" name="url" value="{$data['url']}" autocomplete="off" placeholder="{lang:links}" class="layui-input" lay-verify="required" lay-reqtext="{lang:links_url_no_empty}" />
+							<input type="text" name="url" value="{$data['url']}" autocomplete="off" placeholder="链接" class="layui-input" lay-verify="required" lay-reqtext="链接不能为空" />
 						</div>
 					</div>
 					<div class="layui-form-item">
-						<label class="layui-form-label">{lang:orderby}</label>
+						<label class="layui-form-label">排序值</label>
 						<div class="layui-input-inline">
-							<input type="number" name="orderby" value="{$data['orderby']}" autocomplete="off" placeholder="{lang:orderby}" class="layui-input" />
+							<input type="number" name="orderby" value="{$data['orderby']}" autocomplete="off" placeholder="排序值" class="layui-input" />
 						</div>
 					</div>
 
 					<div class="layui-form-item">
 						<div class="layui-input-block">
-							<button class="layui-btn" lay-submit lay-filter="form">{lang:submit}</button>
+							<button class="layui-btn" lay-submit lay-filter="form">提交</button>
 							<a class="layui-btn layui-btn-primary" href="?links-index">返回</a>
 						</div>
 					</div>

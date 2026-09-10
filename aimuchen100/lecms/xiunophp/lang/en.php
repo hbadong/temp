@@ -136,6 +136,7 @@ return array(
     'isremote_failed_tip_1'=>',Remote capture of picture failed:',
     'isremote_failed_tip_2'=>'',
     'title_exists'=>'The title already exists',
+    'admin_manage'=>'Admin Management',
 
     // hook xiunophp_lang_en.php
 );

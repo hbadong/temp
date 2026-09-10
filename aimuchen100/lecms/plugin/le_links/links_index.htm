@@ -2,18 +2,18 @@
 <div class="layuimini-container">
 	<div class="layuimini-main">
 		<fieldset class="table-search-fieldset">
-			<legend>{lang:search}</legend>
+			<legend>搜索</legend>
 			<div>
 				<form class="layui-form layui-form-pane">
 					<div class="layui-form-item">
 						<div class="layui-inline">
-							<label class="layui-form-label">{lang:links_name}</label>
+							<label class="layui-form-label">链接名称</label>
 							<div class="layui-input-inline">
-								<input placeholder="{lang:links_name}" autocomplete="off" type="text" class="layui-input" name="keyword" />
+								<input placeholder="链接名称" autocomplete="off" type="text" class="layui-input" name="keyword" />
 							</div>
 						</div>
 						<div class="layui-inline">
-							<button type="submit" class="layui-btn layui-btn-primary"  lay-submit lay-filter="data-search-btn"><i class="layui-icon"></i> {lang:search}</button>
+							<button type="submit" class="layui-btn layui-btn-primary"  lay-submit lay-filter="data-search-btn"><i class="layui-icon"></i> 搜索</button>
 						</div>
 					</div>
 				</form>
@@ -21,16 +21,16 @@
 		</fieldset>
 		<script type="text/html" id="toolbar">
 			<div class="layui-btn-container">
-				<button class="layui-btn layui-btn-sm layui-btn-normal" lay-event="add">{lang:add}</button>
-				<button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="delete">{lang:batch_delete}</button>
+				<button class="layui-btn layui-btn-sm layui-btn-normal" lay-event="add">添加</button>
+				<button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="delete">批量删除</button>
 			</div>
 		</script>
 		<table class="layui-hide" id="data-table" lay-filter="data-table-filter"></table>
 
 		<script type="text/html" id="currentTableBar">
 			<div class="layui-btn-group">
-				<a class="layui-btn layui-btn-xs" lay-event="edit">{lang:edit}</a>
-				<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delete">{lang:delete}</a>
+				<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+				<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delete">删除</a>
 			</div>
 		</script>
 	</div>
@@ -49,10 +49,10 @@
 			cellMinWidth: 50,
 			cols: [[
 				{type: "checkbox", width: 50, fixed: 'left'},
-				{field: 'name', minwidth: 120, title: '{lang:links_name}', edit: 'text'},
-				{field: 'url', minwidth: 120, title: '{lang:links}', edit: 'text'},
-				{field: 'orderby', width: 100, title: '{lang:orderby}', edit: 'number', align: "center"},
-				{title: '{lang:opt}', width: 105, toolbar: '#currentTableBar', align: "center"}
+				{field: 'name', minwidth: 120, title: '链接名称', edit: 'text'},
+				{field: 'url', minwidth: 120, title: '链接', edit: 'text'},
+				{field: 'orderby', width: 100, title: '排序值', edit: 'number', align: "center"},
+				{title: '操作', width: 105, toolbar: '#currentTableBar', align: "center"}
 			]],
 			limits: [10, 15, 20, 25, 50, 100],
 			limit: 15,
@@ -81,10 +81,10 @@
 						, data = checkStatus.data;
 				var len = data.length;
 				if(len == 0){
-					layer.msg('{lang:select_data}',{icon:5});
+					layer.msg('请选择数据',{icon:5});
 					return false;
 				}else{
-					layer.confirm('{lang:delete_confirm}', function () {
+					layer.confirm('确定删除？', function () {
 						var id_arr = [];
 						for (var i in data) {
 							id_arr[i] = data[i]['id'];
@@ -95,7 +95,7 @@
 			}else if (obj.event === 'add') {
 				miniTab.openNewTabByIframe({
 					href:"index.php?links-add",
-					title:"{lang:add_f_links}",
+					title:"添加链接",
 				});
 			}
 		});
@@ -111,13 +111,13 @@
 			var data = obj.data;
 
 			if (obj.event === 'delete') {
-				layer.confirm('{lang:delete_confirm}', function () {
+				layer.confirm('确定删除？', function () {
 					adminAjax.postd("index.php?links-del-ajax-1", {"id":data.id});
 				});
 			}else if (obj.event === 'edit') {
 				miniTab.openNewTabByIframe({
 					href:"index.php?links-edit-id-"+data.id,
-					title:"{lang:edit_f_links}",
+					title:"编辑链接",
 				});
 			}
 		});

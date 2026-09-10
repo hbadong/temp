@@ -1,6 +1,9 @@
 <?php
 defined('ROOT_PATH') or exit;
 
+// steam_adapter 模型类需手动加载（LECMS 后台控制器的模型不自动 autoload 插件目录）
+require_once ROOT_PATH . 'lecms/plugin/article_strategy/model/steam_adapter.class.php';
+
 class category_import_control extends admin_control {
 
     public function __construct() {
