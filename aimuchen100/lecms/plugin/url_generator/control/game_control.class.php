@@ -55,13 +55,17 @@ class game_control extends base_control {
             if($decoded_id) {
                 $game = $this->game->get($decoded_id);
             }
-        } elseif($cid && $cid > 0) {
-            // 灵活型兜底：取该分类下第一页
-            $this->render_category_by_cid($cid);
-            return;
         }
 
         if(!$game) {
+            // 灵活型兜底：URL 带 cid（如 /1/2/date/game.html）而 id 对应游戏不存在时，
+            // 回退渲染该分类下的游戏列表。修复前 $id 分支优先于 $cid，灵活型恒走详情
+            // 查询，游戏不存在即 404，render_category_by_cid 成为死代码。
+            if($cid && $cid > 0) {
+                $this->render_category_by_cid($cid);
+                return;
+            }
+
             // 未找到游戏：输出 404 状态并渲染空详情页，避免依赖后台 error404_control
             header('HTTP/1.1 404 Not Found');
             $empty_game = array();
@@ -88,12 +92,19 @@ class game_control extends base_control {
         $page = max(1, (int)R('page', 'R'));
         $offset = ($page - 1) * $pagenum;
 
-        $where = array('site_id' => $site_id);
-        $list = $this->game->find_fetch($where, array('id' => -1), $offset, $pagenum);
-        $total = $this->game->find_count($where);
+        // 按 slug 关键词过滤 tags，避免 /category/rpg.html 与 /category/action.html
+        // 渲染同一份全站游戏列表（修复前 $where 仅 site_id，slug 只作标题展示）
+        $tablepre = $_ENV['_config']['db']['master']['tablepre'];
+        $like = addslashes($slug);
+        $rows = $this->db->fetch_all("SELECT * FROM `{$tablepre}cms_game`
+            WHERE site_id = {$site_id} AND tags LIKE '%{$like}%'
+            ORDER BY id DESC LIMIT {$offset}, {$pagenum}");
+        $total_row = $this->db->fetch_first("SELECT COUNT(*) AS num FROM `{$tablepre}cms_game`
+            WHERE site_id = {$site_id} AND tags LIKE '%{$like}%'");
+        $total = $total_row ? (int)$total_row['num'] : 0;
 
         $this->assign_value('title', '分类：' . htmlspecialchars($slug));
-        $this->assign_value('games', $list);
+        $this->assign_value('games', $rows);
         $this->assign_value('total', $total);
         $this->assign_value('page', $page);
         $this->assign_value('pagebar', $this->build_pagebar($total, $pagenum, $page));
