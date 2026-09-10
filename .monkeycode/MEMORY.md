@@ -75,7 +75,7 @@ Entries discovered by the Agent during task execution should follow this format:
 - Instructions:
   - `db_pdo_mysql` 缺失 `insert()` 方法，但多个插件模型（competitor_site、keyword、sync_queue、cps_config、external_link、enterprise_site 等）调用 `$this->db->insert("`{pre}{table}`", $data)`，会触发 `Call to undefined method db_pdo_mysql::insert()`。一次性修复：在 `/workspace/aimuchen100/lecms/xiunophp/db/db_pdo_mysql.class.php` 类末尾添加 `public function insert($table, $data)`，用 `prepare` + `array_values` 绑定参数，返回 `lastInsertId`
   - `R($k, $var='G')` 第二个参数是来源字符串（'G'/'P'/'R'），不是默认值。误写 `R('page', 1)` 会被 switch 不匹配，$var=1 整数，`$var['page']` 在 PHP 7.4 返回 null，page=0 导致 SQL `LIMIT N OFFSET -N` 查询返回空且无错误。正确写法：(int)R('page', 'R')。已确认 bug 处：spider_blacklist_control:6、spider_dashboard_control:39,49
-  - 模板引擎 `{loop:array('a','b') $v}` 内联数组语法不被支持（`$reg_arr` 正则要求 `\$` 前缀），会导致循环体 `{loop:...}...{/loop}` 原样输出、内部 `$v` 未定义，触发 `Undefined variable: v`。正确做法：控制器 `$this->assign('list', array(...))`，模板 `{loop:$list $v}`。注意 `$this->assign($k, &$v)` 是引用传参，不能传数组字面量，必须先赋给变量
+  - 模板引擎 `{loop:array('a','b') $v}` 内联数组语法不被支持（`$reg_arr` 正则要求 `\$` 前缀），会导致循环体 `{loop:...}...{/loop}` 原样输出、内部 `$v` 未定义，触发 `Undefined variable: v`。正确做法：控制器 `$this->assign('list', array(...))`，模板 `{loop:$list $v}`。注意 `$this->assign($k, &$v)` 是引用传参，**不能传表达式/字面量/三目**（`assign('x', $a ?: '')` 会报 `Cannot pass parameter 2 by reference`），必须先赋给变量再传；`assign_value()` 按值传参无此限制
   - 插件控制器/模板编译缓存在 `/workspace/aimuchen100/runcache/admin_control/*.class.php` 和 `runcache/admin_view/default,*.htm.php`。修改插件源码后必须删除对应缓存文件，否则改动不生效
   - POST 写入测试：FORM_HASH = `substr(md5(substr($_ENV['_time'],0,-5).$_ENV['_config']['auth_key']),16)`，每秒变化但同一秒内多次 POST 共享同一值。必须带 `X-Requested-With: XMLHttpRequest` 头才返回 JSON。返回格式有三种：E() 用 `{"err":0,"msg":"..."}`、message() 用 `{"status":0,"message":"...","jumpurl":...}`、错误页用 `{"error":"[程序异常]..."}`
   - site_manager 插件的 `le_site_manager` 表结构必须是 INT 时间戳（`created_at INT UNSIGNED`），而 core_engine.sql 默认建为 DATETIME，会导致 INSERT 报 `Incorrect datetime value`。插件 install.php 的 source 是权威
@@ -158,3 +158,13 @@ Entries discovered by the Agent during task execution should follow this format:
   - `lecms/config/config.inc.php` 的 `admin_lang` 若为空串，`core::init_lang` 的 F_APP_NAME 分支 `is_file(FRAMEWORK_PATH.'lang/.php')` 恒 false，语言包**完全不加载**（$_SERVER['lang'] 空），后台所有 `{lang:xxx}` 显示成字面 `lang[xxx]`；设为 'zh-cn' 后正常。前台 `lang` 同理
   - 后台语言包 = `lecms/xiunophp/lang/{admin_lang}.php` + `lecms/lang/{admin_lang}_admin.php` 两文件合并
   - **模板编译缓存写死语言值**：view.class.php 的 `process_lang` 在编译模板时就把 `{lang:xxx}` 替换成当时的语言文本，模板缓存 `runcache/admin_view/{theme},{模板}.htm.php` 只判 `is_file`（不校验源 mtime/语言文件 mtime）。改语言文件或 {lang:} 标签后，必须 mv 掉对应 admin_view 编译缓存（整目录清空可一并重建），否则页面仍显示旧占位符
+
+[LECMS 后台 GET 中文参数解码与列表页分页筛选]
+- Date: 2026-09-10
+- Context: Discovered by Agent while 给后台列表页补搜索/分页（sensitive/url_generator/sync/ai_task/spider_hit）
+- Category: Troubleshooting & Debugging
+- Instructions:
+  - 后台 GET 参数走 `core::init_get`：当 URL 直接命中真实文件（`admin/index.php?...`，router.php `is_file` 时 return false 不转发）时无 `$_GET['u']`，框架从 QUERY_STRING 解析出 control/action 及键值，**键值未 urldecode** → 中文搜索词变成 `%e6%94%bf...` 原样进 SQL 匹配不到。已在 init_get 键值赋值处加 `urldecode()`（对 ASCII/已解码值幂等，无副作用）。凡新增 GET 搜索参数必须验证中文值能回显
+  - `admin_control::get_pagebar($total,$pagenum,$page,$show_pages=5,$extra=array())` 第 5 参 extra 数组会拼到分页链接 query（`&key=val`），翻页时保留筛选/搜索条件；不传 extra 翻页会丢参数
+  - 列表页打磨三类缺口的补法：①服务端渲染表格无分页→控制器算 total + `$pagebar=$this->get_pagebar(...);$this->assign('pagebar',$pagebar)`，模板表格下放 `{$pagebar}`；②无搜索→控制器 SQL 拼 LIKE + addslashes，模板加 GET 搜索表单（hidden 提交 control-action）+ 清除链接；③layui table 前端渲染页（url: 返回 code/count/data）自带分页 UI，数据量小无需改
+  - sync/spider_hit 等控制器用 `$this->db->fetch_*` 直查时表名写 `$_ENV['_config']['db']['master']['tablepre']`（`$this->tablepre` 在非敏感词控制器未定义，会触发 `__get` 找 tablepre_model 报"类不存在"）
