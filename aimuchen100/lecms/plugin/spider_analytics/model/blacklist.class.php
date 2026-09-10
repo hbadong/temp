@@ -57,11 +57,20 @@ class spider_blacklist {
         $stmt->execute(array((int)$site_id, $match_type, $match_value, $blacklist_id, $visit_log_id, $ip, $ip_text, $ua, $url, (int)$is_intercepted, (int)$time));
     }
 
-    public function list_hits($site_id, $limit = 50) {
+    public function list_hits($site_id, $limit = 50, $offset = 0) {
         $pdo = spider_runtime::$pdo;
         $pre = spider_runtime::$pre;
-        $stmt = $pdo->prepare("SELECT * FROM `{$pre}spider_blacklist_hit` WHERE site_id=? ORDER BY id DESC LIMIT {$limit}");
+        $stmt = $pdo->prepare("SELECT * FROM `{$pre}spider_blacklist_hit` WHERE site_id=? ORDER BY id DESC LIMIT {$limit} OFFSET {$offset}");
         $stmt->execute(array((int)$site_id));
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function count_hits($site_id) {
+        $pdo = spider_runtime::$pdo;
+        $pre = spider_runtime::$pre;
+        $stmt = $pdo->prepare("SELECT COUNT(*) AS cnt FROM `{$pre}spider_blacklist_hit` WHERE site_id=?");
+        $stmt->execute(array((int)$site_id));
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row ? (int)$row['cnt'] : 0;
     }
 }

@@ -3,6 +3,8 @@ defined('ROOT_PATH') || exit;
 class spider_hit_control extends admin_control {
     public function index() {
         $site_id = defined('CURRENT_SITE_ID') ? (int)CURRENT_SITE_ID : 0;
+        $page = max(1, (int)R('page', 'R'));
+        $pagenum = 20;
         require_once ROOT_PATH . 'lecms/plugin/spider_analytics/model/blacklist.class.php';;
         require_once ROOT_PATH . 'lecms/plugin/spider_analytics/lib/cidr.class.php';;
         require_once ROOT_PATH . 'lecms/plugin/spider_analytics/lib/csv.class.php';;
@@ -11,8 +13,11 @@ class spider_hit_control extends admin_control {
         // 注入 LECMS 数据库 PDO 连接（模型使用 spider_runtime::$pdo 静态属性）
         spider_runtime::init($this->db->rlink, $_ENV['_config']['db']['master']['tablepre']);
         $bl = new spider_blacklist();
-        $rows = $bl->list_hits($site_id, 100);
+        $total = $bl->count_hits($site_id);
+        $rows = $bl->list_hits($site_id, $pagenum, ($page - 1) * $pagenum);
         $this->view->assign('rows', $rows);
+        $pagebar = $this->get_pagebar($total, $pagenum, $page);
+        $this->view->assign('pagebar', $pagebar);
         $this->view->display('spider_hit.htm');
     }
 }

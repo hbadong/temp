@@ -53,6 +53,7 @@ class ai_task_control extends admin_control {
         $this->assign_value('total', $total);
         $this->assign_value('settings', $plugin_settings);
         $this->assign_value('tab', $tab);
+        $pagebar = $this->get_pagebar($total, $pagenum, $page); $this->assign_value('pagebar', $pagebar);
         $this->display('task_list.htm');
     }
 

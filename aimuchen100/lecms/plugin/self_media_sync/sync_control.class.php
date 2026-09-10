@@ -16,6 +16,7 @@ class sync_control extends admin_control {
         $pagenum = 20;
         $platform = trim(R('platform', 'R'));
         $status = (int)R('status', 'R');
+        $keyword = trim(R('keyword', 'R'));
 
         $tablepre = $_ENV['_config']['db']['master']['tablepre'];
         $queue = new sync_queue($site_id, $this->db);
@@ -27,13 +28,27 @@ class sync_control extends admin_control {
                 INNER JOIN `{$tablepre}media_account` a ON l.account_id = a.id
                 WHERE l.site_id = {$site_id}";
 
+        $extra = array();
         if ($platform) {
+            $platform_raw = $platform;
             $platform = addslashes($platform);
             $sql .= " AND l.platform = '{$platform}'";
+            $extra['platform'] = $platform_raw;
         }
 
         if ($status) {
             $sql .= " AND l.status = " . (int)$status;
+            $extra['status'] = (int)$status;
+        }
+
+        if ($keyword !== '') {
+            $kw = addslashes($keyword);
+            if (is_numeric($kw)) {
+                $sql .= " AND (l.article_id = " . (int)$kw . " OR l.platform_url LIKE '%{$kw}%' OR l.error_message LIKE '%{$kw}%')";
+            } else {
+                $sql .= " AND (l.platform_url LIKE '%{$kw}%' OR l.error_message LIKE '%{$kw}%')";
+            }
+            $extra['keyword'] = $keyword;
         }
 
         $sql .= " ORDER BY l.id DESC LIMIT {$pagenum} OFFSET " . (($page - 1) * $pagenum);
@@ -43,9 +58,13 @@ class sync_control extends admin_control {
         $total_row = $this->db->fetch_first("SELECT COUNT(*) AS cnt FROM ({$total_sql}) t");
         $total = $total_row ? $total_row['cnt'] : 0;
 
+        $platform_val = isset($platform_raw) ? $platform_raw : '';
         $this->assign('list', $list);
         $this->assign('total', $total);
-        $pagebar = $this->get_pagebar($total, $pagenum, $page); $this->assign('pagebar', $pagebar);
+        $this->assign('platform', $platform_val);
+        $this->assign('status', $status);
+        $this->assign('keyword', $keyword);
+        $pagebar = $this->get_pagebar($total, $pagenum, $page, 5, $extra); $this->assign('pagebar', $pagebar);
         $this->display('sync_log.htm');
     }
 
