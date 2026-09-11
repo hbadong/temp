@@ -9,7 +9,7 @@
 					<div class="layui-form-item">
 						<label class="layui-form-label required">企业名称</label>
 						<div class="layui-input-block">
-							<input type="text" name="enterprise_name" class="layui-input" required placeholder="请输入企业名称" />
+							<input type="text" name="enterprise_name" class="layui-input" lay-verify="required" lay-reqtext="企业名称不能为空" placeholder="请输入企业名称" />
 						</div>
 					</div>
 					<div class="layui-form-item">
@@ -33,7 +33,7 @@
 					<div class="layui-form-item">
 						<label class="layui-form-label">邮箱</label>
 						<div class="layui-input-block">
-							<input type="email" name="email" class="layui-input" placeholder="请输入邮箱" />
+							<input type="email" name="email" class="layui-input" lay-verify="email" lay-reqtext="邮箱格式不正确" placeholder="请输入邮箱" />
 						</div>
 					</div>
 					<div class="layui-form-item">

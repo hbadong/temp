@@ -9,7 +9,7 @@
 					<div class="layui-form-item">
 						<label class="layui-form-label required">文章ID</label>
 						<div class="layui-input-block">
-							<input type="text" name="article_ids" class="layui-input" placeholder="1, 2, 3, ..." required>
+							<input type="text" name="article_ids" class="layui-input" placeholder="1, 2, 3, ..." lay-verify="required|articleIds" lay-reqtext="请输入文章ID">
 						</div>
 					</div>
 					<div class="layui-form-item">
@@ -38,6 +38,15 @@
 layui.use(['form', 'layer', 'miniTab'], function(){
 	var form = layui.form, layer = layui.layer, miniTab = layui.miniTab;
 	form.render();
+
+	// 自定义校验：文章ID列表必须为逗号分隔的数字
+	form.verify({
+		articleIds: function (value) {
+			if (!/^\s*\d+(\s*,\s*\d+)*\s*$/.test(value)) {
+				return '文章ID格式不正确，请用逗号分隔数字，如 1,2,3';
+			}
+		}
+	});
 
 	//监听提交
 	form.on('submit(form)', function () {
