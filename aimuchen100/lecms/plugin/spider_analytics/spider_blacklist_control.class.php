@@ -57,6 +57,9 @@ class spider_blacklist_control extends admin_control {
         if (!form_submit()) E(1, lang('submit_invalid'));
         $file = isset($_FILES['file']['tmp_name']) ? $_FILES['file']['tmp_name'] : '';
         if (!$file || !is_uploaded_file($file)) E(1, '未上传文件');
+        $ext = strtolower(pathinfo(isset($_FILES['file']['name']) ? $_FILES['file']['name'] : '', PATHINFO_EXTENSION));
+        if ($ext !== 'csv') E(1, '仅支持 .csv 文件');
+        if (isset($_FILES['file']['size']) && $_FILES['file']['size'] > 2 * 1024 * 1024) E(1, '文件过大，最大 2MB');
         $content = file_get_contents($file);
         require_once ROOT_PATH . 'lecms/plugin/spider_analytics/model/blacklist.class.php';;
         require_once ROOT_PATH . 'lecms/plugin/spider_analytics/lib/cidr.class.php';;
