@@ -168,3 +168,12 @@ Entries discovered by the Agent during task execution should follow this format:
   - `admin_control::get_pagebar($total,$pagenum,$page,$show_pages=5,$extra=array())` 第 5 参 extra 数组会拼到分页链接 query（`&key=val`），翻页时保留筛选/搜索条件；不传 extra 翻页会丢参数
   - 列表页打磨三类缺口的补法：①服务端渲染表格无分页→控制器算 total + `$pagebar=$this->get_pagebar(...);$this->assign('pagebar',$pagebar)`，模板表格下放 `{$pagebar}`；②无搜索→控制器 SQL 拼 LIKE + addslashes，模板加 GET 搜索表单（hidden 提交 control-action）+ 清除链接；③layui table 前端渲染页（url: 返回 code/count/data）自带分页 UI，数据量小无需改
   - sync/spider_hit 等控制器用 `$this->db->fetch_*` 直查时表名写 `$_ENV['_config']['db']['master']['tablepre']`（`$this->tablepre` 在非敏感词控制器未定义，会触发 `__get` 找 tablepre_model 报"类不存在"）
+
+[LECMS 后台表单 layui 校验规范]
+- Date: 2026-09-11
+- Context: Discovered by Agent while 给 23 个插件提交表单补必填/格式校验
+- Category: Troubleshooting & Debugging
+- Instructions:
+  - 原生 `required` 属性对 layui 表单不生效（layui 的 submit 拦截不会触发浏览器原生校验气泡），必填校验必须写 `lay-verify="required" lay-reqtext="提示语"`；layui v2.8.15 内置 verify 规则只有 `required/phone/email/url/identity`（无 number/date），自定义格式校验用 `lay-verify="ruleName"` + JS `form.verify({ruleName: function(value){ if(...) return '错误信息'; }})`
+  - 表单模板加 lay-verify 后 mv 掉 `runcache/admin_view/default,{模板}.htm.php` 编译缓存才生效；控制器 POST 加服务端校验后 mv `runcache/admin_control/对应_control.class.php`
+  - 校验双保险：前端 lay-verify 拦截空值，服务端 POST 方法必须再校验（empty/正则），两者提示文案保持一致；新增/编辑共用表单时，新增模式控制器需给 assign 的数组提供完整默认键（如 account 新增时 `$account=array('id'=>0,'platform'=>'wechat',...)`），否则模板 `{$account['platform']}` 触发 Undefined index 刷日志
