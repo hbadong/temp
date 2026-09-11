@@ -6,15 +6,31 @@ class data_export_control extends admin_control {
         $pagenum = 20;
         $pre = $_ENV['_config']['db']['master']['tablepre'];
 
-        $total_row = $this->db->fetch_first("SELECT COUNT(*) AS cnt FROM {$pre}export_log");
+        $status = trim(R('status', 'R'));
+        $keyword = trim(R('keyword', 'R'));
+        $extra = array();
+        $where = ' WHERE 1';
+        if($status && in_array($status, array('running', 'done', 'failed', 'expired', 'deleted'))) {
+            $where .= " AND status = '" . addslashes($status) . "'";
+            $extra['status'] = $status;
+        }
+        if($keyword !== '') {
+            $kw = addslashes($keyword);
+            $where .= " AND (file_path LIKE '%{$kw}%' OR current_file LIKE '%{$kw}%')";
+            $extra['keyword'] = $keyword;
+        }
+
+        $total_row = $this->db->fetch_first("SELECT COUNT(*) AS cnt FROM {$pre}export_log{$where}");
         $total = $total_row ? (int)$total_row['cnt'] : 0;
 
         $offset = ($page - 1) * $pagenum;
-        $rows = $this->db->fetch_all("SELECT * FROM {$pre}export_log ORDER BY id DESC LIMIT {$pagenum} OFFSET {$offset}");
+        $rows = $this->db->fetch_all("SELECT * FROM {$pre}export_log{$where} ORDER BY id DESC LIMIT {$pagenum} OFFSET {$offset}");
         $rows = $rows ?: array();
 
-        $pagebar = $this->get_pagebar($total, $pagenum, $page);
+        $pagebar = $this->get_pagebar($total, $pagenum, $page, 5, $extra);
         $this->assign('rows', $rows);
+        $this->assign('status', $status);
+        $this->assign('keyword', $keyword);
         $this->assign('pagebar', $pagebar);
 
         // 插件设置（原 settings() 逻辑合并进主页面第二个 tab）

@@ -39,6 +39,28 @@
               <div class="layui-btn-container" style="margin-bottom:10px">
                 <a class="layui-btn layui-btn-sm layui-btn-normal" href="javascript:;" onclick="start_export()"><i class="layui-icon">&#xe608;</i> 启动新导出</a>
               </div>
+              <form class="layui-form" action="" method="get">
+                <input type="hidden" name="data_export-index">
+                <div class="layui-form-item" style="margin-bottom:10px">
+                  <div class="layui-input-inline">
+                    <select name="status">
+                      <option value="">全部状态</option>
+                      <option value="running" {if:$status=='running'}selected{/if}>运行中</option>
+                      <option value="done" {if:$status=='done'}selected{/if}>完成</option>
+                      <option value="failed" {if:$status=='failed'}selected{/if}>失败</option>
+                      <option value="expired" {if:$status=='expired'}selected{/if}>已过期</option>
+                      <option value="deleted" {if:$status=='deleted'}selected{/if}>已删除</option>
+                    </select>
+                  </div>
+                  <div class="layui-input-inline">
+                    <input type="text" name="keyword" value="{@htmlspecialchars($keyword, ENT_QUOTES, 'UTF-8')}" placeholder="按文件名搜索" autocomplete="off" class="layui-input" />
+                  </div>
+                  <button type="submit" class="layui-btn layui-btn-sm layui-btn-primary"><i class="layui-icon">&#xe615;</i> 筛选</button>
+                  {if:$status || $keyword}
+                  <a href="?data_export-index" class="layui-btn layui-btn-sm">清除</a>
+                  {/if}
+                </div>
+              </form>
               <table class="layui-table">
                 <thead><tr><th>ID</th><th>site_id</th><th>模式</th><th>状态</th><th>进度</th><th>当前文件</th><th>开始时间</th><th>完成时间</th><th>大小</th><th>操作</th></tr></thead>
                 <tbody>

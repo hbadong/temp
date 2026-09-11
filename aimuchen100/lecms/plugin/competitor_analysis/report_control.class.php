@@ -12,6 +12,7 @@ class report_control extends admin_control {
         $page = max(1, (int)R('page', 'R'));
         $pagenum = 20;
         $offset = (int)(($page - 1) * $pagenum);
+        $keyword = trim(R('keyword', 'R'));
 
         $tablepre = $_ENV['_config']['db']['master']['tablepre'];
 
@@ -19,23 +20,33 @@ class report_control extends admin_control {
         $sql = "SELECT r.*, s.name AS competitor_name
                 FROM `{$tablepre}competitor_report` r
                 INNER JOIN `{$tablepre}competitor_site` s ON r.competitor_id = s.id
-                WHERE s.site_id = {$site_id}
-                ORDER BY r.id DESC
+                WHERE s.site_id = {$site_id}";
+        $extra = array();
+        if($keyword !== '') {
+            $kw = addslashes($keyword);
+            $sql .= " AND s.name LIKE '%{$kw}%'";
+            $extra['keyword'] = $keyword;
+        }
+        $sql .= " ORDER BY r.id DESC
                 LIMIT {$pagenum} OFFSET {$offset}";
 
         $list = $this->db->fetch_all($sql);
 
-        $row = $this->db->fetch_first("
-            SELECT COUNT(*) AS cnt FROM `{$tablepre}competitor_report` r
-            INNER JOIN `{$tablepre}competitor_site` s ON r.competitor_id = s.id
-            WHERE s.site_id = {$site_id}
-        ");
+        $count_sql = "SELECT COUNT(*) AS cnt FROM `{$tablepre}competitor_report` r
+                INNER JOIN `{$tablepre}competitor_site` s ON r.competitor_id = s.id
+                WHERE s.site_id = {$site_id}";
+        if($keyword !== '') {
+            $kw = addslashes($keyword);
+            $count_sql .= " AND s.name LIKE '%{$kw}%'";
+        }
+        $row = $this->db->fetch_first($count_sql);
         $total = $row ? $row['cnt'] : 0;
 
         $this->assign('list', $list);
         $this->assign('total', $total);
-        $pagebar = $this->get_pagebar($total, $pagenum, $page); $this->assign('pagebar', $pagebar);
-        $this->display('report_list.htm');
+        $this->assign('keyword', $keyword);
+        $pagebar = $this->get_pagebar($total, $pagenum, $page, 5, $extra); $this->assign('pagebar', $pagebar);
+        $this->display('competitor_report_list.htm');
     }
 
     public function detail() {
