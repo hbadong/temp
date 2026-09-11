@@ -17,9 +17,12 @@ class cps_config_control extends admin_control {
     public function index() {
         $page = max(1, (int)R('page', 'R'));
         $pagenum = 20;
+        $keyword = trim(R('keyword', 'R'));
 
         $config = new CpsConfig();
-        $result = $config->list_cps(0, null, $page, $pagenum);
+        $extra = array();
+        if($keyword !== '') $extra['keyword'] = $keyword;
+        $result = $config->list_cps(0, null, $page, $pagenum, $keyword);
 
         // 站点名映射（显示用）
         $site_names = array();
@@ -30,8 +33,9 @@ class cps_config_control extends admin_control {
         $this->assign_value('list', $result['list']);
         $this->assign_value('total', $result['total']);
         $this->assign_value('page', $page);
+        $this->assign_value('keyword', $keyword);
         $this->assign_value('site_names', $site_names);
-        $this->assign_value('pagebar', $this->get_pagebar($result['total'], $pagenum, $page));
+        $this->assign_value('pagebar', $this->get_pagebar($result['total'], $pagenum, $page, 5, $extra));
 
         // 插件设置（合并自 settings()，作为主页面第二个 tab）
         $settings = $this->runtime->xget('cps_integration_settings');

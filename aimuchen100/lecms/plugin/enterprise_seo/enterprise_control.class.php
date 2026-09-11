@@ -15,8 +15,17 @@ class enterprise_control extends admin_control {
         $tablepre = $_ENV['_config']['db']['master']['tablepre'];
 
         $site_id = (int)$site_id;
+        $keyword = trim(R('keyword', 'R'));
+        $extra = array();
+        $cond = '';
+        if($keyword !== '') {
+            $kw = addslashes($keyword);
+            $cond = " AND (enterprise_name LIKE '%{$kw}%' OR industry LIKE '%{$kw}%' OR address LIKE '%{$kw}%')";
+            $extra['keyword'] = $keyword;
+        }
+
         $sql = "SELECT * FROM `{$tablepre}enterprise_site`
-                WHERE site_id = {$site_id}
+                WHERE site_id = {$site_id}{$cond}
                 ORDER BY id DESC
                 LIMIT {$pagenum} OFFSET " . (($page - 1) * $pagenum);
 
@@ -25,13 +34,14 @@ class enterprise_control extends admin_control {
         // 统计总数
         $row = $this->db->fetch_first("
             SELECT COUNT(*) AS cnt FROM `{$tablepre}enterprise_site`
-            WHERE site_id = {$site_id}
+            WHERE site_id = {$site_id}{$cond}
         ");
-        $total = $row ? $row['cnt'] : 0;
+        $total = $row ? (int)$row['cnt'] : 0;
 
         $this->assign('list', $list);
         $this->assign('total', $total);
-        $pagebar = $this->get_pagebar($total, $pagenum, $page); $this->assign('pagebar', $pagebar);
+        $this->assign('keyword', $keyword);
+        $pagebar = $this->get_pagebar($total, $pagenum, $page, 5, $extra); $this->assign('pagebar', $pagebar);
 
         // 插件设置（原 settings() 逻辑合并进主页面第二个 tab）
         $settings = $this->runtime->xget('enterprise_seo_settings');

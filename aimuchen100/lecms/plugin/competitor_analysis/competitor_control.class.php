@@ -16,15 +16,31 @@ class competitor_control extends admin_control {
         $group = trim(R('group', 'R'));
 
         $tablepre = $_ENV['_config']['db']['master']['tablepre'];
-        $model = core::model('competitor_site');
 
-        $list = $model->get_list($site_id, $group);
+        $keyword = trim(R('keyword', 'R'));
+        $extra = array();
+        $cond = '';
+        if($group) {
+            $cond .= " AND `group` = '" . addslashes($group) . "'";
+            $extra['group'] = $group;
+        }
+        if($keyword !== '') {
+            $kw = addslashes($keyword);
+            $cond .= " AND (name LIKE '%{$kw}%' OR url LIKE '%{$kw}%')";
+            $extra['keyword'] = $keyword;
+        }
+
+        $sql = "SELECT * FROM `{$tablepre}competitor_site`
+                WHERE site_id = " . (int)$site_id . "{$cond}
+                ORDER BY id DESC
+                LIMIT {$pagenum} OFFSET " . (($page - 1) * $pagenum);
+        $list = $this->db->fetch_all($sql);
 
         $total_row = $this->db->fetch_first("
             SELECT COUNT(*) AS cnt FROM `{$tablepre}competitor_site`
-            WHERE site_id = " . (int)$site_id . "
+            WHERE site_id = " . (int)$site_id . "{$cond}
         ");
-        $total = $total_row ? $total_row['cnt'] : 0;
+        $total = $total_row ? (int)$total_row['cnt'] : 0;
 
         $groups = array(
             'direct' => '直接竞品',
@@ -36,7 +52,8 @@ class competitor_control extends admin_control {
         $this->assign('total', $total);
         $this->assign('groups', $groups);
         $this->assign('current_group', $group);
-        $pagebar = $this->get_pagebar($total, $pagenum, $page); $this->assign('pagebar', $pagebar);
+        $this->assign('keyword', $keyword);
+        $pagebar = $this->get_pagebar($total, $pagenum, $page, 5, $extra); $this->assign('pagebar', $pagebar);
 
         // 插件设置（已并入主页面的第二个 Tab）
         $settings = $this->runtime->xget('competitor_analysis_settings');

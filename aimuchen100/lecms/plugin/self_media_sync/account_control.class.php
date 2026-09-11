@@ -16,16 +16,25 @@ class account_control extends admin_control {
 
         $offset = ($page - 1) * $pagenum;
 
+        $keyword = trim(R('keyword', 'R'));
+        $extra = array();
+        $cond = '';
+        if($keyword !== '') {
+            $kw = addslashes($keyword);
+            $cond = " AND (account_name LIKE '%{$kw}%' OR platform LIKE '%{$kw}%')";
+            $extra['keyword'] = $keyword;
+        }
+
         $list = $this->db->fetch_all("
             SELECT * FROM `{$tablepre}media_account`
-            WHERE site_id = " . (int)$site_id . "
+            WHERE site_id = " . (int)$site_id . "{$cond}
             ORDER BY id DESC
             LIMIT {$pagenum} OFFSET {$offset}
         ");
 
         $total_row = $this->db->fetch_first("
             SELECT COUNT(*) AS cnt FROM `{$tablepre}media_account`
-            WHERE site_id = {$site_id}
+            WHERE site_id = {$site_id}{$cond}
         ");
         $total = $total_row ? $total_row['cnt'] : 0;
 
@@ -65,7 +74,8 @@ class account_control extends admin_control {
         $this->assign('platforms', $platforms);
         $this->assign('settings', $settings);
         $this->assign('accounts', $accounts);
-        $pagebar = $this->get_pagebar($total, $pagenum, $page); $this->assign('pagebar', $pagebar);
+        $this->assign('keyword', $keyword);
+        $pagebar = $this->get_pagebar($total, $pagenum, $page, 5, $extra); $this->assign('pagebar', $pagebar);
         $this->display('account_list.htm');
     }
 

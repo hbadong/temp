@@ -9,8 +9,18 @@ class spider_iprange_control extends admin_control {
         // 注入 LECMS 数据库 PDO 连接（模型使用 spider_runtime::$pdo 静态属性）
         spider_runtime::init($this->db->rlink, $_ENV['_config']['db']['master']['tablepre']);
         $ir = new spider_iprange();
-        $rows = $ir->list();
+        $page = max(1, (int)R('page', 'R'));
+        $engine = trim(R('engine', 'R'));
+        $keyword = trim(R('keyword', 'R'));
+        $extra = array();
+        if($engine) $extra['engine'] = $engine;
+        if($keyword !== '') $extra['keyword'] = $keyword;
+        $total = $ir->count_list($engine, $keyword);
+        $rows = $ir->list($engine, $keyword, $page, 50);
         $this->view->assign('rows', $rows);
+        $this->view->assign('engine', $engine);
+        $this->view->assign('keyword', $keyword);
+        $pagebar = $this->get_pagebar($total, 50, $page, 5, $extra); $this->view->assign('pagebar', $pagebar);
         $this->view->display('spider_iprange.htm');
     }
     public function add() {

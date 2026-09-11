@@ -93,11 +93,15 @@ class CpsConfig extends model {
      * 分页列出配置
      * @return array ['list'=>array, 'total'=>int]
      */
-    public function list_cps($site_id = 0, $game_id = null, $page = 1, $pagenum = 20) {
+    public function list_cps($site_id = 0, $game_id = null, $page = 1, $pagenum = 20, $keyword = '') {
         $tablepre = $_ENV['_config']['db']['master']['tablepre'];
         $where = ' WHERE 1';
         if($site_id > 0) $where .= ' AND site_id = ' . (int)$site_id;
         if($game_id !== null && $game_id !== '') $where .= ' AND game_id = ' . (int)$game_id;
+        if($keyword !== '') {
+            $kw = addslashes($keyword);
+            $where .= " AND (name LIKE '%{$kw}%' OR url LIKE '%{$kw}%')";
+        }
         $page = max(1, (int)$page);
         $pagenum = max(1, (int)$pagenum);
         $offset = ($page - 1) * $pagenum;

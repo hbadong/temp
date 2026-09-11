@@ -32,6 +32,18 @@
 		<div class="layui-card">
 		  <div class="layui-card-header">IP 段列表</div>
 		  <div class="layui-card-body">
+		    <form class="layui-form" action="" method="get">
+		      <input type="hidden" name="spider_iprange-index">
+		      <div class="layui-form-item" style="margin-bottom:10px">
+		        <div class="layui-input-inline">
+		          <input type="text" name="keyword" value="{@htmlspecialchars($keyword, ENT_QUOTES, 'UTF-8')}" placeholder="按引擎/CIDR/备注搜索" autocomplete="off" class="layui-input" />
+		        </div>
+		        <button type="submit" class="layui-btn layui-btn-sm layui-btn-primary"><i class="layui-icon">&#xe615;</i> 搜索</button>
+		        {if:$keyword}
+		        <a href="?spider_iprange-index" class="layui-btn layui-btn-sm">清除</a>
+		        {/if}
+		      </div>
+		    </form>
 		    <table class="layui-table">
 		      <thead><tr><th>ID</th><th>引擎</th><th>CIDR</th><th>备注</th><th>启用</th><th>操作</th></tr></thead>
 		      <tbody>
@@ -47,6 +59,7 @@
 		      {/loop}
 		      </tbody>
 		    </table>
+		    {$pagebar}
 		  </div>
 		</div>
 

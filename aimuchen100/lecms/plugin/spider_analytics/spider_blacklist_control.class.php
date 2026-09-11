@@ -12,10 +12,12 @@ class spider_blacklist_control extends admin_control {
         // 注入 LECMS 数据库 PDO 连接（模型使用 spider_runtime::$pdo 静态属性）
         spider_runtime::init($this->db->rlink, $_ENV['_config']['db']['master']['tablepre']);
         $bl = new spider_blacklist();
+        $total = $bl->count_list($site_id);
         $rows = $bl->list($site_id, $page, 50);
         $intercept = spider_runtime_get('intercept_enabled', '0');
         $this->view->assign('rows', $rows);
         $this->view->assign('intercept_enabled', $intercept);
+        $pagebar = $this->get_pagebar($total, 50, $page); $this->view->assign('pagebar', $pagebar);
         $this->view->display('spider_blacklist.htm');
     }
     public function add() {

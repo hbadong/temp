@@ -29,6 +29,15 @@ class spider_blacklist {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function count_list($site_id) {
+        $pdo = spider_runtime::$pdo;
+        $pre = spider_runtime::$pre;
+        $stmt = $pdo->prepare("SELECT COUNT(*) AS cnt FROM `{$pre}spider_blacklist` WHERE site_id=? OR site_id=0");
+        $stmt->execute(array((int)$site_id));
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row ? (int)$row['cnt'] : 0;
+    }
+
     public function import_csv($content) {
         $rows = spider_csv::parse($content);
         $pdo = spider_runtime::$pdo;

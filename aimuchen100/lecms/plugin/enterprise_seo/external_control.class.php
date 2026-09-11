@@ -27,14 +27,23 @@ class external_control extends admin_control {
         $site_id = defined('CURRENT_SITE_ID') ? CURRENT_SITE_ID : 0;
         $page = max(1, (int)R('page', 'R'));
         $pagenum = 20;
+        $keyword = trim(R('keyword', 'R'));
 
         $tablepre = $_ENV['_config']['db']['master']['tablepre'];
 
         $site_id = (int)$site_id;
+        $extra = array();
+        $cond = '';
+        if($keyword !== '') {
+            $kw = addslashes($keyword);
+            $cond = " AND (e.platform LIKE '%{$kw}%' OR e.platform_url LIKE '%{$kw}%' OR s.enterprise_name LIKE '%{$kw}%')";
+            $extra['keyword'] = $keyword;
+        }
+
         $sql = "SELECT e.*, s.enterprise_name
                 FROM `{$tablepre}external_link` e
                 INNER JOIN `{$tablepre}enterprise_site` s ON e.enterprise_id = s.id
-                WHERE s.site_id = {$site_id}
+                WHERE s.site_id = {$site_id}{$cond}
                 ORDER BY e.id DESC
                 LIMIT {$pagenum} OFFSET " . (($page - 1) * $pagenum);
 
@@ -44,14 +53,14 @@ class external_control extends admin_control {
         $row = $this->db->fetch_first("
             SELECT COUNT(*) AS cnt FROM `{$tablepre}external_link` e
             INNER JOIN `{$tablepre}enterprise_site` s ON e.enterprise_id = s.id
-            WHERE s.site_id = {$site_id}
+            WHERE s.site_id = {$site_id}{$cond}
         ");
-        $total = $row ? $row['cnt'] : 0;
-        $total = $total ? $total[0] : 0;
+        $total = $row ? (int)$row['cnt'] : 0;
 
         $this->assign('list', $list);
         $this->assign('total', $total);
-        $pagebar = $this->get_pagebar($total, $pagenum, $page); $this->assign('pagebar', $pagebar);
+        $this->assign('keyword', $keyword);
+        $pagebar = $this->get_pagebar($total, $pagenum, $page, 5, $extra); $this->assign('pagebar', $pagebar);
         $this->display('external_list.htm');
     }
 
