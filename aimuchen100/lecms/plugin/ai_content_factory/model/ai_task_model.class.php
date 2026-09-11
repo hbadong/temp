@@ -101,6 +101,21 @@ class ai_task extends model {
             $success = 0;
             $fail = 0;
 
+            // 敏感词过滤：sensitive_word_filter 插件启用且勾选 ai_generate 时对生成内容过滤
+            $sw_filter = null;
+            $sw_setting_file = ROOT_PATH . 'lecms/plugin/sensitive_word_filter/setting.php';
+            if (is_file($sw_setting_file)) {
+                $sw_settings = include $sw_setting_file;
+                $sw_enabled = !isset($sw_settings['enabled']) || !empty($sw_settings['enabled']);
+                $sw_ai_checked = empty($sw_settings['filter_content_types']) || in_array('ai_generate', $sw_settings['filter_content_types']);
+                if ($sw_enabled && $sw_ai_checked) {
+                    require_once ROOT_PATH . 'lecms/plugin/sensitive_word_filter/model/sensitive_filter.class.php';
+                    if (class_exists('sensitive_filter')) {
+                        $sw_filter = new sensitive_filter($site_id, $this->db);
+                    }
+                }
+            }
+
             // 使用事务保证一致性（逐批提交，避免单批失败回滚已成功批次）
             $this->db->query('START TRANSACTION');
             try {
@@ -108,6 +123,32 @@ class ai_task extends model {
                     if(!isset($urls[$i]) || empty($article['title'])) {
                         $fail++;
                         continue;
+                    }
+
+                    // 敏感词过滤（level>=3 拒绝入库；level==2 替换；level==1 仅记录）
+                    if ($sw_filter !== null) {
+                        $sw_hits = $sw_filter->detect(($article['title'] ?? '') . "\n" . ($article['content'] ?? ''));
+                        if (!empty($sw_hits)) {
+                            $sw_max_level = 0;
+                            $sw_word = '';
+                            foreach ($sw_hits as $sw_hit) {
+                                if ((int)$sw_hit['level'] > $sw_max_level) {
+                                    $sw_max_level = (int)$sw_hit['level'];
+                                    $sw_word = isset($sw_hit['word']) ? $sw_hit['word'] : '';
+                                }
+                            }
+                            if ($sw_max_level >= 3) {
+                                $sw_filter->log($sw_word, 0, 'reject');
+                                $fail++;
+                                continue;
+                            } elseif ($sw_max_level >= 2) {
+                                $article['title'] = $sw_filter->replace_words($article['title'])['text'];
+                                $article['content'] = $sw_filter->replace_words($article['content'])['text'];
+                                $sw_filter->log($sw_word, 0, 'replace');
+                            } else {
+                                $sw_filter->log($sw_word, 0, 'replace');
+                            }
+                        }
                     }
 
                     // 写入文章（主表 + 正文副表）
