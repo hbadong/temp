@@ -22,7 +22,7 @@
 					<div class="layui-form-item">
 						<label class="layui-form-label">账号名称</label>
 						<div class="layui-input-block">
-							<input type="text" name="account_name" value="{$account['account_name']}" autocomplete="off" class="layui-input" />
+							<input type="text" name="account_name" value="{$account['account_name']}" autocomplete="off" class="layui-input" lay-verify="required" lay-reqtext="账号名称不能为空" />
 						</div>
 					</div>
 					<div class="layui-form-item">

@@ -10,13 +10,13 @@
 					<div class="layui-form-item">
 						<label class="layui-form-label required">站点名称</label>
 						<div class="layui-input-inline">
-							<input type="text" name="name" value="{$site['name']}" autocomplete="off" placeholder="请输入站点名称" class="layui-input">
+							<input type="text" name="name" value="{$site['name']}" autocomplete="off" placeholder="请输入站点名称" class="layui-input" lay-verify="required" lay-reqtext="站点名称不能为空">
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label required">URL</label>
 						<div class="layui-input-inline">
-							<input type="url" name="url" value="{$site['url']}" autocomplete="off" placeholder="请输入 http(s) 协议 URL" class="layui-input">
+							<input type="url" name="url" value="{$site['url']}" autocomplete="off" placeholder="请输入 http(s) 协议 URL" class="layui-input" lay-verify="required|url" lay-reqtext="URL不能为空">
 						</div>
 					</div>
 					<div class="layui-form-item">

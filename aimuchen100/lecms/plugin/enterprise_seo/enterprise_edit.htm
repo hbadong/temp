@@ -10,7 +10,7 @@
 					<div class="layui-form-item">
 						<label class="layui-form-label required">企业名称</label>
 						<div class="layui-input-block">
-							<input type="text" name="enterprise_name" class="layui-input" value="{$site['enterprise_name']}" required />
+							<input type="text" name="enterprise_name" class="layui-input" value="{$site['enterprise_name']}" lay-verify="required" lay-reqtext="企业名称不能为空" />
 						</div>
 					</div>
 					<div class="layui-form-item">
@@ -34,7 +34,7 @@
 					<div class="layui-form-item">
 						<label class="layui-form-label">邮箱</label>
 						<div class="layui-input-block">
-							<input type="email" name="email" class="layui-input" value="{$site['email']}" />
+							<input type="email" name="email" class="layui-input" value="{$site['email']}" lay-verify="email" lay-reqtext="邮箱格式不正确" />
 						</div>
 					</div>
 					<div class="layui-form-item">

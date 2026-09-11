@@ -92,7 +92,14 @@ class account_control extends admin_control {
                 $this->message(1, '账号不存在');
             }
         } else {
-            $account = array();
+            $account = array(
+                'id' => 0,
+                'platform' => 'wechat',
+                'account_name' => '',
+                'access_token' => '',
+                'refresh_token' => '',
+                'status' => 1,
+            );
         }
 
         $this->assign('account', $account);
@@ -119,6 +126,9 @@ class account_control extends admin_control {
 
         if (empty($data['platform'])) {
             $this->message(1, '平台不能为空');
+        }
+        if ($data['account_name'] === '') {
+            $this->message(1, '账号名称不能为空');
         }
 
         if ($id) {

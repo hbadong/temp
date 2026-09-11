@@ -93,6 +93,9 @@ class cps_config_control extends admin_control {
         if(!preg_match('#^https?://#i', $url)) {
             $this->message(1, '推广链接必须以 http(s):// 开头');
         }
+        if($weight < 0 || $weight > 100) {
+            $this->message(1, '权重值必须在 0-100 之间');
+        }
 
         $config = new CpsConfig();
         $id = $config->create_cps($site_id, $game_id, array(
@@ -140,13 +143,17 @@ class cps_config_control extends admin_control {
         if($url === '' || !preg_match('#^https?://#i', $url)) {
             $this->message(1, '推广链接必须以 http(s):// 开头');
         }
+        $weight = (int)R('weight', 'P');
+        if($weight < 0 || $weight > 100) {
+            $this->message(1, '权重值必须在 0-100 之间');
+        }
 
         $config = new CpsConfig();
         $config->update_cps($id, array(
             'name' => trim(R('name', 'P')),
             'url' => $url,
             'backup_url' => trim(R('backup_url', 'P')),
-            'weight' => (int)R('weight', 'P'),
+            'weight' => $weight,
             'enabled' => (int)R('enabled', 'P'),
         ));
         $this->message(0, '更新成功', '?cps_config-index');

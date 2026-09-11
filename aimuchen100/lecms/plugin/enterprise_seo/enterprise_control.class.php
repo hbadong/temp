@@ -99,6 +99,13 @@ class enterprise_control extends admin_control {
             'status' => (int)R('status', 'P'),
         );
 
+        if($data['enterprise_name'] === '') {
+            $this->message(1, '企业名称不能为空');
+        }
+        if($data['email'] !== '' && !preg_match('#^[a-zA-Z0-9_\.\-]+@[a-zA-Z0-9_\-]+(\.[a-zA-Z0-9_\-]+)+$#', $data['email'])) {
+            $this->message(1, '邮箱格式不正确');
+        }
+
         $id = (int)$id;
         $esc = function($v) use ($tablepre) { return "'" . addslashes($v) . "'"; };
         $this->db->query("UPDATE `{$tablepre}enterprise_site` SET

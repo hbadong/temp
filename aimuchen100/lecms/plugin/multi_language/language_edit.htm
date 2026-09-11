@@ -21,7 +21,7 @@
 							{loop:$all_languages $code $name}
 							<tr>
 								<td>{$code}</td>
-								<td><input type="text" name="languages[{$code}][language_name]" value="{$name}" class="layui-input"></td>
+								<td><input type="text" name="languages[{$code}][language_name]" value="{$name}" class="layui-input" lay-verify="required" lay-reqtext="显示名称不能为空"></td>
 								<td><input type="radio" name="languages[{$code}][is_default]" value="1" title="默认" lay-skin="primary" {if:$code=='zh'}checked{/if}></td>
 								<td><input type="checkbox" name="languages[{$code}][is_enabled]" value="1" lay-skin="primary" {if:in_array($code, array('en','ja','ko'))}checked{/if}></td>
 								<td><input type="checkbox" name="languages[{$code}][subdomain_enabled]" value="1" lay-skin="primary"></td>

@@ -23,7 +23,7 @@
 				<div class="layui-form-item">
 					<label class="layui-form-label">游戏ID</label>
 					<div class="layui-input-block">
-						<input type="text" name="game_id" value="{$row['game_id']}" placeholder="游戏ID（必填）" class="layui-input" autocomplete="off">
+						<input type="text" name="game_id" value="{$row['game_id']}" placeholder="游戏ID（必填）" class="layui-input" autocomplete="off" lay-verify="required" lay-reqtext="游戏ID不能为空">
 					</div>
 				</div>
 				<div class="layui-form-item">
@@ -35,7 +35,7 @@
 				<div class="layui-form-item">
 					<label class="layui-form-label">推广链接</label>
 					<div class="layui-input-block">
-						<input type="text" name="url" value="{$row['url']}" placeholder="https://...（必填）" class="layui-input" autocomplete="off">
+						<input type="text" name="url" value="{$row['url']}" placeholder="https://...（必填）" class="layui-input" autocomplete="off" lay-verify="required|url" lay-reqtext="推广链接不能为空">
 					</div>
 				</div>
 				<div class="layui-form-item">

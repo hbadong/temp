@@ -91,6 +91,9 @@ class language_control extends admin_control {
 
         $configs = array();
         foreach ($_POST['languages'] as $lang_code => $cfg) {
+            if (!isset($cfg['language_name']) || trim($cfg['language_name']) === '') {
+                $this->message(1, '语言 ' . $lang_code . ' 的显示名称不能为空');
+            }
             $configs[] = array(
                 'language' => $lang_code,
                 'language_name' => $cfg['language_name'],
