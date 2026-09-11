@@ -95,6 +95,10 @@ class links_control extends admin_control {
             empty($title) && E(1, lang('links_name_no_empty'));
             empty($url) && E(1, lang('links_url_no_empty'));
 
+            if(!preg_match('#^(https?://|//|/|#)#i', $url)) {
+                E(1, '链接地址必须以 http(s):// 或 / 开头');
+            }
+
             // 写入内容表
             $data = array(
                 'name' => $title,
@@ -127,6 +131,10 @@ class links_control extends admin_control {
             empty($id) && E(1, lang('data_error'));
             empty($title) && E(1, lang('links_name_no_empty'));
             empty($url) && E(1, lang('links_url_no_empty'));
+
+            if(!preg_match('#^(https?://|//|/|#)#i', $url)) {
+                E(1, '链接地址必须以 http(s):// 或 / 开头');
+            }
 
             $data = $this->links->get($id);
             if(empty($data)) E(1, lang('data_no_exists'));

@@ -134,7 +134,8 @@ class TplTheme
         }
 
         $site_table = $this->tablepre . 'site';
-        $id_str = implode(',', $site_ids);
+        $id_str = implode(',', array_map('intval', $site_ids));
+        $theme = addslashes($theme);
         return $this->db->query("UPDATE `{$site_table}` SET `theme` = '{$theme}' WHERE `sid` IN ({$id_str})");
     }
 
