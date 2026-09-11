@@ -151,6 +151,7 @@ class spider_pool_control extends admin_control
         $this->assign('total', $total);
         $this->assign('page', $page);
         $this->assign('pagesize', $pagesize);
+        $pagebar = $this->get_pagebar($total, $pagesize, $page); $this->assign('pagebar', $pagebar);
         $form_hash = form_hash();
         $this->assign('form_hash', $form_hash);
 

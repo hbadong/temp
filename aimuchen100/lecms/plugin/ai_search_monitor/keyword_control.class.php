@@ -12,16 +12,29 @@ class keyword_control extends admin_control {
         $site_id = defined('CURRENT_SITE_ID') ? CURRENT_SITE_ID : 0;
         $page = max(1, (int)R('page', 'R'));
         $pagenum = 20;
+        $keyword = trim(R('keyword', 'R'));
 
         $tablepre = $_ENV['_config']['db']['master']['tablepre'];
-        $model = core::model('keyword');
+        $sql = "SELECT id, keyword, keyword_variant, created_at FROM `{$tablepre}ai_search_log`
+                WHERE site_id = {$site_id} AND found = 0";
+        $extra = array();
+        if($keyword !== '') {
+            $kw = addslashes($keyword);
+            $sql .= " AND (keyword LIKE '%{$kw}%' OR keyword_variant LIKE '%{$kw}%')";
+            $extra['keyword'] = $keyword;
+        }
+        $sql .= " GROUP BY keyword ORDER BY id ASC";
 
-        // 获取去重的品牌词列表
-        $keywords = $model->get_keywords($site_id);
+        $total_row = $this->db->fetch_first("SELECT COUNT(*) AS cnt FROM ({$sql}) t");
+        $total = $total_row ? $total_row['cnt'] : 0;
+
+        $sql .= " LIMIT {$pagenum} OFFSET " . (($page - 1) * $pagenum);
+        $keywords = $this->db->fetch_all($sql);
 
         $this->assign('keywords', $keywords);
-        $total = count($keywords);
         $this->assign('total', $total);
+        $this->assign('keyword', $keyword);
+        $pagebar = $this->get_pagebar($total, $pagenum, $page, 5, $extra); $this->assign('pagebar', $pagebar);
         $this->display('keyword_list.htm');
     }
 
