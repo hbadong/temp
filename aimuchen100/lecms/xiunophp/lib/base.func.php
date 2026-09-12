@@ -143,11 +143,27 @@ function FW($filename, $data) {
 }
 
 // cookie 设置/删除
-function _setcookie($name, $value='', $expire=0, $path='', $domain='', $secure=false, $httponly=false) {
+function _setcookie($name, $value='', $expire=0, $path='', $domain='', $secure=false, $httponly=false, $samesite='') {
 	$name = $_ENV['_config']['cookie_pre'].$name;
 	if(!$path) $path = $_ENV['_config']['cookie_path'];
 	if(!$domain) $domain = $_ENV['_config']['cookie_domain'];
 	$_COOKIE[$name] = $value;
+	// cookie_secure=true 时强制 Secure + SameSite=None：https 部署或跨站 iframe 预览环境，
+	// 避免登录 cookie 被浏览器当第三方 cookie 拦截（服务端经反代转发无法感知 https）
+	if($samesite === '' && !empty($_ENV['_config']['cookie_secure'])){
+		$secure = true;
+		$samesite = 'None';
+	}
+	if($samesite !== ''){
+		return setcookie($name, $value, array(
+			'expires' => $expire,
+			'path' => $path,
+			'domain' => $domain,
+			'secure' => $secure,
+			'httponly' => $httponly,
+			'samesite' => $samesite,
+		));
+	}
 	return setcookie($name, $value, $expire, $path, $domain, $secure, $httponly);
 }
 

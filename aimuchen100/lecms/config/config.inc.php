@@ -14,6 +14,8 @@ $_ENV['_config'] = array(
 	'cookie_pre' => 'letfCJb_',
 	'cookie_path' => '/',
 	'cookie_domain' => '',
+	// 设为 true 时登录 cookie 带 Secure + SameSite=None（https 部署 / 跨站 iframe 预览环境必开，http 内网部署可关闭）
+	'cookie_secure' => true,
 
 	// 数据库配置，type 为默认的数据库类型: mysql|mysqli|pdo_mysql
 	'db' => array(

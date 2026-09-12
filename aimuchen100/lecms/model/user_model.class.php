@@ -256,7 +256,9 @@ class user extends model {
             }else{
                 $cookiename = 'userauth';
             }
-            _setcookie($cookiename, $cookieauth, $_ENV['_time'] + 86400, '', '', false, true);
+            // HTTPS 下带 SameSite=None; Secure：兼容预览环境跨站 iframe，避免登录 cookie 被第三方 cookie 拦截
+            $is_https = (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) != 'off');
+            _setcookie($cookiename, $cookieauth, $_ENV['_time'] + 86400, '', '', $is_https, true, $is_https ? 'None' : '');
             // hook user_model_user_token_login_cookie_after.php
         }else{
             if($isadmin){
@@ -280,7 +282,9 @@ class user extends model {
             }else{
                 $cookiename = 'userauth';
             }
-            _setcookie($cookiename, '', $_ENV['_time'] - 86400, '', '', false, true);
+            // 清除 cookie 需与写入时的 Secure/SameSite 属性一致，否则浏览器不覆盖
+            $is_https = (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) != 'off');
+            _setcookie($cookiename, '', $_ENV['_time'] - 86400, '', '', $is_https, true, $is_https ? 'None' : '');
             // hook user_model_user_token_logout_cookie_after.php
         }else{
             if($isadmin){

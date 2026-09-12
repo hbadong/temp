@@ -44,7 +44,7 @@ class admin_control extends control {
 
         if(R('control') == 'index' && (R('action') == 'login' || R('action') == 'vcode')) { //这里不验证是否启用安全密钥和密钥是否正确
             if(!$err) {
-                exit('<html><body><script>top.location="./"</script></body></html>');
+                exit('<html><body><script>top.location="index.php?index-index"</script></body></html>');
             }
         }elseif(R('control') == 'admin' && R('action') == 'init_navigation' && $err) {
             E(1, lang('please_login_again'));
