@@ -1,71 +1,82 @@
 {inc:header.htm}
+<style>
+    .layui-elem-field legend{font-size: 14px;}
+</style>
 <div class="layuimini-container">
     <div class="layuimini-main">
         <div class="layui-card">
-        <div class="layui-card-header">创建 AI 任务</div>
-        <div class="layui-card-body">
-            <form id="form" class="layui-form" action="?ai_task-create_post-ajax-1" method="post">
+            <div class="layui-card-body">
+            <form class="layui-form layuimini-form" id="form" action="index.php?ai_task-create_post-ajax-1" method="post">
                 <input type="hidden" name="FORM_HASH" value="{@form_hash()}" />
-                <div class="layui-form-item">
-                    <label class="layui-form-label">选择站点</label>
-                    <div class="layui-input-block">
-                        <select name="site_id" required lay-verify="required">
-                            <option value="">请选择站点</option>
-                            {loop:$sites $site}
-                            <option value="{$site['sid']}">{$site['site_name']} ({$site['domain']})</option>
-                            {/loop}
-                        </select>
+                <fieldset class="layui-elem-field">
+                    <legend>创建 AI 任务</legend>
+                    <div class="layui-field-box">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label required">目标站点</label>
+                            <div class="layui-input-block">
+                                <select name="site_id" lay-verify="required">
+                                    {loop:$sites $site}
+                                    <option value="{$site['sid']}">{$site['site_name']}（{$site['domain']}）</option>
+                                    {/loop}
+                                </select>
+                                <div class="layui-form-mid layui-word-aux">生成的文章归属该站点</div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label required">发布分类</label>
+                            <div class="layui-input-block">
+                                {$cidhtml}
+                                <div class="layui-form-mid layui-word-aux">仅列出文章模型分类，AI 文章将发布到该分类下</div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label required">生成数量</label>
+                            <div class="layui-input-block">
+                                <input type="number" name="count" value="1" min="1" lay-verify="required|number" class="layui-input" style="width:160px;">
+                                <div class="layui-form-mid layui-word-aux">1 - 批量上限（插件设置中的 batch_limit，当前 {$settings['batch_limit']}）</div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">Prompt 模板</label>
+                            <div class="layui-input-block">
+                                <textarea name="prompt_template" class="layui-textarea" placeholder="可选。留空使用任务默认提示词&#10;支持占位符：{category} = 分类名称，{url} = 待绑定 URL">生成一篇原创的{category}领域文章，内容专业、结构清晰、字数 800 字以上。</textarea>
+                                <div class="layui-form-mid layui-word-aux">支持占位符：{category}（分类名称）、{url}（目标 URL）</div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">分类ID</label>
-                    <div class="layui-input-block">
-                        <input type="number" name="category_id" value="0" class="layui-input">
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">生成数量</label>
-                    <div class="layui-input-block">
-                        <input type="number" name="count" value="50" min="1" max="1000" required lay-verify="required" class="layui-input">
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">Prompt模板</label>
-                    <div class="layui-input-block">
-                        <textarea name="prompt_template" placeholder="自定义Prompt模板（可选）" class="layui-textarea"></textarea>
-                    </div>
-                </div>
+                </fieldset>
+
                 <div class="layui-form-item">
                     <div class="layui-input-block">
-                        <button class="layui-btn" lay-submit lay-filter="form">创建任务</button>
-                        <a href="?ai_task-index" class="layui-btn layui-btn-primary">返回</a>
+                        <button class="layui-btn" lay-submit lay-filter="form">提交任务</button>
                     </div>
                 </div>
             </form>
-        </div>
+            </div>
         </div>
     </div>
 </div>
-
 <script type="text/javascript">
-	layui.use(['form','layer', 'miniTab'], function () {
-		var layer = layui.layer, form = layui.form, miniTab = layui.miniTab;
+    layui.use(['form','layer', 'miniTab'], function () {
+        var layer = layui.layer, form = layui.form, miniTab = layui.miniTab;
+        form.render();
 
-		//监听提交
-		form.on('submit(form)', function () {
-			adminAjax.postform('#form', function (data) {
-				var json = toJson(data);
-				layer.msg(json.msg, {icon: json.err == 0 ? 1 : 5});
-				if(json.err == 0) {
-					setTimeout(function(){
-						miniTab.reloadIframe('index.php?ai_task-index');
-						miniTab.deleteCurrentByIframe();
-					}, 1500);
-				}
-			});
-			return false;
-		});
-	});
+        // 监听提交
+        form.on('submit(form)', function () {
+            adminAjax.postform("#form", function (data) {
+                var json = toJson(data);
+                var icon = json.err == 0 ? 1 : 5;
+                layer.msg(json.msg, {icon: icon});
+                if(json.err == 0) {
+                    setTimeout(function(){
+                        miniTab.reloadIframe('index.php?ai_task-index');
+                        miniTab.deleteCurrentByIframe();
+                    }, 1500);
+                }
+            });
+            return false;
+        });
+    });
 </script>
 </body>
 </html>

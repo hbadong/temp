@@ -61,8 +61,21 @@ class ai_api_adapter {
                 'max_tokens' => 2048,
                 'temperature' => 0.7,
                 'timeout' => 60,
+                'batch_limit' => 100,
+                'max_retries' => 3,
             );
         }
+
+        // 数值兜底（直接读 ai_config 表时可能缺失列）
+        if(!isset($this->config['batch_limit']) || !is_numeric($this->config['batch_limit'])) $this->config['batch_limit'] = 100;
+        if(!isset($this->config['max_retries']) || !is_numeric($this->config['max_retries'])) $this->config['max_retries'] = 3;
+    }
+
+    /**
+     * 获取当前生效配置（供 UI 展示 API 状态）
+     */
+    public function get_config() {
+        return $this->config;
     }
 
     /**
@@ -85,9 +98,10 @@ class ai_api_adapter {
             array('role' => 'user', 'content' => "请生成 {$count} 篇游戏相关的文章，每篇包含标题、正文、标签和SEO元数据。输出JSON数组格式。")
         );
 
-        // 重试机制（最多3次）
-        $max_retries = 3;
-        for($i = 0; $i < $max_retries; $i++) {
+        // 重试机制（次数取配置 max_retries，A6：429 用指数退避替代长 sleep 阻塞）
+        $max_retries = max(0, (int)$this->config['max_retries']);
+        $last_articles = array();
+        for($i = 0; $i <= $max_retries; $i++) {
             $response = $this->call_api($url, $messages);
 
             if($response !== false) {
@@ -95,22 +109,25 @@ class ai_api_adapter {
                 if(!empty($articles)) {
                     return $articles;
                 }
+                // 200 但解析出空数组：视为无效响应，继续重试
+                $last_articles = array();
+                continue;
             }
 
-            // 根据错误类型处理
             if($this->last_error_code == 429) {
-                // 限流：等待60秒后重试
-                sleep(60);
+                // 限流：指数退避 2s/4s/8s...上限 30s
+                $backoff = min(2 * pow(2, $i), 30);
+                if($i < $max_retries) sleep($backoff);
                 continue;
             }
 
             if($this->last_error_code >= 500) {
-                // 服务不可用：降级到模板库
+                // 服务不可用：降级到模板库（不再重试）
                 return $this->fallback_to_template($count);
             }
 
-            // 其他错误：短暂等待后重试
-            sleep(5);
+            // 其他错误（cURL 错误等）：短等待后重试
+            if($i < $max_retries) sleep(1);
         }
 
         // 全部重试失败，降级到模板库

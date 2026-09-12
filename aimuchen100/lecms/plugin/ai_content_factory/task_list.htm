@@ -1,6 +1,6 @@
 {inc:header.htm}
 <style>
-/* 插件设置 tab 专用样式（自 settings.htm 合并） */
+/* 插件设置 tab 专用样式 */
 .settings-wrap { padding: 0 16px; }
 .settings-card { margin-bottom: 16px; }
 .settings-card .layui-card-header { display: flex; align-items: center; justify-content: space-between; font-weight: 600; }
@@ -14,6 +14,10 @@
 .settings-actions { position: sticky; bottom: 0; padding: 12px 0; background: #fff; border-top: 1px solid #eee; text-align: right; margin-top: 16px; box-shadow: 0 -2px 6px rgba(0,0,0,.03); z-index: 10; }
 .settings-actions .layui-btn + .layui-btn { margin-left: 8px; }
 .field-hint { display: block; color: #999; font-size: 12px; margin-top: 4px; }
+.stat-cards { display: flex; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+.stat-card { flex: 1; min-width: 120px; background: #f8f9fb; border-radius: 6px; padding: 10px 14px; }
+.stat-card .num { font-size: 22px; font-weight: 700; color: #1E9FFF; }
+.stat-card .lbl { font-size: 12px; color: #888; margin-top: 2px; }
 @media (max-width: 900px) { .settings-grid { grid-template-columns: 1fr; } }
 
 @media (max-width: 600px) {
@@ -27,27 +31,70 @@
 	<div class="layuimini-main">
 		<div class="layui-tab layui-tab-brief" lay-filter="main">
 			<ul class="layui-tab-title">
-				<li class="layui-this">功能</li>
-				<li>插件设置</li>
+				<li class="layui-this" lay-id="main">功能</li>
+				<li lay-id="settings">插件设置</li>
 			</ul>
 			<div class="layui-tab-content">
-				<!-- Tab 1：功能（原任务列表页内容） -->
+				<!-- Tab 1：功能（任务列表） -->
 				<div class="layui-tab-item layui-show">
+					<!-- C9 统计卡片 -->
+					<div class="stat-cards">
+						<div class="stat-card"><div class="num">{$stats['articles']}</div><div class="lbl">已生成文章</div></div>
+						<div class="stat-card"><div class="num">{$stats['total']}</div><div class="lbl">任务总数</div></div>
+						<div class="stat-card"><div class="num">{$stats['pending']}</div><div class="lbl">待处理</div></div>
+						<div class="stat-card"><div class="num">{$stats['running']}</div><div class="lbl">处理中</div></div>
+						<div class="stat-card"><div class="num" style="color:#16baaa">{$stats['done']}</div><div class="lbl">已完成</div></div>
+						<div class="stat-card"><div class="num" style="color:#ff5722">{$stats['failed']}</div><div class="lbl">失败</div></div>
+					</div>
+
+					<!-- B5 API 配置状态提示 -->
+					{if:$api_configured}
+					<div class="layui-alert" style="margin-bottom:12px;padding:8px 15px;border-left:3px solid #16baaa;">API 已配置，任务执行时将调用 AI 生成内容。</div>
+					{else}
+					<div class="layui-alert" style="margin-bottom:12px;padding:8px 15px;border-left:3px solid #ff5722;">尚未配置 API Key，任务执行时将使用本地模板库降级生成。请到「插件设置」完成配置。</div>
+					{/if}
+
 					<div class="layui-card">
 						<div class="layui-card-header">
 							AI 任务列表
-							<a href="javascript:;" id="btn-create-task" class="layui-btn layui-btn-sm layui-btn-primary" style="float:right"><i class="layui-icon">&#xe654;</i> 创建任务</a>
+							<span style="float:right">
+								<a href="javascript:;" id="btn-create-task" class="layui-btn layui-btn-sm layui-btn-primary"><i class="layui-icon">&#xe654;</i> 创建任务</a>
+							</span>
 						</div>
 						<div class="layui-card-body">
+							<!-- B4 筛选 -->
+							<form class="layui-form layui-form-pane" method="get" action="index.php" style="margin-bottom:10px;">
+								<input type="hidden" name="ai_task-index" value="1">
+								<div class="layui-inline">
+									<select name="site_id" lay-filter="filter-site">
+										<option value="0">全部站点</option>
+										{loop:$sites $site}
+										<option value="{$site['sid']}" {if:$filter_site==$site['sid']}selected{/if}>{$site['site_name']}</option>
+										{/loop}
+									</select>
+								</div>
+								<div class="layui-inline">
+									<select name="status" lay-filter="filter-status">
+										<option value="0">全部状态</option>
+										<option value="1" {if:$filter_status==1}selected{/if}>待处理</option>
+										<option value="2" {if:$filter_status==2}selected{/if}>处理中</option>
+										<option value="3" {if:$filter_status==3}selected{/if}>完成</option>
+										<option value="4" {if:$filter_status==4}selected{/if}>失败</option>
+									</select>
+								</div>
+								<div class="layui-inline">
+									<input type="text" name="keyword" value="{$keyword}" placeholder="Prompt 关键词" class="layui-input" style="width:160px;display:inline-block;">
+								</div>
+								<button type="submit" class="layui-btn layui-btn-sm layui-btn-primary">筛选</button>
+							</form>
+
 							<table class="layui-table" lay-skin="line">
 								<thead>
 									<tr>
 										<th>ID</th>
 										<th>站点</th>
 										<th>分类</th>
-										<th>总数</th>
-										<th>成功</th>
-										<th>失败</th>
+										<th>进度</th>
 										<th>状态</th>
 										<th>创建时间</th>
 										<th>操作</th>
@@ -55,14 +102,17 @@
 								</thead>
 								<tbody>
 									{loop:$tasks $task}
-									<tr>
+									<tr id="task-row-{$task['id']}">
 										<td>{$task['id']}</td>
-										<td>{$task['site_id']}</td>
+										<td>{@isset($site_names[$task['site_id']]) ? $site_names[$task['site_id']] : ('站点' . $task['site_id'])}</td>
 										<td>{$task['category_id']}</td>
-										<td>{$task['total']}</td>
-										<td>{$task['success']}</td>
-										<td>{$task['fail']}</td>
 										<td>
+											<span id="task-progress-{$task['id']}">{$task['success']}+{$task['fail']}/{$task['total']}</span>
+											<div class="layui-progress layui-progress-big" lay-filter="bar-{$task['id']}" style="width:110px;margin-top:3px;" lay-showpercent="true">
+												<div class="layui-progress-bar" lay-percent="{$task['percent']}%"></div>
+											</div>
+										</td>
+										<td id="task-status-{$task['id']}">
 											{if:$task['status']==0}<span class="layui-badge layui-bg-gray">待处理</span>{/if}
 											{if:$task['status']==1}<span class="layui-badge layui-bg-blue">处理中</span>{/if}
 											{if:$task['status']==2}<span class="layui-badge layui-bg-green">完成</span>{/if}
@@ -70,15 +120,16 @@
 										</td>
 										<td>{$task['created_at']}</td>
 										<td>
-											{if:$task['status']==0}
-											<a href="javascript:;" class="layui-btn layui-btn-xs" onclick="exec_task({$task['id']})">执行</a>
+											{if:$task['status'] != 2}
+											<a href="javascript:;" class="layui-btn layui-btn-xs" onclick="exec_task({$task['id']})">{if:$task['status']==0}执行{else}继续{/if}</a>
 											{/if}
+											<a href="javascript:;" class="layui-btn layui-btn-xs layui-btn-normal" onclick="detail_task({$task['id']})">详情</a>
 											<a href="javascript:;" class="layui-btn layui-btn-xs layui-btn-danger" onclick="del_task({$task['id']})">删除</a>
 										</td>
 									</tr>
 									{/loop}
 									{if:empty($tasks)}
-									<tr><td colspan="9" style="text-align:center">暂无任务数据</td></tr>
+									<tr><td colspan="7" style="text-align:center">暂无任务数据</td></tr>
 									{/if}
 								</tbody>
 							</table>
@@ -87,37 +138,67 @@
 					</div>
 				</div>
 
-				<!-- Tab 2：插件设置（自 settings.htm 合并） -->
+				<!-- Tab 2：插件设置 -->
 				<div class="layui-tab-item settings-wrap">
+					<!-- C8 站点级配置选择 -->
+					<div class="layui-card settings-card">
+						<div class="layui-card-header">
+							<span><i class="layui-icon">&#xe62c;</i> 配置作用范围</span>
+							<span class="header-tip">站点级配置覆盖全局配置（AI 调用时优先读取站点级）</span>
+						</div>
+						<div class="layui-card-body">
+							<select id="cfg-site-sel" lay-filter="cfg-site">
+								<option value="0">全局配置（所有站点默认）</option>
+								{loop:$sites $site}
+								<option value="{$site['sid']}" {if:$settings['cfg_site']==$site['sid']}selected{/if}>站点：{$site['site_name']} ({$site['domain']})</option>
+								{/loop}
+							</select>
+						</div>
+					</div>
+
 					<!-- AI API 设置 -->
 					<div class="layui-card settings-card">
 						<div class="layui-card-header">
 							<span><i class="layui-icon">&#xe62e;</i> AI API 设置</span>
-							<span class="header-tip">字段对应 ai_api_adapter.load_config()</span>
+							<span class="header-tip">配置保存至 ai_config 表（与 API 调用层同源）</span>
 						</div>
 						<div class="layui-card-body">
 							<form id="form-settings" class="layui-form" action="?ai_task-settings_post-ajax-1" method="post">
 								<input type="hidden" name="FORM_HASH" value="{@form_hash()}" />
+								<input type="hidden" name="cfg_site" id="cfg_site_input" value="{$settings['cfg_site']}" />
 								<div class="settings-grid">
+									<div class="layui-form-item">
+										<label class="layui-form-label">服务商</label>
+										<div class="layui-input-inline">
+											<select id="provider-sel" lay-filter="provider">
+												<option value="">-- 选择预填 --</option>
+												<option value="deepseek">DeepSeek</option>
+												<option value="openai">OpenAI</option>
+												<option value="qwen">通义千问</option>
+												<option value="glm">智谱 GLM</option>
+											</select>
+											<span class="field-hint">选择后自动预填下方地址与模型名（C10）</span>
+										</div>
+									</div>
 									<div class="layui-form-item">
 										<label class="layui-form-label">API Base URL</label>
 										<div class="layui-input-inline">
-											<input type="text" name="api_base_url" class="layui-input" value="{$settings['api_base_url']}" placeholder="https://api.deepseek.com/v1">
+											<input type="text" name="api_base_url" id="api_base_url" class="layui-input" value="{$settings['api_base_url']}" placeholder="https://api.deepseek.com/v1">
 											<span class="field-hint">兼容 OpenAI API 格式的聊天补全接口地址</span>
 										</div>
 									</div>
 									<div class="layui-form-item">
 										<label class="layui-form-label">API Key</label>
 										<div class="layui-input-inline">
-											<input type="text" name="api_key" class="layui-input" value="{$settings['api_key']}" placeholder="sk-xxx">
-											<span class="field-hint">留空时自动降级到本地模板库（ai_api_adapter fallback）</span>
+											<input type="password" name="api_key" id="api_key" class="layui-input" value="" placeholder="sk-xxx（已配置时留空表示不修改）" autocomplete="new-password">
+											<span class="field-hint">留空表示不修改已有 Key（A5 掩码保护）</span>
 										</div>
 									</div>
 									<div class="layui-form-item">
 										<label class="layui-form-label">模型名称</label>
 										<div class="layui-input-inline">
-											<input type="text" name="model" class="layui-input" value="{$settings['model']}" placeholder="deepseek-chat">
-											<span class="field-hint">如 deepseek-chat / gpt-4o-mini / claude-3-haiku</span>
+											<input type="text" name="model" id="model_name" class="layui-input" value="{$settings['model']}" placeholder="deepseek-chat">
+											<span class="field-hint">如 deepseek-chat / gpt-4o-mini / qwen-turbo / glm-4-flash</span>
 										</div>
 									</div>
 									<div class="layui-form-item">
@@ -146,34 +227,42 @@
 								<!-- 批量与重试 -->
 								<div class="settings-card" style="margin-top:16px;">
 									<div class="layui-card-header" style="padding-left:0;">
-										<span><i class="layui-icon">&#xe9aa;</i> 批量与重试</span>
+										<span><i class="layui-icon">&#xe9aa;</i> 批量与执行策略</span>
 										<span class="header-tip">控制 ai_task 任务执行参数</span>
 									</div>
 									<div class="settings-grid" style="margin-top:8px;">
 										<div class="layui-form-item">
 											<label class="layui-form-label">批量任务上限</label>
 											<div class="layui-input-inline">
-												<input type="number" name="batch_limit" value="{$settings['batch_limit']}" min="1" max="500" class="layui-input" form="form-settings">
-												<span class="field-hint">单次任务最多生成文章数（1-500），与 ai_task.batch_size 对齐</span>
+												<input type="number" name="batch_limit" value="{$settings['batch_limit']}" min="1" max="500" class="layui-input">
+												<span class="field-hint">单次任务最多生成文章数（1-500），创建任务时校验</span>
 											</div>
 										</div>
 										<div class="layui-form-item">
 											<label class="layui-form-label">自动重试次数</label>
 											<div class="layui-input-inline">
-												<input type="number" name="max_retries" value="{$settings['max_retries']}" min="0" max="10" class="layui-input" form="form-settings">
-												<span class="field-hint">429 限流与短错误的循环重试上限（0-10）</span>
+												<input type="number" name="max_retries" value="{$settings['max_retries']}" min="0" max="10" class="layui-input">
+												<span class="field-hint">429 限流指数退避与短错误重试上限（0-10）</span>
+											</div>
+										</div>
+										<div class="layui-form-item">
+											<label class="layui-form-label">URL耗尽自动建链</label>
+											<div class="layui-input-inline">
+												<input type="radio" name="no_url_generate" value="1" title="启用" {if:$settings['no_url_generate']}checked{/if}>
+												<input type="radio" name="no_url_generate" value="0" title="禁用" {if:empty($settings['no_url_generate'])}checked{/if}>
+												<span class="field-hint">启用后 URL 池耗尽时仍继续生成并自动创建 /{id}.html 映射（C6）</span>
 											</div>
 										</div>
 									</div>
 								</div>
-							</form>
 
-							<!-- 底部操作栏 -->
-							<div class="settings-actions">
-								<button type="submit" lay-submit lay-filter="form-settings" form="form-settings" class="layui-btn">
-									<i class="layui-icon">&#xe605;</i> 保存设置
-								</button>
-							</div>
+								<!-- 底部操作栏 -->
+								<div class="settings-actions">
+									<button type="button" lay-submit lay-filter="form-settings" class="layui-btn">
+										<i class="layui-icon">&#xe605;</i> 保存设置
+									</button>
+								</div>
+							</form>
 						</div>
 					</div>
 				</div>
@@ -183,13 +272,37 @@
 </div>
 <script>
 layui.use(['layer', 'element', 'form', 'miniTab'], function(){
-	var layer = layui.layer, element = layui.element, form = layui.form, miniTab = layui.miniTab;
+	var layer = layui.layer, element = layui.element, form = layui.form, miniTab = layui.miniTab, $ = layui.jquery;
 	form.render();
-	// 插件设置表单提交（自 settings.htm 合并）
+	element.render('progress');
+	// 旧设置入口重定向时自动切换 tab
+	{if:$tab=='settings'}
+	element.tabChange('main', 'settings');
+	{/if}
+	// C8：站点级配置切换（重载页面带 site 参数）
+	form.on('select(cfg-site)', function(data){
+		location.href = "index.php?ai_task-index-tab-settings&site=" + data.value;
+	});
+	// C10：供应商预填
+	var PROVIDERS = {
+		deepseek: {base: 'https://api.deepseek.com/v1', model: 'deepseek-chat'},
+		openai: {base: 'https://api.openai.com/v1', model: 'gpt-4o-mini'},
+		qwen: {base: 'https://dashscope.aliyuncs.com/compatible-mode/v1', model: 'qwen-turbo'},
+		glm: {base: 'https://open.bigmodel.cn/api/paas/v4', model: 'glm-4-flash'}
+	};
+	form.on('select(provider)', function(data){
+		var p = PROVIDERS[data.value];
+		if(p){
+			document.getElementById('api_base_url').value = p.base;
+			document.getElementById('model_name').value = p.model;
+		}
+	});
+	// 插件设置表单提交
 	form.on('submit(form-settings)', function () {
 		adminAjax.postform('#form-settings', function (data) {
 			var json = toJson(data);
 			layer.msg(json.msg, { icon: json.err == 0 ? 1 : 5 });
+			if(json.err == 0){ setTimeout(function(){ location.reload(); }, 1000); }
 		});
 		return false;
 	});
@@ -200,23 +313,66 @@ layui.use(['layer', 'element', 'form', 'miniTab'], function(){
 			title: "创建 AI 任务",
 		});
 	};
-	// 执行任务（行内操作，POST AJAX）
+	// B1：执行任务（单批 + 轮询进度 + 可取消）
+	window._exec_running = {};
 	window.exec_task = function(task_id){
-		layer.confirm('确定立即执行该任务？', {icon: 3, title: '执行确认'}, function(){
-			adminAjax.postd("index.php?ai_task-execute-ajax-1", {"task_id": task_id});
+		if(window._exec_running[task_id]) return;
+		window._exec_running[task_id] = true;
+		var loadIndex = layer.load(1, {shade: [0.1, '#000']});
+		var step = function(){
+			if(!window._exec_running[task_id]){ layer.close(loadIndex); return; }  // 用户取消
+			$.post("index.php?ai_task-execute-ajax-1", {"task_id": task_id}, function(data){
+				var json = toJson(data);
+				if(json.err == 2){  // 并发锁
+					layer.close(loadIndex);
+					layer.msg(json.msg, {icon: 5});
+					window._exec_running[task_id] = false;
+					return;
+				}
+				if(json.err != 0){
+					layer.close(loadIndex);
+					layer.msg(json.msg, {icon: 5});
+					window._exec_running[task_id] = false;
+					return;
+				}
+				// 更新进度 UI
+				$("#task-progress-" + task_id).text(json.success + "+" + json.fail + "/" + json.total);
+				layer.close(loadIndex);
+				if(json.done){
+					layer.msg(json.msg + '，任务完成', {icon: 1, time: 1500}, function(){
+						window._exec_running[task_id] = false;
+						location.reload();
+					});
+				}else{
+					// 继续下一批（间隔 1s，用户可点取消）
+					layer.msg(json.msg, {icon: 1, time: 800});
+					setTimeout(step, 1000);
+				}
+			});
+		};
+		layer.confirm('开始执行任务？（分批执行，可中途关闭弹窗停止）', {icon: 3, title: '执行确认'}, function(index){
+			layer.close(index);
+			step();
+		}, function(){
+			window._exec_running[task_id] = false;
 		});
 	};
-	// 删除任务（行内操作，POST AJAX）
+	// B4：任务详情
+	window.detail_task = function(task_id){
+		miniTab.openNewTabByIframe({
+			href: "index.php?ai_task-detail-task_id-" + task_id,
+			title: "任务详情 #" + task_id,
+		});
+	};
+	// 删除任务
 	window.del_task = function(task_id){
 		layer.confirm('确定删除该任务？', {icon: 3, title: '删除确认'}, function(){
-			adminAjax.postd("index.php?ai_task-delete-ajax-1", {"task_id": task_id, "FORM_HASH": "{@form_hash()}"});
+			adminAjax.postd("index.php?ai_task-delete-ajax-1", {"task_id": task_id, "FORM_HASH": "{@form_hash()}"}, function(){
+				location.reload();
+			});
 		});
 	};
-	// 旧设置入口重定向到 ?ai_task-index-tab-settings 时，自动切换到「插件设置」tab
-	{if:$tab=='settings'}
-	var $tabs = document.querySelectorAll('.layui-tab[lay-filter="main"] .layui-tab-title li');
-	if ($tabs.length > 1) { $tabs[1].click(); }
-	{/if}
+	// 旧设置入口重定向时自动切换 tab（已在上方 tabChange 处理）
 });
 </script>
 </body>
