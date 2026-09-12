@@ -201,7 +201,7 @@ class ai_task_control extends admin_control {
         }
 
         // 执行日志
-        $exec_log = trim((string)$task['exec_log']);
+        $exec_log = trim((string)(isset($task['exec_log']) ? $task['exec_log'] : ''));
         $log_lines = $exec_log === '' ? array() : explode("\n", $exec_log);
 
         // 该站点的 AI 生成文章（source 标识，最近 50 条）
@@ -326,5 +326,42 @@ class ai_task_control extends admin_control {
         }
 
         E(0, '插件设置已保存');
+    }
+
+    /**
+     * C4：定时执行入口（cron 调用）
+     * 用法：curl "http://yoursite/admin/index.php?ai_task-cron-key-xxx"
+     * 密钥 = ai_config 表中 api_key 的 md5，未配置 API Key 时拒绝
+     */
+    public function cron() {
+        $key = trim((string)R('key', 'R'));
+        if($key === '') $key = trim((string)R('key', 'G'));
+        $settings = $this->ai_task->get_settings(0);
+        $expected = md5($settings['api_key']);
+        if($settings['api_key'] === '' || $key !== $expected) {
+            exit(json_encode(array('err' => 1, 'msg' => '认证失败或未配置 API Key')));
+        }
+
+        $pre = $_ENV['_config']['db']['master']['tablepre'];
+        // 取所有待处理/处理中任务（status 0 或 1），每任务执行一批
+        $tasks = $this->db->fetch_all("SELECT id FROM `{$pre}ai_task` WHERE status IN (0,1) AND exec_lock=0 ORDER BY id ASC LIMIT 20");
+        if(empty($tasks)) {
+            exit(json_encode(array('err' => 0, 'msg' => '无待处理任务', 'processed' => 0)));
+        }
+
+        $results = array();
+        foreach($tasks as $t) {
+            $task_id = (int)$t['id'];
+            $r = $this->ai_task->execute($task_id);
+            $results[] = array(
+                'id' => $task_id,
+                'success' => isset($r['success']) ? $r['success'] : 0,
+                'fail' => isset($r['fail']) ? $r['fail'] : 0,
+                'done' => !empty($r['done']),
+                'locked' => !empty($r['locked']),
+            );
+        }
+
+        exit(json_encode(array('err' => 0, 'msg' => '执行完成', 'processed' => count($tasks), 'results' => $results)));
     }
 }

@@ -59,7 +59,7 @@ class ai_task extends model {
         $task = $this->get($task_id);
         if(!$task) return;
         $line = date('m-d H:i:s', $_ENV['_time']) . ' ' . $msg;
-        $old = trim((string)$task['exec_log']);
+        $old = trim((string)(isset($task['exec_log']) ? $task['exec_log'] : ''));
         $lines = $old === '' ? array() : explode("\n", $old);
         array_unshift($lines, $line);
         $lines = array_slice($lines, 0, 20);
@@ -173,11 +173,16 @@ class ai_task extends model {
             }
         }
 
-        // 构建 Prompt + 调用 AI
+        // 构建 Prompt + 调用 AI（C5：传分类名给 adapter 用于模板占位替换）
         $prompt = $this->build_prompt($task);
         $gen_count = empty($urls) ? $limit : count($urls);
         $adapter = new ai_api_adapter($site_id, $this->db);
-        $articles = $adapter->generate($prompt, $gen_count);
+        $cate_name = '游戏';
+        if(!empty($task['category_id'])) {
+            $cat = $this->category->get((int)$task['category_id']);
+            if($cat && !empty($cat['name'])) $cate_name = $cat['name'];
+        }
+        $articles = $adapter->generate($prompt, $gen_count, $cate_name);
 
         // B5：降级判定（未配置 API Key = 模板库内容）
         $cfg = $adapter->get_config();
@@ -276,6 +281,8 @@ class ai_task extends model {
             'exec_lock' => 0,
             'updated_at' => date('Y-m-d H:i:s', $_ENV['_time']),
         ));
+
+        $done = ($task_status == 2 || $task_status == 3);
 
         // 批量结果日志
         if($success > 0 || $fail > 0) {

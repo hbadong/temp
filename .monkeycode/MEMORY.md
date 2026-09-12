@@ -115,6 +115,7 @@ Entries discovered by the Agent during task execution should follow this format:
   - form_submit() 校验 `R('FORM_HASH','P') == form_hash()`，form_hash=`substr(md5(substr(time(),0,-5).auth_key),16)` 每 100 秒变一次。脚本里直接从页面抓 FORM_HASH 不可靠（页面多是内联调用函数），应直接按公式计算
   - template_manager 表：`le_cms_template`（主题登记）、`le_cms_block_config`（区块，block_save_post）、`le_cms_template_file`（文件版本）；主题同步 theme_sync_post 扫描 view/ 目录自动登记
   - ai_content_factory 的 ai_task：create_post（site_id/category_id/count/prompt_template）→ execute（调 AI API，失败被 try/catch 捕获返回 E(1) 但任务状态正常流转）→ delete；le_ai_task 无 count 列（是 batch_size/total/success/fail）
+  - C4 定时入口：`/admin/index.php?ai_task-cron-key-{md5(ai_config.api_key)}`，密钥取 `le_ai_config` 中 site_id=0 的 api_key。hook `admin_admin_control_construct_user_token_check_after.php` 对 control=ai_task+action=cron 伪造管理员登录态，错误密钥由 cron() 返回 JSON（不跳登录页）。改该 hook 后须 mv `runcache/admin_control/admin_control.class.php` 与 `ai_task_control.class.php`。根目录 `cron_ai.php` 仅提示改走此入口
 
 [LECMS 前台控制器站点匹配与 DEBUG hook 幂等]
 - Date: 2026-09-09
