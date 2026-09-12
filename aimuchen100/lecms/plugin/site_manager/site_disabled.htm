@@ -1,4 +1,4 @@
-<!-- 站点维护/禁用页面 -->
+<!-- 站点维护/禁用页面（提示语可由站点配置 maintenance_message 定制，默认通用文案） -->
 <!DOCTYPE html>
 <html>
 <head>
@@ -14,7 +14,7 @@
 <body>
     <div class="container">
         <h1>站点维护中</h1>
-        <p>该站点目前处于维护状态，请稍后再访问。</p>
+        <p>{$maintenance_message}</p>
         <p>如需帮助，请联系管理员。</p>
     </div>
 </body>

@@ -97,6 +97,20 @@ if($sid) {
         $site_config = json_decode($site['config'], true);
         if(!is_array($site_config)) $site_config = array();
 
+        // 站点级 SEO 覆写：seo_title/seo_keywords/seo_description 配置后覆盖全局 kv 值。
+        // 同时写入 _site_override 使 model 层（runtime_model::xget('cfg')）与控制器 _cfg 保持一致；
+        // _cfg['titles'] 由 base_control 构造在 hook 之后基于 seo_title 派生，此处覆写即可生效。
+        foreach(array('seo_title', 'seo_keywords', 'seo_description') as $_seo_k) {
+            if(isset($site_config[$_seo_k]) && $site_config[$_seo_k] !== '') {
+                $this->_cfg[$_seo_k] = $site_config[$_seo_k];
+                if(!isset($_ENV['_site_override']) || !is_array($_ENV['_site_override'])) {
+                    $_ENV['_site_override'] = array();
+                }
+                $_ENV['_site_override'][$_seo_k] = $site_config[$_seo_k];
+            }
+        }
+        unset($_seo_k);
+
         // 将站点配置注入到全局
         if(!defined('SITE_CONFIG')) {
             define('SITE_CONFIG', $site_config);
@@ -104,9 +118,13 @@ if($sid) {
 
         // 站点禁用检查
         if($site['status'] == 0) {
-            // 返回维护页面
+            // 返回维护页面（提示语可定制，默认给通用文案）
+            $maint_msg = isset($site_config['maintenance_message']) && $site_config['maintenance_message'] !== ''
+                ? $site_config['maintenance_message']
+                : '该站点目前处于维护状态，请稍后再访问。';
             $this->assign('cfg', $this->_cfg);
             $this->assign('site', $site);
+            $this->assign('maintenance_message', $maint_msg);
             $this->display('site_disabled.htm');
             exit();
         }

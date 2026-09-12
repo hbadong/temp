@@ -14,26 +14,12 @@ class site_control extends admin_control {
         $page = max(1, (int)R('page', 'R'));
         $pagenum = 15;
 
-        // 获取站点列表
-        $sites = $this->site_manager->get_list();
-        $total = count($sites);
-
-        $this->assign('sites', $sites);
-        $sites_json = json_encode(array_values($sites));
-        $this->assign('sites_json', $sites_json);
-        $this->assign('total', $total);
+        // 概览统计（总数/启用/禁用/删除）
+        $stats = $this->site_manager->count_status();
+        $this->assign('stats', $stats);
 
         // 插件设置（已合并为主页面第二个 tab）
-        $settings = $this->runtime->xget('site_manager_settings');
-        if (!$settings || !is_array($settings)) {
-            $settings = array(
-                'default_theme' => 'default',
-                'default_site_name' => '默认站点',
-                'wildcard_domain' => 1,
-                'domain_match' => 'wildcard',
-                'default_status' => 1,
-            );
-        }
+        $settings = $this->get_settings();
         $this->assign('settings', $settings);
 
         // 获取可用主题列表
@@ -48,16 +34,43 @@ class site_control extends admin_control {
     }
 
     /**
+     * 服务端分页数据源（layui table url 模式）
+     */
+    public function json_list() {
+        $page = max(1, (int)R('page', 'R'));
+        $limit = (int)R('limit', 'R');
+        if($limit < 1 || $limit > 100) $limit = 15;
+        $keyword = trim(R('keyword', 'R'));
+        $status = R('status', 'R');
+        if($status === '1') $status = 1;
+        elseif($status === '0') $status = 0;
+        elseif($status === '-1') $status = -1;
+        else $status = null;
+
+        list($list, $total) = $this->site_manager->get_list_page($status, $keyword, $page, $limit);
+        echo json_encode(array(
+            'code' => 0,
+            'msg' => '',
+            'count' => $total,
+            'data' => array_values($list),
+        ));
+        exit;
+    }
+
+    /**
      * 创建站点（GET=显示表单，POST=处理提交）
      */
     public function create() {
         if(form_submit()) {
             $site_name = trim(R('site_name', 'P'));
             $domain = trim(R('domain', 'P'));
-            $theme = trim(R('theme', 'P')) ?: 'default';
+            $theme = trim(R('theme', 'P'));
 
             if(empty($site_name) || empty($domain)) {
                 $this->message(1, '站点名称和域名不能为空');
+            }
+            if(!$this->valid_domain($domain)) {
+                $this->message(1, '域名格式不正确：仅允许字母、数字、点、连字符；通配符 * 仅能作为 *. 前缀');
             }
 
             $exists = $this->site_manager->get_by_domain($domain);
@@ -65,11 +78,17 @@ class site_control extends admin_control {
                 $this->message(1, '该域名已被使用');
             }
 
+            // 未指定主题时使用插件设置的默认主题（修复死配置：default_theme 此前未生效）
+            if($theme === '') {
+                $theme = $this->get_settings()['default_theme'];
+            }
+
             $this->site_manager->create(array(
                 'site_name' => $site_name,
                 'domain' => $domain,
                 'theme' => $theme,
                 'config' => array(),
+                'status' => $this->get_settings()['default_status'],
             ));
 
             $this->runtime->set('site_domain_map', null);
@@ -99,6 +118,9 @@ class site_control extends admin_control {
             if(empty($site_name) || empty($domain)) {
                 E(1, '站点名称和域名不能为空');
             }
+            if(!$this->valid_domain($domain)) {
+                E(1, '域名格式不正确：仅允许字母、数字、点、连字符；通配符 * 仅能作为 *. 前缀');
+            }
 
             $exists = $this->site_manager->get_by_domain($domain);
             if($exists && $exists['sid'] != $sid) {
@@ -110,6 +132,16 @@ class site_control extends admin_control {
 
             // 品牌设置
             foreach(array('logo_url', 'favicon_url', 'watermark_url') as $k) {
+                $v = trim(R($k, 'P'));
+                if($v === '') {
+                    unset($config[$k]);
+                } else {
+                    $config[$k] = $v;
+                }
+            }
+
+            // 站点级 SEO 与维护提示语：留空即删除该项
+            foreach(array('seo_title', 'seo_keywords', 'seo_description', 'maintenance_message') as $k) {
                 $v = trim(R($k, 'P'));
                 if($v === '') {
                     unset($config[$k]);
@@ -145,10 +177,14 @@ class site_control extends admin_control {
                 unset($config['theme_vars']);
             }
 
+            // 排序值（数值大的在前）
+            $sort_order = (int)R('sort_order', 'P');
+
             $this->site_manager->save($sid, array(
                 'site_name' => $site_name,
                 'domain' => $domain,
                 'theme' => $theme,
+                'sort_order' => $sort_order,
                 'config' => $config,
             ));
 
@@ -161,6 +197,8 @@ class site_control extends admin_control {
             $this->message(1, '站点不存在');
         }
         $this->assign('site', $site);
+        $sort_order_val = (int)(isset($site['sort_order']) ? $site['sort_order'] : 0);
+        $this->assign('sort_order', $sort_order_val);
 
         // 可视化配置回显数据
         $config_arr = $this->site_manager->get_config($sid);
@@ -171,6 +209,13 @@ class site_control extends admin_control {
             $brand[$k] = isset($config_arr[$k]) ? $config_arr[$k] : '';
         }
         $this->assign('config', $brand);
+
+        // 站点级 SEO 与维护提示语（不存在时给空串）
+        $seo = array();
+        foreach(array('seo_title', 'seo_keywords', 'seo_description', 'maintenance_message') as $k) {
+            $seo[$k] = isset($config_arr[$k]) ? $config_arr[$k] : '';
+        }
+        $this->assign('seo', $seo);
 
         // 启用主题勾选映射：主题名 => 'checked' 或 ''
         $themes = $this->get_available_themes();
@@ -192,6 +237,37 @@ class site_control extends admin_control {
         $this->assign('theme_vars', $theme_vars);
 
         $this->display();
+    }
+
+    /**
+     * 复制站点：克隆源站点的主题/品牌/CSS 变量/SEO 配置到新站点
+     */
+    public function copy() {
+        if(!form_submit()) {
+            $this->message(1, lang('submit_invalid'));
+        }
+        $sid = (int)R('sid', 'P');
+        $site_name = trim(R('site_name', 'P'));
+        $domain = trim(R('domain', 'P'));
+
+        if($sid <= 0) {
+            $this->message(1, '无效的站点ID');
+        }
+        if($site_name === '' || $domain === '') {
+            $this->message(1, '站点名称和域名不能为空');
+        }
+        if(!$this->valid_domain($domain)) {
+            $this->message(1, '域名格式不正确：仅允许字母、数字、点、连字符；通配符 * 仅能作为 *. 前缀');
+        }
+        if($this->site_manager->get_by_domain($domain)) {
+            $this->message(1, '该域名已被使用');
+        }
+        if(!$this->site_manager->copy_site($sid, $site_name, $domain)) {
+            $this->message(1, '源站点不存在');
+        }
+
+        $this->runtime->set('site_domain_map', null);
+        $this->message(0, '站点已复制', '?site-index');
     }
 
     /**
@@ -278,6 +354,50 @@ class site_control extends admin_control {
         $this->runtime->set('site_manager_settings', $settings);
         $this->runtime->save_changed();
         E(0, '插件设置已保存');
+    }
+
+    /**
+     * 读取插件设置（含默认值兜底与类型规范化）
+     * @return array
+     */
+    private function get_settings() {
+        $settings = $this->runtime->xget('site_manager_settings');
+        if(!$settings || !is_array($settings)) {
+            $settings = array(
+                'default_theme' => 'default',
+                'default_site_name' => '默认站点',
+                'wildcard_domain' => 1,
+                'domain_match' => 'wildcard',
+                'default_status' => 1,
+            );
+        }
+        $settings['default_theme'] = trim((string)(isset($settings['default_theme']) ? $settings['default_theme'] : 'default')) ?: 'default';
+        $settings['default_status'] = empty($settings['default_status']) ? 0 : 1;
+        return $settings;
+    }
+
+    /**
+     * 域名格式校验
+     *
+     * 允许字母/数字/点/连字符；通配符 * 仅允许作为 *. 前缀（泛解析）；
+     * 禁止协议头、端口、斜杠、空白等特殊字符——域名会直接输出到前台模板与
+     * 域名匹配逻辑，收紧规则同时规避存储型 XSS 与匹配歧义。
+     *
+     * @param string $domain
+     * @return bool
+     */
+    private function valid_domain($domain) {
+        $domain = trim($domain);
+        if($domain === '') return false;
+        // 协议头 / 特殊字符 / 连续点 / 首尾点
+        if(preg_match('~^[a-zA-Z][a-zA-Z0-9\+\.\-]*://~', $domain)) return false;
+        if(preg_match('~[/\s:@#%?&+=,;\\\\]~', $domain)) return false;
+        if(preg_match('~(\.\.|^\.|\.$)~', $domain)) return false;
+        if(strpos($domain, '*') !== false) {
+            // 通配符仅允许 *.xxx 前缀形式，且整个域名至少含一个点
+            return (bool)preg_match('~^\*\.[a-zA-Z0-9]([a-zA-Z0-9\-]*(\.[a-zA-Z0-9\-]+)*)?$~', $domain);
+        }
+        return (bool)preg_match('~^[a-zA-Z0-9]([a-zA-Z0-9\-]*(\.[a-zA-Z0-9\-]+)*)?$~', $domain);
     }
 
     /**

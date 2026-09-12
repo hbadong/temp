@@ -21,7 +21,13 @@
 					<div class="layui-form-item">
 						<label class="layui-form-label required">域名</label>
 						<div class="layui-input-inline">
-							<input type="text" name="domain" autocomplete="off" placeholder="请输入域名，如 example.com" class="layui-input" lay-verify="required" lay-reqtext="域名不能为空" />
+							<input type="text" name="domain" autocomplete="off" placeholder="请输入域名，如 example.com；泛解析 *.example.com" class="layui-input" lay-verify="required" lay-reqtext="域名不能为空" />
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label"></label>
+						<div class="layui-input-inline">
+							<div class="layui-form-mid" style="color:#999; font-size:12px; padding-left:0;">仅允许字母、数字、点、连字符；通配符 * 仅能作为 *. 前缀</div>
 						</div>
 					</div>
 					<div class="layui-form-item">

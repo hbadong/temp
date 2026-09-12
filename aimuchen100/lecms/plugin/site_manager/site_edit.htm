@@ -40,7 +40,43 @@
 					<div class="layui-form-item">
 						<label class="layui-form-label required">域名</label>
 						<div class="layui-input-inline">
-							<input type="text" name="domain" value="{$site['domain']}" autocomplete="off" placeholder="请输入域名，如 example.com" class="layui-input" lay-verify="required" lay-reqtext="域名不能为空" />
+							<input type="text" name="domain" value="{$site['domain']}" autocomplete="off" placeholder="请输入域名，如 example.com；泛解析 *.example.com" class="layui-input" lay-verify="required" lay-reqtext="域名不能为空" />
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">排序值</label>
+						<div class="layui-input-inline">
+							<input type="text" name="sort_order" value="{$sort_order}" autocomplete="off" placeholder="数值越大越靠前" class="layui-input" />
+						</div>
+					</div>
+
+					<fieldset class="layui-elem-field layui-field-title"><legend>SEO 设置</legend></fieldset>
+					<div class="se-two-col">
+						<div class="layui-form-item">
+							<label class="layui-form-label">SEO 标题</label>
+							<div class="layui-input-block" style="margin-left: 100px;">
+								<input type="text" name="seo_title" value="{$seo['seo_title']}" autocomplete="off" placeholder="站点级 SEO 标题，留空跟随全局" class="layui-input" />
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">SEO 关键词</label>
+							<div class="layui-input-block" style="margin-left: 100px;">
+								<input type="text" name="seo_keywords" value="{$seo['seo_keywords']}" autocomplete="off" placeholder="多个关键词用逗号分隔，留空跟随全局" class="layui-input" />
+							</div>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">SEO 描述</label>
+						<div class="layui-input-block" style="margin-left: 100px;">
+							<textarea name="seo_description" autocomplete="off" placeholder="站点级 SEO 描述，留空跟随全局" class="layui-textarea" style="min-height: 60px;">{$seo['seo_description']}</textarea>
+						</div>
+					</div>
+
+					<fieldset class="layui-elem-field layui-field-title"><legend>维护设置</legend></fieldset>
+					<div class="layui-form-item">
+						<label class="layui-form-label">维护提示语</label>
+						<div class="layui-input-block" style="margin-left: 100px;">
+							<textarea name="maintenance_message" autocomplete="off" placeholder="站点被禁用（维护）时前台展示的提示语，留空使用默认文案" class="layui-textarea" style="min-height: 60px;">{$seo['maintenance_message']}</textarea>
 						</div>
 					</div>
 

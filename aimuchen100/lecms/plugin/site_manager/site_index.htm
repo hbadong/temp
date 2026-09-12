@@ -14,6 +14,15 @@
 .settings-actions { position: sticky; bottom: 0; padding: 12px 0; background: #fff; border-top: 1px solid #eee; text-align: right; margin-top: 16px; box-shadow: 0 -2px 6px rgba(0,0,0,.03); z-index: 10; }
 .settings-actions .layui-btn + .layui-btn { margin-left: 8px; }
 .field-hint { display: block; color: #999; font-size: 12px; margin-top: 4px; }
+.stat-cards { display: flex; gap: 12px; margin: 0 0 16px; flex-wrap: wrap; }
+.stat-card { flex: 1; min-width: 110px; background: #fff; border: 1px solid #eee; border-radius: 4px; padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; box-shadow: 0 1px 3px rgba(0,0,0,.03); }
+.stat-card span { color: #999; font-size: 12px; }
+.stat-card b { font-size: 26px; font-weight: 700; line-height: 1; }
+.sc-total { color: #1E9FFF; }
+.sc-enable { color: #16b777; }
+.sc-disable { color: #ffb800; }
+.sc-deleted { color: #ff5722; }
+@media (max-width: 600px) { .stat-card { min-width: 45%; } }
 @media (max-width: 900px) { .settings-grid { grid-template-columns: 1fr; } }
 
 @media (max-width: 600px) {
@@ -35,15 +44,33 @@
 
 				<!-- Tab 1：站点列表（原页面内容） -->
 				<div class="layui-tab-item layui-show">
+					<!-- 概览统计卡片 -->
+					<div class="stat-cards">
+						<div class="stat-card"><span>站点总数</span><b class="sc-total">{$stats['total']}</b></div>
+						<div class="stat-card"><span>启用中</span><b class="sc-enable">{$stats['enabled']}</b></div>
+						<div class="stat-card"><span>已禁用</span><b class="sc-disable">{$stats['disabled']}</b></div>
+						<div class="stat-card"><span>已删除</span><b class="sc-deleted">{$stats['deleted']}</b></div>
+					</div>
 					<fieldset class="table-search-fieldset">
 						<legend>站点列表</legend>
 						<div>
-							<form class="layui-form layui-form-pane">
+							<form class="layui-form layui-form-pane" lay-filter="site-search-form">
 								<div class="layui-form-item">
 									<div class="layui-inline">
 										<label class="layui-form-label">站点名称</label>
 										<div class="layui-input-inline">
-											<input placeholder="请输入站点名称" autocomplete="off" type="text" class="layui-input" name="keyword" />
+											<input placeholder="请输入站点名称或域名" autocomplete="off" type="text" class="layui-input" name="keyword" />
+										</div>
+									</div>
+									<div class="layui-inline">
+										<label class="layui-form-label">状态</label>
+										<div class="layui-input-inline">
+											<select name="status">
+												<option value="">全部</option>
+												<option value="1">启用</option>
+												<option value="0">禁用</option>
+												<option value="-1">删除</option>
+											</select>
 										</div>
 									</div>
 									<div class="layui-inline">
@@ -58,6 +85,7 @@
 					<script type="text/html" id="toolbar">
 						<div class="layui-btn-container">
 							<button class="layui-btn layui-btn-sm layui-btn-normal" lay-event="add"><i class="layui-icon">&#xe608;</i> 添加站点</button>
+							<button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="batch_delete"><i class="layui-icon">&#xe640;</i> 批量删除</button>
 							<button class="layui-btn layui-btn-sm layui-btn-warm" id="btn-sync"><i class="layui-icon">&#xe669;</i> 一键同步</button>
 						</div>
 					</script>
@@ -161,28 +189,27 @@
 
 		table.render({
 			elem: '#data-table',
-			height: 'full-145',
+			url: 'index.php?site-json_list',
+			method: 'post',
+			where: {status: ''},
+			height: 'full-175',
 			toolbar: '#toolbar',
 			defaultToolbar: ['filter', 'exports', 'print'],
 			cellMinWidth: 50,
 			cols: [[
+				{type: 'checkbox', width: 45, align: 'center'},
 				{field: 'sid', title: 'ID', width: 80, sort: true, align: 'center'},
 				{field: 'site_name', title: '站点名称', minwidth: 120},
 				{field: 'domain', title: '域名', minwidth: 150},
 				{field: 'theme', title: '主题', width: 100, align: 'center'},
+				{field: 'sort_order', title: '排序', width: 70, align: 'center'},
 				{title: '状态', width: 100, templet: '#status-tpl', align: 'center'},
 				{field: 'created_at', title: '创建时间', width: 170, align: 'center'},
-				{title: '操作', width: 280, toolbar: '#toolbar-tpl', align: 'center'}
+				{title: '操作', width: 340, toolbar: '#toolbar-tpl', align: 'center'}
 			]],
 			limits: [10, 15, 20, 50],
 			limit: 15,
-			page: true,
-			data: []
-		});
-
-		var sites = {$sites_json};
-		table.reload('data-table', {
-			data: sites
+			page: true
 		});
 
 		// 打开站点创建/编辑页（独立标签页，与文章管理一致）
@@ -198,12 +225,14 @@
 		}
 
 		form.on('submit(site-search-btn)', function (data) {
-			var keyword = data.field.keyword.toLowerCase();
-			var filtered = sites.filter(function (item) {
-				return item.site_name.toLowerCase().indexOf(keyword) !== -1
-					|| item.domain.toLowerCase().indexOf(keyword) !== -1;
+			// 服务端搜索/筛选：携带 keyword 与 status 重新拉取分页数据
+			table.reload('data-table', {
+				where: {
+					keyword: data.field.keyword,
+					status: data.field.status || ''
+				},
+				page: {curr: 1}
 			});
-			table.reload('data-table', { data: filtered });
 			return false;
 		});
 
@@ -241,6 +270,24 @@
 				layer.confirm('确定删除该站点？', function () {
 					adminAjax.postd("index.php?site-delete-ajax-1", {sid: data.sid, FORM_HASH: '{@form_hash()}'});
 				});
+			} else if (obj.event === 'copy') {
+				layer.prompt({
+					formType: 0,
+					title: '输入新站点域名（主题/品牌/SEO 等配置将复制自「' + data.site_name + '」）',
+					value: ''
+				}, function (value, index) {
+					layer.close(index);
+					if (!value || !value.trim()) {
+						layer.msg('域名不能为空', {icon: 5});
+						return;
+					}
+					adminAjax.postd("index.php?site-copy-ajax-1", {
+						sid: data.sid,
+						site_name: data.site_name + '副本',
+						domain: value.trim(),
+						FORM_HASH: '{@form_hash()}'
+					});
+				});
 			}
 		});
 
@@ -269,6 +316,7 @@
 <script type="text/html" id="toolbar-tpl">
 	<div class="layui-btn-group">
 		<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+		<a class="layui-btn layui-btn-xs layui-btn-primary" lay-event="copy">复制</a>
 		{{# if (d.status == 1) { }}
 		<a class="layui-btn layui-btn-xs layui-btn-warm" lay-event="toggle">禁用</a>
 		{{# } else if (d.status == 0) { }}
