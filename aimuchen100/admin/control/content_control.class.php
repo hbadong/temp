@@ -5,6 +5,8 @@ class content_control extends admin_control{
     public $_mid = 2;
     public $_table = 'article';
     public $_name = '文章';
+    public $_use_site = FALSE;   // 文章模型启用站点归属（渐进式内容站点隔离）
+    public $_site_list = array();
 
     function __construct(){
         parent::__construct();
@@ -35,6 +37,20 @@ class content_control extends admin_control{
         $this->assign('mid',$this->_mid);
         $this->assign('table',$this->_table);
         $this->assign('name',$this->_name);
+
+        // 渐进式内容站点隔离：仅文章模型挂站点归属（其它自定义模型保持全局）
+        $this->_use_site = ($this->_table === 'article');
+        if($this->_use_site) {
+            $site_rows = $this->site_manager->get_list(1);
+            foreach((array)$site_rows as $sr) {
+                $this->_site_list[(int)$sr['sid']] = $sr['site_name'] . ' (' . $sr['domain'] . ')';
+            }
+            ksort($this->_site_list);
+        }
+        $cur_site_id = max(0, (int)R('site_id', 'R'));
+        $this->assign('use_site', $this->_use_site);
+        $this->assign('site_list', $this->_site_list);
+        $this->assign('site_id', $cur_site_id);
         // hook admin_content_control_construct_after.php
     }
 
@@ -69,6 +85,9 @@ class content_control extends admin_control{
         $cols .= "{field: 'tags_fmt', title: '".lang('tag')."'},";
         $cols .= "{field: 'flag_fmt', minwidth: 170, title: '".lang('flag')."', align: 'center'},";
         $cols .= "{field: 'author', width: 120, title: '".lang('author')."', align: 'center', edit: 'text'},";
+        if($this->_use_site){
+            $cols .= "{field: 'site_name', width: 160, title: '".lang('site')."', align: 'center'},";
+        }
         $cols .= "{field: 'date', width: 145, title: '".lang('date')."', align: 'center'},";
         // hook admin_content_control_index_cols_after.php
         $cols .= "{title: '".lang('opt')."', width: {$opt_width}, toolbar: '#currentTableBar', align: 'center'}";
@@ -103,6 +122,11 @@ class content_control extends admin_control{
         if( $keyword ){
             $where['title'] = array('LIKE'=>$keyword);
         }
+        // 站点筛选（渐进式内容站点隔离）
+        $site_id = isset( $_REQUEST['site_id'] ) ? (int)$_REQUEST['site_id'] : 0;
+        if( $this->_use_site && $site_id ){
+            $where['site_id'] = $site_id;
+        }
         // hook admin_content_control_get_list_where_after.php
         //数据量
         if( $where ){
@@ -132,6 +156,11 @@ class content_control extends admin_control{
             $this->cms_content->format($v, $this->_mid);
 
             $v['category'] = isset($allcategory[$v['cid']]) ? $allcategory[$v['cid']]['name'] : lang('unknown');
+
+            // 站点列显示
+            if($this->_use_site){
+                $v['site_name'] = isset($this->_site_list[$v['site_id']]) ? $this->_site_list[$v['site_id']] : '站点' . (int)$v['site_id'];
+            }
 
             //标签格式化显示
             $v['tags_fmt'] = '';
@@ -241,6 +270,7 @@ class content_control extends admin_control{
                 'seo_description'=>'',
                 'jumpurl'=>'',
                 'show_tpl'=>'',
+                'site_id'=>1,
                 'content'=>'',
                 'views'=>0,
                 'dateline'=>$_ENV['_time'],
@@ -263,6 +293,10 @@ class content_control extends admin_control{
         }else{
             // hook admin_content_control_add_post_before.php
 
+            // 渐进式内容站点隔离：新增内容记录站点归属
+            if($this->_use_site){
+                $_POST['site_id'] = max(1, (int)R('site_id', 'P'));
+            }
             $res = $this->cms_content->xadd($_POST, $this->_user, $this->_table);
             if( $res['err'] ){
                 E(1, $res['msg']);
@@ -319,6 +353,16 @@ class content_control extends admin_control{
             $input['dateline'] = form::get_text('dateline', $data['dateline'], '', 'id="dateline" placeholder="'.lang('date').'"');
         }
 
+        //渐进式内容站点隔离：站点归属下拉
+        if($this->_use_site){
+            $site_opt = '';
+            foreach($this->_site_list as $sid => $sname){
+                $sel = (int)$data['site_id'] == (int)$sid ? ' selected' : '';
+                $site_opt .= '<option value="' . (int)$sid . '"' . $sel . '>' . htmlspecialchars($sname) . '</option>';
+            }
+            $input['site_id'] = '<select name="site_id" class="layui-input" lay-search><option value="0">-- '.lang('select_site').' --</option>' . $site_opt . '</select>';
+        }
+
         // hook admin_content_control_get_input_after.php
         return $input;
     }
@@ -370,6 +414,10 @@ class content_control extends admin_control{
         }else{
             // hook admin_content_control_edit_post_before.php
 
+            //渐进式内容站点隔离：编辑时同步站点归属
+            if($this->_use_site){
+                $_POST['site_id'] = max(1, (int)R('site_id', 'P'));
+            }
             $res = $this->cms_content->xedit($_POST, $this->_user, $this->_table);
             if( $res['err'] ){
                 E(1, $res['msg']);

@@ -124,6 +124,7 @@ DROP TABLE IF EXISTS pre_cms_article;
 CREATE TABLE pre_cms_article (
   id int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '内容ID',
   cid int(10) unsigned NOT NULL DEFAULT '0' COMMENT '分类ID',
+  site_id int(11) NOT NULL DEFAULT '1' COMMENT '所属站点ID',
   title varchar(200) NOT NULL DEFAULT '' COMMENT '标题',
   alias varchar(80) NOT NULL DEFAULT '' COMMENT 'URL别名',
   tags varchar(500) NOT NULL DEFAULT '' COMMENT '标签 (json数组)',
@@ -148,7 +149,8 @@ CREATE TABLE pre_cms_article (
   PRIMARY KEY (id),
   KEY uid (uid),
   KEY cid_id (cid,id),
-  KEY cid_dateline (cid,dateline)
+  KEY cid_dateline (cid,dateline),
+  KEY site_id (site_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='文章主表';
 
 # 文章数据表 (大内容字段表 可根据 id 范围分区)

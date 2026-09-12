@@ -40,7 +40,9 @@ if(defined('SUB_DOMAIN_SITEIDS') && is_array(constant('SUB_DOMAIN_SITEIDS'))) {
     $sub_whitelist = constant('SUB_DOMAIN_SITEIDS');
 }
 require_once PLUGIN_PATH . 'site_manager/domain_match.func.php';
-$sid = match_domain_host($host, $site_map, $sub_whitelist);
+$site_settings = $this->runtime->xget('site_manager_settings');
+if(!$site_settings || !is_array($site_settings)) $site_settings = array();
+$sid = match_domain_host($host, $site_map, $sub_whitelist, $site_settings);
 
 // 结果处理
 if($sid) {

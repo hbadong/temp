@@ -137,6 +137,8 @@ return array(
     'isremote_failed_tip_2'=>'',
     'title_exists'=>'The title already exists',
     'admin_manage'=>'Admin Management',
+    'site'=>'Site',
+    'select_site'=>'Select site',
 
     // hook xiunophp_lang_en.php
 );

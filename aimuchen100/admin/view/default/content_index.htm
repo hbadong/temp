@@ -12,6 +12,19 @@
 								{$cidhtml}
 							</div>
 						</div>
+						{if:$use_site}
+						<div class="layui-inline">
+							<label class="layui-form-label">{lang:site}</label>
+							<div class="layui-input-inline">
+								<select name="site_id" lay-search>
+									<option value="0">{lang:all}</option>
+									{loop:$site_list $sname $sid}
+									<option value="{$sid}" {if:$site_id==$sid}selected{/if}>{$sname}</option>
+									{/loop}
+								</select>
+							</div>
+						</div>
+						{/if}
 						<div class="layui-inline">
 							<label class="layui-form-label">{lang:title}</label>
 							<div class="layui-input-inline">
@@ -66,9 +79,11 @@
 		var currPage = 1;
 
 		// 数据列
+		var defaultSite = "{$site_id}";
 		table.render({
 			elem: '#data-table',
 			url: 'index.php?content-get_list-mid-'+mid,
+			where: defaultSite ? {site_id: defaultSite} : {},
 			height: 'full-145',
 			toolbar: '#toolbar',
 			defaultToolbar: ['filter', 'exports', 'print'],
@@ -99,7 +114,8 @@
 				page: {curr: 1}
 				, where: {
 					cid: data.field.cid,
-					keyword: data.field.keyword
+					keyword: data.field.keyword,
+					site_id: data.field.site_id || 0
 				}
 			}, 'data');
 			return false;

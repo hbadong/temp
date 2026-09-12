@@ -311,6 +311,10 @@ class cms_content extends model {
             'seo_description' => isset($post['seo_description']) ? trim(strip_tags($post['seo_description'])) : '',
             'jumpurl' => isset($post['jumpurl']) ? trim($post['jumpurl']) : '',
         );
+        //渐进式内容站点隔离：文章表记录站点归属
+        if($this->table == 'cms_article'){
+            $cms_content['site_id'] = isset($post['site_id']) ? max(1, (int)$post['site_id']) : 1;
+        }
         if(isset($post['show_tpl']) && $post['show_tpl']){
             $cms_content['show_tpl'] = $post['show_tpl'];
         }
@@ -595,6 +599,10 @@ class cms_content extends model {
             'seo_description' => isset($post['seo_description']) ? trim(strip_tags($post['seo_description'])) : '',
             'jumpurl' => isset($post['jumpurl']) ? trim($post['jumpurl']) : '',
         );
+        //渐进式内容站点隔离：文章表同步站点归属
+        if($this->table == 'cms_article'){
+            $cms_content['site_id'] = isset($post['site_id']) ? max(1, (int)$post['site_id']) : (int)$olddata['site_id'];
+        }
         //发布时间 可以传递 2024-07-10 这种格式
         if( isset($post['dateline']) && $post['dateline'] ){
             if(!is_numeric($post['dateline'])){

@@ -137,6 +137,8 @@ return array(
     'isremote_failed_tip_2'=>'张',
     'title_exists'=>'标题已经存在',
     'admin_manage'=>'后台管理',
+    'site'=>'站点',
+    'select_site'=>'选择站点',
 
     // hook xiunophp_lang_zh_cn.php
 );

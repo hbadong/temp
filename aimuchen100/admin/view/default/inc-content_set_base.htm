@@ -52,6 +52,14 @@
 		{hook:admin_content_set_left_after.htm}
 	</div>
 	<div class="layui-col-md3">
+		{if:$use_site}
+		<div class="layui-form-item">
+			<label class="layui-form-label">{lang:site}</label>
+			<div class="layui-input-block">
+				{$input[site_id]}
+			</div>
+		</div>
+		{/if}
 		<div class="layui-form-item">
 			<label class="layui-form-label">{lang:thumb}</label>
 			<div class="layui-input-block">
