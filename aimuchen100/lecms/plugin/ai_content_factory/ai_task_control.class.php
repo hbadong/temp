@@ -99,6 +99,103 @@ class ai_task_control extends admin_control {
     }
 
     /**
+     * 统计看板：各站点生成量/成功率 + 近14天执行趋势
+     */
+    public function stats() {
+        $pre = $_ENV['_config']['db']['master']['tablepre'];
+        $sites = $this->site_manager->get_list();
+        $site_names = array();
+        foreach($sites as $site) {
+            $site_names[$site['sid']] = $site['site_name'];
+        }
+
+        // 各站点任务聚合（任务数/生成成功数/失败数）
+        $rows = $this->db->fetch_all("SELECT site_id, COUNT(*) t, SUM(success) ok, SUM(fail) f FROM `{$pre}ai_task` GROUP BY site_id");
+        $per_site = array();
+        foreach($rows as $r) {
+            $sid = (int)$r['site_id'];
+            $ok = (int)$r['ok'];
+            $f = (int)$r['f'];
+            $per_site[$sid] = array(
+                'site_id' => $sid,
+                'site_name' => isset($site_names[$sid]) ? $site_names[$sid] : ('站点#' . $sid),
+                'tasks' => (int)$r['t'],
+                'ok' => $ok,
+                'fail' => $f,
+                'total_gen' => $ok + $f,
+                'rate' => ($ok + $f) > 0 ? round($ok / ($ok + $f) * 100) : 0,
+            );
+        }
+        // 各站点已生成文章数（来源标记）
+        $arows = $this->db->fetch_all("SELECT site_id, COUNT(*) c FROM `{$pre}cms_article` WHERE source='AI内容工厂' GROUP BY site_id");
+        foreach($arows as $r) {
+            $sid = (int)$r['site_id'];
+            if(isset($per_site[$sid])) $per_site[$sid]['articles'] = (int)$r['c'];
+        }
+        // 有文章但无任务的站点补齐行
+        foreach($arows as $r) {
+            $sid = (int)$r['site_id'];
+            if(!isset($per_site[$sid])) {
+                $per_site[$sid] = array(
+                    'site_id' => $sid,
+                    'site_name' => isset($site_names[$sid]) ? $site_names[$sid] : ('站点#' . $sid),
+                    'tasks' => 0, 'ok' => 0, 'fail' => 0, 'total_gen' => 0, 'rate' => 0,
+                    'articles' => (int)$r['c'],
+                );
+            }
+        }
+        foreach($per_site as &$ps) { if(!isset($ps['articles'])) $ps['articles'] = 0; }
+        unset($ps);
+        // 站点名称排序（按 sid）
+        ksort($per_site);
+        $per_site = array_values($per_site);
+
+        // 近14天趋势（按任务创建日期聚合）
+        $trend_rows = $this->db->fetch_all("SELECT DATE(created_at) d, COUNT(*) t, SUM(success) ok, SUM(fail) f FROM `{$pre}ai_task` WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL 13 DAY) GROUP BY DATE(created_at)");
+        $trend = array();
+        foreach($trend_rows as $r) {
+            $trend[] = array(
+                'date' => $r['d'],
+                'tasks' => (int)$r['t'],
+                'ok' => (int)$r['ok'],
+                'fail' => (int)$r['f'],
+            );
+        }
+        // 补齐无任务的日期，保证连续
+        $by_date = array();
+        foreach($trend as $t) $by_date[$t['date']] = $t;
+        $filled = array();
+        for($i = 13; $i >= 0; $i--) {
+            $d = date('Y-m-d', strtotime("-{$i} day"));
+            $base = isset($by_date[$d]) ? $by_date[$d] : array('date' => $d, 'tasks' => 0, 'ok' => 0, 'fail' => 0);
+            $base['rate'] = ((int)$base['ok'] + (int)$base['fail']) > 0 ? round((int)$base['ok'] / ((int)$base['ok'] + (int)$base['fail']) * 100) : 0;
+            $filled[] = $base;
+        }
+        $trend = $filled;
+
+        // 总览：与 C9 一致
+        $stats = array('total' => 0, 'pending' => 0, 'running' => 0, 'done' => 0, 'failed' => 0, 'articles' => 0, 'gen_ok' => 0, 'gen_fail' => 0);
+        $row = $this->db->fetch_first("SELECT COUNT(*) c, SUM(status=0) p, SUM(status=1) r, SUM(status=2) d, SUM(status=3) f, SUM(success) ok, SUM(fail) ff FROM `{$pre}ai_task`");
+        if($row) {
+            $stats['total'] = (int)$row['c'];
+            $stats['pending'] = (int)$row['p'];
+            $stats['running'] = (int)$row['r'];
+            $stats['done'] = (int)$row['d'];
+            $stats['failed'] = (int)$row['f'];
+            $stats['gen_ok'] = (int)$row['ok'];
+            $stats['gen_fail'] = (int)$row['ff'];
+        }
+        $srow = $this->db->fetch_first("SELECT COUNT(*) c FROM `{$pre}cms_article` WHERE source='AI内容工厂'");
+        $stats['articles'] = $srow ? (int)$srow['c'] : 0;
+        $stats['overall_rate'] = ($stats['gen_ok'] + $stats['gen_fail']) > 0 ? round($stats['gen_ok'] / ($stats['gen_ok'] + $stats['gen_fail']) * 100) : 0;
+
+        $this->assign_value('stats', $stats);
+        $this->assign_value('per_site', $per_site);
+        $this->assign_value('trend', $trend);
+        $this->display('task_stats.htm');
+    }
+
+    /**
      * 创建任务表单（A4：分类下拉）
      */
     public function create() {

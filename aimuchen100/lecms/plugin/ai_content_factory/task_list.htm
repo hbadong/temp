@@ -58,6 +58,7 @@
 						<div class="layui-card-header">
 							AI 任务列表
 							<span style="float:right">
+								<a href="javascript:;" id="btn-open-stats" class="layui-btn layui-btn-sm layui-btn-normal"><i class="layui-icon">&#xe62c;</i> 统计看板</a>
 								<a href="javascript:;" id="btn-create-task" class="layui-btn layui-btn-sm layui-btn-primary"><i class="layui-icon">&#xe654;</i> 创建任务</a>
 							</span>
 						</div>
@@ -388,6 +389,13 @@ layui.use(['layer', 'element', 'form', 'miniTab'], function(){
 			title: "任务详情 #" + task_id,
 		});
 	};
+	// 统计看板
+	$('#btn-open-stats').on('click', function(){
+		miniTab.openNewTabByIframe({
+			href: "index.php?ai_task-stats-1",
+			title: "AI 统计看板",
+		});
+	});
 	// 删除任务
 	window.del_task = function(task_id){
 		layer.confirm('确定删除该任务？', {icon: 3, title: '删除确认'}, function(){

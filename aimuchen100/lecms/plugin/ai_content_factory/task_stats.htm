@@ -1,0 +1,108 @@
+{inc:header.htm}
+<style>
+    .stat-cards { display: flex; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+    .stat-card { flex: 1; min-width: 120px; background: #f8f9fb; border-radius: 6px; padding: 10px 14px; }
+    .stat-card .num { font-size: 22px; font-weight: 700; color: #1E9FFF; }
+    .stat-card .lbl { font-size: 12px; color: #888; margin-top: 2px; }
+    .trend-bar { background: #e6e9ef; border-radius: 3px; height: 10px; width: 100%; overflow: hidden; }
+    .trend-bar i { display: block; height: 100%; background: #16baaa; border-radius: 3px; }
+    .trend-fill { min-width: 180px; }
+</style>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+        <div class="layui-card">
+            <div class="layui-card-header">统计看板</div>
+            <div class="layui-card-body">
+                <!-- 总览卡片 -->
+                <div class="stat-cards">
+                    <div class="stat-card"><div class="num">{$stats['articles']}</div><div class="lbl">已生成文章</div></div>
+                    <div class="stat-card"><div class="num">{$stats['gen_ok']}</div><div class="lbl">生成成功数</div></div>
+                    <div class="stat-card"><div class="num" style="color:#ff5722">{$stats['gen_fail']}</div><div class="lbl">生成失败数</div></div>
+                    <div class="stat-card"><div class="num" style="color:#16baaa">{$stats['overall_rate']}%</div><div class="lbl">总体成功率</div></div>
+                    <div class="stat-card"><div class="num">{$stats['total']}</div><div class="lbl">任务总数</div></div>
+                    <div class="stat-card"><div class="num">{$stats['pending']}</div><div class="lbl">待处理</div></div>
+                    <div class="stat-card"><div class="num">{$stats['running']}</div><div class="lbl">处理中</div></div>
+                    <div class="stat-card"><div class="num">{$stats['done']}</div><div class="lbl">已完成</div></div>
+                    <div class="stat-card"><div class="num" style="color:#ff5722">{$stats['failed']}</div><div class="lbl">失败任务</div></div>
+                </div>
+
+                <fieldset class="layui-elem-field" style="margin-top:16px;">
+                    <legend>各站点生成量 / 成功率</legend>
+                    <div class="layui-field-box">
+                        <table class="layui-table">
+                            <thead>
+                                <tr>
+                                    <th>站点</th>
+                                    <th>任务数</th>
+                                    <th>生成成功</th>
+                                    <th>生成失败</th>
+                                    <th>已生成文章</th>
+                                    <th>成功率</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {if:$per_site}
+                                {loop:$per_site $s}
+                                <tr>
+                                    <td>{$s['site_name']}</td>
+                                    <td>{$s['tasks']}</td>
+                                    <td style="color:#16baaa">{$s['ok']}</td>
+                                    <td style="color:#ff5722">{$s['fail']}</td>
+                                    <td>{$s['articles']}</td>
+                                    <td>
+                                        <div style="display:flex;align-items:center;gap:8px;">
+                                            <div class="trend-bar trend-fill"><i style="width:{@$s['rate']}%"></i></div>
+                                            <span>{$s['rate']}%</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {/loop}
+                                {else}
+                                <tr><td colspan="6">暂无数据</td></tr>
+                                {/if}
+                            </tbody>
+                        </table>
+                    </div>
+                </fieldset>
+
+                <fieldset class="layui-elem-field">
+                    <legend>近 14 天执行趋势</legend>
+                    <div class="layui-field-box">
+                        <table class="layui-table">
+                            <thead>
+                                <tr>
+                                    <th>日期</th>
+                                    <th>任务数</th>
+                                    <th>生成成功</th>
+                                    <th>生成失败</th>
+                                    <th>趋势（成功量占比）</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {if:$trend}
+                                {loop:$trend $t}
+                                <tr>
+                                    <td>{$t['date']}</td>
+                                    <td>{$t['tasks']}</td>
+                                    <td style="color:#16baaa">{$t['ok']}</td>
+                                    <td style="color:#ff5722">{$t['fail']}</td>
+                                    <td>
+                                        <div style="display:flex;align-items:center;gap:8px;">
+                                            <div class="trend-bar trend-fill"><i style="width:{@$t['rate']}%"></i></div>
+                                            <span>{$t['rate']}%</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {/loop}
+                                {else}
+                                <tr><td colspan="5">暂无数据</td></tr>
+                                {/if}
+                            </tbody>
+                        </table>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+    </div>
+</div>
+{inc:footer.htm}
