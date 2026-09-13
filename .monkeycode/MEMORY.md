@@ -186,3 +186,15 @@ Entries discovered by the Agent during task execution should follow this format:
   - 模板引擎（xiunophp/lib/view.class.php tpl_process）**不支持 `{php:echo ...}` 标签**——正则只认 `{php}...{/php}` 块（替换为 `<?php ... ?>`）和 `{@expr}`（替换为 `<?php echo(expr); ?>`）。误写 `{php:...}` 会原样输出到页面
   - `{loop:$arr $v $k}` 编译为 `foreach($arr as $k=>&$v)`：**第一个变量是值、第二个是键**（与常见直觉相反）。统计页误写 `{loop:$arr $k $v}` 导致值/键互换，`$k['field']` 对字符串偏移报 `Illegal string offset`
   - `$this->assign($k, &$v)` 引用传参不能传方法调用返回值（`assign('x', $this->foo())` 报 `Only variables should be passed by reference`，每页请求刷一次 log），必须先存变量再传；这是继 MEMORY 中 assign 不能传字面量/三目之后再次验证
+
+[LECMS 插件改动后的缓存重建与验证流程]
+- Date: 2026-09-13
+- Context: Discovered by Agent while 修复 ai_content_factory 插件 B1-B7 并合入 C4/C5 功能
+- Category: Build Methods
+- Instructions:
+  - 插件**模型**改动后，`core::model()`（core.class.php:428）只在 DEBUG 或缓存文件不存在时重编译。非 DEBUG 环境重建模型缓存用 `/tmp/opencode/rebuild_model2.php`（define('DEBUG',1) 强制重写 `runcache/lecms_model/{name}_model.class.php`）
+  - 插件**控制器**编译走 `core::process_all()`（rebuild_control.php），产物写到 `runcache/lecms_control/`，但运行时真实目录是 `runcache/admin_control/`（RUNTIME_CONTROL = RUNTIME_PATH.APP_NAME.'_control/'，APP_NAME=admin），必须 `cp` 同步到 `runcache/admin_control/` 才生效
+  - 插件 **hook 文件**（`plugin/X/hook/xxx.php`）在控制器/模型编译时被 `process_hook` 内联进方法体（如 `admin_control.class.php:26` 的 `user_token_check_after` 钩子已确认存在）。改 hook 后同样需重建对应控制器缓存，且被内联的 hook 代码内**禁止**裸 `return;`（会提前终止宿主方法）
+  - 插件**模板**改动后 rverify 编译：用 `/tmp/opencode/test_tpl.php`（反射调用私有 `view::tpl_process` 编译 + extract 变量渲染）核对变量输出与 JS 函数；不在模板里写 `{*...*}` 扩展语法（引擎只认 `{inc:}`/`{php}...{/php}`/`{@expr}`/`{if:}`/`{loop:}`）
+  - PB 后台登录才可访问的页面不能直接 curl 验证渲染，需用模板编译脚本离岸验证；若验证发现 GET 直接返回 79 字节 `<script>top.location` 属正常的未登录跳转
+  - 定时执行入口（C4）设计：hook 伪造 uid=1 的 user 数组让 `user_token_check_after` 通过，控制器内再用 `md5(api_key)` 校验，调用式 `GET /admin/index.php?ai_task-cron-key-{md5}`
