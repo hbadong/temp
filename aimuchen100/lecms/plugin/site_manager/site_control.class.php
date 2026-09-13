@@ -364,6 +364,118 @@ class site_control extends admin_control {
     }
 
     /**
+     * 行内编辑排序值（layui table 单元格编辑）
+     */
+    public function set_sort() {
+        if(!form_submit()) {
+            E(1, lang('submit_invalid'));
+        }
+        $sid = (int)R('sid', 'P');
+        $sort_order = (int)R('sort_order', 'P');
+        if($sid <= 0) {
+            E(1, '无效的站点ID');
+        }
+        if(!$this->site_manager->get($sid)) {
+            E(1, '站点不存在');
+        }
+        $this->site_manager->save($sid, array('sort_order' => $sort_order));
+        E(0, '排序已更新');
+    }
+
+    /**
+     * 导出站点配置（JSON 下载，不含软删除记录）
+     */
+    public function export() {
+        $sites = $this->site_manager->get_list(null, true);
+        $rows = array();
+        foreach($sites as $s) {
+            if((int)$s['status'] === -1) continue;
+            $rows[] = array(
+                'site_name' => isset($s['site_name']) ? $s['site_name'] : '',
+                'domain' => isset($s['domain']) ? $s['domain'] : '',
+                'theme' => isset($s['theme']) ? $s['theme'] : 'default',
+                'sort_order' => (int)(isset($s['sort_order']) ? $s['sort_order'] : 0),
+                'status' => (int)$s['status'],
+                'config' => $this->site_manager->get_config($s['sid']),
+            );
+        }
+        header('Content-Type: application/json; charset=utf-8');
+        header('Content-Disposition: attachment; filename="site_export_' . date('YmdHis') . '.json"');
+        echo json_encode(array(
+            'export_time' => date('Y-m-d H:i:s', $_ENV['_time']),
+            'sites' => $rows,
+        ), JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+        exit;
+    }
+
+    /**
+     * 导入站点配置（JSON 文本，按域名 upsert：
+     * 已存在任意状态的同域名记录则更新配置，否则新建）
+     */
+    public function import_post() {
+        if(!form_submit()) {
+            E(1, lang('submit_invalid'));
+        }
+        $json = trim(R('import_json', 'P'));
+        if($json === '') {
+            E(1, '导入内容不能为空');
+        }
+        $data = json_decode($json, true);
+        if(!is_array($data) || !isset($data['sites']) || !is_array($data['sites'])) {
+            E(1, 'JSON 格式无效：需要包含 sites 数组');
+        }
+
+        $created = $updated = $skipped = 0;
+        foreach($data['sites'] as $row) {
+            if(!is_array($row)) { $skipped++; continue; }
+            $site_name = isset($row['site_name']) ? trim($row['site_name']) : '';
+            $domain = isset($row['domain']) ? trim($row['domain']) : '';
+            if($site_name === '' || $domain === '' || !$this->valid_domain($domain)) {
+                $skipped++;
+                continue;
+            }
+
+            // 域名唯一键：任意状态（含软删除）的同域名记录一律走更新分支，避免撞唯一键
+            $exists_rows = $this->site_manager->find_fetch(array('domain' => $domain));
+            $exists = !empty($exists_rows) ? reset($exists_rows) : array();
+
+            $cfg = isset($row['config']) && is_array($row['config']) ? $row['config'] : array();
+            $theme = isset($row['theme']) ? trim($row['theme']) : 'default';
+            $sort_order = (int)(isset($row['sort_order']) ? $row['sort_order'] : 0);
+
+            if($exists) {
+                // 已存在：更新名称/主题/配置/排序；status 仅在导入值为 0/1 时恢复，
+                // 软删除记录被同名域名导入时自动恢复启用
+                $status = (int)$exists['status'];
+                $new_status = isset($row['status']) ? (int)$row['status'] : $status;
+                if($status === -1 && $new_status === -1) {
+                    $new_status = 1;    // 导入动作视为恢复
+                }
+                $this->site_manager->save($exists['sid'], array(
+                    'site_name' => $site_name,
+                    'theme' => $theme,
+                    'sort_order' => $sort_order,
+                    'config' => $cfg,
+                    'status' => $new_status,
+                ));
+                $updated++;
+            } else {
+                $this->site_manager->create(array(
+                    'site_name' => $site_name,
+                    'domain' => $domain,
+                    'theme' => $theme,
+                    'sort_order' => $sort_order,
+                    'config' => $cfg,
+                    'status' => isset($row['status']) ? (int)$row['status'] : 1,
+                ));
+                $created++;
+            }
+        }
+        $this->runtime->set('site_domain_map', null);
+        E(0, "导入完成：新建 {$created}，更新 {$updated}，跳过 {$skipped}");
+    }
+
+    /**
      * 切换站点状态
      */
     public function toggle() {

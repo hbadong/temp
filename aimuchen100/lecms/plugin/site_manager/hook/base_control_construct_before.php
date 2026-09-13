@@ -76,10 +76,15 @@ if($sid) {
         // 1) 站点配置了 mobile_theme：手机访问用站点手机主题（PC 端仍用站点 theme）
         // 2) 站点未配置 mobile_theme：不覆写 theme，保留 runtime_model 全局
         //    open_mobile_view/mobile_view 的手机模板切换行为（若全局未开，则手机也走 PC 主题）
+        // 手机主题同样受「启用主题」白名单约束（与 template_manager 对 PC 主题的校验对应）：
+        // 白名单非空且手机主题不在范围内时视为无效，回退跟随全局
         $is_mobile = (function_exists('is_mobile') && is_mobile() == 1);
+        $enabled_list = isset($site_config['enabled_themes']) && is_array($site_config['enabled_themes']) ? $site_config['enabled_themes'] : array();
         $site_theme = $site['theme'];
         if($is_mobile && isset($site_config['mobile_theme']) && $site_config['mobile_theme'] !== '') {
-            $site_theme = $site_config['mobile_theme'];
+            if(empty($enabled_list) || in_array($site_config['mobile_theme'], $enabled_list, true)) {
+                $site_theme = $site_config['mobile_theme'];
+            }
         }
         if(!empty($site_theme) && $site_theme !== 'default') {
             $this->_cfg['theme'] = $site_theme;
@@ -108,13 +113,13 @@ if($sid) {
                 'weburl'    => $this->_cfg['weburl'],
             );
 
-            // 手机主题：若站点配置了 mobile_theme 且当前是手机访问，
+            // 手机主题：若站点配置了 mobile_theme（且通过白名单校验）且当前是手机访问，
             // model 层 xget('cfg') 也应按站点手机主题解析（否则 model 生成的链接/主题
             // 仍指向全局 mobile_view 或 PC 主题）。注意运行时覆写是最后应用（runtime_model
             // 先做全局 mobile_view 切换，再应用 _site_override），因此这里必须覆写。
-            if($is_mobile && isset($site_config['mobile_theme']) && $site_config['mobile_theme'] !== '') {
-                $_ENV['_site_override']['theme'] = $site_config['mobile_theme'];
-                $_ENV['_site_override']['tpl'] = (isset($this->_cfg['webdir']) ? $this->_cfg['webdir'] : '/').'view/'.$site_config['mobile_theme'].'/';
+            if($is_mobile && $site_theme !== $site['theme']) {
+                $_ENV['_site_override']['theme'] = $site_theme;
+                $_ENV['_site_override']['tpl'] = (isset($this->_cfg['webdir']) ? $this->_cfg['webdir'] : '/').'view/'.$site_theme.'/';
             }
         }
 

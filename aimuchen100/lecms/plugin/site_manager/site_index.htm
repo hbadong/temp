@@ -92,6 +92,8 @@
 							<button class="layui-btn layui-btn-sm layui-btn-normal" lay-event="add"><i class="layui-icon">&#xe608;</i> 添加站点</button>
 							<button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="batch_delete"><i class="layui-icon">&#xe640;</i> 批量删除</button>
 							<button class="layui-btn layui-btn-sm layui-btn-warm" id="btn-sync"><i class="layui-icon">&#xe669;</i> 一键同步</button>
+							<button class="layui-btn layui-btn-sm layui-btn-primary" lay-event="export"><i class="layui-icon">&#xe601;</i> 导出</button>
+							<button class="layui-btn layui-btn-sm layui-btn-primary" lay-event="import"><i class="layui-icon">&#xe61c;</i> 导入</button>
 						</div>
 					</script>
 				</div>
@@ -228,7 +230,7 @@
 				{field: 'site_name', title: '站点名称', minwidth: 140},
 				{title: '域名', minwidth: 170, templet: '#domain-tpl'},
 				{title: '主题', width: 130, align: 'center', templet: '#theme-tpl'},
-				{field: 'sort_order', title: '排序', width: 70, align: 'center'},
+				{field: 'sort_order', title: '排序', width: 80, align: 'center', edit: 'text'},
 				{title: '状态', width: 90, templet: '#status-tpl', align: 'center'},
 				{field: 'created_at', title: '创建时间', width: 170, align: 'center'},
 				{title: '操作', width: 190, toolbar: '#toolbar-tpl', align: 'center'}
@@ -277,6 +279,31 @@
 					var id_arr = data.map(function (item) { return item.sid; });
 					adminAjax.postd("index.php?site-batch_delete-ajax-1", { id_arr: id_arr });
 				});
+			} else if (obj.event === 'export') {
+				window.location.href = 'index.php?site-export';
+			} else if (obj.event === 'import') {
+				layer.open({
+					type: 1,
+					title: '导入站点配置（JSON）',
+					area: ['560px', '420px'],
+					content: $('#import-tpl').html(),
+					btn: ['导入', '取消'],
+					btn1: function (index) {
+						var txt = $('#import-json-textarea').val();
+						if (!txt || !txt.trim()) {
+							layer.msg('请粘贴导出的 JSON 内容', {icon: 5});
+							return;
+						}
+						adminAjax.postd("index.php?site-import_post-ajax-1", {import_json: txt}, function (json) {
+							var res = toJson(json);
+							layer.msg(res.msg || (res.err ? '导入失败' : '导入成功'), {icon: res.err ? 5 : 1});
+							if (!res.err) {
+								layer.close(index);
+								table.reload('data-table');
+							}
+						});
+					}
+				});
 			}
 		});
 
@@ -284,6 +311,27 @@
 		document.getElementById('btn-sync').addEventListener('click', function () {
 			layer.confirm('确定同步全部站点？', {icon: 3, title: '确认'}, function(){
 				adminAjax.postd("index.php?site-sync-ajax-1", {FORM_HASH: '{@form_hash()}'});
+			});
+		});
+
+		// 行内编辑排序值：field=sort_order 时提交 set_sort，失败回滚重载
+		table.on('edit(data-table-filter)', function (obj) {
+			if (obj.field !== 'sort_order') return;
+			var sid = obj.data.sid;
+			var val = parseInt(obj.value, 10);
+			if (isNaN(val)) {
+				layer.msg('排序值必须为数字', {icon: 5});
+				table.reload('data-table');
+				return;
+			}
+			adminAjax.postd("index.php?site-set_sort-ajax-1", {sid: sid, sort_order: val}, function (json) {
+				var res = toJson(json);
+				if (res.err) {
+					layer.msg(res.msg, {icon: 5});
+				} else {
+					layer.msg(res.msg, {icon: 1, time: 800});
+				}
+				table.reload('data-table');
 			});
 		});
 
@@ -334,6 +382,13 @@
 			return false;
 		});
 	});
+</script>
+
+<script type="text/html" id="import-tpl">
+	<div style="padding: 16px;">
+		<div style="color:#999; font-size:12px; margin-bottom:8px;">粘贴「导出」生成的 JSON 内容；按域名匹配：已存在则更新配置（软删除记录将被恢复），不存在则新建。</div>
+		<textarea id="import-json-textarea" class="layui-textarea" style="height: 220px;" placeholder='{"export_time":"...","sites":[{"site_name":"...","domain":"example.com","theme":"default","sort_order":0,"status":1,"config":{}}]}'></textarea>
+	</div>
 </script>
 
 <script type="text/html" id="domain-tpl">

@@ -21,6 +21,10 @@
 .tv-row .tv-val { width: 32%; flex: 1; }
 .tv-row .tv-color-preview { width: 22px; height: 22px; border-radius: 4px; border: 1px solid #e2e2e2; flex-shrink: 0; cursor: pointer; }
 .tv-del { flex-shrink: 0; }
+/* SEO 字数统计 */
+.seo-count { display: block; font-size: 12px; color: #999; margin-top: 2px; line-height: 18px; }
+.seo-count.over { color: #ff5722; }
+.seo-count.near { color: #ffb800; }
 </style>
 <div class="layuimini-container">
 	<div class="layuimini-main">
@@ -67,20 +71,23 @@
 						<div class="layui-form-item">
 							<label class="layui-form-label">SEO 标题</label>
 							<div class="layui-input-block" style="margin-left: 100px;">
-								<input type="text" name="seo_title" value="{$seo['seo_title']}" autocomplete="off" placeholder="站点级 SEO 标题，留空跟随全局" class="layui-input" />
+								<input type="text" name="seo_title" id="seo_title" value="{$seo['seo_title']}" autocomplete="off" placeholder="站点级 SEO 标题，留空跟随全局" class="layui-input" />
+								<span class="seo-count" data-limit="60" data-target="seo_title"></span>
 							</div>
 						</div>
 						<div class="layui-form-item">
 							<label class="layui-form-label">SEO 关键词</label>
 							<div class="layui-input-block" style="margin-left: 100px;">
-								<input type="text" name="seo_keywords" value="{$seo['seo_keywords']}" autocomplete="off" placeholder="多个关键词用逗号分隔，留空跟随全局" class="layui-input" />
+								<input type="text" name="seo_keywords" id="seo_keywords" value="{$seo['seo_keywords']}" autocomplete="off" placeholder="多个关键词用逗号分隔，留空跟随全局" class="layui-input" />
+								<span class="seo-count" data-limit="200" data-target="seo_keywords"></span>
 							</div>
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label">SEO 描述</label>
 						<div class="layui-input-block" style="margin-left: 100px;">
-							<textarea name="seo_description" autocomplete="off" placeholder="站点级 SEO 描述，留空跟随全局" class="layui-textarea" style="min-height: 60px;">{$seo['seo_description']}</textarea>
+							<textarea name="seo_description" id="seo_description" autocomplete="off" placeholder="站点级 SEO 描述，留空跟随全局" class="layui-textarea" style="min-height: 60px;">{$seo['seo_description']}</textarea>
+							<span class="seo-count" data-limit="160" data-target="seo_description"></span>
 						</div>
 					</div>
 
@@ -183,6 +190,22 @@ layui.use(['form', 'layer', 'miniTab', 'jquery', 'upload'], function(){
 	var layer = layui.layer, form = layui.form, miniTab = layui.miniTab, upload = layui.upload;
 
 	form.render();
+
+	// SEO 字数统计：near=接近上限（>=80%），over=超限标红
+	function refreshSeoCount($span) {
+		var len = $('#' + $span.attr('data-target')).val().length;
+		var limit = parseInt($span.attr('data-limit'), 10);
+		$span.text(len + ' / ' + limit + ' 字符');
+		$span.toggleClass('over', len > limit);
+		$span.toggleClass('near', len > limit * 0.8 && len <= limit);
+	}
+	$('.seo-count').each(function () {
+		var $span = $(this);
+		refreshSeoCount($span);
+		$(document).on('input change', '#' + $span.attr('data-target'), function () {
+			refreshSeoCount($span);
+		});
+	});
 
 	// 品牌图片上传：data-target 为 URL 输入框 id，data-preview 为预览 img id
 	upload.render({

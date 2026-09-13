@@ -128,7 +128,11 @@ class site_manager extends model {
      * 创建站点
      */
     public function create($arr) {
-        $arr['status'] = 1;
+        // 尊重调用方传入的 status（插件设置 default_status / 导入恢复），
+        // 未传入时默认启用——原实现强制覆盖为 1，导致「默认状态」设置不生效
+        if(!isset($arr['status'])) {
+            $arr['status'] = 1;
+        }
         $arr['theme'] = isset($arr['theme']) ? $arr['theme'] : 'default';
         if(isset($arr['config']) && is_array($arr['config'])) {
             $arr['config'] = json_encode($arr['config']);
