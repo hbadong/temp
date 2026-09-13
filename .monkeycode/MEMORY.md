@@ -176,4 +176,13 @@ Entries discovered by the Agent during task execution should follow this format:
 - Instructions:
   - 原生 `required` 属性对 layui 表单不生效（layui 的 submit 拦截不会触发浏览器原生校验气泡），必填校验必须写 `lay-verify="required" lay-reqtext="提示语"`；layui v2.8.15 内置 verify 规则只有 `required/phone/email/url/identity`（无 number/date），自定义格式校验用 `lay-verify="ruleName"` + JS `form.verify({ruleName: function(value){ if(...) return '错误信息'; }})`
   - 表单模板加 lay-verify 后 mv 掉 `runcache/admin_view/default,{模板}.htm.php` 编译缓存才生效；控制器 POST 加服务端校验后 mv `runcache/admin_control/对应_control.class.php`
-  - 校验双保险：前端 lay-verify 拦截空值，服务端 POST 方法必须再校验（empty/正则），两者提示文案保持一致；新增/编辑共用表单时，新增模式控制器需给 assign 的数组提供完整默认键（如 account 新增时 `$account=array('id'=>0,'platform'=>'wechat',...)`），否则模板 `{$account['platform']}` 触发 Undefined index 刷日志
+   - 校验双保险：前端 lay-verify 拦截空值，服务端 POST 方法必须再校验（empty/正则），两者提示文案保持一致；新增/编辑共用表单时，新增模式控制器需给 assign 的数组提供完整默认键（如 account 新增时 `$account=array('id'=>0,'platform'=>'wechat',...)`），否则模板 `{$account['platform']}` 触发 Undefined index 刷日志
+
+[LECMS 模板引擎语法约束（php: 标签与 loop 顺序）]
+- Date: 2026-09-13
+- Context: Discovered by Agent while 给 spider_pool 插件加池效果统计页时排障
+- Category: Troubleshooting & Debugging
+- Instructions:
+  - 模板引擎（xiunophp/lib/view.class.php tpl_process）**不支持 `{php:echo ...}` 标签**——正则只认 `{php}...{/php}` 块（替换为 `<?php ... ?>`）和 `{@expr}`（替换为 `<?php echo(expr); ?>`）。误写 `{php:...}` 会原样输出到页面
+  - `{loop:$arr $v $k}` 编译为 `foreach($arr as $k=>&$v)`：**第一个变量是值、第二个是键**（与常见直觉相反）。统计页误写 `{loop:$arr $k $v}` 导致值/键互换，`$k['field']` 对字符串偏移报 `Illegal string offset`
+  - `$this->assign($k, &$v)` 引用传参不能传方法调用返回值（`assign('x', $this->foo())` 报 `Only variables should be passed by reference`，每页请求刷一次 log），必须先存变量再传；这是继 MEMORY 中 assign 不能传字面量/三目之后再次验证

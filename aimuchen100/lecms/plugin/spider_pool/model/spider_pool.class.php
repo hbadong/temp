@@ -84,6 +84,20 @@ class spider_pool
     }
 
     /**
+     * 检查当前站点下是否已存在同名字段。
+     *
+     * @return bool
+     */
+    public function exists($site_id, $domain)
+    {
+        $db = $this->get_db();
+        $sql = "SELECT `id` FROM `{$db->tablepre}spider_pool` WHERE `site_id` = " . intval($site_id)
+            . " AND `domain` = '" . addslashes((string)$domain) . "' LIMIT 1";
+        $row = $db->fetch_first($sql);
+        return !empty($row['id']);
+    }
+
+    /**
      * 添加池化域名。外部域名不做可达性校验。
      *
      * @return bool
@@ -289,5 +303,49 @@ class spider_pool
 
         shuffle($domains);
         return array_slice($domains, 0, $count);
+    }
+
+    /**
+     * 按站点 + 白名单 + 上限解析最终应注入的域名列表。
+     *
+     * cross_site_deploy=1 时不限制站点（返回全部启用域名）；
+     * 否则仅返回指定站点（site_id>0 时）的启用域名。
+     * 白名单非空时仅保留白名单内的域名。
+     * outbound_link_limit>0 时随机抽取上限个。
+     *
+     * @param int   $site_id  当前站点 ID（<=0 视为无站点上下文）
+     * @param array $settings 插件设置（缺失时用空数组兜底）
+     * @return array
+     */
+    public function get_deploy_domains($site_id, $settings = array())
+    {
+        $site_id = intval($site_id);
+        $settings = is_array($settings) ? $settings : array();
+
+        // 跨站部署：不过滤站点；否则按当前站点严格隔离
+        $cross = !empty($settings['cross_site_deploy']);
+        $domains = $cross
+            ? $this->get_active()
+            : $this->get_active($site_id > 0 ? $site_id : null);
+
+        // 域名白名单过滤
+        $whitelist = isset($settings['domain_whitelist']) && is_array($settings['domain_whitelist'])
+            ? array_map('trim', $settings['domain_whitelist'])
+            : array();
+        $whitelist = array_values(array_filter($whitelist, 'strlen'));
+        if (!empty($whitelist)) {
+            $domains = array_values(array_filter($domains, function ($d) use ($whitelist) {
+                return in_array((string)$d, $whitelist, true);
+            }));
+        }
+
+        // 外链引流上限（0 表示不限制）
+        $limit = isset($settings['outbound_link_limit']) ? intval($settings['outbound_link_limit']) : 0;
+        if ($limit > 0 && count($domains) > $limit) {
+            shuffle($domains);
+            $domains = array_slice($domains, 0, $limit);
+        }
+
+        return $domains;
     }
 }

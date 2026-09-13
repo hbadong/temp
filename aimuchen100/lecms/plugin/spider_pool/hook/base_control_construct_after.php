@@ -50,8 +50,19 @@ if (class_exists('spider_pool', false)) {
         // db 不可用时交给 shutdown 回调统一降级，不影响页面构造
     }
 
+    // 构造期读取插件设置（cross_site_deploy / domain_whitelist / outbound_link_limit）
+    $spider_pool_settings = array();
+    try {
+        $spider_pool_saved = $this->runtime->xget('spider_pool_settings');
+        if (is_array($spider_pool_saved)) {
+            $spider_pool_settings = $spider_pool_saved;
+        }
+    } catch (Throwable $spider_pool_se) {
+        // runtime 不可用时按默认设置注入
+    }
+
     ob_start();
-    register_shutdown_function(function () use ($spider_pool_site_id) {
+    register_shutdown_function(function () use ($spider_pool_site_id, $spider_pool_settings) {
         $html = ob_get_clean();
         if ($html === false) {
             $html = '';
@@ -61,10 +72,8 @@ if (class_exists('spider_pool', false)) {
         if (!defined('SPIDER_POOL_HOOK_INJECTED')) {
             try {
                 $pool = spider_pool::instance();
-                // site_id > 0 时按站点严格隔离；无站点上下文时取全部活跃域名
-                $domains = $spider_pool_site_id > 0
-                    ? $pool->get_active($spider_pool_site_id)
-                    : $pool->get_active();
+                // 按站点隔离 + 白名单 + 外链上限解析最终注入域名（设置全部生效）
+                $domains = $pool->get_deploy_domains($spider_pool_site_id, $spider_pool_settings);
                 if (!empty($domains)) {
                     $html = spider_pool::inject_links($html, $domains);
                 }

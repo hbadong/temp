@@ -63,9 +63,34 @@ class spider_pool_control extends admin_control
     }
 
     /**
+     * 获取启用站点列表（site_manager 表，兼容插件缺失场景）。
+     *
+     * @return array [{sid,site_name,domain}, ...]
+     */
+    private function get_site_list()
+    {
+        static $sites = null;
+        if ($sites !== null) {
+            return $sites;
+        }
+        $sites = array();
+        try {
+            $db = $this->db;
+            $rows = $db->fetch_all("SELECT `sid`,`site_name`,`domain` FROM `{$db->tablepre}site_manager` WHERE `status` = 1 ORDER BY `sort_order` DESC, `sid` ASC");
+            if (is_array($rows)) {
+                $sites = $rows;
+            }
+        } catch (Throwable $e) {
+            // site_manager 插件未安装时降级为空列表
+        }
+        return $sites;
+    }
+
+    /**
      * 获取当前站点 ID（多站点隔离）。
      *
-     * 优先 GET/POST 参数 → CURRENT_SITE_ID → fallback 查询第一个站点。
+     * 优先级：GET/POST site_id 参数 → CURRENT_SITE_ID → 唯一启用站点 →
+     * 默认取第一个启用站点（多站未指定时给出可切换下拉）。
      *
      * @return int
      */
@@ -92,13 +117,12 @@ class spider_pool_control extends admin_control
                 return $sid;
             }
         }
-        // fallback：查询 spider_pool 表中第一个 site_id
-        $db = $this->db;
-        $row = $db->fetch_first("SELECT `site_id` FROM `{$db->tablepre}spider_pool` WHERE `site_id` > 0 ORDER BY `site_id` ASC LIMIT 1");
-        if ($row && !empty($row['site_id'])) {
-            return (int)$row['site_id'];
+        // 站点列表兜底：单站直接归属；多站取第一个（页面提供下拉切换）
+        $sites = $this->get_site_list();
+        if (empty($sites)) {
+            return 0;
         }
-        return 0;
+        return (int)$sites[0]['sid'];
     }
 
     /**
@@ -148,6 +172,8 @@ class spider_pool_control extends admin_control
 
         $this->assign('list', $page_list);
         $this->assign('site_id', $site_id);
+        $site_list = $this->get_site_list();
+        $this->assign('site_list', $site_list);
         $this->assign('total', $total);
         $this->assign('page', $page);
         $this->assign('pagesize', $pagesize);
@@ -188,6 +214,10 @@ class spider_pool_control extends admin_control
         }
 
         $pool = new spider_pool($this->db, $site_id);
+        if ($pool->exists($site_id, $domain)) {
+            $this->message(1, '该域名已在当前站点蜘蛛池中，请勿重复添加');
+            return;
+        }
         if (!$pool->add($site_id, $domain, $sort)) {
             $this->message(1, '域名添加失败');
             return;
@@ -392,5 +422,162 @@ class spider_pool_control extends admin_control
         $this->runtime->save_changed();
 
         E(0, '插件设置已保存');
+    }
+
+    /**
+     * 批量导入域名（CSV，POST）。
+     *
+     * CSV 首行为表头 `domain,sort,status`；每行一个域名。
+     * 逐行校验并去重，忽略非法行。
+     */
+    public function import() {
+        if (!form_submit()) E(1, lang('submit_invalid'));
+        $site_id = $this->get_site_id();
+        $file = isset($_FILES['file']['tmp_name']) ? $_FILES['file']['tmp_name'] : '';
+        if (!$file || !is_uploaded_file($file)) E(1, '未上传文件');
+        $ext = strtolower(pathinfo(isset($_FILES['file']['name']) ? $_FILES['file']['name'] : '', PATHINFO_EXTENSION));
+        if ($ext !== 'csv') E(1, '仅支持 .csv 文件');
+        if (isset($_FILES['file']['size']) && $_FILES['file']['size'] > 2 * 1024 * 1024) E(1, '文件过大，最大 2MB');
+
+        require_once ROOT_PATH . 'lecms/plugin/spider_analytics/lib/csv.class.php';
+        $content = file_get_contents($file);
+        $pool = new spider_pool($this->db, $site_id);
+        $added = 0;
+        $skipped = 0;
+
+        // 兼容两种格式：带表头 `domain,sort,status` 的 CSV，或每行一个域名的纯文本列表
+        $lines = preg_split("/\r?\n/", trim($content));
+        $first_line = strtolower(trim(isset($lines[0]) ? $lines[0] : ''));
+        $has_header = (strpos($first_line, 'domain') !== false);
+        $start_idx = $has_header ? 1 : 0;
+
+        for ($i = $start_idx; $i < count($lines); $i++) {
+            $line = trim($lines[$i]);
+            if ($line === '') continue;
+            if ($has_header) {
+                $cols = str_getcsv($line);
+                $domain = isset($cols[0]) ? trim((string)$cols[0]) : '';
+                $sort = isset($cols[1]) ? (int)$cols[1] : 0;
+                $status = isset($cols[2]) ? (int)$cols[2] : 1;
+            } else {
+                $domain = $line;
+                $sort = 0;
+                $status = 1;
+            }
+            if (!$this->is_valid_domain($domain)) {
+                $skipped++;
+                continue;
+            }
+            if ($pool->exists($site_id, $domain)) {
+                $skipped++;
+                continue;
+            }
+            if (!$pool->add($site_id, $domain, $sort)) {
+                $skipped++;
+                continue;
+            }
+            if ($status == 0) {
+                // 导入后统一回写状态（add 默认 status=1）
+                $db = $this->db;
+                $db->query("UPDATE `{$db->tablepre}spider_pool` SET `status` = 0 WHERE `site_id` = " . intval($site_id) . " AND `domain` = '" . addslashes($domain) . "'");
+            }
+            $added++;
+        }
+        E(0, "导入完成：新增 {$added} 条，跳过 {$skipped} 条", '?spider_pool-index&site_id=' . $site_id);
+    }
+
+    /**
+     * 导出当前站点全部域名（CSV 下载）。
+     */
+    public function export() {
+        $site_id = $this->get_site_id();
+        $pool = new spider_pool($this->db, $site_id);
+        $list = $pool->get_list($site_id);
+
+        require_once ROOT_PATH . 'lecms/plugin/spider_analytics/lib/csv.class.php';
+        // 自定义表头：domain,sort,status
+        $header = array('domain', 'sort', 'status');
+        $out = implode(',', $header) . "\n";
+        foreach ((array)$list as $r) {
+            $row = array(
+                spider_csv::quote(isset($r['domain']) ? $r['domain'] : ''),
+                spider_csv::quote(isset($r['sort']) ? $r['sort'] : 0),
+                spider_csv::quote(isset($r['status']) ? $r['status'] : 1),
+            );
+            $out .= implode(',', $row) . "\n";
+        }
+
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename=spider-pool-' . $site_id . '-' . date('Ymd-His') . '.csv');
+        echo $out;
+        exit;
+    }
+
+    /**
+     * 池效果统计：联合 spider_visit_log 展示当前站点蜘蛛访问概况。
+     */
+    public function stats() {
+        $site_id = $this->get_site_id();
+        $pool = new spider_pool($this->db, $site_id);
+        $list = $pool->get_list($site_id);
+
+        $stats = array(
+            'total'        => 0,
+            'today'        => 0,
+            'week'         => 0,
+            'by_engine'    => array(),
+            'domain_hits'  => array(),
+            'has_visit_log'=> false,
+        );
+
+        try {
+            $db = $this->db;
+            $pre = $db->tablepre;
+            $now = time();
+            $today_start = strtotime(date('Y-m-d', $now));
+            $week_start  = strtotime(date('Y-m-d', $now)) - 6 * 86400;
+
+            // 当前站点的访问日志概况
+            $agg = $db->fetch_first("SELECT COUNT(*) AS cnt, SUM(created_at >= {$today_start}) AS today, SUM(created_at >= {$week_start}) AS week FROM `{$pre}spider_visit_log` WHERE `site_id` = " . intval($site_id));
+            if ($agg) {
+                $stats['total'] = (int)$agg['cnt'];
+                $stats['today'] = (int)$agg['today'];
+                $stats['week'] = (int)$agg['week'];
+            }
+            $eng_rows = $db->fetch_all("SELECT `engine`, COUNT(*) AS cnt FROM `{$pre}spider_visit_log` WHERE `site_id` = " . intval($site_id) . " GROUP BY `engine` ORDER BY cnt DESC");
+            foreach ((array)$eng_rows as $r) {
+                $stats['by_engine'][$r['engine']] = (int)$r['cnt'];
+            }
+            // 每个池域名的蜘蛛访问次数：池域名若对应 site_manager 站点，统计该站点的访问日志；
+            // 否则按本站 url 匹配统计（外站池域名无本站日志时计 0）。
+            $site_map = array();
+            foreach ($this->get_site_list() as $sitem) {
+                $site_map[strtolower(trim($sitem['domain']))] = (int)$sitem['sid'];
+            }
+            foreach ((array)$list as $row) {
+                $domain = isset($row['domain']) ? $row['domain'] : '';
+                if ($domain === '') continue;
+                $dl = strtolower(trim($domain));
+                if (isset($site_map[$dl])) {
+                    $hit = $db->fetch_first("SELECT COUNT(*) AS cnt, MAX(created_at) AS last_at FROM `{$pre}spider_visit_log` WHERE `site_id` = " . intval($site_map[$dl]));
+                } else {
+                    $hit = $db->fetch_first("SELECT COUNT(*) AS cnt, MAX(created_at) AS last_at FROM `{$pre}spider_visit_log` WHERE `site_id` = " . intval($site_id) . " AND `url` LIKE '" . addslashes('%' . $domain . '%') . "'");
+                }
+                $stats['domain_hits'][$domain] = array(
+                    'cnt'     => $hit && !empty($hit['cnt']) ? (int)$hit['cnt'] : 0,
+                    'last_at' => $hit && !empty($hit['last_at']) ? (int)$hit['last_at'] : 0,
+                );
+            }
+            $stats['has_visit_log'] = true;
+        } catch (Throwable $e) {
+            // spider_analytics 未安装 / visit_log 表不存在时，只展示池列表
+            $stats['has_visit_log'] = false;
+        }
+
+        $this->assign('site_id', $site_id);
+        $site_list = $this->get_site_list();
+        $this->assign('site_list', $site_list);
+        $this->assign('stats', $stats);
+        $this->display('spider_pool_stats.htm');
     }
 }

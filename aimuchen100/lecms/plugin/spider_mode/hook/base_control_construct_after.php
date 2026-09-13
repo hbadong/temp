@@ -53,7 +53,7 @@ if (!defined('IS_SPIDER')) {
     }
 }
 
-// 双面渲染 + 蜘蛛池注入
+// 双面渲染
 try {
 $spider_mode_site_id = defined('CURRENT_SITE_ID') ? (int)CURRENT_SITE_ID : 0;
 $spider_mode_access = new AccessMode($spider_mode_site_id, $this->db);
@@ -65,29 +65,9 @@ if ($spider_mode_access->is_active()) {
             $html = '';
         }
         $html = $spider_mode_access->render(function () use ($html) { return $html; });
-        // spider-pool 注入（插件缺失时优雅跳过）
-        // 去重 guard：spider-pool 自身 hook（plugin/spider-pool/hook/base_control_construct_after.php）
-        // 与本兜底逻辑共用 SPIDER_POOL_HOOK_INJECTED；两插件同时启用时谁先注入谁 define，
-        // 后者跳过注入但仍原样输出 HTML，避免同一批链接被注入两次。
-        if (!defined('SPIDER_POOL_HOOK_INJECTED')) {
-            if (!class_exists('spider_pool', false) && file_exists(ROOT_PATH . 'lecms/plugin/spider_pool/model/spider_pool.class.php')) {
-                require_once ROOT_PATH . 'lecms/plugin/spider_pool/model/spider_pool.class.php';
-            }
-            if (class_exists('spider_pool', false)) {
-                try {
-                    $pool = spider_pool::instance();
-                    $domains = $pool->get_active();
-                    if (!empty($domains)) {
-                        $links = '';
-                        foreach ($domains as $d) {
-                            $links .= '<a href="http://' . htmlspecialchars($d) . '" target="_blank">' . htmlspecialchars($d) . '</a>';
-                        }
-                        $html = str_ireplace('</body>', '<div style="display:none">' . $links . '</div></body>', $html);
-                    }
-                    define('SPIDER_POOL_HOOK_INJECTED', true);
-                } catch (Throwable $e) { /* 忽略，不影响页面 */ }
-            }
-        }
+        // 蜘蛛池注入由 spider-pool 插件自身的 hook（base_control_construct_after）独立完成，
+        // 本文件不再兜底注入，避免两份实现漂移；两插件同时启用时通过
+        // SPIDER_POOL_HOOK_INJECTED 常量去重。
         echo $html;
     });
 }

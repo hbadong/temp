@@ -34,4 +34,12 @@ $sql = "CREATE TABLE IF NOT EXISTS `{$tablepre}spider_pool` (
 
 $db->query($sql);
 
+// 域名去重唯一键（(site_id, domain)）：先清理历史重复行再建索引，避免 ALTER 失败
+try {
+    $db->query("DELETE t1 FROM `{$tablepre}spider_pool` t1 INNER JOIN `{$tablepre}spider_pool` t2 ON t1.site_id = t2.site_id AND t1.domain = t2.domain AND t1.id > t2.id");
+    $db->query("ALTER TABLE `{$tablepre}spider_pool` ADD UNIQUE KEY `uk_site_domain` (`site_id`, `domain`)");
+} catch (Throwable $e) {
+    // 索引已存在或并发场景下忽略
+}
+
 

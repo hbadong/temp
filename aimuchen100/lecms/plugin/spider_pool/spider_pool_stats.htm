@@ -1,0 +1,104 @@
+{inc:header.htm}
+<div class="layuimini-container">
+	<div class="layuimini-main">
+		<div class="layui-card">
+			<div class="layui-card-header">
+				<span>蜘蛛池效果统计</span>
+				<span style="float:right;">
+					<select id="pool-site-switch" lay-filter="pool-site-switch" style="display:inline-block;width:220px;">
+						{loop:$site_list $s}
+						<option value="{$s['sid']}" {if:$s['sid']==$site_id}selected{/if}>{$s['site_name']}（{$s['domain']}）</option>
+						{/loop}
+					</select>
+					<a href="?spider_pool-index&site_id={$site_id}" class="layui-btn layui-btn-xs layui-btn-primary" style="margin-left:8px;">返回管理</a>
+				</span>
+			</div>
+			<div class="layui-card-body">
+				{if:$stats['has_visit_log']}
+				<fieldset class="layui-elem-field layui-field-title">
+					<legend>当前站点蜘蛛访问概况（le_spider_visit_log）</legend>
+				</fieldset>
+				<div class="layui-row layui-col-space10">
+					<div class="layui-col-md3">
+						<div class="layui-card"><div class="layui-card-body">
+							<p class="layui-text layui-text-gray">累计蜘蛛访问</p>
+							<p style="font-size:28px;color:#1E9FFF;margin:4px 0;">{$stats['total']}</p>
+						</div></div>
+					</div>
+					<div class="layui-col-md3">
+						<div class="layui-card"><div class="layui-card-body">
+							<p class="layui-text layui-text-gray">今日</p>
+							<p style="font-size:28px;color:#16b777;margin:4px 0;">{$stats['today']}</p>
+						</div></div>
+					</div>
+					<div class="layui-col-md3">
+						<div class="layui-card"><div class="layui-card-body">
+							<p class="layui-text layui-text-gray">近 7 天</p>
+							<p style="font-size:28px;color:#FFB800;margin:4px 0;">{$stats['week']}</p>
+						</div></div>
+					</div>
+					<div class="layui-col-md3">
+						<div class="layui-card"><div class="layui-card-body">
+							<p class="layui-text layui-text-gray">池域名数</p>
+							<p style="font-size:28px;color:#FF5722;margin:4px 0;">{@count($stats['domain_hits'])}</p>
+						</div></div>
+					</div>
+				</div>
+
+				<fieldset class="layui-elem-field layui-field-title">
+					<legend>引擎分布</legend>
+				</fieldset>
+				<table class="layui-table" lay-size="sm">
+					<thead><tr><th>引擎</th><th>访问次数</th><th>占比</th></tr></thead>
+					<tbody>
+					{php} $total_cnt = $stats['total'] > 0 ? $stats['total'] : 1; {/php}
+					{loop:$stats['by_engine'] $cnt $engine}
+					<tr>
+						<td>{$engine}</td>
+						<td>{$cnt}</td>
+						<td>{@round($cnt * 100 / $total_cnt, 1)}%</td>
+					</tr>
+					{/loop}
+					{if:empty($stats['by_engine'])}
+					<tr><td colspan="3" style="text-align:center;color:#999;">暂无蜘蛛访问数据</td></tr>
+					{/if}
+					</tbody>
+				</table>
+
+				<fieldset class="layui-elem-field layui-field-title">
+					<legend>池域名被爬情况</legend>
+				</fieldset>
+				<table class="layui-table" lay-size="sm">
+					<thead><tr><th>域名</th><th>蜘蛛访问次数</th><th>最近访问</th></tr></thead>
+					<tbody>
+					{loop:$stats['domain_hits'] $h $domain}
+					<tr>
+						<td>{$domain}</td>
+						<td>{$h['cnt']}</td>
+						<td>{if:$h['last_at']>0}{@date('Y-m-d H:i', $h['last_at'])}{else}无{/if}</td>
+					</tr>
+					{/loop}
+					{if:empty($stats['domain_hits'])}
+					<tr><td colspan="3" style="text-align:center;color:#999;">暂无池域名访问数据</td></tr>
+					{/if}
+					</tbody>
+				</table>
+				{else}
+				<p class="layui-text layui-text-gray">
+					未检测到蜘蛛访问日志（le_spider_visit_log 表）。请先启用「蜘蛛分析」插件并等待蜘蛛来访，或确认该表已创建。
+				</p>
+				{/if}
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+layui.use(['form', 'layer'], function () {
+	var form = layui.form;
+	form.on('select(pool-site-switch)', function (data) {
+		location.href = '?spider_pool-stats&site_id=' + data.value;
+	});
+});
+</script>
+</body>
+</html>
