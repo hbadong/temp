@@ -167,7 +167,7 @@ class update_scheduler extends model {
         }
 
         // 回退：使用本地内容重组（content_reorganizer）
-        if (class_exists('content_reorganizer')) {
+        if (is_file(ROOT_PATH . 'lecms/plugin/article_strategy/model/content_reorganizer_model.class.php')) {
             $reorganizer = core::model('content_reorganizer');
             return $reorganizer->reorganize($content, array(
                 'ai_reorganize' => true,

@@ -38,10 +38,7 @@ if (empty($ai_content) || !is_string($ai_content)) {
     return;
 }
 
-// 加载内容重组引擎（文件名不符合 core::model() 约定，显式 require）
-require_once ROOT_PATH . 'lecms/plugin/article_strategy/model/content_reorganizer.class.php';
-
-// 加载内容重组引擎
+// 加载内容重组引擎（文件已重命名为 content_reorganizer_model.class.php，core::model() 自动加载）
 $reorganizer = core::model('content_reorganizer');
 
 // 执行内容重组
