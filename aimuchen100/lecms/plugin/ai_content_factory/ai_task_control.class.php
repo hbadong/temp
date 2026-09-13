@@ -16,6 +16,9 @@ defined('ROOT_PATH') or exit;
  * - C9: 统计卡片
  */
 
+// ai_api_adapter 类不被 core::model()/autoload 覆盖，必须显式加载
+require_once ROOT_PATH . 'lecms/plugin/ai_content_factory/model/ai_api_adapter.php';
+
 class ai_task_control extends admin_control {
 
     /**
@@ -396,5 +399,75 @@ class ai_task_control extends admin_control {
         }
 
         exit(json_encode(array('err' => 0, 'msg' => '执行完成', 'processed' => count($tasks), 'results' => $results)));
+    }
+
+    /**
+     * 测试 API 连接（POST AJAX）
+     * 读取当前生效配置（site 参数可选，缺省全局）向 /chat/completions 发一条最小测试请求。
+     * 支持表单未保存参数覆盖（api_base_url/model/api_key 非空时以表单值为准），
+     * api_key 留空则复用已保存 Key。http_status 表示 HTTP 状态码，cURL 网络错误返回 err=1
+     */
+    public function test_connection() {
+        if(!form_submit()) {
+            E(1, lang('submit_invalid'));
+        }
+        $site_id = (int)R('site_id', 'P');
+        if($site_id < 0) $site_id = 0;
+
+        $adapter = new ai_api_adapter($site_id, $this->db);
+        $config = $adapter->get_config();
+
+        // 表单覆盖：base_url / model / api_key 非空则以表单值为准（api_key 留空=用已保存）
+        $f_base = trim(R('api_base_url', 'P'));
+        $f_model = trim(R('model', 'P'));
+        $f_key = trim(R('api_key', 'P'));
+        if($f_base !== '') $config['api_base_url'] = $f_base;
+        if($f_model !== '') $config['model'] = $f_model;
+        if($f_key !== '') $config['api_key'] = $f_key;
+
+        if(empty($config['api_key'])) {
+            E(1, '未配置 API Key，请先填写（留空保存表示不修改）');
+        }
+
+        // 最小连通性请求
+        $url = rtrim($config['api_base_url'], '/') . '/chat/completions';
+        $post_data = array(
+            'model' => $config['model'],
+            'messages' => array(
+                array('role' => 'user', 'content' => 'hello'),
+            ),
+            'max_tokens' => 5,
+        );
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($post_data));
+        curl_setopt($ch, CURLOPT_TIMEOUT, max(5, (int)$config['timeout']));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            'Content-Type: application/json',
+            'Authorization: Bearer ' . $config['api_key'],
+        ));
+        $response = curl_exec($ch);
+        if($response === false) {
+            $err = curl_error($ch);
+            curl_close($ch);
+            E(1, '网络错误：' . $err);
+        }
+        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if($http_code == 200) {
+            E(0, '连接成功（HTTP 200），模型 ' . $config['model'] . ' 可用');
+        } elseif($http_code == 401 || $http_code == 403) {
+            E(1, '认证失败（HTTP ' . $http_code . '）：API Key 无效或无权访问');
+        } elseif($http_code == 429) {
+            E(1, '请求被限流（HTTP 429）：请稍后重试');
+        } elseif($http_code >= 500) {
+            E(1, '服务端错误（HTTP ' . $http_code . '）：上游服务不可用');
+        } else {
+            E(1, '连接异常（HTTP ' . $http_code . '）：' . substr($response, 0, 200));
+        }
     }
 }

@@ -261,6 +261,9 @@
 
 								<!-- 底部操作栏 -->
 								<div class="settings-actions">
+									<button type="button" id="btn-test-connection" class="layui-btn layui-btn-normal" onclick="_test_connection()">
+										<i class="layui-icon">&#xe63c;</i> 测试连接
+									</button>
 									<button type="button" lay-submit lay-filter="form-settings" class="layui-btn">
 										<i class="layui-icon">&#xe605;</i> 保存设置
 									</button>
@@ -309,6 +312,24 @@ layui.use(['layer', 'element', 'form', 'miniTab'], function(){
 		});
 		return false;
 	});
+	// 测试连接（POST 到 test_connection，带表单当前值允许保存前预测）
+	window._test_connection = function(){
+		var loadIndex = layer.load(1, {shade: [0.1, '#000']});
+		var btn = document.getElementById('btn-test-connection');
+		if(btn){ btn.setAttribute('disabled', 'disabled'); }
+		$.post("index.php?ai_task-test_connection-ajax-1", {
+			"FORM_HASH": "{@form_hash()}",
+			"site_id": document.getElementById('cfg_site_input').value || 0,
+			"api_base_url": document.getElementById('api_base_url').value,
+			"model": document.getElementById('model_name').value,
+			"api_key": document.getElementById('api_key').value
+		}, function(data){
+			layer.close(loadIndex);
+			if(btn){ btn.removeAttribute('disabled'); }
+			var json = toJson(data);
+			layer.msg(json.msg, { icon: json.err == 0 ? 1 : 5 });
+		});
+	};
 	// 创建任务：layuimini 多标签内新开标签页
 	document.getElementById('btn-create-task').onclick = function(){
 		miniTab.openNewTabByIframe({
