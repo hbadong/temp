@@ -122,6 +122,9 @@
 										<td>
 											{if:$task['status'] != 2}
 											<a href="javascript:;" class="layui-btn layui-btn-xs" onclick="exec_task({$task['id']})">{if:$task['status']==0}执行{else}继续{/if}</a>
+											{if:$task['status'] == 3}
+											<a href="javascript:;" class="layui-btn layui-btn-xs layui-btn-warm" onclick="reset_task({$task['id']})">重跑</a>
+											{/if}
 											{/if}
 											<a href="javascript:;" class="layui-btn layui-btn-xs layui-btn-normal" onclick="detail_task({$task['id']})">详情</a>
 											<a href="javascript:;" class="layui-btn layui-btn-xs layui-btn-danger" onclick="del_task({$task['id']})">删除</a>
@@ -369,6 +372,15 @@ layui.use(['layer', 'element', 'form', 'miniTab'], function(){
 		layer.confirm('确定删除该任务？', {icon: 3, title: '删除确认'}, function(){
 			adminAjax.postd("index.php?ai_task-delete-ajax-1", {"task_id": task_id, "FORM_HASH": "{@form_hash()}"}, function(){
 				location.reload();
+			});
+		});
+	};
+	// 重跑失败任务（清空失败计数，保留成功数）
+	window.reset_task = function(task_id){
+		layer.confirm('确定重跑该失败任务？将清空失败计数并保留已成功部分，失败的 URL 重新进入队列。', {icon: 3, title: '重跑确认'}, function(){
+			adminAjax.postd("index.php?ai_task-reset-ajax-1", {"task_id": task_id, "FORM_HASH": "{@form_hash()}"}, function(){
+				layer.msg('已重置，可重新执行');
+				setTimeout(function(){ location.reload(); }, 800);
 			});
 		});
 	};

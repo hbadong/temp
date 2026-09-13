@@ -67,6 +67,27 @@ class ai_task extends model {
     }
 
     /**
+     * 重置任务：失败任务重跑（清空失败计数与锁，保留成功数，状态回到待处理）
+     * 失败的 URL 仍为 status=1，重跑后重新进入消费队列
+     * @return bool
+     */
+    public function reset_task($task_id) {
+        $task_id = (int)$task_id;
+        if($task_id <= 0) return false;
+        $task = $this->get($task_id);
+        if(!$task) return false;
+        if((int)$task['exec_lock'] === 1) return false;
+        $this->save($task_id, array(
+            'fail' => 0,
+            'status' => 0,
+            'exec_lock' => 0,
+            'updated_at' => date('Y-m-d H:i:s', $_ENV['_time']),
+        ));
+        $this->append_log($task_id, '任务已重置，清空失败计数，可重新执行');
+        return true;
+    }
+
+    /**
      * 读取插件配置（A1：配置单轨，唯一来源 ai_config 表；site_id 站点级优先，回退全局）
      */
     public function get_settings($site_id = 0) {

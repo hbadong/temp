@@ -256,6 +256,24 @@ class ai_task_control extends admin_control {
     }
 
     /**
+     * 重置任务（B2 补充：失败任务可清空失败计数重新执行）
+     */
+    public function reset() {
+        if(!form_submit()) {
+            E(1, lang('submit_invalid'));
+        }
+        $task_id = (int)R('task_id', 'P');
+        if($task_id <= 0) {
+            E(1, '无效的任务 ID');
+        }
+        $res = $this->ai_task->reset_task($task_id);
+        if($res === false) {
+            E(1, '重置失败（任务不存在或正在执行中）');
+        }
+        E(0, '任务已重置，可重新执行');
+    }
+
+    /**
      * 插件设置页面（已合并进 index() 的第二个 tab）
      * 兼容旧入口：重定向到主页面设置 tab
      */
