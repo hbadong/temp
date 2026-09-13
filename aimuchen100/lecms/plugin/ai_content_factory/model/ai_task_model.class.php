@@ -141,9 +141,10 @@ class ai_task extends model {
 
         $pending = $total - $success_total - $fail_total;
 
-        // 已达标：直接收尾
+        // 已达标或全部处理完：收尾（按成功情况判定终态，避免失败任务被误标完成）
         if($pending <= 0) {
-            $this->save($task_id, array('status' => 2, 'exec_lock' => 0, 'updated_at' => date('Y-m-d H:i:s', $_ENV['_time'])));
+            $final_status = ($success_total > 0) ? 2 : 3;
+            $this->save($task_id, array('status' => $final_status, 'exec_lock' => 0, 'updated_at' => date('Y-m-d H:i:s', $_ENV['_time'])));
             return array('success' => $success_total, 'fail' => $fail_total, 'total' => $total, 'done' => true, 'degraded' => false);
         }
 
@@ -173,8 +174,8 @@ class ai_task extends model {
             }
         }
 
-        // 构建 Prompt + 调用 AI
-        $prompt = $this->build_prompt($task);
+        // 构建 Prompt + 调用 AI（{url} 占位符使用本批待绑定 URL）
+        $prompt = $this->build_prompt($task, $urls);
         $gen_count = empty($urls) ? $limit : count($urls);
         $adapter = new ai_api_adapter($site_id, $this->db);
         $articles = $adapter->generate($prompt, $gen_count);
@@ -236,7 +237,8 @@ class ai_task extends model {
                             $article['content'] = $sw_filter->replace_words($article['content'])['text'];
                             $sw_filter->log($sw_word, 0, 'replace');
                         } else {
-                            $sw_filter->log($sw_word, 0, 'replace');
+                            // level==1：仅记录警告，不替换不拒绝
+                            $sw_filter->log($sw_word, 0, 'warning');
                         }
                     }
                 }
@@ -259,8 +261,9 @@ class ai_task extends model {
             $this->db->query('COMMIT');
         } catch(Exception $e) {
             $this->db->query('ROLLBACK');
-            // 单批失败：计数为失败并继续（避免死循环）
-            $fail = $gen_count - $success;
+            // 整批回滚：已插入的部分一并撤销，成功清零、整批计失败
+            $success = 0;
+            $fail = $gen_count;
             $this->append_log($task_id, '批次异常回滚：' . $e->getMessage());
         }
 
@@ -282,6 +285,9 @@ class ai_task extends model {
             $this->append_log($task_id, '批次执行：成功 ' . $success . '，失败 ' . $fail . ($degraded ? '（模板库降级）' : ''));
         }
 
+        // B7：本批执行后若成功+失败已达任务总数，标记 done，避免前端多一轮空轮询
+        $done = ($success_total + $fail_total >= $total);
+
         return array('success' => $success_total, 'fail' => $fail_total, 'total' => $total, 'done' => $done, 'degraded' => $degraded);
     }
 
@@ -302,18 +308,30 @@ class ai_task extends model {
 
     /**
      * 构建 Prompt（REQ-03-AC4：使用任务自定义模板，否则用默认）
+     * @param array $task 任务行
+     * @param array $urls 本批待绑定 URL（含 url 字段）；用于替换 {url} 占位符
      */
-    private function build_prompt($task) {
+    private function build_prompt($task, $urls = array()) {
         $category = '游戏';
         if(!empty($task['category_id'])) {
             $cat = $this->category->get((int)$task['category_id']);
             $category = ($cat && !empty($cat['name'])) ? $cat['name'] : '游戏';
         }
 
+        // {url} = 本批待绑定 URL 列表（换行分隔）；无 URL 时替换为空
+        $url_list = '';
+        if(!empty($urls)) {
+            $parts = array();
+            foreach($urls as $u) {
+                if(!empty($u['url'])) $parts[] = $u['url'];
+            }
+            $url_list = implode("\n", $parts);
+        }
+
         $prompt_template = trim((string)$task['prompt_template']);
         if($prompt_template !== '') {
-            // 替换模板占位符 {category}
-            $prompt = str_replace(array('{category}', '{分类}'), $category, $prompt_template);
+            // 替换模板占位符 {category}/{分类} 和 {url}
+            $prompt = str_replace(array('{category}', '{分类}', '{url}'), array($category, $category, $url_list), $prompt_template);
         } else {
             $prompt = "你是一个专业的游戏内容创作专家。请为主题「{$category}」生成游戏文章。"
                 . "输出严格 JSON 数组，每个元素包含 title, content, tags, seo_title, seo_keywords, seo_description 六个字段。";
@@ -338,13 +356,16 @@ class ai_task extends model {
         $now = date('Y-m-d H:i:s', $_ENV['_time']);
         $now_ts = $_ENV['_time'];
 
+        // A2：站点归属（提前定义，供标题去重按站点隔离）
+        $site_id = max(1, (int)$task['site_id']);
+
         // B7：入库前清理（strip_tags + 长度截断，与核心 xadd 一致）
         $title = isset($article['title']) ? trim(strip_tags($article['title'])) : '';
         if($title === '') return false;
         $title = mb_substr($title, 0, 200, 'UTF-8');
 
         // C7：标题去重（同站点同标题视为重复，跳过）
-        $dup = $this->db->fetch_first("SELECT id FROM `{$tablepre}cms_article` WHERE title=" . $esc($title) . " LIMIT 1");
+        $dup = $this->db->fetch_first("SELECT id FROM `{$tablepre}cms_article` WHERE site_id={$site_id} AND title=" . $esc($title) . " LIMIT 1");
         if($dup) return 0;
 
         // C3：正文首图作缩略图（本地图才入库，外链跳过与核心 auto_pic 一致）
@@ -401,8 +422,6 @@ class ai_task extends model {
             if(!empty($tags_out)) $tags_json = _json_encode($tags_out);
         }
 
-        // A2：站点归属
-        $site_id = max(1, (int)$task['site_id']);
         $cid = (int)$task['category_id'];
 
         // 主表：含 site_id/uid/author/source/pic

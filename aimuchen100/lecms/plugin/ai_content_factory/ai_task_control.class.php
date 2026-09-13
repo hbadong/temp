@@ -205,13 +205,16 @@ class ai_task_control extends admin_control {
         $log_lines = $exec_log === '' ? array() : explode("\n", $exec_log);
 
         // 该站点的 AI 生成文章（source 标识，最近 50 条）
+        // 用子查询关联最新一条 URL 映射，避免 GROUP BY + 非聚合列在严格模式下报错
         $pre = $_ENV['_config']['db']['master']['tablepre'];
         $site_id = (int)$task['site_id'];
         $articles = $this->db->fetch_all("SELECT a.id, a.title, a.site_id, a.dateline, um.url
             FROM `{$pre}cms_article` a
             LEFT JOIN `{$pre}cms_url_map` um ON um.content_id = a.id AND um.status = 2
+                AND um.id = (SELECT id FROM `{$pre}cms_url_map` u2
+                             WHERE u2.content_id = a.id AND u2.status = 2
+                             ORDER BY u2.id ASC LIMIT 1)
             WHERE a.source='AI内容工厂' AND a.site_id={$site_id}
-            GROUP BY a.id
             ORDER BY a.id DESC LIMIT 50");
 
         // 站点信息
