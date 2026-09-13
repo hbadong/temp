@@ -32,12 +32,26 @@ function spider_analytics_init() {
     require_once $base . '/model/blacklist.class.php';
     require_once $base . '/model/logger.class.php';
 
+    // 注入 PDO 连接（模型/日志依赖 spider_runtime::$pdo 静态属性；
+    // 不注入则拦截开关恒为默认、日志与命中记录全部静默丢弃）
+    if (!spider_runtime::$pdo && isset($_ENV['_config']['db']['master']['tablepre'])) {
+        try {
+            $db_type = 'db_' . $_ENV['_config']['db']['type'];
+            $db = new $db_type($_ENV['_config']['db']);
+            spider_runtime::init($db->wlink, $_ENV['_config']['db']['master']['tablepre']);
+        } catch (\Throwable $e) {
+            if (class_exists('log')) log::le_log('spider_analytics_init:' . $e->getMessage());
+        }
+    }
+
     $start_time = microtime(true);
 
-    // 拦截判断
+    // 拦截判断（命中记一次）
+    $intercepted = false;
     try {
         $hit = spider_guard::match($ua, $ip, $site_id);
         if ($hit && spider_runtime_get('intercept_enabled', '0') === '1') {
+            $intercepted = true;
             $bl = new spider_blacklist();
             $bl->record_hit(
                 $site_id, $hit['match_type'], $hit['match_value'], $hit['id'], null,
@@ -55,7 +69,7 @@ function spider_analytics_init() {
     }
 
     // shutdown recorder：响应完成后写日志（不重复 ob_start，框架已开）
-    register_shutdown_function(function() use ($site_id, $ua, $ip, $start_time) {
+    register_shutdown_function(function() use ($site_id, $ua, $ip, $start_time, $intercepted) {
         try {
             $end_time = microtime(true);
             $duration_ms = (int)(($end_time - $start_time) * 1000);
@@ -81,14 +95,16 @@ function spider_analytics_init() {
             $logger->enqueue($rec);
             $logger->flush();
 
-            // 命中但未拦截时记录 hit
-            $hit = spider_guard::match($ua, $ip, $site_id);
-            if ($hit) {
-                $bl = new spider_blacklist();
-                $bl->record_hit(
-                    $site_id, $hit['match_type'], $hit['match_value'], $hit['id'], null,
-                    @inet_pton($ip), $ip, $ua, $url, 0, time()
-                );
+            // 命中但未拦截时记录 hit（已拦截的不重复记录）
+            if (!$intercepted) {
+                $hit = spider_guard::match($ua, $ip, $site_id);
+                if ($hit) {
+                    $bl = new spider_blacklist();
+                    $bl->record_hit(
+                        $site_id, $hit['match_type'], $hit['match_value'], $hit['id'], null,
+                        @inet_pton($ip), $ip, $ua, $url, 0, time()
+                    );
+                }
             }
         } catch (Exception $e) {
             if (class_exists('log')) log::le_log('spider_analytics_shutdown:' . $e->getMessage());

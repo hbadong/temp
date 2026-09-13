@@ -1,6 +1,9 @@
 <?php
 class spider_iprange {
     public function add($engine, $cidr, $note, $enabled) {
+        if (!spider_cidr::valid($cidr)) {
+            throw new InvalidArgumentException('非法 CIDR 格式');
+        }
         $pdo = spider_runtime::$pdo;
         $pre = spider_runtime::$pre;
         $stmt = $pdo->prepare("INSERT INTO `{$pre}spider_ip_range` (engine,cidr,note,enabled,created_at) VALUES (?,?,?,?,?)");
@@ -13,6 +16,14 @@ class spider_iprange {
         $pre = spider_runtime::$pre;
         $stmt = $pdo->prepare("DELETE FROM `{$pre}spider_ip_range` WHERE id=?");
         return $stmt->execute(array((int)$id));
+    }
+
+    public function get($id) {
+        $pdo = spider_runtime::$pdo;
+        $pre = spider_runtime::$pre;
+        $stmt = $pdo->prepare("SELECT * FROM `{$pre}spider_ip_range` WHERE id=?");
+        $stmt->execute(array((int)$id));
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
     public function list($engine = null, $keyword = '', $page = 1, $size = 50) {

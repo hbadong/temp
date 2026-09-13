@@ -4,6 +4,22 @@
  */
 class spider_cidr {
     /**
+     * 校验 CIDR 字符串格式是否合法（ip/bits，v4/v6 均可）
+     * @return bool 合法返回 true
+     */
+    public static function valid($cidr) {
+        if (!is_string($cidr)) return false;
+        if (strpos($cidr, '/') === false) return false;
+        list($subnet, $bits) = explode('/', $cidr, 2);
+        if (!ctype_digit((string)$bits)) return false;
+        $bits = (int)$bits;
+        $sn_bin = @inet_pton($subnet);
+        if ($sn_bin === false) return false;
+        $max_bits = strlen($sn_bin) * 8;
+        return $bits >= 0 && $bits <= $max_bits;
+    }
+
+    /**
      * 判断 $ip 是否落在 $cidr 内
      * @param string $ip   IP 地址
      * @param string $cidr CIDR 字符串（ip/bits）

@@ -1,13 +1,9 @@
 <?php
 defined('ROOT_PATH') || exit;
+require_once ROOT_PATH . 'lecms/plugin/spider_analytics/lib/boot.class.php';
 class spider_iprange_control extends admin_control {
     public function index() {
-        require_once ROOT_PATH . 'lecms/plugin/spider_analytics/model/iprange.class.php';;
-        require_once ROOT_PATH . 'lecms/plugin/spider_analytics/lib/cidr.class.php';;
-        require_once ROOT_PATH . 'lecms/plugin/spider_analytics/lib/runtime.class.php';;
-        require_once ROOT_PATH . 'lecms/plugin/spider_analytics/model/runtime.class.php';;
-        // 注入 LECMS 数据库 PDO 连接（模型使用 spider_runtime::$pdo 静态属性）
-        spider_runtime::init($this->db->rlink, $_ENV['_config']['db']['master']['tablepre']);
+        spider_boot($this->db);
         $ir = new spider_iprange();
         $page = max(1, (int)R('page', 'R'));
         $engine = trim(R('engine', 'R'));
@@ -25,27 +21,22 @@ class spider_iprange_control extends admin_control {
     }
     public function add() {
         if (!form_submit()) E(1, lang('submit_invalid'));
-        require_once ROOT_PATH . 'lecms/plugin/spider_analytics/model/iprange.class.php';;
-        require_once ROOT_PATH . 'lecms/plugin/spider_analytics/lib/cidr.class.php';;
-        require_once ROOT_PATH . 'lecms/plugin/spider_analytics/lib/runtime.class.php';;
-        require_once ROOT_PATH . 'lecms/plugin/spider_analytics/model/runtime.class.php';;
-        // 注入 LECMS 数据库 PDO 连接（模型使用 spider_runtime::$pdo 静态属性）
-        spider_runtime::init($this->db->rlink, $_ENV['_config']['db']['master']['tablepre']);
+        spider_boot($this->db);
         $ir = new spider_iprange();
-        $id = $ir->add(trim(R('engine', 'P')), trim(R('cidr', 'P')), trim(R('note', 'P')), 1);
+        try {
+            $id = $ir->add(trim(R('engine', 'P')), trim(R('cidr', 'P')), trim(R('note', 'P')), 1);
+        } catch (InvalidArgumentException $e) {
+            E(1, $e->getMessage());
+        }
         if (!$id) E(1, '添加失败');
         E(0, '已添加 #' . $id);
     }
     public function del() {
         if (!form_submit()) E(1, lang('submit_invalid'));
         $id = (int)R('id', 'P');
-        require_once ROOT_PATH . 'lecms/plugin/spider_analytics/model/iprange.class.php';;
-        require_once ROOT_PATH . 'lecms/plugin/spider_analytics/lib/cidr.class.php';;
-        require_once ROOT_PATH . 'lecms/plugin/spider_analytics/lib/runtime.class.php';;
-        require_once ROOT_PATH . 'lecms/plugin/spider_analytics/model/runtime.class.php';;
-        // 注入 LECMS 数据库 PDO 连接（模型使用 spider_runtime::$pdo 静态属性）
-        spider_runtime::init($this->db->rlink, $_ENV['_config']['db']['master']['tablepre']);
+        spider_boot($this->db);
         $ir = new spider_iprange();
+        if (!$ir->get($id)) E(1, '记录不存在');
         $res = $ir->delete($id);
         if (!$res) E(1, '删除失败');
         E(0, '已删除');

@@ -67,50 +67,12 @@
 										<div class="layui-form-item">
 											<label class="layui-form-label">日志保留天数</label>
 											<div class="layui-input-inline">
-												<input type="number" name="log_keep_days" min="1" max="3650" value="{$settings['log_keep_days']}" class="layui-input" placeholder="90">
-												<span class="field-hint">超过将被归档或清理，建议 30~180</span>
+												<input type="number" name="archive_keep_days" min="1" max="3650" value="{$settings['archive_keep_days']}" class="layui-input" placeholder="90">
+												<span class="field-hint">超过保留天数的访问记录自动归档到历史表，建议 30~180</span>
 											</div>
 										</div>
 									</div>
 								</form>
-							</div>
-						</div>
-
-						<!-- 统计刷新 -->
-						<div class="layui-card settings-card">
-							<div class="layui-card-header">
-								<span><i class="layui-icon">&#xe669;</i> 统计刷新</span>
-								<span class="header-tip">后台聚合任务多久触发一次</span>
-							</div>
-							<div class="layui-card-body">
-								<div class="settings-grid">
-									<div class="layui-form-item">
-										<label class="layui-form-label">刷新频率（小时）</label>
-										<div class="layui-input-inline">
-											<input type="number" name="stats_refresh_hours" min="1" max="168" value="{$settings['stats_refresh_hours']}" class="layui-input" placeholder="24" form="form-spider-analytics-settings">
-											<span class="field-hint">每多少小时刷新一次聚合统计（与 cron 任务配合）</span>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-
-						<!-- 黑名单自动拉黑 -->
-						<div class="layui-card settings-card">
-							<div class="layui-card-header">
-								<span><i class="layui-icon">&#xe7ae;</i> 黑名单策略</span>
-								<span class="header-tip">达到阈值后自动将高频异常来源拉入黑名单</span>
-							</div>
-							<div class="layui-card-body">
-								<div class="settings-grid">
-									<div class="layui-form-item">
-										<label class="layui-form-label">自动拉黑阈值</label>
-										<div class="layui-input-inline">
-											<input type="number" name="blacklist_auto_threshold" min="1" max="10000" value="{$settings['blacklist_auto_threshold']}" class="layui-input" placeholder="10" form="form-spider-analytics-settings">
-											<span class="field-hint">单 IP/UA 在窗口内的命中次数上限</span>
-										</div>
-									</div>
-								</div>
 							</div>
 						</div>
 

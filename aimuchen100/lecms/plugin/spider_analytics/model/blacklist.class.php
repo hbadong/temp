@@ -44,9 +44,9 @@ class spider_blacklist {
         $pre = spider_runtime::$pre;
         $n = 0;
         foreach ($rows as $r) {
-            $stmt = $pdo->prepare("INSERT OR IGNORE INTO `{$pre}spider_blacklist` (site_id,match_type,match_value,note,enabled,created_at) VALUES (?,?,?,?,?,?)");
+            $stmt = $pdo->prepare("INSERT INTO `{$pre}spider_blacklist` (site_id,match_type,match_value,note,enabled,created_at) VALUES (?,?,?,?,?,?) ON DUPLICATE KEY UPDATE note=VALUES(note),enabled=VALUES(enabled)");
             $stmt->execute(array((int)$r['site_id'], $r['match_type'], $r['match_value'], $r['note'], (int)$r['enabled'], time()));
-            if ($stmt->rowCount() > 0) $n++;
+            if ($stmt->rowCount() >= 1) $n++;
         }
         return $n;
     }

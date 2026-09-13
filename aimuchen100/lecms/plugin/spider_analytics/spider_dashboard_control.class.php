@@ -1,5 +1,6 @@
 <?php
 defined('ROOT_PATH') || exit;
+require_once ROOT_PATH . 'lecms/plugin/spider_analytics/lib/boot.class.php';
 class spider_dashboard_control extends admin_control {
 
     /**
@@ -7,20 +8,18 @@ class spider_dashboard_control extends admin_control {
      */
     private function default_settings() {
         return array(
-            'log_keep_days'             => 90,
-            'stats_refresh_hours'       => 24,
-            'blacklist_auto_threshold'  => 10,
+            'archive_keep_days' => 90,
         );
     }
 
     /**
-     * 读取设置（runtime 缓存）
+     * 读取设置（spider_runtime 表，与 aggregator/cron 同源）
      */
     private function get_settings() {
-        $saved = $this->runtime->xget('spider_analytics_settings');
-        if (!is_array($saved)) {
-            $saved = array();
-        }
+        spider_boot($this->db);
+        $saved = array(
+            'archive_keep_days' => (int)spider_runtime_get('archive_keep_days', 90),
+        );
         return array_merge($this->default_settings(), $saved);
     }
 
@@ -37,9 +36,7 @@ class spider_dashboard_control extends admin_control {
     public function trend() {
         $site_id = defined('CURRENT_SITE_ID') ? (int)CURRENT_SITE_ID : 0;
         $days = (int)R('days', 'R');
-        require_once ROOT_PATH . 'lecms/plugin/spider_analytics/model/dashboard.class.php';;
-        require_once ROOT_PATH . 'lecms/plugin/spider_analytics/lib/runtime.class.php';;
-        require_once ROOT_PATH . 'lecms/plugin/spider_analytics/model/runtime.class.php';;
+        spider_boot($this->db);
         $db = new spider_dashboard();
         $data = $db->get_trend($site_id, $days);
         $this->message(1, json_encode($data));
@@ -47,9 +44,7 @@ class spider_dashboard_control extends admin_control {
     public function pie() {
         $site_id = defined('CURRENT_SITE_ID') ? (int)CURRENT_SITE_ID : 0;
         $days = (int)R('days', 'R');
-        require_once ROOT_PATH . 'lecms/plugin/spider_analytics/model/dashboard.class.php';;
-        require_once ROOT_PATH . 'lecms/plugin/spider_analytics/lib/runtime.class.php';;
-        require_once ROOT_PATH . 'lecms/plugin/spider_analytics/model/runtime.class.php';;
+        spider_boot($this->db);
         $db = new spider_dashboard();
         $data = $db->get_engine_pie($site_id, $days);
         $this->message(1, json_encode($data));
@@ -70,38 +65,16 @@ class spider_dashboard_control extends admin_control {
             $this->message(1, lang('submit_invalid'));
         }
 
-        $log_days = (int)R('log_keep_days', 'P');
-        if ($log_days < 1) {
-            $log_days = 1;
+        $keep_days = (int)R('archive_keep_days', 'P');
+        if ($keep_days < 1) {
+            $keep_days = 1;
         }
-        if ($log_days > 3650) {
-            $log_days = 3650;
-        }
-
-        $refresh_hours = (int)R('stats_refresh_hours', 'P');
-        if ($refresh_hours < 1) {
-            $refresh_hours = 1;
-        }
-        if ($refresh_hours > 168) {
-            $refresh_hours = 168;
+        if ($keep_days > 3650) {
+            $keep_days = 3650;
         }
 
-        $threshold = (int)R('blacklist_auto_threshold', 'P');
-        if ($threshold < 1) {
-            $threshold = 1;
-        }
-        if ($threshold > 10000) {
-            $threshold = 10000;
-        }
-
-        $settings = array(
-            'log_keep_days'            => $log_days,
-            'stats_refresh_hours'      => $refresh_hours,
-            'blacklist_auto_threshold' => $threshold,
-        );
-
-        $this->runtime->set('spider_analytics_settings', $settings);
-        $this->runtime->save_changed();
+        spider_boot($this->db);
+        spider_runtime_set('archive_keep_days', (string)$keep_days);
 
         E(0, '插件设置已保存');
     }

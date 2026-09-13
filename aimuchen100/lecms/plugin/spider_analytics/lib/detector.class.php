@@ -32,11 +32,14 @@ class spider_detector {
     }
 
     private static function ip_match_engine($ip, $engine) {
-        // 测试环境：从 spider_runtime_mock 读取
-        $rows = spider_runtime_get('ip_range_cache', array());
-        foreach ($rows as $r) {
-            if ($r['engine'] === $engine
-                && spider_cidr::match($ip, $r['cidr'])) return true;
+        // 从 spider_ip_range 表读取该引擎已启用的 IP 段并匹配
+        $pdo = spider_runtime::$pdo;
+        if (!$pdo) return false;
+        $pre = spider_runtime::$pre;
+        $stmt = $pdo->prepare("SELECT cidr FROM `{$pre}spider_ip_range` WHERE engine=? AND enabled=1");
+        $stmt->execute(array($engine));
+        while ($r = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            if (spider_cidr::match($ip, $r['cidr'])) return true;
         }
         return false;
     }

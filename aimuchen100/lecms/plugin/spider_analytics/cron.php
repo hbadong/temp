@@ -4,10 +4,26 @@
  * 行为：汇总昨日 + 归档 >90 天 + 压缩 >1 年
  * 文件锁防重入（与 admin 首访兜底互斥）
  */
-define('ROOT_PATH', true);
+define('ROOT_PATH', dirname(__FILE__) . '/../../../');
 define('APP_PATH', dirname(__FILE__) . '/../../');
-chdir(APP_PATH);
-require_once APP_PATH . 'lecms/xiunophp/xiunophp.php';
+define('FRAMEWORK_PATH', APP_PATH . 'xiunophp/');
+define('MODEL_PATH', APP_PATH . 'model/');
+define('CONFIG_PATH', APP_PATH . 'config/');
+define('PLUGIN_PATH', APP_PATH . 'plugin/');
+define('RUNTIME_PATH', ROOT_PATH . 'runcache/');
+define('NOW_TIME', time());
+// config.inc.php 直接向 $_ENV['_config'] 写入
+include CONFIG_PATH . 'config.inc.php';
+$_ENV['_time'] = time();
+define('DEBUG', 0);
+require_once FRAMEWORK_PATH . 'lib/base.func.php';
+require_once FRAMEWORK_PATH . 'lib/core.class.php';
+require_once FRAMEWORK_PATH . 'lib/model.class.php';
+require_once FRAMEWORK_PATH . 'lib/control.class.php';
+require_once FRAMEWORK_PATH . 'db/db.interface.php';
+require_once FRAMEWORK_PATH . 'db/db_pdo_mysql.class.php';
+require_once FRAMEWORK_PATH . 'cache/cache.interface.php';
+require_once FRAMEWORK_PATH . 'cache/cache_file.class.php';
 
 require_once __DIR__ . '/lib/cidr.class.php';
 require_once __DIR__ . '/lib/runtime.class.php';
