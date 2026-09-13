@@ -84,10 +84,10 @@ class ai_api_adapter {
      * @param int $count 生成数量
      * @return array 文章列表 [{title, content, tags, seo_title, seo_keywords, seo_description}, ...]
      */
-    public function generate($system_prompt, $count) {
+    public function generate($system_prompt, $count, $category_name = '') {
         // 检查 API Key 是否配置
         if(empty($this->config['api_key'])) {
-            return $this->fallback_to_template($count);
+            return $this->fallback_to_template($count, $category_name);
         }
 
         // 构建请求
@@ -123,7 +123,7 @@ class ai_api_adapter {
 
             if($this->last_error_code >= 500) {
                 // 服务不可用：降级到模板库（不再重试）
-                return $this->fallback_to_template($count);
+                return $this->fallback_to_template($count, $category_name);
             }
 
             // 其他错误（cURL 错误等）：短等待后重试
@@ -131,7 +131,7 @@ class ai_api_adapter {
         }
 
         // 全部重试失败，降级到模板库
-        return $this->fallback_to_template($count);
+        return $this->fallback_to_template($count, $category_name);
     }
 
     /**
@@ -228,22 +228,34 @@ class ai_api_adapter {
     /**
      * 降级：使用本地模板库
      */
-    private function fallback_to_template($count) {
+    private function fallback_to_template($count, $category_name = '') {
         $articles = array();
-        $templates = $this->get_template_library();
+        $templates = $this->get_template_library($category_name);
 
         $total_templates = count($templates);
         if($total_templates == 0) return $articles; // 除零保护
 
+        // C5：随机洗牌模板顺序，避免每次生成的文章标题完全相同导致 C7 去重失败
+        shuffle($templates);
+
+        $suffixes = array('精选', '推荐', '盘点', '指南', '详解', '攻略', '评测', '合集', 'Top10', '必玩');
         for($i = 0; $i < $count; $i++) {
             $template = $templates[$i % $total_templates];
+            // C5：{category} 占位符替换
+            $cat = $category_name !== '' ? $category_name : '游戏';
+            $suffix = $suffixes[($i + (int)date('s')) % count($suffixes)];
+            $title = str_replace('{category}', $cat, $template['title']);
+            // 标题加随机后缀避免 C7 全表去重
+            if(strpos($title, $suffix) === false) {
+                $title .= '：' . $suffix;
+            }
             $articles[] = array(
-                'title' => $template['title'],
-                'content' => $template['content'],
-                'tags' => $template['tags'],
-                'seo_title' => $template['seo_title'],
-                'seo_keywords' => $template['seo_keywords'],
-                'seo_description' => $template['seo_description'],
+                'title' => $title,
+                'content' => str_replace('{category}', $cat, $template['content']),
+                'tags' => str_replace('{category}', $cat, $template['tags']),
+                'seo_title' => str_replace('{category}', $cat, $template['seo_title']),
+                'seo_keywords' => str_replace('{category}', $cat, $template['seo_keywords']),
+                'seo_description' => str_replace('{category}', $cat, $template['seo_description']),
             );
         }
 
@@ -251,58 +263,75 @@ class ai_api_adapter {
     }
 
     /**
-     * 获取本地模板库（6 篇预设游戏文章模板，主题互不相同避免重复内容）
-     * REQ-03-AC6：原仅 1 篇 → 扩充为动作/RPG/休闲/竞技/独立/模拟 6 大主题
+     * 获取本地模板库（C5：分类化模板库，标题/正文支持 {category} 占位符）
+     * @param string $category_name 分类名称（用于占位符替换）
      */
-    private function get_template_library() {
+    private function get_template_library($category_name = '') {
+        // C5：模板标题/正文/SEO 均支持 {category} 占位符，运行时替换为实际分类名
         return array(
             array(
-                'title' => '2024年最受欢迎的动作游戏推荐',
-                'content' => '动作游戏一直是游戏市场上最受欢迎的类型之一。这类游戏以爽快的打击感、紧张刺激的战斗节奏和精美的画面表现著称。本期为您精选多款年度动作大作，涵盖硬核格斗、开放世界与高速跑酷等细分类型，每一款都值得亲自上手体验。无论您是追求操作极限的硬核玩家，还是享受视觉盛宴的休闲玩家，都能在榜单中找到心仪之作。',
-                'tags' => '动作,冒险,推荐',
-                'seo_title' => '2024年最受欢迎的动作游戏推荐榜单',
-                'seo_keywords' => '动作游戏,冒险游戏,游戏推荐',
-                'seo_description' => '本文为您推荐2024年最受欢迎的动作游戏，包含最新热门游戏评测与下载指引。',
+                'title' => '{category}领域年度精选：不容错过的佳作推荐',
+                'content' => '{category}作为近年来持续火热的内容方向，不断涌现出令人瞩目的新作。无论是画面表现、玩法创新还是内容深度，都有了质的飞跃。本文为您精选{category}领域多款年度佳作，从入门到高阶全面覆盖，帮助您快速找到最适合自己的选择。每款作品都有独特的亮点与适用场景，值得亲自体验。',
+                'tags' => '{category},推荐,精选',
+                'seo_title' => '{category}年度精选佳作推荐榜单',
+                'seo_keywords' => '{category},精选,推荐',
+                'seo_description' => '为您精选{category}领域年度佳作，从入门到高阶全面覆盖。',
             ),
             array(
-                'title' => '深度解析：2024年最值得投入的RPG角色扮演游戏',
-                'content' => '角色扮演游戏（RPG）为玩家提供沉浸式的世界观与自由的角色成长体系。无论是经典日式回合制，还是强调自由探索的美式开放世界，都能带来数十小时的高质量体验。本文从剧情深度、战斗系统、支线内容与画面表现四个维度，深度解析今年最值得投入时间的RPG作品，帮助您在众多新作中找到最适合自己的冒险之旅。',
-                'tags' => 'RPG,角色扮演,剧情',
-                'seo_title' => '2024年最值得投入的RPG游戏深度解析',
-                'seo_keywords' => 'RPG游戏,角色扮演,单机游戏',
-                'seo_description' => '从剧情到战斗系统深度解析2024年最值得投入的RPG角色扮演游戏，助您选择心仪佳作。',
+                'title' => '深度解析：{category}领域值得投入时间的内容',
+                'content' => '在{category}领域，优质内容总是值得投入时间去细细品味。从基础概念到进阶技巧，从经典案例到最新趋势，本文将从多个维度深度解析当前{category}领域最值得关注的方向。无论您是刚入门的新手，还是已有一定基础的爱好者，都能从中找到有价值的参考信息，帮助您在{category}的道路上走得更远。',
+                'tags' => '{category},深度解析,攻略',
+                'seo_title' => '{category}领域深度解析与值得投入的内容',
+                'seo_keywords' => '{category},深度解析,入门指南',
+                'seo_description' => '从基础到进阶深度解析{category}领域值得投入时间的方向。',
             ),
             array(
-                'title' => '休闲益智游戏精选：轻松上手，快乐加倍',
-                'content' => '在快节奏的生活中，休闲益智游戏凭借轻松的上手门槛与碎片化的游玩节奏，成为众多玩家的首选。三消、解谜、模拟经营等品类不仅缓解压力，还能锻炼思维。本文精选多款画面清新、玩法新颖的休闲佳作，无论通勤路上还是午后小憩，都能随时开启一段治愈的游戏时光。',
-                'tags' => '休闲,益智,解谜',
-                'seo_title' => '2024年休闲益智游戏精选推荐',
-                'seo_keywords' => '休闲游戏,益智游戏,解谜游戏',
-                'seo_description' => '精选2024年最受欢迎的休闲益智游戏，轻松上手、快乐加倍，适合碎片时间游玩。',
+                'title' => '新手入门指南：{category}领域从零开始的实用建议',
+                'content' => '对于刚接触{category}的朋友来说，如何快速入门是最关心的问题。本文从基础知识、工具选择、学习路径三个层面，为{category}新手提供系统化的入门建议。从常见的误区到实用的技巧，从免费资源到进阶路线，帮助您避开弯路，高效地开启{category}之旅。掌握正确的方法，入门其实并不难。',
+                'tags' => '{category},新手,入门',
+                'seo_title' => '{category}新手入门指南：从零开始的实用建议',
+                'seo_keywords' => '{category}入门,新手指南,基础教程',
+                'seo_description' => '为{category}新手提供系统化入门建议，帮助您高效开启学习之旅。',
             ),
             array(
-                'title' => '电竞时代：2024年最热门的竞技对战游戏盘点',
-                'content' => '电子竞技产业持续升温，MOBA、射击、策略等竞技类游戏不仅带来紧张刺激的对抗体验，更构建起庞大的职业赛事生态。本文为您盘点当前最热门的竞技对战游戏，从赛事规模、英雄/角色体系、平衡性与上手门槛多个角度分析，带您快速了解当前电竞版图，找到适合上分的主战场。',
-                'tags' => '电竞,竞技,对战',
-                'seo_title' => '2024年最热门的电竞竞技对战游戏盘点',
-                'seo_keywords' => '电竞游戏,竞技游戏,MOBA',
-                'seo_description' => '盘点2024年最热门的电竞竞技对战游戏，从赛事到玩法全面分析当前电竞版图。',
+                'title' => '{category}行业趋势展望：未来发展的关键方向',
+                'content' => '随着技术迭代与市场需求变化，{category}行业正迎来新一轮变革。从智能化到个性化，从跨界融合到生态构建，多个趋势正在重塑{category}的格局。本文结合行业数据与专家观点，深入剖析{category}未来发展的关键方向，帮助从业者与爱好者提前布局，把握先机。关注趋势，才能在{category}领域保持竞争力。',
+                'tags' => '{category},趋势,展望',
+                'seo_title' => '{category}行业趋势展望与未来发展关键方向',
+                'seo_keywords' => '{category}趋势,行业展望,发展方向',
+                'seo_description' => '结合数据与专家观点剖析{category}未来发展的关键方向。',
             ),
             array(
-                'title' => '独立游戏之光：那些值得一玩的小众创意之作',
-                'content' => '独立游戏凭借天马行空的创意与真诚的制作态度，常常带来超越商业大作的独特体验。像素美学、解谜叙事、音乐互动……独立开发者们不断突破游戏表达的边界。本文精心挑选多款口碑爆棚的独立游戏，它们也许画面朴素，但创意与玩法足以让人眼前一亮，是追求新鲜体验玩家的不二之选。',
-                'tags' => '独立游戏,创意,小众',
-                'seo_title' => '值得一玩的独立游戏推荐：小众创意佳作',
-                'seo_keywords' => '独立游戏,创意游戏,小众游戏',
-                'seo_description' => '推荐多款口碑爆棚的独立游戏，创意玩法与独特表达带你发现游戏艺术的另一面。',
+                'title' => '实用技巧合集：提升{category}效率的十个小方法',
+                'content' => '在{category}的日常实践中，掌握一些实用技巧可以大幅提升效率。本文整理了十个经过验证的{category}实用小方法，涵盖工具使用、流程优化、时间管理等多个方面。每个方法都配有具体操作步骤和适用场景说明，帮助您在日常{category}工作中少走弯路、事半功倍。即使是经验丰富的从业者，也能从中找到新的灵感。',
+                'tags' => '{category},技巧,效率',
+                'seo_title' => '提升{category}效率的十个实用技巧合集',
+                'seo_keywords' => '{category}技巧,效率提升,实用方法',
+                'seo_description' => '整理十个经过验证的{category}实用技巧，涵盖工具使用与流程优化。',
             ),
             array(
-                'title' => '模拟经营游戏指南：打造属于你的梦幻王国',
-                'content' => '模拟经营游戏让玩家从零开始建设属于自己的城市、农场、乐园甚至整个文明。资源规划、人口管理、产业链构建……每一步决策都考验玩家的远见与耐心。本文从新手入门到高阶运营，系统梳理多款经典模拟经营作品的核心玩法与特色，助您轻松上手，享受从无到有的建设成就感。',
-                'tags' => '模拟经营,城市建设,策略',
-                'seo_title' => '模拟经营游戏指南：从零打造梦幻王国',
-                'seo_keywords' => '模拟经营,城市建设,策略游戏',
-                'seo_description' => '系统梳理经典模拟经营游戏的入门技巧与玩法特色，助你打造属于自己的梦幻王国。',
+                'title' => '避坑指南：{category}领域常见的误区与解决方案',
+                'content' => '在{category}的学习与实践中，许多初学者甚至有经验的从业者都会陷入一些常见的误区。这些误区不仅浪费时间，还可能影响最终效果。本文总结{category}领域最常见的六大误区，并针对每个误区提供切实可行的解决方案。从认知纠偏到操作规范，帮助您在{category}的道路上走得更加稳健，避免重复踩坑。',
+                'tags' => '{category},误区,避坑',
+                'seo_title' => '{category}常见误区与解决方案避坑指南',
+                'seo_keywords' => '{category}误区,避坑指南,解决方案',
+                'seo_description' => '总结{category}领域常见误区并提供切实可行的解决方案。',
+            ),
+            array(
+                'title' => '从零到精通：{category}系统学习路径全规划',
+                'content' => '想要在{category}领域从零基础成长到精通水平，需要一套系统的学习路径。本文为您规划了完整的{category}成长路线图：第一阶段夯实基础概念，第二阶段通过实战巩固技能，第三阶段深入高阶专题。每个阶段都推荐了核心知识点、实践项目和学习资源，帮助您有计划地提升{category}能力。坚持按照路径学习，精通只是时间问题。',
+                'tags' => '{category},学习路径,系统规划',
+                'seo_title' => '{category}从零到精通的系统学习路径规划',
+                'seo_keywords' => '{category}学习,系统路径,从零到精通',
+                'seo_description' => '规划{category}完整成长路线图，从基础到高阶全面提升能力。',
+            ),
+            array(
+                'title' => '工具推荐：{category}从业者必备的高效工具箱',
+                'content' => '工欲善其事，必先利其器。在{category}的日常工作中，选择合适的工具可以事半功倍。本文精选多款{category}从业者常用的高效工具，涵盖内容创作、数据分析、协作管理等多个类别。每款工具都从核心功能、适用场景、上手难度三个维度进行评测，帮助您根据自身需求快速搭建专属的{category}工具箱，提升日常工作效率。',
+                'tags' => '{category},工具,推荐',
+                'seo_title' => '{category}从业者必备高效工具箱推荐',
+                'seo_keywords' => '{category}工具,高效推荐,工具箱',
+                'seo_description' => '精选多款{category}常用高效工具，从功能到上手难度全面评测。',
             ),
         );
     }

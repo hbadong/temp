@@ -198,8 +198,14 @@ class ai_task extends model {
         // 构建 Prompt + 调用 AI（{url} 占位符使用本批待绑定 URL）
         $prompt = $this->build_prompt($task, $urls);
         $gen_count = empty($urls) ? $limit : count($urls);
+        // C5：分类名透传给 adapter（模板库 {category} 占位符使用，未配置分类时默认"游戏"）
+        $category = '游戏';
+        if(!empty($task['category_id'])) {
+            $cat = $this->category->get((int)$task['category_id']);
+            if($cat && !empty($cat['name'])) $category = $cat['name'];
+        }
         $adapter = new ai_api_adapter($site_id, $this->db);
-        $articles = $adapter->generate($prompt, $gen_count);
+        $articles = $adapter->generate($prompt, $gen_count, $category);
 
         // B5：降级判定（未配置 API Key = 模板库内容）
         $cfg = $adapter->get_config();
