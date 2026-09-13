@@ -224,7 +224,19 @@ class ai_task_control extends admin_control {
         // 分类信息
         $cat = $this->category->get((int)$task['category_id']);
 
+        // 定时执行入口（C4）：完整地址 + md5 key，便于配置 crontab
+        $cfg = $this->kv->xget('cfg');
+        $webdomain = !empty($cfg['webdomain']) ? $cfg['webdomain'] : 'localhost';
+        $webdir = isset($cfg['webdir']) ? $cfg['webdir'] : '/';
+        if($webdir === '' || substr($webdir, -1) !== '/') $webdir = ($webdir === '' ? '' : $webdir . '/');
+        $settings = $this->ai_task->get_settings(0);
+        $cron_key = $settings['api_key'] === '' ? '' : md5($settings['api_key']);
+        $cron_url = HTTP . rtrim($webdomain, '/') . '/' . ltrim(($webdir ?: ''), '/') . 'admin/index.php?ai_task-cron-key-' . $cron_key;
+
         $this->assign_value('task', $task);
+        $this->assign_value('cron_url', $cron_url);
+        $this->assign_value('cron_key', $cron_key);
+        $this->assign_value('cron_configured', $settings['api_key'] !== '');
         $this->assign_value('site_name', $site ? $site['site_name'] : ('站点' . $site_id));
         $this->assign_value('cat_name', $cat ? $cat['name'] : ('分类' . $task['category_id']));
         $this->assign_value('log_lines', $log_lines);

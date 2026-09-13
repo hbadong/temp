@@ -61,6 +61,36 @@
                 </fieldset>
 
                 <fieldset class="layui-elem-field">
+                    <legend>定时执行入口</legend>
+                    <div class="layui-field-box">
+                        {if:!$cron_configured}
+                        <div style="color:#FF5722;">未配置 API Key，无法启用定时执行（请先在插件设置中填写 API Key）</div>
+                        {else}
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">密钥</label>
+                            <div class="layui-input-block" style="margin-left:110px;">
+                                {$cron_key}
+                                <button type="button" class="layui-btn layui-btn-xs layui-btn-normal" onclick="_copy_text('{$cron_key}')">复制</button>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">访问地址</label>
+                            <div class="layui-input-block" style="margin-left:110px;word-break:break-all;">
+                                {$cron_url}
+                                <button type="button" class="layui-btn layui-btn-xs layui-btn-normal" onclick="_copy_text('{$cron_url}')">复制</button>
+                            </div>
+                        </div>
+                        <div style="color:#999;font-size:12px;">
+                            配置 crontab 示例：<span class="layui-text" id="cron_cmd">分钟 小时 日 月 周 curl -s "{$cron_url}"</span>
+                        </div>
+                        <div style="color:#999;font-size:12px;margin-top:4px;">
+                            定时执行将自动处理所有待处理（status 0/1）任务，每任务消费一批 URL。
+                        </div>
+                        {/if}
+                    </div>
+                </fieldset>
+
+                <fieldset class="layui-elem-field">
                     <legend>执行日志（最近 {@count($log_lines)} 条，倒序）</legend>
                     <div class="layui-field-box">
                         {if:empty($log_lines)}
@@ -125,6 +155,32 @@ layui.use(['layer', 'miniTab'], function () {
     window._detail_back = function(){
         miniTab.deleteCurrentByIframe();
     };
+    window._copy_text = function(text){
+        if(navigator.clipboard && window.isSecureContext){
+            navigator.clipboard.writeText(text).then(function(){
+                layer.msg('已复制');
+            }, function(){
+                _fallback_copy(text);
+            });
+        }else{
+            _fallback_copy(text);
+        }
+    };
+    function _fallback_copy(text){
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = 0;
+        document.body.appendChild(ta);
+        ta.select();
+        try{
+            document.execCommand('copy');
+            layer.msg('已复制');
+        }catch(e){
+            layer.msg('复制失败，请手动选择文本');
+        }
+        document.body.removeChild(ta);
+    }
 });
 </script>
 </body>
