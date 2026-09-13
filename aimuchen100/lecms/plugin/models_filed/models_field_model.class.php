@@ -19,7 +19,7 @@ class models_field extends model {
 
     //系统字段
     public $_systemfield = array(
-        'id','cid','title','alias','tags','intro','pic','uid','author','source','dateline','lasttime','ip','imagenum','filenum','iscomment','comments','flags','seo_title','seo_keywords','seo_description','jumpurl','show_tpl','content'
+        'id','cid','title','alias','tags','intro','pic','uid','author','source','dateline','lasttime','ip','imagenum','filenum','iscomment','comments','flags','seo_title','seo_keywords','seo_description','jumpurl','show_tpl','content','site_id'
     );
 
     function __construct() {

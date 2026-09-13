@@ -10,6 +10,7 @@
         <table class="layui-hide" id="data-table" lay-filter="data-table-filter"></table>
 
         <script type="text/html" id="currentTableBar">
+            <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
             <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delete">删除</a>
         </script>
     </div>
@@ -93,7 +94,12 @@
         //监听每一行的操作
         table.on('tool(data-table-filter)', function (obj) {
             var data = obj.data;
-            if (obj.event === 'delete') {
+            if (obj.event === 'edit') {
+                miniTab.openNewTabByIframe({
+                    href:'index.php?models_field-edit-id-'+data.id,
+                    title:"编辑字段",
+                });
+            } else if (obj.event === 'delete') {
                 if( data.system == 1 ){
                     layer.msg('系统内置字段，不能删除！', {"icon":5});
                     return false;

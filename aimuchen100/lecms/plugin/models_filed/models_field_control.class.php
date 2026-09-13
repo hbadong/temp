@@ -54,10 +54,19 @@ class models_field_control extends admin_control {
             $id = intval( R('id','P') );
             $value = trim( R('value','P') );
 
+            // 白名单：只允许更新可内联编辑的展示类字段，避免改 field/inputtype/isbase 造成表结构不一致
+            $allow_field = array('name','tips','setting','orderby','required');
+            if( !in_array($field, $allow_field) ){
+                E(1, '该字段不允许直接编辑');
+            }
+
             $data = array(
                 'id' => $id,
                 $field => $value,
             );
+            if($field == 'orderby' || $field == 'required'){
+                $data[$field] = (int)$value;
+            }
             if(!$this->models_field->update($data)) {
                 E(1, '更新失败');
             }
@@ -67,32 +76,7 @@ class models_field_control extends admin_control {
 
     public function add(){
         if(empty($_POST)) {
-            //模型
-            $mid = max(2, (int)R('mid','G'));
-            $models = $this->models->get($mid);
-            empty($models) && $this->message(1, '模型不存在！');
-            $this->assign('models', $models);
-
-            //默认值
-            $data = array(
-                'mid'=>$mid,
-                'isbase'=>0,
-                'orderby'=>0,
-                'required'=>0,
-                'index'=>0,
-                'tips'=>''
-            );
-            $this->assign('data', $data);
-            //字段类型
-            $def = 'text';
-            $inputtype_temp = array();
-            $inputtype_arr = $this->models_field->_inputype;
-            foreach ($inputtype_arr as $k=>$v){
-                $inputtype_temp[$k] = $v['name'];
-            }
-            $inputtype = form::layui_loop('select','inputtype',$inputtype_temp,$def);
-            $this->assign('inputtype', $inputtype);
-
+            $this->assign_field_form(0, 0);
             $this->display('models_field_set.htm');
         }else{
             $mid = max(2, (int)R('mid','P'));
@@ -176,6 +160,99 @@ class models_field_control extends admin_control {
                 E(1, '添加失败！');
             }
         }
+    }
+
+    //字段编辑（展示类字段可改，表结构相关字段只读）
+    public function edit(){
+        if(empty($_POST)) {
+            $id = max(0, (int)R('id','G'));
+            empty($id) && $this->message(1, '参数错误！');
+
+            $field_row = $this->models_field->get($id);
+            empty($field_row) && $this->message(1, '字段不存在！');
+            $this->assign_field_form($id, $field_row);
+            $this->display('models_field_set.htm');
+        }else{
+            $id = intval(R('id', 'P'));
+            $field_row = $this->models_field->get($id);
+            empty($field_row) && E(1, '字段不存在！');
+
+            $data = array(
+                'id' => $id,
+                'name' => trim(R('name', 'P')),
+                'tips' => trim(R('tips', 'P')),
+                'setting' => trim(R('setting', 'P')),
+                'orderby' => intval(R('orderby', 'P')),
+                'required' => intval(R('required', 'P')),
+            );
+
+            empty($data['name']) && E(1, '显示名称不能为空！');
+
+            // 设置类字段仍校验选项格式
+            $inputtype = $field_row['inputtype'];
+            $setting_field_arr = array('radio','checkbox','select');
+            if( in_array($inputtype, $setting_field_arr) ){
+                if( empty($data['setting']) ){
+                    E(1, '单选框、多选框、下拉框，设置 选项不能为空哦！');
+                }
+                $setting_arr = explode('#',$data['setting']);
+                foreach ($setting_arr as $sv){
+                    $sv_arr = explode('=>', $sv);
+                    if(count($sv_arr) != 2){
+                        E(1, '设置值 格式不正确！');
+                    }
+                }
+            }
+
+            if(!$this->models_field->update($data)) {
+                E(1, '更新失败');
+            }
+            E(0, '保存成功');
+        }
+    }
+
+    //渲染字段表单公共逻辑（add/edit 共用）
+    protected function assign_field_form($id = 0, $field_row = array()){
+        if($id > 0 && !empty($field_row)){
+            $data = $field_row;
+            // 展示类字段默认值补齐
+            if(!isset($data['tips'])) $data['tips'] = '';
+            if(!isset($data['setting'])) $data['setting'] = '';
+            $data['orderby'] = isset($data['orderby']) ? (int)$data['orderby'] : 0;
+            $data['required'] = isset($data['required']) ? (int)$data['required'] : 0;
+            // 表结构相关字段（创建后不持久化，仅用于表单展示，编辑时置空并只读）
+            $data['length'] = '';
+            $data['index'] = 0;
+        }else{
+            $data = array(
+                'id'=>0,
+                'mid'=>max(2, (int)R('mid','G')),
+                'field'=>'',
+                'name'=>'',
+                'inputtype'=>'text',
+                'tips'=>'',
+                'setting'=>'',
+                'isbase'=>0,
+                'orderby'=>0,
+                'required'=>0,
+                'index'=>0,
+            );
+        }
+        $this->assign('data', $data);
+
+        $mid = (int)$data['mid'];
+        $models = $this->models->get($mid);
+        empty($models) && $this->message(1, '模型不存在！');
+        $this->assign('models', $models);
+
+        $inputtype_temp = array();
+        $inputtype_arr = $this->models_field->_inputype;
+        foreach ($inputtype_arr as $k=>$v){
+            $inputtype_temp[$k] = $v['name'];
+        }
+        $def = isset($data['inputtype']) && $data['inputtype'] ? $data['inputtype'] : 'text';
+        $inputtype = form::layui_loop('select','inputtype',$inputtype_temp,$def);
+        $this->assign('inputtype', $inputtype);
     }
 
     //数据表增加字段 sql

@@ -133,6 +133,7 @@ class models extends model {
 
         $sql_table = "CREATE TABLE IF NOT EXISTS {$table_cms} (
           id int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '内容ID',
+          site_id int(11) NOT NULL DEFAULT 1 COMMENT '所属站点ID',
           cid int(10) unsigned NOT NULL DEFAULT '0' COMMENT '分类ID',
           title varchar(200) NOT NULL DEFAULT '' COMMENT '标题',
           alias varchar(80) NOT NULL DEFAULT '' COMMENT 'URL别名',
@@ -158,7 +159,8 @@ class models extends model {
           PRIMARY KEY (id),
 		  KEY uid (uid),
           KEY cid_id (cid,id),
-          KEY cid_dateline (cid,dateline)
+          KEY cid_dateline (cid,dateline),
+          KEY idx_site_id (site_id)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT '{$model_name}主表';";
         $this->db->query($sql_table);
 

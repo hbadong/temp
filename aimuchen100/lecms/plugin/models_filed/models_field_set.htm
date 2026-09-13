@@ -2,7 +2,7 @@
 <div class="layuimini-container">
     <div class="layuimini-main">
         <div class="layui-card">
-            <div class="layui-card-header">【{$models['name']}模型】添加扩展字段</div>
+            <div class="layui-card-header">{if:$_GET['action']=='edit'}【{$models['name']}模型】编辑扩展字段{else}【{$models['name']}模型】添加扩展字段{/if}</div>
             <div class="layui-card-body layui-row">
                 <form class="layui-form" id="form" action="?models_field-{$_GET['action']}-ajax-1" method="post">
                     <input type="hidden" name="FORM_HASH" value="{@form_hash()}" />
@@ -18,9 +18,9 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label required">表字段名</label>
                         <div class="layui-input-inline">
-                          <input type="text" name="field" lay-verify="required" lay-reqtext="数据表字段名称不能为空" placeholder="请输入数据表字段名称" value="{$data['field']}" class="layui-input"/>
+                            <input type="text" name="field" lay-verify="required" lay-reqtext="数据表字段名称不能为空" placeholder="请输入数据表字段名称" value="{$data['field']}" class="layui-input" {if:$_GET['action']=='edit'}readonly="readonly"{/if}/>
                         </div>
-                        <div class="layui-form-mid layui-word-aux">英文字母和数字</div>
+                        <div class="layui-form-mid layui-word-aux">{if:$_GET['action']=='edit'}表字段名创建后不可修改{else}英文字母和数字{/if}</div>
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label required">类型</label>
@@ -32,7 +32,7 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">字段长度</label>
                         <div class="layui-input-inline">
-                            <input type="text" name="length" placeholder="字段长度" value="" class="layui-input"/>
+                            <input type="text" name="length" placeholder="字段长度" value="{$data['length']}" class="layui-input" {if:$_GET['action']=='edit'}readonly="readonly"{/if}/>
                         </div>
                         <div class="layui-form-mid layui-word-aux">输入字段长度</div>
                     </div>
@@ -52,10 +52,10 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">储存表</label>
                         <div class="layui-input-inline">
-                            <input type="radio" name="isbase" value="1" title="主表" {if:$data['isbase']==1}checked{/if}>
-                            <input type="radio" name="isbase" value="0" title="附表" {if:$data['isbase']==0}checked{/if}>
+                            <input type="radio" name="isbase" value="1" title="主表" {if:$data['isbase']==1}checked{/if} {if:$_GET['action']=='edit'}disabled="disabled"{/if}>
+                            <input type="radio" name="isbase" value="0" title="附表" {if:$data['isbase']==0}checked{/if} {if:$_GET['action']=='edit'}disabled="disabled"{/if}>
                         </div>
-                        <div class="layui-form-mid layui-word-aux">如果只在前台内容页调用，就选择附表。</div>
+                        <div class="layui-form-mid layui-word-aux">如果只在前台内容页调用，就选择附表。{if:$_GET['action']=='edit'}储存表创建后不可修改{/if}</div>
                     </div>
 
                     <div class="layui-form-item">
@@ -76,8 +76,8 @@
                         <label class="layui-form-label">索引</label>
                         <div class="layui-input-block">
                             <input type="radio" name="index" value="0" title="无" {if:$data['index']==0}checked{/if}>
-                            <input type="radio" name="index" value="1" title="一般索引" {if:$data['isbase']==1}checked{/if}>
-                            <input type="radio" name="index" value="2" title="唯一索引" {if:$data['isbase']==2}checked{/if}>
+                            <input type="radio" name="index" value="1" title="一般索引" {if:$data['index']==1}checked{/if}>
+                            <input type="radio" name="index" value="2" title="唯一索引" {if:$data['index']==2}checked{/if}>
                         </div>
                     </div>
                     <div class="layui-form-item">
@@ -101,6 +101,23 @@
         var layer = layui.layer, form = layui.form, miniTab = layui.miniTab;
         //监听提交
         form.on('submit(form)', function () {
+            {if:$_GET['action']=='edit'}
+            adminAjax.postform("#form",function(data){
+                var json = toJson(data);
+                if( json.err == 0 ){
+                    var icon = 1;
+                }else{
+                    var icon = 5;
+                }
+                layer.msg(json.msg, {icon: icon});
+                if(json.err==0) {
+                    setTimeout(function(){
+                        miniTab.reloadIframe('?models_field-index-mid-'+{$data['mid']});
+                        miniTab.deleteCurrentByIframe();
+                    }, 1500);
+                }
+            });
+            {else}
             layer.confirm('提交后不可修改，确认添加？', {
                 btn: ['确认','取消'] //按钮
             }, function(){
@@ -121,6 +138,7 @@
                 });
             }, function(){
             });
+            {/if}
             return false;
         });
     });
