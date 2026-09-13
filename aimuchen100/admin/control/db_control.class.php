@@ -39,6 +39,7 @@ class db_control extends admin_control{
         $id_arr = R('id_arr', 'P');
         if(!empty($id_arr) && is_array($id_arr)) {
             foreach($id_arr as $table) {
+                if(!preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*$/', $table)) continue;
                 $sql = 'OPTIMIZE TABLE `'.$table.'`';
                 $this->db->fetch_first($sql);
             }
@@ -54,6 +55,7 @@ class db_control extends admin_control{
         $id_arr = R('id_arr', 'P');
         if(!empty($id_arr) && is_array($id_arr)) {
             foreach($id_arr as $table) {
+                if(!preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*$/', $table)) continue;
                 $sql = 'REPAIR TABLE `'.$table.'`';
                 $this->db->fetch_first($sql);
             }
@@ -69,6 +71,7 @@ class db_control extends admin_control{
         $id_arr = R('id_arr', 'P');
         if(!empty($id_arr) && is_array($id_arr)) {
             foreach($id_arr as $table) {
+                if(!preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*$/', $table)) continue;
                 $sql = 'CHECK TABLE `'.$table.'`';
                 $this->db->fetch_first($sql);
             }
@@ -82,6 +85,7 @@ class db_control extends admin_control{
     public function table_structure(){
         $table = R('table', 'R');
         if($table){
+            if(!preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*$/', $table)) E(1, lang('data_error'));
             $sql = 'SHOW CREATE TABLE `'.$table.'`';
             $data = $this->db->fetch_first($sql);
             $table_structure = isset($data['Create Table']) ? $data['Create Table'] : '';

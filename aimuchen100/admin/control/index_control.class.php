@@ -94,7 +94,7 @@ class index_control extends admin_control{
                 // hook admin_index_control_login_post_error.php
 
 				// 记录密码错误日志
-				$log_password = '******'.substr($password, 6);
+				$log_password = '******';
 				log::write(lang('password_error')."：$username - $log_password", 'login_log.php');
 
 				// 记录密码错误次数

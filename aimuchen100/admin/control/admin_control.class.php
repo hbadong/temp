@@ -112,6 +112,11 @@ class admin_control extends control {
         }else{
             // hook admin_admin_control_check_user_group_purviews_before.php
 
+            //非管理员（主编/编辑等）：拦截系统管理类控制器，避免越权操作
+            $admin_only_control = array('user', 'user_group', 'plugin', 'setting', 'db', 'theme', 'tool', 'models', 'patch', 'site', 'template_manager', 'admin_url');
+            if(in_array(R('control'), $admin_only_control)) {
+                $this->message(0, lang('access_dis1'), -1);
+            }
         }
     }
 

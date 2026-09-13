@@ -108,6 +108,12 @@ class user_control extends admin_control{
             $uid = intval( R('uid','P') );
             $value = trim( R('value','P') );
 
+            // 字段白名单：防止通过字段名拼接 SQL 或越权修改敏感字段
+            $allow_field = array('golds');
+            if(!in_array($field, $allow_field)) {
+                E(1, '该字段不允许直接编辑');
+            }
+
             $user = $this->user->get($uid);
             empty($user) && E(1, lang('data_no_exists'));
 
@@ -337,6 +343,7 @@ class user_control extends admin_control{
     public function pwd(){
         // hook admin_user_control_pwd_before.php
         if( !empty($_POST) ){
+            $this->check_isadmin();
             $uid = intval( R('uid','P') );
             $newpw = trim( R('newpw','P') );
             if($err = $this->user->check_password($newpw)) {

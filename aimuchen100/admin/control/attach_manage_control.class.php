@@ -139,9 +139,12 @@ class attach_manage_control extends admin_control {
             $aid = intval( R('aid','P') );
             $value = trim( R('value','P') );
 
-            $arr = array('downloads', 'golds', 'credits');
+            $arr = array('downloads', 'golds', 'credits', 'filename');
             // hook admin_attach_manage_control_set_arr_after.php
-            if( in_array($field, $arr) ){
+            if( !in_array($field, $arr) ){
+                E(1, '该字段不允许直接编辑');
+            }
+            if( in_array($field, array('downloads', 'golds', 'credits')) ){
                 $value = (int)$value;
             }
 

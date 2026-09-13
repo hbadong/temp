@@ -68,6 +68,13 @@ class links_control extends admin_control {
             $field = trim( R('field','P') );
             $id = intval( R('id','P') );
             $value = trim( R('value','P') );
+
+            // 字段白名单：防止通过字段名拼接 SQL 或越权修改敏感字段
+            $allow_field = array('name', 'url', 'orderby');
+            if(!in_array($field, $allow_field)) {
+                E(1, '该字段不允许直接编辑');
+            }
+
             $data = array(
                 'id' => $id,
                 $field => $value,

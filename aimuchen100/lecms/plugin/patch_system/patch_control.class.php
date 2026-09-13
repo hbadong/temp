@@ -12,10 +12,23 @@ class patch_control extends admin_control {
 
     public function __construct() {
         parent::__construct();
+        $this->check_isadmin();
         $this->site_id = defined('CURRENT_SITE_ID') ? CURRENT_SITE_ID : 0;
         $this->tablepre = $_ENV['_config']['db']['master']['tablepre'];
         require_once ROOT_PATH . 'lecms/plugin/patch_system/model/patch_manager.class.php';
         require_once ROOT_PATH . 'lecms/plugin/patch_system/model/rollback_manager.class.php';
+    }
+
+    /**
+     * 校验补丁包路径必须在受控上传目录内，防止通过 file_path 参数读取任意文件
+     */
+    private function check_file_path($file_path) {
+        $upload_dir = realpath(RUNTIME_PATH . '/patch_system/uploads/');
+        $real_path = realpath($file_path);
+        if($upload_dir === false || $real_path === false || strpos($real_path, $upload_dir . DIRECTORY_SEPARATOR) !== 0) {
+            return false;
+        }
+        return $real_path;
     }
 
     /**
@@ -110,7 +123,14 @@ class patch_control extends admin_control {
     public function verify_post() {
         if (!form_submit()) $this->message(0, lang('submit_invalid'));
         $file_path = trim(R('file_path', 'P'));
-        if (empty($file_path) || !file_exists($file_path)) {
+        if (empty($file_path)) {
+            $this->message(1, '补丁包文件不存在');
+        }
+        $file_path = $this->check_file_path($file_path);
+        if ($file_path === false) {
+            $this->message(1, '补丁包文件路径不合法');
+        }
+        if (!file_exists($file_path)) {
             $this->message(1, '补丁包文件不存在');
         }
 
@@ -146,7 +166,14 @@ class patch_control extends admin_control {
     public function apply_post() {
         if (!form_submit()) $this->message(0, lang('submit_invalid'));
         $file_path = trim(R('file_path', 'P'));
-        if (empty($file_path) || !file_exists($file_path)) {
+        if (empty($file_path)) {
+            $this->message(1, '补丁包文件不存在');
+        }
+        $file_path = $this->check_file_path($file_path);
+        if ($file_path === false) {
+            $this->message(1, '补丁包文件路径不合法');
+        }
+        if (!file_exists($file_path)) {
             $this->message(1, '补丁包文件不存在');
         }
 

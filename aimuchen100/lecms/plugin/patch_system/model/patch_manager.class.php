@@ -17,14 +17,28 @@ class patch_manager {
     }
 
     /**
+     * 补丁验签密钥
+     *
+     * 使用站点 auth_key 派生 HMAC 密钥，只有掌握本站 auth_key 的补丁制作者才能生成可通过验证的补丁包。
+     * 防止攻击者构造任意 zip 覆盖站点代码。
+     *
+     * @return string|false 密钥，auth_key 为空时返回 false
+     */
+    public function get_verify_key() {
+        $auth_key = C('auth_key');
+        if(empty($auth_key)) return false;
+        return hash('sha256', $auth_key . ':lecms_patch_sign');
+    }
+
+    /**
      * 解析补丁包 ZIP 文件
      *
-     * 返回的 manifest.signature 字段被**强制重算为当前 zip 文件的整体 SHA256**，
-     * 这样调用方直接用 parse_patch 返回值走 verify_patch 即可命中校验，
-     * 避免被 manifest 内部过时签名误导（zip 容器时间戳会在每次 addFromString 后变化）。
+     * 返回 manifest 中打包者写入的原始 signature 字段（不重算）。
+     * 签名真实性由 verify_patch() 使用站点 auth_key 派生的 HMAC 密钥校验，
+     * 防止攻击者构造任意 zip 覆盖站点文件。
      *
      * @param string $zip_path ZIP 文件路径
-     * @return array manifest 数据（含重算后的 signature）
+     * @return array manifest 数据（含原始 signature）
      */
     public function parse_patch($zip_path) {
         if (!file_exists($zip_path)) {
@@ -58,9 +72,6 @@ class patch_manager {
             throw new Exception('manifest.json 格式无效，缺少必要字段');
         }
 
-        // 重算 zip 整体 SHA256 作为权威签名（verify_patch 同样用此策略）
-        $manifest['signature'] = hash('sha256', file_get_contents($zip_path));
-
         $zip->close();
         return $manifest;
     }
@@ -68,8 +79,9 @@ class patch_manager {
     /**
      * 验证补丁包签名和文件完整性
      *
-     * 签名策略：zip 整体 SHA256（与 parse_patch 重算结果一致）。
-     * 该策略实现简单且足够防篡改——攻击者修改任何 zip 条目都会改变整体字节哈希。
+     * 签名策略：使用站点 auth_key 派生的 HMAC 密钥对 zip 整体内容做签名。
+     * 攻击者无法获知站点 auth_key，构造任意 zip 也会因签名不匹配而验证失败。
+     * 同时校验 manifest 中每个文件的 MD5，防篡改。
      *
      * @param array $manifest manifest 数据
      * @param string $zip_path ZIP 文件路径
@@ -81,13 +93,17 @@ class patch_manager {
             return false;
         }
 
-        // 2. 验证签名（ZIP 文件整体 SHA256）
+        // 2. 验证签名（HMAC-SHA256，密钥派生自站点 auth_key）
+        $verify_key = $this->get_verify_key();
+        if ($verify_key === false) {
+            return false;
+        }
         $zip_content = file_get_contents($zip_path);
         if ($zip_content === false) {
             return false;
         }
-        $expected_sig = hash('sha256', $zip_content);
-        if (!hash_equals($expected_sig, $manifest['signature'])) {
+        $expected_sig = hash_hmac('sha256', $zip_content, $verify_key);
+        if (empty($manifest['signature']) || !hash_equals($expected_sig, $manifest['signature'])) {
             return false;
         }
 

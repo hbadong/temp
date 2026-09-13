@@ -48,6 +48,12 @@ class user_group_control extends admin_control{
             $groupid = intval( R('groupid','P') );
             $value = trim( R('value','P') );
 
+            // 字段白名单：防止通过字段名拼接 SQL 或越权修改敏感字段
+            $allow_field = array('groupname');
+            if(!in_array($field, $allow_field)) {
+                E(1, '该字段不允许直接编辑');
+            }
+
             $group = $this->user_group->get($groupid);
             empty($group) && E(1, lang('data_no_exists'));
 

@@ -58,6 +58,12 @@ class models_control extends admin_control {
             $mid = intval( R('mid','P') );
             $value = trim( R('value','P') );
 
+            // 字段白名单：防止通过字段名拼接 SQL 或越权修改敏感字段
+            $allow_field = array('name', 'tablename', 'index_tpl', 'cate_tpl', 'show_tpl', 'icon', 'width', 'height');
+            if(!in_array($field, $allow_field)) {
+                E(1, '该字段不允许直接编辑');
+            }
+
             if($mid == 1 && $field != 'cate_tpl'){
                 E(1, lang('page_model_edit_tpl'));
             }
