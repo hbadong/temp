@@ -9,6 +9,18 @@
 .se-form .layui-form-mid { padding: 7px 0 !important; line-height: 1.4; font-size: 12px; width: auto; }
 .se-two-col { display: flex; gap: 0 12px; }
 .se-two-col > .layui-form-item { flex: 1; min-width: 0; }
+/* 品牌图片预览 */
+.brand-url-row { display: flex; gap: 8px; align-items: center; }
+.brand-url-row .layui-input { flex: 1; }
+.brand-thumb { width: 40px; height: 40px; object-fit: contain; border: 1px dashed #e2e2e2; border-radius: 4px; flex-shrink: 0; background: #fafafa; }
+.brand-thumb[hidden] { display: none; }
+/* CSS 变量行 */
+.tv-row { display: flex; gap: 8px; align-items: center; margin-bottom: 6px; }
+.tv-row .tv-key { width: 32%; }
+.tv-row .tv-eq { color: #999; flex-shrink: 0; }
+.tv-row .tv-val { width: 32%; flex: 1; }
+.tv-row .tv-color-preview { width: 22px; height: 22px; border-radius: 4px; border: 1px solid #e2e2e2; flex-shrink: 0; cursor: pointer; }
+.tv-del { flex-shrink: 0; }
 </style>
 <div class="layuimini-container">
 	<div class="layuimini-main">
@@ -85,24 +97,48 @@
 						<div class="layui-form-item">
 							<label class="layui-form-label">Logo 地址</label>
 							<div class="layui-input-block" style="margin-left: 100px;">
-								<input type="text" name="logo_url" value="{$config['logo_url']}" autocomplete="off" placeholder="https://example.com/logo.png" class="layui-input" />
+								<div class="brand-url-row">
+									<input type="text" name="logo_url" id="logo_url" value="{$config['logo_url']}" autocomplete="off" placeholder="https://example.com/logo.png" class="layui-input" />
+									<button type="button" class="layui-btn layui-btn-sm layui-btn-primary brand-upload" data-target="logo_url" data-preview="logo_preview"><i class="layui-icon">&#xe681;</i> 上传</button>
+									<img class="brand-thumb" id="logo_preview" alt="" hidden />
+								</div>
 							</div>
 						</div>
 						<div class="layui-form-item">
 							<label class="layui-form-label">Favicon</label>
 							<div class="layui-input-block" style="margin-left: 100px;">
-								<input type="text" name="favicon_url" value="{$config['favicon_url']}" autocomplete="off" placeholder="站点图标地址" class="layui-input" />
+								<div class="brand-url-row">
+									<input type="text" name="favicon_url" id="favicon_url" value="{$config['favicon_url']}" autocomplete="off" placeholder="站点图标地址" class="layui-input" />
+									<button type="button" class="layui-btn layui-btn-sm layui-btn-primary brand-upload" data-target="favicon_url" data-preview="favicon_preview"><i class="layui-icon">&#xe681;</i> 上传</button>
+									<img class="brand-thumb" id="favicon_preview" alt="" hidden />
+								</div>
 							</div>
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label">水印地址</label>
 						<div class="layui-input-block" style="margin-left: 100px;">
-							<input type="text" name="watermark_url" value="{$config['watermark_url']}" autocomplete="off" placeholder="图片水印地址，留空表示不设置" class="layui-input" />
+							<div class="brand-url-row">
+								<input type="text" name="watermark_url" id="watermark_url" value="{$config['watermark_url']}" autocomplete="off" placeholder="图片水印地址，留空表示不设置" class="layui-input" />
+								<button type="button" class="layui-btn layui-btn-sm layui-btn-primary brand-upload" data-target="watermark_url" data-preview="watermark_preview"><i class="layui-icon">&#xe681;</i> 上传</button>
+								<img class="brand-thumb" id="watermark_preview" alt="" hidden />
+							</div>
 						</div>
 					</div>
 
 					<fieldset class="layui-elem-field layui-field-title"><legend>主题高级设置</legend></fieldset>
+					<div class="layui-form-item">
+						<label class="layui-form-label">手机主题</label>
+						<div class="layui-input-block" style="margin-left: 100px;">
+							<select name="mobile_theme" lay-search>
+								<option value="none" {if:$mobile_theme=='none'}selected{/if}>不设置（跟随全局）</option>
+								{loop:$themes $t}
+								<option value="{$t}" {if:$t==$mobile_theme}selected{/if}>{$t}</option>
+								{/loop}
+							</select>
+							<div class="layui-form-mid layui-word-aux">手机访问该站点时使用的主题；「不设置」则跟随全局手机模板配置（如已开启移动端模板）。</div>
+						</div>
+					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label">启用主题</label>
 						<div class="layui-input-block" style="margin-left: 100px;">
@@ -117,11 +153,12 @@
 						<div class="layui-input-block" style="margin-left: 100px;">
 							<div id="theme-vars-box">
 								{loop:$theme_vars $tv}
-								<div class="tv-row" style="margin-bottom: 6px;">
-									<input type="text" name="theme_var_keys[]" value="{$tv['k']}" autocomplete="off" placeholder="变量名，如 --primary-color" class="layui-input" style="width: calc(45% - 30px); display: inline-block;" />
-									&nbsp;=&nbsp;
-									<input type="text" name="theme_var_values[]" value="{$tv['v']}" autocomplete="off" placeholder="变量值，如 #1e9fff" class="layui-input" style="width: calc(55% - 60px); display: inline-block;" />
-									<a href="javascript:;" class="layui-btn layui-btn-sm layui-btn-danger tv-del" style="margin-left: 8px;">删除</a>
+								<div class="tv-row">
+									<input type="text" name="theme_var_keys[]" value="{$tv['k']}" autocomplete="off" placeholder="变量名，如 --primary-color" class="layui-input tv-key" />
+									<span class="tv-eq">=</span>
+									<input type="text" name="theme_var_values[]" value="{$tv['v']}" autocomplete="off" placeholder="变量值，如 #1e9fff" class="layui-input tv-val" />
+									<span class="tv-color-preview" title="点击预览颜色"></span>
+									<a href="javascript:;" class="layui-btn layui-btn-sm layui-btn-danger tv-del"><i class="layui-icon">&#xe640;</i></a>
 								</div>
 								{/loop}
 							</div>
@@ -142,18 +179,78 @@
 	</div>
 </div>
 <script type="text/javascript">
-layui.use(['form', 'layer', 'miniTab', 'jquery'], function(){
-	var layer = layui.layer, form = layui.form, miniTab = layui.miniTab;
+layui.use(['form', 'layer', 'miniTab', 'jquery', 'upload'], function(){
+	var layer = layui.layer, form = layui.form, miniTab = layui.miniTab, upload = layui.upload;
 
 	form.render();
 
+	// 品牌图片上传：data-target 为 URL 输入框 id，data-preview 为预览 img id
+	upload.render({
+		elem: '.brand-upload',
+		url: 'index.php?attach-upload_pic-table-site_manager',
+		field: 'upfile',
+		accept: 'images',
+		acceptMime: 'image/*',
+		multiple: false,
+		bindAction: false,
+		done: function (res) {
+			if (res.err == 1) {
+				layer.msg(res.msg, {icon: 5});
+				return;
+			}
+			var target = $(this.elem).attr('data-target');
+			var preview = $(this.elem).attr('data-preview');
+			var src = (res.data && res.data.src) ? res.data.src : '';
+			$('#' + target).val(src);
+			updateBrandPreview(target, preview, src);
+			layer.msg('上传成功', {icon: 1});
+		},
+		error: function () {
+			layer.msg('上传失败', {icon: 5});
+		}
+	});
+
+	// 回显品牌预览图
+	function updateBrandPreview(target, preview, src) {
+		var img = $('#' + preview);
+		if (src) {
+			img.attr('src', src).removeAttr('hidden');
+		} else {
+			img.attr('src', '').attr('hidden', 'hidden');
+		}
+	}
+	updateBrandPreview('logo_url', 'logo_preview', '{$config['logo_url']}');
+	updateBrandPreview('favicon_url', 'favicon_preview', '{$config['favicon_url']}');
+	updateBrandPreview('watermark_url', 'watermark_preview', '{$config['watermark_url']}');
+
+	// CSS 变量行：颜色预览块
+	function isColorLike(v) {
+		return /^(#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})|rgb|rgba|hsl|hsla)/.test(v);
+	}
+	function refreshTvPreview($row) {
+		var val = $row.find('.tv-val').val().trim();
+		var $p = $row.find('.tv-color-preview');
+		if (isColorLike(val)) {
+			$p.css('background', val).attr('title', val);
+		} else {
+			$p.css('background', '').attr('title', '点击预览颜色');
+		}
+	}
+	// 绑定现有行
+	$('#theme-vars-box .tv-row').each(function () { refreshTvPreview($(this)); });
+	// 监听值变化刷新预览
+	$(document).on('input', '.tv-row .tv-val', function () {
+		refreshTvPreview($(this).closest('.tv-row'));
+	});
+
 	// 添加 CSS 变量行
 	$('#add-var').on('click', function () {
-		var row = '<div class="tv-row" style="margin-bottom: 6px;">'
-			+ '<input type="text" name="theme_var_keys[]" value="" autocomplete="off" placeholder="变量名，如 --primary-color" class="layui-input" style="width: calc(45% - 30px); display: inline-block;" />'
-			+ '&nbsp;=&nbsp;'
-			+ '<input type="text" name="theme_var_values[]" value="" autocomplete="off" placeholder="变量值，如 #1e9fff" class="layui-input" style="width: calc(55% - 60px); display: inline-block;" />'
-			+ '<a href="javascript:;" class="layui-btn layui-btn-sm layui-btn-danger tv-del" style="margin-left: 8px;">删除</a>'
+		var row = '<div class="tv-row">'
+			+ '<input type="text" name="theme_var_keys[]" value="" autocomplete="off" placeholder="变量名，如 --primary-color" class="layui-input tv-key" />'
+			+ '<span class="tv-eq">=</span>'
+			+ '<input type="text" name="theme_var_values[]" value="" autocomplete="off" placeholder="变量值，如 #1e9fff" class="layui-input tv-val" />'
+			+ '<span class="tv-color-preview" title="点击预览颜色"></span>'
+			+ '<a href="javascript:;" class="layui-btn layui-btn-sm layui-btn-danger tv-del"><i class="layui-icon">&#xe640;</i></a>'
 			+ '</div>';
 		$('#theme-vars-box').append(row);
 	});

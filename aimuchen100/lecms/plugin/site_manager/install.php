@@ -8,6 +8,7 @@ $sql = "CREATE TABLE IF NOT EXISTS `{$tablepre}site_manager` (
     `site_name` VARCHAR(100) NOT NULL COMMENT '站点名称',
     `domain` VARCHAR(100) NOT NULL COMMENT '域名，支持 *.xxx.com 泛域名',
     `theme` VARCHAR(50) NOT NULL DEFAULT 'default' COMMENT '当前主题',
+    `sort_order` INT NOT NULL DEFAULT 0 COMMENT '排序值，数值大的在前',
     `status` TINYINT DEFAULT 1 COMMENT '状态: 1启用 0禁用 -1删除',
     `config` TEXT COMMENT '站点级JSON配置(theme_vars, override_templates等)',
     `created_at` INT UNSIGNED DEFAULT 0 COMMENT '创建时间',

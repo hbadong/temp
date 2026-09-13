@@ -159,6 +159,13 @@ class site_manager extends model {
     }
 
     /**
+     * 恢复软删除站点（status=-1 → 1，启用）
+     */
+    public function restore_site($sid) {
+        return $this->save($sid, array('status' => 1));
+    }
+
+    /**
      * 获取站点级 JSON 配置（数组形式，坏数据容错返回空数组）
      */
     public function get_config($sid) {

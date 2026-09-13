@@ -48,6 +48,17 @@ class site_control extends admin_control {
         else $status = null;
 
         list($list, $total) = $this->site_manager->get_list_page($status, $keyword, $page, $limit);
+
+        // 为每行补充主题预览图路径（存在 show.jpg 才输出，模板据此显示缩略图）
+        foreach($list as &$row) {
+            $row['theme_pic'] = '';
+            $th = ROOT_PATH . 'view/' . (isset($row['theme']) ? $row['theme'] : 'default') . '/show.jpg';
+            if(is_file($th)) {
+                $row['theme_pic'] = '../view/' . (isset($row['theme']) ? $row['theme'] : 'default') . '/show.jpg';
+            }
+        }
+        unset($row);
+
         echo json_encode(array(
             'code' => 0,
             'msg' => '',
@@ -83,11 +94,18 @@ class site_control extends admin_control {
                 $theme = $this->get_settings()['default_theme'];
             }
 
+            // 手机主题（'none' 或空=跟随全局，不写入 config）
+            $config = array();
+            $mobile_theme = trim(R('mobile_theme', 'P'));
+            if($mobile_theme !== '' && $mobile_theme !== 'none') {
+                $config['mobile_theme'] = $mobile_theme;
+            }
+
             $this->site_manager->create(array(
                 'site_name' => $site_name,
                 'domain' => $domain,
                 'theme' => $theme,
-                'config' => array(),
+                'config' => $config,
                 'status' => $this->get_settings()['default_status'],
             ));
 
@@ -156,6 +174,14 @@ class site_control extends admin_control {
                 $config['enabled_themes'] = array_values(array_map('trim', $enabled));
             } else {
                 unset($config['enabled_themes']);
+            }
+
+            // 手机主题：'none' 表示不启用手机模板（跟随全局/使用 PC 主题），留空删除该项
+            $mobile_theme = trim(R('mobile_theme', 'P'));
+            if($mobile_theme === '' || $mobile_theme === 'none') {
+                unset($config['mobile_theme']);
+            } else {
+                $config['mobile_theme'] = $mobile_theme;
             }
 
             // CSS 变量：keys/values 平行数组配对，空行丢弃
@@ -227,6 +253,14 @@ class site_control extends admin_control {
         $this->assign('themes', $themes);
         $this->assign('enabled_map', $enabled_map);
 
+        // 手机主题（未配置时为 'none'=跟随全局）
+        $mobile_theme_val = isset($config_arr['mobile_theme']) ? $config_arr['mobile_theme'] : 'none';
+        // 当前主题为 'default'（跟随全局）时，手机主题下拉默认值应显示「不设置」
+        if($site['theme'] === 'default' && !isset($config_arr['mobile_theme'])) {
+            $mobile_theme_val = 'none';
+        }
+        $this->assign('mobile_theme', $mobile_theme_val);
+
         // CSS 变量键值对列表
         $theme_vars = array();
         if(isset($config_arr['theme_vars']) && is_array($config_arr['theme_vars'])) {
@@ -296,6 +330,22 @@ class site_control extends admin_control {
         $this->site_manager->delete_site($sid);
         $this->runtime->set('site_domain_map', null);
         $this->message(0, '站点已删除', '?site-index');
+    }
+
+    /**
+     * 恢复软删除的站点（status=-1 → 1）
+     */
+    public function restore() {
+        if(!form_submit()) {
+            $this->message(1, lang('submit_invalid'));
+        }
+        $sid = (int)R('sid', 'P');
+        if($sid <= 0) {
+            $this->message(1, '无效的站点ID');
+        }
+        $this->site_manager->restore_site($sid);
+        $this->runtime->set('site_domain_map', null);
+        $this->message(0, '站点已恢复', '?site-index');
     }
 
     /**

@@ -51,13 +51,17 @@ if($sid) {
         define('CURRENT_SITE_ID', $sid);
     }
 
-    // 加载站点信息
-    $site = $this->site_manager->get($sid);
-    if($site) {
-        // 定义当前主题
-        if(!defined('CURRENT_THEME')) {
-            define('CURRENT_THEME', $site['theme']);
-        }
+        // 加载站点信息
+        $site = $this->site_manager->get($sid);
+        if($site) {
+            // 加载站点级配置（需在主题覆写前解析，手机主题取自 config['mobile_theme']）
+            $site_config = json_decode($site['config'], true);
+            if(!is_array($site_config)) $site_config = array();
+
+            // 定义当前主题
+            if(!defined('CURRENT_THEME')) {
+                define('CURRENT_THEME', $site['theme']);
+            }
 
         // 关键：把站点主题写回 _cfg['theme']。
         // 前台各控制器均以引用方式赋值 $_ENV['_theme'] = &$this->_cfg['theme']，
@@ -67,12 +71,22 @@ if($sid) {
         // 站点 theme 为 'default'（后台建站默认占位值）视为「跟随全局」，不覆写——
         // 避免老站点登记值停留在 default 时，从全局主题（kv cfg.theme，当前为 blog_finpro）
         // 意外跌落到出厂主题；用户在站点编辑中主动选择其它主题时才真正切换。
-        if(!empty($site['theme']) && $site['theme'] !== 'default') {
-            $this->_cfg['theme'] = $site['theme'];
+        //
+        // 手机模板优先级（站点级 > 全局）：
+        // 1) 站点配置了 mobile_theme：手机访问用站点手机主题（PC 端仍用站点 theme）
+        // 2) 站点未配置 mobile_theme：不覆写 theme，保留 runtime_model 全局
+        //    open_mobile_view/mobile_view 的手机模板切换行为（若全局未开，则手机也走 PC 主题）
+        $is_mobile = (function_exists('is_mobile') && is_mobile() == 1);
+        $site_theme = $site['theme'];
+        if($is_mobile && isset($site_config['mobile_theme']) && $site_config['mobile_theme'] !== '') {
+            $site_theme = $site_config['mobile_theme'];
+        }
+        if(!empty($site_theme) && $site_theme !== 'default') {
+            $this->_cfg['theme'] = $site_theme;
             // cfg['tpl'] 是 runtime 缓存的模板路径（webdir.view.{theme}/），需一并覆写，
             // 模板内 {$cfg[tpl]} 引用的静态资源才会指向站点主题目录
-            $this->_cfg['tpl'] = (isset($this->_cfg['webdir']) ? $this->_cfg['webdir'] : '/').'view/'.$site['theme'].'/';
-            $_ENV['_config']['theme'] = $site['theme'];
+            $this->_cfg['tpl'] = (isset($this->_cfg['webdir']) ? $this->_cfg['webdir'] : '/').'view/'.$site_theme.'/';
+            $_ENV['_config']['theme'] = $site_theme;
         }
 
         // 站点域名覆写：模板与 URL 生成大量使用 {$cfg[weburl]}（= HTTP.webdomain.webdir），
@@ -93,11 +107,16 @@ if($sid) {
                 'webroot'   => $this->_cfg['webroot'],
                 'weburl'    => $this->_cfg['weburl'],
             );
-        }
 
-        // 加载站点级配置
-        $site_config = json_decode($site['config'], true);
-        if(!is_array($site_config)) $site_config = array();
+            // 手机主题：若站点配置了 mobile_theme 且当前是手机访问，
+            // model 层 xget('cfg') 也应按站点手机主题解析（否则 model 生成的链接/主题
+            // 仍指向全局 mobile_view 或 PC 主题）。注意运行时覆写是最后应用（runtime_model
+            // 先做全局 mobile_view 切换，再应用 _site_override），因此这里必须覆写。
+            if($is_mobile && isset($site_config['mobile_theme']) && $site_config['mobile_theme'] !== '') {
+                $_ENV['_site_override']['theme'] = $site_config['mobile_theme'];
+                $_ENV['_site_override']['tpl'] = (isset($this->_cfg['webdir']) ? $this->_cfg['webdir'] : '/').'view/'.$site_config['mobile_theme'].'/';
+            }
+        }
 
         // 站点级 SEO 覆写：seo_title/seo_keywords/seo_description 配置后覆盖全局 kv 值。
         // 同时写入 _site_override 使 model 层（runtime_model::xget('cfg')）与控制器 _cfg 保持一致；

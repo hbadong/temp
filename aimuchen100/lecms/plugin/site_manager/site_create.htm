@@ -4,6 +4,7 @@
 .se-form .layui-form-item { margin-bottom: 6px; }
 .se-form .layui-form-label { width: 90px; padding: 7px 10px 7px 0; }
 .se-form .layui-input-inline { width: calc(100% - 100px); }
+.field-hint { display: block; color: #999; font-size: 12px; margin-top: 4px; }
 </style>
 <div class="layuimini-container">
 	<div class="layuimini-main">
@@ -38,6 +39,18 @@
 								<option value="{$t}" {if:$t=='default'}selected{/if}>{$t}</option>
 								{/loop}
 							</select>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">手机主题</label>
+						<div class="layui-input-inline">
+							<select name="mobile_theme">
+								<option value="none" selected>不设置（跟随全局）</option>
+								{loop:$themes $t}
+								<option value="{$t}">{$t}</option>
+								{/loop}
+							</select>
+							<span class="field-hint">手机访问该站点时的主题，可创建后修改</span>
 						</div>
 					</div>
 					<div class="layui-form-item">
