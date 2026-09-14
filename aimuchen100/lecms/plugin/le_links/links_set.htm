@@ -1,34 +1,44 @@
 {inc:header.htm}
+<style>
+.link-form-card { max-width: 640px; }
+.link-form-card .layui-card-header { font-weight: 600; }
+.link-form-tip { font-size: 12px; color: #999; line-height: 1.6; margin-top: 4px; }
+</style>
 <div class="layuimini-container">
 	<div class="layuimini-main">
-		<div class="layui-card">
-			<div class="layui-card-header">友情链接</div>
+		<div class="layui-card link-form-card">
+			<div class="layui-card-header">
+				<i class="layui-icon" style="color:#1E9FFF;">&#xe61b;</i> {if:!empty($data['id'])}编辑链接{else}添加链接{/if}
+			</div>
 			<div class="layui-card-body">
 				<form id="form" class="layui-form" action="?links-{$_GET['action']}-ajax-1" method="post">
 					<input type="hidden" name="FORM_HASH" value="{@form_hash()}" />
 					<input name="id" type="hidden" value="{$data['id']}" />
 					<div class="layui-form-item">
 						<label class="layui-form-label required">链接名称</label>
-						<div class="layui-input-inline">
-							<input type="text" name="title" value="{$data['name']}" autocomplete="off" placeholder="链接名称" class="layui-input" lay-verify="required" lay-reqtext="链接名称不能为空" />
+						<div class="layui-input-block">
+							<input type="text" name="title" value="{$data['name']}" autocomplete="off" placeholder="例如：XiuNophp 官网" class="layui-input" lay-verify="required" lay-reqtext="链接名称不能为空" />
+							<div class="link-form-tip">用于后台与前端展示的链接标题</div>
 						</div>
 					</div>
 					<div class="layui-form-item">
-						<label class="layui-form-label required">链接</label>
+						<label class="layui-form-label required">链接地址</label>
 						<div class="layui-input-block">
-							<input type="text" name="url" value="{$data['url']}" autocomplete="off" placeholder="链接" class="layui-input" lay-verify="required" lay-reqtext="链接不能为空" />
+							<input type="text" name="url" value="{$data['url']}" autocomplete="off" placeholder="https://example.com 或 /page.html" class="layui-input" lay-verify="required" lay-reqtext="链接不能为空" />
+							<div class="link-form-tip">支持 http(s):// 外部链接、// 协议相对链接、/ 站内相对路径</div>
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label">排序值</label>
-						<div class="layui-input-inline">
-							<input type="number" name="orderby" value="{$data['orderby']}" autocomplete="off" placeholder="排序值" class="layui-input" />
+						<div class="layui-input-block">
+							<input type="number" name="orderby" value="{@isset($data['orderby']) ? $data['orderby'] : 0}" autocomplete="off" placeholder="排序值，越小越靠前" class="layui-input" />
+							<div class="link-form-tip">数字越小越靠前展示，留空默认为 0</div>
 						</div>
 					</div>
 
-					<div class="layui-form-item">
+					<div class="layui-form-item" style="margin-top:24px;">
 						<div class="layui-input-block">
-							<button class="layui-btn" lay-submit lay-filter="form">提交</button>
+							<button class="layui-btn" lay-submit lay-filter="form"><i class="layui-icon">&#xe605;</i> 保存</button>
 							<a class="layui-btn layui-btn-primary" href="?links-index">返回</a>
 						</div>
 					</div>
@@ -46,11 +56,7 @@
 		form.on('submit(form)', function () {
 			adminAjax.postform('#form',function (data) {
 				var json = toJson(data);
-				if( json.err == 0 ){
-					var icon = 1;
-				}else{
-					var icon = 5;
-				}
+				var icon = json.err == 0 ? 1 : 5;
 				layer.msg(json.msg, {icon: icon});
 				if(json.err==0) {
 					setTimeout(function(){
