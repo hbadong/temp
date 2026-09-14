@@ -15,7 +15,9 @@
 .settings-actions .layui-btn + .layui-btn { margin-left: 8px; }
 .field-hint { display: block; color: #999; font-size: 12px; margin-top: 4px; }
 .stat-cards { display: flex; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
-.stat-card { flex: 1; min-width: 120px; background: #f8f9fb; border-radius: 6px; padding: 10px 14px; }
+.stat-card { flex: 1; min-width: 120px; background: #f8f9fb; border-radius: 6px; padding: 10px 14px; cursor: pointer; transition: box-shadow .15s ease, transform .15s ease; border: 1px solid transparent; }
+.stat-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,.08); border-color: #dbe4f0; }
+.stat-card.active { border-color: #1E9FFF; background: #f0f7ff; }
 .stat-card .num { font-size: 22px; font-weight: 700; color: #1E9FFF; }
 .stat-card .lbl { font-size: 12px; color: #888; margin-top: 2px; }
 @media (max-width: 900px) { .settings-grid { grid-template-columns: 1fr; } }
@@ -37,14 +39,14 @@
 			<div class="layui-tab-content">
 				<!-- Tab 1：功能（任务列表） -->
 				<div class="layui-tab-item layui-show">
-					<!-- C9 统计卡片 -->
+					<!-- C9 统计卡片（点击筛选对应状态，文章卡跳统计看板） -->
 					<div class="stat-cards">
-						<div class="stat-card"><div class="num">{$stats['articles']}</div><div class="lbl">已生成文章</div></div>
-						<div class="stat-card"><div class="num">{$stats['total']}</div><div class="lbl">任务总数</div></div>
-						<div class="stat-card"><div class="num">{$stats['pending']}</div><div class="lbl">待处理</div></div>
-						<div class="stat-card"><div class="num">{$stats['running']}</div><div class="lbl">处理中</div></div>
-						<div class="stat-card"><div class="num" style="color:#16baaa">{$stats['done']}</div><div class="lbl">已完成</div></div>
-						<div class="stat-card"><div class="num" style="color:#ff5722">{$stats['failed']}</div><div class="lbl">失败</div></div>
+						<div class="stat-card" data-status="article" title="查看统计看板"><div class="num">{$stats['articles']}</div><div class="lbl">已生成文章</div></div>
+						<div class="stat-card" data-status="" title="查看全部任务"><div class="num">{$stats['total']}</div><div class="lbl">任务总数</div></div>
+						<div class="stat-card" data-status="1" title="筛选：待处理"><div class="num">{$stats['pending']}</div><div class="lbl">待处理</div></div>
+						<div class="stat-card" data-status="2" title="筛选：处理中"><div class="num">{$stats['running']}</div><div class="lbl">处理中</div></div>
+						<div class="stat-card" data-status="3" title="筛选：已完成"><div class="num" style="color:#16baaa">{$stats['done']}</div><div class="lbl">已完成</div></div>
+						<div class="stat-card" data-status="4" title="筛选：失败"><div class="num" style="color:#ff5722">{$stats['failed']}</div><div class="lbl">失败</div></div>
 					</div>
 
 					<!-- B5 API 配置状态提示 -->
@@ -59,12 +61,13 @@
 							AI 任务列表
 							<span style="float:right">
 								<a href="javascript:;" id="btn-open-stats" class="layui-btn layui-btn-sm layui-btn-normal"><i class="layui-icon">&#xe62c;</i> 统计看板</a>
+								<a href="javascript:;" id="btn-batch-del" class="layui-btn layui-btn-sm layui-btn-danger"><i class="layui-icon">&#xe640;</i> 批量删除</a>
 								<a href="javascript:;" id="btn-create-task" class="layui-btn layui-btn-sm layui-btn-primary"><i class="layui-icon">&#xe654;</i> 创建任务</a>
 							</span>
 						</div>
 						<div class="layui-card-body">
 							<!-- B4 筛选 -->
-							<form class="layui-form layui-form-pane" method="get" action="index.php" style="margin-bottom:10px;">
+							<form class="layui-form layui-form-pane" method="get" action="index.php" id="filter-form" style="margin-bottom:10px;">
 								<input type="hidden" name="ai_task-index" value="1">
 								<div class="layui-inline">
 									<select name="site_id" lay-filter="filter-site">
@@ -92,21 +95,25 @@
 							<table class="layui-table" lay-skin="line">
 								<thead>
 									<tr>
-										<th>ID</th>
+										<th style="width:34px;"><input type="checkbox" lay-skin="primary" lay-filter="check-all" title="全选"></th>
+										<th style="width:56px;">ID</th>
 										<th>站点</th>
 										<th>分类</th>
-										<th>进度</th>
+										<th>创建人</th>
+										<th style="width:190px;">进度</th>
 										<th>状态</th>
 										<th>创建时间</th>
-										<th>操作</th>
+										<th style="width:170px;">操作</th>
 									</tr>
 								</thead>
 								<tbody>
 									{loop:$tasks $task}
 									<tr id="task-row-{$task['id']}">
+										<td><input type="checkbox" class="task-check" lay-skin="primary" value="{$task['id']}" lay-filter="task-check"></td>
 										<td>{$task['id']}</td>
 										<td>{@isset($site_names[$task['site_id']]) ? $site_names[$task['site_id']] : ('站点' . $task['site_id'])}</td>
-										<td>{$task['category_id']}</td>
+										<td>{@isset($category_names[$task['category_id']]) ? $category_names[$task['category_id']] : ('分类' . $task['category_id'])}</td>
+										<td>{@isset($creator_names[$task['creator_uid']]) ? $creator_names[$task['creator_uid']] : 'AI内容工厂'}</td>
 										<td>
 											<span id="task-progress-{$task['id']}">{$task['success']}+{$task['fail']}/{$task['total']}</span>
 											<div class="layui-progress layui-progress-big" lay-filter="bar-{$task['id']}" style="width:110px;margin-top:3px;" lay-showpercent="true">
@@ -118,13 +125,18 @@
 											{if:$task['status']==1}<span class="layui-badge layui-bg-blue">处理中</span>{/if}
 											{if:$task['status']==2}<span class="layui-badge layui-bg-green">完成</span>{/if}
 											{if:$task['status']==3}<span class="layui-badge layui-bg-red">失败</span>{/if}
+											{if:$task['exec_lock']==1}<span class="layui-badge layui-bg-orange">锁定中</span>{/if}
 										</td>
 										<td>{$task['created_at']}</td>
 										<td>
+											{if:$task['exec_lock']==1}
+											<a href="javascript:;" class="layui-btn layui-btn-xs layui-btn-warm" onclick="unlock_task({$task['id']})">解锁</a>
+											{else}
 											{if:$task['status'] != 2}
 											<a href="javascript:;" class="layui-btn layui-btn-xs" onclick="exec_task({$task['id']})">{if:$task['status']==0}执行{else}继续{/if}</a>
 											{if:$task['status'] == 3}
 											<a href="javascript:;" class="layui-btn layui-btn-xs layui-btn-warm" onclick="reset_task({$task['id']})">重跑</a>
+											{/if}
 											{/if}
 											{/if}
 											<a href="javascript:;" class="layui-btn layui-btn-xs layui-btn-normal" onclick="detail_task({$task['id']})">详情</a>
@@ -133,7 +145,7 @@
 									</tr>
 									{/loop}
 									{if:empty($tasks)}
-									<tr><td colspan="7" style="text-align:center">暂无任务数据</td></tr>
+									<tr><td colspan="9" style="text-align:center">暂无任务数据</td></tr>
 									{/if}
 								</tbody>
 							</table>
@@ -280,8 +292,63 @@
 <script>
 layui.use(['layer', 'element', 'form', 'miniTab'], function(){
 	var layer = layui.layer, element = layui.element, form = layui.form, miniTab = layui.miniTab, $ = layui.jquery;
-	form.render();
-	element.render('progress');
+ 	form.render();
+ 	element.render('progress');
+ 	// 统计卡片点击筛选（文章卡跳统计看板），当前筛选高亮
+ 	var curStatus = "{@isset($filter_status) ? $filter_status : 0}";
+ 	document.querySelectorAll('.stat-card[data-status]').forEach(function(card){
+ 		if(String(card.getAttribute('data-status')) === String(curStatus)) card.classList.add('active');
+ 		card.addEventListener('click', function(){
+ 			var st = card.getAttribute('data-status');
+ 			if(st === 'article'){ miniTab.openNewTabByIframe({href: "index.php?ai_task-stats-1", title: "AI 统计看板"}); return; }
+ 			var qs = [];
+ 			if(st !== '') qs.push('status=' + st);
+ 			var cur = document.querySelector('#filter-form [name=site_id]');
+ 			if(cur && cur.value && cur.value !== '0') qs.push('site_id=' + cur.value);
+ 			var kw = document.querySelector('#filter-form [name=keyword]');
+ 			if(kw && kw.value) qs.push('keyword=' + encodeURIComponent(kw.value));
+ 			location.href = 'index.php?ai_task-index' + (qs.length ? '&' + qs.join('&') : '');
+ 		});
+ 	});
+ 	// 下拉直接筛选（选中即提交，免点筛选按钮）
+ 	var submitFilter = function(){ document.getElementById('filter-form').submit(); };
+ 	form.on('select(filter-site)', submitFilter);
+ 	form.on('select(filter-status)', submitFilter);
+ 	// 全选 / 单选联动
+ 	form.on('checkbox(check-all)', function(data){
+ 		var checked = data.elem.checked;
+ 		document.querySelectorAll('.task-check').forEach(function(el){ el.checked = checked; form.render('checkbox'); });
+ 	});
+ 	form.on('checkbox(task-check)', function(){
+ 		var all = document.querySelectorAll('.task-check');
+ 		var sel = 0;
+ 		all.forEach(function(el){ if(el.checked) sel++; });
+ 		var head = document.querySelector('input[lay-filter=check-all]');
+ 		if(head){ head.checked = (sel > 0 && sel === all.length); form.render('checkbox'); }
+ 	});
+ 	// 批量删除
+ 	document.getElementById('btn-batch-del').onclick = function(){
+ 		var ids = [];
+ 		document.querySelectorAll('.task-check:checked').forEach(function(el){ ids.push(el.value); });
+ 		if(ids.length === 0){ layer.msg('请先勾选要删除的任务', {icon: 5}); return; }
+ 		layer.confirm('确定删除选中的 ' + ids.length + ' 个任务吗？（执行中的将跳过）', {icon: 3, title: '删除确认'}, function(){
+ 			adminAjax.postd("index.php?ai_task-batch_delete-ajax-1", {"id_arr": ids, "FORM_HASH": "{@form_hash()}"}, function(data){
+ 				var json = toJson(data);
+ 				layer.msg(json.msg, {icon: json.err == 0 ? 1 : 5});
+ 				if(json.err == 0){ setTimeout(function(){ location.reload(); }, 900); }
+ 			});
+ 		});
+ 	};
+ 	// 手动解除执行锁
+ 	window.unlock_task = function(task_id){
+ 		layer.confirm('确定解除该任务的执行锁？（若确有其他进程正在执行请勿操作）', {icon: 3, title: '解锁确认'}, function(){
+ 			adminAjax.postd("index.php?ai_task-unlock-ajax-1", {"task_id": task_id, "FORM_HASH": "{@form_hash()}"}, function(data){
+ 				var json = toJson(data);
+ 				layer.msg(json.msg, {icon: json.err == 0 ? 1 : 5});
+ 				if(json.err == 0){ setTimeout(function(){ location.reload(); }, 800); }
+ 			});
+ 		});
+ 	};
 	// 旧设置入口重定向时自动切换 tab
 	{if:$tab=='settings'}
 	element.tabChange('main', 'settings');
@@ -360,8 +427,10 @@ layui.use(['layer', 'element', 'form', 'miniTab'], function(){
 					window._exec_running[task_id] = false;
 					return;
 				}
-				// 更新进度 UI
+				// 更新进度 UI（文本 + layui 进度条实时刷新）
+				var pct = json.total > 0 ? Math.round((json.success + json.fail) / json.total * 100) : 0;
 				$("#task-progress-" + task_id).text(json.success + "+" + json.fail + "/" + json.total);
+				element.progress('bar-' + task_id, pct);
 				layer.close(loadIndex);
 				if(json.done){
 					layer.msg(json.msg + '，任务完成', {icon: 1, time: 1500}, function(){

@@ -141,8 +141,12 @@ class ai_task extends model {
         $task_id = (int)$task_id;
         $tablepre = $_ENV['_config']['db']['master']['tablepre'];
 
-        // B3 并发锁：抢占执行权（exec_lock 0→1），失败说明已有执行在进行
-        $n = $this->db->exec("UPDATE `{$tablepre}ai_task` SET exec_lock=1 WHERE id={$task_id} AND exec_lock=0");
+        // B3 并发锁：抢占执行权（exec_lock 0→1），失败说明已有执行在进行。
+        // 僵死锁恢复：exec_lock=1 且 updated_at 距今超过 15 分钟（进程被 PHP 超时/崩溃中断）
+        // 视为死锁，允许抢占，避免任务永久卡在"处理中"无法执行/删除。
+        // 注意：SET 必须带 updated_at=NOW() —— 抢占"旧锁"时 exec_lock 本已是 1，
+        // 仅 SET exec_lock=1 无字段变化，MySQL 受影响行数为 0 会误判为 locked。
+        $n = $this->db->exec("UPDATE `{$tablepre}ai_task` SET exec_lock=1, updated_at=NOW() WHERE id={$task_id} AND (exec_lock=0 OR (exec_lock=1 AND updated_at < DATE_SUB(NOW(), INTERVAL 15 MINUTE)))");
         if($n <= 0) {
             return array('locked' => true, 'success' => 0, 'fail' => 0, 'done' => false, 'degraded' => false);
         }

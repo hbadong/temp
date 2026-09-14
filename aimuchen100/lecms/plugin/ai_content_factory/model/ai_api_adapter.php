@@ -80,27 +80,52 @@ class ai_api_adapter {
 
     /**
      * 批量生成文章
+     *
+     * 拆批：单次 API 请求最多生成 2 篇，避免 max_tokens 截断导致整批解析失败后全部降级。
+     * 单个子批失败（重试耗尽）用本地模板库补齐该批数量，保证产出数量与任务 total 一致。
+     *
      * @param string $system_prompt 系统提示词
      * @param int $count 生成数量
      * @return array 文章列表 [{title, content, tags, seo_title, seo_keywords, seo_description}, ...]
      */
     public function generate($system_prompt, $count, $category_name = '') {
+        $count = max(1, (int)$count);
         // 检查 API Key 是否配置
         if(empty($this->config['api_key'])) {
             return $this->fallback_to_template($count, $category_name);
         }
 
-        // 构建请求
+        $per_request = 2;  // 单次请求最多生成篇数（2048 max_tokens 约合 1-2 篇长文）
+        $articles = array();
+        for($offset = 0; $offset < $count; $offset += $per_request) {
+            $n = min($per_request, $count - $offset);
+            $batch = $this->generate_request($system_prompt, $n, $category_name);
+            if(empty($batch)) {
+                // 子批彻底失败：以模板库补齐，保证数量
+                $batch = $this->fallback_to_template($n, $category_name);
+            }
+            foreach($batch as $a) {
+                $articles[] = $a;
+            }
+        }
+
+        return $articles;
+    }
+
+    /**
+     * 单次 API 请求生成指定数量的文章（含重试/退避/降级判定）
+     * @return array 文章列表；彻底失败时返回空数组（由上层补齐模板库）
+     */
+    private function generate_request($system_prompt, $count, $category_name = '') {
         $url = rtrim($this->config['api_base_url'], '/') . '/chat/completions';
 
         $messages = array(
             array('role' => 'system', 'content' => $system_prompt),
-            array('role' => 'user', 'content' => "请生成 {$count} 篇游戏相关的文章，每篇包含标题、正文、标签和SEO元数据。输出JSON数组格式。")
+            array('role' => 'user', 'content' => "请生成 {$count} 篇" . ($category_name !== '' ? $category_name . '领域' : '') . "相关的文章，每篇包含标题、正文、标签和SEO元数据。输出JSON数组格式。")
         );
 
         // 重试机制（次数取配置 max_retries，A6：429 用指数退避替代长 sleep 阻塞）
         $max_retries = max(0, (int)$this->config['max_retries']);
-        $last_articles = array();
         for($i = 0; $i <= $max_retries; $i++) {
             $response = $this->call_api($url, $messages);
 
@@ -110,7 +135,6 @@ class ai_api_adapter {
                     return $articles;
                 }
                 // 200 但解析出空数组：视为无效响应，继续重试
-                $last_articles = array();
                 continue;
             }
 
@@ -121,17 +145,12 @@ class ai_api_adapter {
                 continue;
             }
 
-            if($this->last_error_code >= 500) {
-                // 服务不可用：降级到模板库（不再重试）
-                return $this->fallback_to_template($count, $category_name);
-            }
-
-            // 其他错误（cURL 错误等）：短等待后重试
+            // 其他错误（cURL 错误、HTTP 4xx/5xx 等）：短等待后重试
             if($i < $max_retries) sleep(1);
         }
 
-        // 全部重试失败，降级到模板库
-        return $this->fallback_to_template($count, $category_name);
+        // 全部重试失败，返回空（由上层降级补齐）
+        return array();
     }
 
     /**
@@ -197,6 +216,10 @@ class ai_api_adapter {
 
         // 尝试解析 JSON 数组
         $articles = json_decode($trimmed, true);
+        // 容错：AI 常在 JSON 前后附带解释文字，尝试提取首个 [ ... ] 片段
+        if(!is_array($articles) && preg_match('/\[\s*\{.*\}\s*\]/s', $trimmed, $m)) {
+            $articles = json_decode(trim($m[0]), true);
+        }
         if(!is_array($articles)) {
             return array(); // 非法 JSON
         }

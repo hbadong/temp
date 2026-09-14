@@ -10,7 +10,21 @@
 <div class="layuimini-container">
     <div class="layuimini-main">
         <div class="layui-card">
-            <div class="layui-card-header">任务详情 #{$task['id']}</div>
+            <div class="layui-card-header">任务详情 #{$task['id']}
+                <span style="float:right;">
+                    {if:$task['exec_lock']==1}
+                    <button type="button" class="layui-btn layui-btn-xs layui-btn-warm" onclick="_unlock()">解除锁定</button>
+                    {else}
+                    {if:$task['status'] != 2}
+                    <button type="button" class="layui-btn layui-btn-xs" onclick="_exec()">{if:$task['status']==0}执行{else}继续{/if}</button>
+                    {/if}
+                    {if:$task['status'] == 3}
+                    <button type="button" class="layui-btn layui-btn-xs layui-btn-warm" onclick="_reset()">重跑</button>
+                    {/if}
+                    {/if}
+                    <button type="button" class="layui-btn layui-btn-xs layui-btn-normal" onclick="_refresh()">刷新</button>
+                </span>
+            </div>
             <div class="layui-card-body">
                 <fieldset class="layui-elem-field">
                     <legend>基本信息</legend>
@@ -23,6 +37,10 @@
                             <div class="layui-form-item">
                                 <label class="layui-form-label">分类</label>
                                 <div class="layui-input-block">{$cat_name}</div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">创建人</label>
+                                <div class="layui-input-block">{$creator_name}</div>
                             </div>
                             <div class="layui-form-item">
                                 <label class="layui-form-label">进度</label>
@@ -151,9 +169,53 @@
 </div>
 <script type="text/javascript">
 layui.use(['layer', 'miniTab'], function () {
-    var layer = layui.layer, miniTab = layui.miniTab;
+    var layer = layui.layer, miniTab = layui.miniTab, $ = layui.jquery;
     window._detail_back = function(){
         miniTab.deleteCurrentByIframe();
+    };
+    window._refresh = function(){ location.reload(); };
+    // 执行（单批轮询，可中途关闭停止）
+    window._exec = function(){
+        var task_id = parseInt('{$task['id']}');
+        var loadIndex = layer.load(1, {shade: [0.1, '#000']});
+        var step = function(){
+            $.post("index.php?ai_task-execute-ajax-1", {"task_id": task_id}, function(data){
+                var json = toJson(data);
+                if(json.err != 0){
+                    layer.close(loadIndex);
+                    layer.msg(json.msg, {icon: 5});
+                    return;
+                }
+                layer.close(loadIndex);
+                if(json.done){
+                    layer.msg(json.msg + '，任务完成', {icon: 1, time: 1500}, function(){ location.reload(); });
+                }else{
+                    layer.msg(json.msg, {icon: 1, time: 800});
+                    setTimeout(step, 1000);
+                }
+            });
+        };
+        layer.confirm('开始执行任务？（分批执行，可中途关闭弹窗停止）', {icon: 3, title: '执行确认'}, function(index){
+            layer.close(index);
+            step();
+        });
+    };
+    window._reset = function(){
+        layer.confirm('确定重跑该失败任务？将清空失败计数并保留已成功部分。', {icon: 3, title: '重跑确认'}, function(){
+            adminAjax.postd("index.php?ai_task-reset-ajax-1", {"task_id": "{$task['id']}", "FORM_HASH": "{@form_hash()}"}, function(){
+                layer.msg('已重置，可重新执行');
+                setTimeout(function(){ location.reload(); }, 800);
+            });
+        });
+    };
+    window._unlock = function(){
+        layer.confirm('确定解除该任务的执行锁？（若确有其他进程正在执行请勿操作）', {icon: 3, title: '解锁确认'}, function(){
+            adminAjax.postd("index.php?ai_task-unlock-ajax-1", {"task_id": "{$task['id']}", "FORM_HASH": "{@form_hash()}"}, function(data){
+                var json = toJson(data);
+                layer.msg(json.msg, {icon: json.err == 0 ? 1 : 5});
+                if(json.err == 0){ setTimeout(function(){ location.reload(); }, 800); }
+            });
+        });
     };
     window._copy_text = function(text){
         if(navigator.clipboard && window.isSecureContext){

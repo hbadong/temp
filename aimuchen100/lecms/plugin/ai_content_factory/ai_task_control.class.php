@@ -62,6 +62,15 @@ class ai_task_control extends admin_control {
         $srow = $this->db->fetch_first("SELECT COUNT(*) c FROM `{$pre}cms_article` WHERE source='AI内容工厂'");
         $stats['articles'] = $srow ? (int)$srow['c'] : 0;
 
+        // 分类名映射（列表分类列显示名称而非 ID）
+        $category_names = array();
+        $cat_rows = $this->db->fetch_all("SELECT cid, name FROM `{$pre}category`");
+        foreach($cat_rows as $c) $category_names[(int)$c['cid']] = $c['name'];
+        // 创建人名映射（author 优先，回退 username）
+        $creator_names = array();
+        $user_rows = $this->db->fetch_all("SELECT uid, username, author FROM `{$pre}user`");
+        foreach($user_rows as $u) $creator_names[(int)$u['uid']] = ($u['author'] !== '' ? $u['author'] : $u['username']);
+
         // A1：配置唯一来源 ai_config 表（C8：site 参数指定站点级配置）
         $cfg_site = (int)R('site', 'R');
         $settings = $this->ai_task->get_settings($cfg_site);
@@ -86,6 +95,8 @@ class ai_task_control extends admin_control {
         $this->assign_value('tasks', $tasks);
         $this->assign_value('sites', $sites);
         $this->assign_value('site_names', $site_names);
+        $this->assign_value('category_names', $category_names);
+        $this->assign_value('creator_names', $creator_names);
         $this->assign_value('total', $total);
         $this->assign_value('settings', $settings);
         $this->assign_value('stats', $stats);
@@ -109,8 +120,8 @@ class ai_task_control extends admin_control {
             $site_names[$site['sid']] = $site['site_name'];
         }
 
-        // 各站点任务聚合（任务数/生成成功数/失败数）
-        $rows = $this->db->fetch_all("SELECT site_id, COUNT(*) t, SUM(success) ok, SUM(fail) f FROM `{$pre}ai_task` GROUP BY site_id");
+        // 各站点任务聚合（任务数/状态细分/生成成功数/失败数）
+        $rows = $this->db->fetch_all("SELECT site_id, COUNT(*) t, SUM(status=0) p, SUM(status=1) r, SUM(success) ok, SUM(fail) f FROM `{$pre}ai_task` GROUP BY site_id");
         $per_site = array();
         foreach($rows as $r) {
             $sid = (int)$r['site_id'];
@@ -120,6 +131,8 @@ class ai_task_control extends admin_control {
                 'site_id' => $sid,
                 'site_name' => isset($site_names[$sid]) ? $site_names[$sid] : ('站点#' . $sid),
                 'tasks' => (int)$r['t'],
+                'pending' => (int)$r['p'],
+                'running' => (int)$r['r'],
                 'ok' => $ok,
                 'fail' => $f,
                 'total_gen' => $ok + $f,
@@ -139,7 +152,7 @@ class ai_task_control extends admin_control {
                 $per_site[$sid] = array(
                     'site_id' => $sid,
                     'site_name' => isset($site_names[$sid]) ? $site_names[$sid] : ('站点#' . $sid),
-                    'tasks' => 0, 'ok' => 0, 'fail' => 0, 'total_gen' => 0, 'rate' => 0,
+                    'tasks' => 0, 'pending' => 0, 'running' => 0, 'ok' => 0, 'fail' => 0, 'total_gen' => 0, 'rate' => 0,
                     'articles' => (int)$r['c'],
                 );
             }
@@ -324,6 +337,13 @@ class ai_task_control extends admin_control {
         // 分类信息
         $cat = $this->category->get((int)$task['category_id']);
 
+        // 创建人名称（author 优先，回退 username）
+        $creator_name = 'AI内容工厂';
+        if((int)$task['creator_uid'] > 0) {
+            $crow = $this->db->fetch_first("SELECT username, author FROM `{$pre}user` WHERE uid=" . (int)$task['creator_uid'] . " LIMIT 1");
+            if($crow) $creator_name = ($crow['author'] !== '' ? $crow['author'] : $crow['username']);
+        }
+
         // 定时执行入口（C4）：完整地址 + md5 key，便于配置 crontab
         $cfg = $this->kv->xget('cfg');
         $webdomain = !empty($cfg['webdomain']) ? $cfg['webdomain'] : 'localhost';
@@ -339,6 +359,7 @@ class ai_task_control extends admin_control {
         $this->assign_value('cron_configured', $settings['api_key'] !== '');
         $this->assign_value('site_name', $site ? $site['site_name'] : ('站点' . $site_id));
         $this->assign_value('cat_name', $cat ? $cat['name'] : ('分类' . $task['category_id']));
+        $this->assign_value('creator_name', $creator_name);
         $this->assign_value('log_lines', $log_lines);
         $this->assign_value('articles', $articles);
         $this->assign_value('sites', $sites);
@@ -365,6 +386,50 @@ class ai_task_control extends admin_control {
             E(1, '删除失败');
         }
         E(0, '任务已删除');
+    }
+
+    /**
+     * 批量删除任务（执行中的跳过）
+     */
+    public function batch_delete() {
+        if(!form_submit()) {
+            E(1, lang('submit_invalid'));
+        }
+        $id_arr = R('id_arr', 'P');
+        if(empty($id_arr) || !is_array($id_arr)) {
+            E(1, '请选择要删除的任务');
+        }
+        $n = 0;
+        foreach($id_arr as $tid) {
+            $tid = (int)$tid;
+            if($tid <= 0) continue;
+            $task = $this->ai_task->get($tid);
+            if($task && (int)$task['exec_lock'] === 1) continue;
+            if($this->ai_task->delete($tid)) $n++;
+        }
+        E(0, '已删除 ' . $n . ' 个任务' . ($n < count($id_arr) ? '（执行中的已跳过）' : ''));
+    }
+
+    /**
+     * 手动解除任务执行锁（进程被杀/超时遗留的僵死锁）
+     */
+    public function unlock() {
+        if(!form_submit()) {
+            E(1, lang('submit_invalid'));
+        }
+        $task_id = (int)R('task_id', 'P');
+        if($task_id <= 0) {
+            E(1, '无效的任务 ID');
+        }
+        $task = $this->ai_task->get($task_id);
+        if(!$task) {
+            E(1, '任务不存在');
+        }
+        $this->ai_task->save($task_id, array(
+            'exec_lock' => 0,
+            'updated_at' => date('Y-m-d H:i:s', $_ENV['_time']),
+        ));
+        E(0, '已解除执行锁');
     }
 
     /**
