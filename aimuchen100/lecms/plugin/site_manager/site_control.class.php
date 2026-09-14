@@ -364,6 +364,46 @@ class site_control extends admin_control {
     }
 
     /**
+     * 批量启用/禁用站点
+     *
+     * action=enable：status 置 1（含软删除的站点一并恢复启用）
+     * action=disable：仅对当前启用（status=1）的站点置 0；禁用站/软删除站跳过
+     */
+    public function batch_toggle() {
+        if(!form_submit()) {
+            E(1, lang('submit_invalid'));
+        }
+        $id_arr = R('id_arr', 'P');
+        $action = trim(R('action', 'P'));
+        if(!in_array($action, array('enable', 'disable'), true)) {
+            E(1, '无效的操作类型');
+        }
+        if(empty($id_arr) || !is_array($id_arr)) {
+            E(1, '请选择要操作的站点');
+        }
+
+        $target = $action === 'enable' ? 1 : 0;
+        $n = 0;
+        foreach($id_arr as $sid) {
+            $sid = (int)$sid;
+            if($sid <= 0) continue;
+            $site = $this->site_manager->get($sid);
+            if(empty($site)) continue;
+            $cur = (int)$site['status'];
+            if($action === 'enable') {
+                if($cur === $target) continue;
+            } else {
+                if($cur !== 1) continue;
+            }
+            $this->site_manager->save($sid, array('status' => $target));
+            $n++;
+        }
+
+        $this->runtime->set('site_domain_map', null);
+        E(0, '已' . ($action === 'enable' ? '启用' : '禁用') . ' ' . $n . ' 个站点');
+    }
+
+    /**
      * 行内编辑排序值（layui table 单元格编辑）
      */
     public function set_sort() {

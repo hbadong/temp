@@ -180,17 +180,30 @@ class site_manager extends model {
     }
 
     /**
-     * 一键同步全部启用站点：重建域名映射缓存并刷新各站点运行时缓存
-     * @return int 同步的站点数
+     * 构建域名→站点映射（启用 + 禁用，排除软删除）
+     *
+     * 禁用站必须包含在映射内：域名匹配命中后由 hook 的 status==0 分支展示维护页；
+     * 若映射只含启用站，禁用站请求会落入 404，维护页成为死代码。
+     * 软删除站（-1）不参与匹配，保持 404 语义。
+     */
+    public function get_domain_map() {
+        $sites = $this->get_list(null);
+        $map = array();
+        foreach($sites as $site) {
+            if((int)$site['status'] === -1) continue;
+            $map[$site['domain']] = (int)$site['sid'];
+        }
+        return $map;
+    }
+
+    /**
+     * 一键同步全部站点：重建域名映射缓存并刷新各站点运行时缓存
+     * @return int 同步的站点数（启用 + 禁用，不含软删除）
      */
     public function sync_all() {
         // 清空旧映射，强制下次请求重建
         $_ENV['_config']['site_domain_map'] = null;
-        $sites = $this->get_list(1);
-        $map = array();
-        foreach($sites as $site) {
-            $map[$site['domain']] = (int)$site['sid'];
-        }
+        $map = $this->get_domain_map();
         // 写回全局映射（生产环境由 runtime->xset 持久化；测试环境经全局变量断言）
         $GLOBALS['__site_map_cache'] = $map;
         $_ENV['_config']['site_domain_map'] = $map;

@@ -3,19 +3,110 @@
 <html>
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{$cfg['webname']} - 站点维护中</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; padding: 100px; }
-        .container { max-width: 500px; margin: 0 auto; }
-        h1 { color: #e74c3c; }
-        p { color: #666; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #eef2f7 0%, #f6f8fb 55%, #e8edf3 100%);
+            padding: 20px;
+            color: #333;
+        }
+        .maint-card {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(30, 60, 114, 0.12);
+            max-width: 560px;
+            width: 100%;
+            padding: 48px 40px 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .maint-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, #4f8df9, #7a5cf0, #4f8df9);
+        }
+        .maint-icon {
+            width: 84px; height: 84px;
+            margin: 0 auto 24px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f4f7ff, #eaf0fe);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .maint-icon svg { width: 44px; height: 44px; }
+        .maint-logo { max-width: 180px; max-height: 48px; margin: 0 auto 20px; display: block; object-fit: contain; }
+        .maint-title {
+            font-size: 26px;
+            font-weight: 600;
+            color: #1f2d3d;
+            margin-bottom: 8px;
+        }
+        .maint-site {
+            font-size: 15px;
+            color: #8a94a6;
+            margin-bottom: 20px;
+            word-break: break-all;
+        }
+        .maint-msg {
+            font-size: 15px;
+            line-height: 1.7;
+            color: #5a6572;
+            background: #f7f9fc;
+            border: 1px solid #e9eef5;
+            border-radius: 10px;
+            padding: 14px 18px;
+            margin-bottom: 28px;
+            word-break: break-word;
+        }
+        .maint-btn {
+            display: inline-block;
+            padding: 10px 34px;
+            font-size: 14px;
+            color: #fff;
+            background: linear-gradient(90deg, #4f8df9, #6b7cf5);
+            border: none;
+            border-radius: 24px;
+            cursor: pointer;
+            box-shadow: 0 6px 18px rgba(79, 141, 249, 0.35);
+            transition: transform .15s ease, box-shadow .15s ease;
+        }
+        .maint-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 22px rgba(79, 141, 249, 0.45); }
+        .maint-btn:active { transform: translateY(0); }
+        .maint-foot {
+            margin-top: 26px;
+            font-size: 13px;
+            color: #a3adbd;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>站点维护中</h1>
-        <p>{$maintenance_message}</p>
-        <p>如需帮助，请联系管理员。</p>
+    <div class="maint-card">
+        {if:$maint['logo_url']}
+        <img class="maint-logo" src="{$cfg['webdir']}{$maint['logo_url']}" alt="{$maint['site_name']}" onerror="this.style.display='none'">
+        {/if}
+        <div class="maint-icon">
+            <!-- 扳手图标 -->
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.8 2.8-2.5-2.5 2.8-2.8z" fill="#4f8df9"/>
+                <path d="M17.5 13.5l3-3a4 4 0 0 1-5.6 5.6l-3 3" stroke="#7a5cf0" stroke-width="1.6" stroke-linecap="round" fill="none"/>
+            </svg>
+        </div>
+        <div class="maint-title">站点维护中</div>
+        <div class="maint-site">{if:$maint['site_name']}{$maint['site_name']}{else}{$cfg['webname']}{/if}</div>
+        <div class="maint-msg">{$maint['message']}</div>
+        <button class="maint-btn" onclick="location.reload()">刷新重试</button>
+        <div class="maint-foot">如需帮助，请联系管理员</div>
     </div>
 </body>
 </html>

@@ -23,12 +23,8 @@ $cache_key = 'site_domain_map';
 $site_map = $this->runtime->xget($cache_key);
 
 if(!$site_map || !is_array($site_map)) {
-    // 缓存未命中，查询数据库
-    $site_list = $this->site_manager->get_list(1);
-    $site_map = array();
-    foreach($site_list as $site) {
-        $site_map[$site['domain']] = $site['sid'];
-    }
+    // 缓存未命中，查询数据库（含禁用站，排除软删除——禁用站命中后走维护页而非 404）
+    $site_map = $this->site_manager->get_domain_map();
     // 写入缓存（set 整行写，与上方 xget($cache_key) 读取键一致）
     $this->runtime->set($cache_key, $site_map);
 }
@@ -148,9 +144,15 @@ if($sid) {
             $maint_msg = isset($site_config['maintenance_message']) && $site_config['maintenance_message'] !== ''
                 ? $site_config['maintenance_message']
                 : '该站点目前处于维护状态，请稍后再访问。';
+            // 归一化视图变量，避免模板中直接访问可能缺失的键（Undefined index 会被框架当作错误）
+            // 注意 assign($key, &$value) 第二参为引用，数组字面量不能直接传，须先存入变量
+            $maint_view = array(
+                'site_name' => isset($site['site_name']) ? $site['site_name'] : '',
+                'logo_url'  => isset($site_config['logo_url']) ? $site_config['logo_url'] : '',
+                'message'   => $maint_msg,
+            );
+            $this->assign('maint', $maint_view);
             $this->assign('cfg', $this->_cfg);
-            $this->assign('site', $site);
-            $this->assign('maintenance_message', $maint_msg);
             $this->display('site_disabled.htm');
             exit();
         }

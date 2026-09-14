@@ -90,6 +90,8 @@
 					<script type="text/html" id="toolbar">
 						<div class="layui-btn-container">
 							<button class="layui-btn layui-btn-sm layui-btn-normal" lay-event="add"><i class="layui-icon">&#xe608;</i> 添加站点</button>
+							<button class="layui-btn layui-btn-sm layui-btn-normal" lay-event="batch_enable"><i class="layui-icon">&#xe612;</i> 批量启用</button>
+							<button class="layui-btn layui-btn-sm layui-btn-warm" lay-event="batch_disable"><i class="layui-icon">&#xe60c;</i> 批量禁用</button>
 							<button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="batch_delete"><i class="layui-icon">&#xe640;</i> 批量删除</button>
 							<button class="layui-btn layui-btn-sm layui-btn-warm" id="btn-sync"><i class="layui-icon">&#xe669;</i> 一键同步</button>
 							<button class="layui-btn layui-btn-sm layui-btn-primary" lay-event="export"><i class="layui-icon">&#xe601;</i> 导出</button>
@@ -279,6 +281,26 @@
 					var id_arr = data.map(function (item) { return item.sid; });
 					adminAjax.postd("index.php?site-batch_delete-ajax-1", { id_arr: id_arr });
 				});
+			} else if (obj.event === 'batch_enable' || obj.event === 'batch_disable') {
+				var enable = obj.event === 'batch_enable';
+				var checkStatus = table.checkStatus('data-table');
+				var data = checkStatus.data;
+				if (data.length === 0) {
+					layer.msg('请先勾选要' + (enable ? '启用' : '禁用') + '的站点', { icon: 5 });
+					return false;
+				}
+				layer.confirm('确定' + (enable ? '启用' : '禁用') + '选中的 ' + data.length + ' 个站点吗？', function () {
+					var id_arr = data.map(function (item) { return item.sid; });
+					adminAjax.postd("index.php?site-batch_toggle-ajax-1", {
+						id_arr: id_arr,
+						action: enable ? 'enable' : 'disable',
+						FORM_HASH: '{@form_hash()}'
+					}, function (json) {
+						var res = toJson(json);
+						layer.msg(res.msg || (res.err ? '操作失败' : '操作成功'), {icon: res.err ? 5 : 1});
+						if (!res.err) table.reload('data-table');
+					});
+				});
 			} else if (obj.event === 'export') {
 				window.location.href = 'index.php?site-export';
 			} else if (obj.event === 'import') {
@@ -352,23 +374,35 @@
 					adminAjax.postd("index.php?site-delete-ajax-1", {sid: data.sid, FORM_HASH: '{@form_hash()}'});
 				});
 			} else if (obj.event === 'copy') {
-				layer.prompt({
-					formType: 0,
-					title: '输入新站点域名（主题/品牌/SEO 等配置将复制自「' + data.site_name + '」）',
-					value: ''
-				}, function (value, index) {
-					layer.close(index);
-					if (!value || !value.trim()) {
-						layer.msg('域名不能为空', {icon: 5});
-						return;
+				layer.open({
+					type: 1,
+					title: '复制站点',
+					area: ['480px', 'auto'],
+					content: $('#copy-tpl').html(),
+					btn: ['复制', '取消'],
+					btn1: function (index) {
+						var name = $('#copy-site-name').val().trim();
+						var domain = $('#copy-domain').val().trim();
+						if (!name) { layer.msg('站点名称不能为空', {icon: 5}); return; }
+						if (!domain) { layer.msg('域名不能为空', {icon: 5}); return; }
+						adminAjax.postd("index.php?site-copy-ajax-1", {
+							sid: data.sid,
+							site_name: name,
+							domain: domain,
+							FORM_HASH: '{@form_hash()}'
+						}, function (json) {
+							var res = toJson(json);
+							if (res.err) {
+								layer.msg(res.msg || '复制失败', {icon: 5});
+							} else {
+								layer.close(index);
+								layer.msg(res.msg || res.message || '站点已复制', {icon: 1});
+								table.reload('data-table');
+							}
+						});
 					}
-					adminAjax.postd("index.php?site-copy-ajax-1", {
-						sid: data.sid,
-						site_name: data.site_name + '副本',
-						domain: value.trim(),
-						FORM_HASH: '{@form_hash()}'
-					});
 				});
+				$('#copy-site-name').val(data.site_name + '副本');
 			}
 		});
 
@@ -388,6 +422,25 @@
 	<div style="padding: 16px;">
 		<div style="color:#999; font-size:12px; margin-bottom:8px;">粘贴「导出」生成的 JSON 内容；按域名匹配：已存在则更新配置（软删除记录将被恢复），不存在则新建。</div>
 		<textarea id="import-json-textarea" class="layui-textarea" style="height: 220px;" placeholder='{"export_time":"...","sites":[{"site_name":"...","domain":"example.com","theme":"default","sort_order":0,"status":1,"config":{}}]}'></textarea>
+	</div>
+</script>
+
+<script type="text/html" id="copy-tpl">
+	<div style="padding: 16px 16px 4px;">
+		<div style="color:#999; font-size:12px; margin-bottom:12px;">主题、品牌图片、SEO 与 CSS 变量等配置将一并复制自源站点。</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label" style="width:80px;">站点名称</label>
+			<div class="layui-input-inline" style="width: 340px;">
+				<input type="text" id="copy-site-name" class="layui-input" placeholder="例如：新站点副本">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label" style="width:80px;">域名</label>
+			<div class="layui-input-inline" style="width: 340px;">
+				<input type="text" id="copy-domain" class="layui-input" placeholder="例如：copy.example.com">
+			</div>
+		</div>
+		<div style="color:#bbb; font-size:12px; margin: 0 0 8px 96px;">仅允许字母、数字、点、连字符；通配符 * 仅能作为 *. 前缀</div>
 	</div>
 </script>
 
