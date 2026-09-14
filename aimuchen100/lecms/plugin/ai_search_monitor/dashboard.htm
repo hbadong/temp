@@ -1,5 +1,25 @@
 {inc:header.htm}
 <style>
+/* 功能 tab 概览统计卡 */
+.mon-stats { margin-bottom: 15px; }
+.mon-stat { position: relative; padding: 18px 20px 14px; border-radius: 6px; color: #fff; overflow: hidden; }
+.mon-stat .num { font-size: 28px; font-weight: 700; line-height: 1.1; }
+.mon-stat .lbl { font-size: 13px; opacity: .85; margin-top: 6px; }
+.mon-stat i { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); font-size: 42px; opacity: .18; }
+.bg-brands { background: linear-gradient(135deg, #3AA8FF, #1E9FFF); }
+.bg-checks { background: linear-gradient(135deg, #FFB84D, #FF8000); }
+.bg-found { background: linear-gradient(135deg, #2BC6A2, #16BAaa); }
+.bg-conf { background: linear-gradient(135deg, #9C8DF5, #7B68EE); }
+.kw-tag { display: inline-flex; align-items: center; margin: 0 10px 10px 0; padding: 6px 12px; background: #F0F7FF; border: 1px solid #D4E7FF; border-radius: 4px; color: #1E9FFF; font-size: 13px; }
+.kw-tag b { font-weight: 600; margin-right: 4px; }
+.kw-tag .layui-icon { font-size: 12px; margin-left: 6px; cursor: pointer; color: #C0CCDA; }
+.kw-tag .layui-icon:hover { color: #FF5722; }
+.platform-tag { display: inline-block; padding: 2px 10px; border-radius: 3px; font-size: 12px; }
+.pf-baidu_wenxin { background: #E8F4FF; color: #1E9FFF; }
+.pf-doubao { background: #FFF3E8; color: #FF7E00; }
+.pf-wechat_ai { background: #EDF9F5; color: #16BAaa; }
+@media (max-width:600px) { .mon-stat .num { font-size: 22px; } }
+</style>
 /* AI搜索监测插件设置样式 */
 .settings-wrap { padding: 0 16px; }
 .settings-card { margin-bottom: 16px; }
@@ -35,47 +55,103 @@
 			<div class="layui-tab-content">
 				<!-- Tab 1：功能（原仪表盘内容） -->
 				<div class="layui-tab-item layui-show">
+					<!-- 概览统计卡 -->
+					<div class="layui-row layui-col-space12 mon-stats">
+						<div class="layui-col-md3 layui-col-xs6">
+							<div class="mon-stat bg-brands">
+								<div class="num">{$summary['keyword_count']}</div>
+								<div class="lbl">品牌词</div>
+								<i class="layui-icon">&#xe62b;</i>
+							</div>
+						</div>
+						<div class="layui-col-md3 layui-col-xs6">
+							<div class="mon-stat bg-checks">
+								<div class="num">{$summary['total_checks']}</div>
+								<div class="lbl">7天检查次数</div>
+								<i class="layui-icon">&#xe62a;</i>
+							</div>
+						</div>
+						<div class="layui-col-md3 layui-col-xs6">
+							<div class="mon-stat bg-found">
+								<div class="num">{$summary['found_count']}</div>
+								<div class="lbl">7天展现数</div>
+								<i class="layui-icon">&#xe62d;</i>
+							</div>
+						</div>
+						<div class="layui-col-md3 layui-col-xs6">
+							<div class="mon-stat bg-conf">
+								<div class="num">{@round($summary['avg_confidence'], 1)}%</div>
+								<div class="lbl">平均置信度</div>
+								<i class="layui-icon">&#xe6af;</i>
+							</div>
+						</div>
+					</div>
+
 					<div class="layui-card">
-						<div class="layui-card-header">AI搜索监测仪表盘</div>
+						<div class="layui-card-header">监测趋势（30天）</div>
 						<div class="layui-card-body">
+							<div id="mon-trend" style="width:100%;height:280px;"></div>
+						</div>
+					</div>
+
+					<div class="layui-row layui-col-space15">
+						<div class="layui-col-md8">
 							<div class="layui-card">
-								<div class="layui-card-header">监测统计（最近7天）</div>
+								<div class="layui-card-header">平台监测统计（最近7天）</div>
 								<div class="layui-card-body">
 									{if:$stats}
-									<table class="layui-table">
+									<table class="layui-table" lay-skin="line">
 										<thead>
 											<tr>
 												<th>平台</th>
 												<th>总检查数</th>
 												<th>展现数</th>
+												<th>收录率</th>
 												<th>平均置信度</th>
 											</tr>
 										</thead>
 										<tbody>
 											{loop:$stats $stat}
 											<tr>
-												<td>{$stat['platform']}</td>
+												<td>
+													{if:isset($platform_names[$stat['platform']])}
+													<span class="platform-tag pf-{$stat['platform']}">{$platform_names[$stat['platform']]}</span>
+													{else}
+													<span class="layui-badge layui-bg-gray">{$stat['platform']}</span>
+													{/if}
+												</td>
 												<td>{$stat['total_checks']}</td>
 												<td>{$stat['found_count']}</td>
-												<td>{$stat['avg_confidence']}</td>
+												<td>{@round($stat['total_checks'] > 0 ? $stat['found_count'] / $stat['total_checks'] * 100 : 0, 1)}%
+													{if:$stat['total_checks'] > 0 && $stat['found_count'] == $stat['total_checks']}
+													<i class="layui-icon" style="color:#16baaa">&#xe616;</i>
+													{/if}
+												</td>
+												<td>{@round($stat['avg_confidence'], 1)}%</td>
 											</tr>
 											{/loop}
 										</tbody>
 									</table>
 									{else}
-									<p>暂无监测数据</p>
+									<p style="text-align:center;color:#999;padding:30px 0;">
+										<i class="layui-icon layui-icon-face-cry" style="font-size:32px;display:block;margin-bottom:8px;color:#ccc"></i>
+										暂无监测数据，请先添加品牌词并等待 cron 监测任务执行
+									</p>
 									{/if}
 								</div>
 							</div>
-
+						</div>
+						<div class="layui-col-md4">
 							<div class="layui-card">
 								<div class="layui-card-header">品牌词列表</div>
 								<div class="layui-card-body">
-									<ul>
-										{loop:$keywords $keyword}
-										<li>{$keyword}</li>
-										{/loop}
-									</ul>
+									{if:$keywords}
+									{loop:$keywords $keyword}
+									<span class="kw-tag"><b>{$keyword['keyword']}</b>{if:$keyword['keyword_variant']}<b style="font-weight:400;color:#9BB8E8"> / {$keyword['keyword_variant']}</b>{/if}</span>
+									{/loop}
+									{else}
+									<p style="text-align:center;color:#999;padding:20px 0;">暂无品牌词，<a class="layui-link" href="?keyword-edit">点击添加</a></p>
+									{/if}
 								</div>
 							</div>
 						</div>
@@ -167,9 +243,55 @@
 	</div>
 </div>
 <script type="text/javascript">
-layui.use(['form', 'layer', 'element', 'miniTab'], function () {
-	var form = layui.form, layer = layui.layer, miniTab = layui.miniTab;
+layui.use(['form', 'layer', 'element', 'miniTab', 'echarts', 'echartsTheme', 'jquery'], function () {
+	var form = layui.form, layer = layui.layer, element = layui.element, $ = layui.jquery;
+	var echarts = layui.echarts, theme = (layui.echartsTheme && layui.echartsTheme.theme) || null;
 	form.render();
+
+	// 渲染 30 天趋势图
+	var trendEl = document.getElementById('mon-trend');
+	if (trendEl) {
+		var chart = echarts.init(trendEl, theme);
+		var trendData = {tpl: "{$trend_json}"};
+		(function ($) {
+			var dates = [], seen = {}, platforms = [], pseen = {};
+			var data = (typeof trendData.tpl === 'string') ? JSON.parse(trendData.tpl) : trendData.tpl;
+			if (data && data.length) {
+				for (var i = 0; i < data.length; i++) {
+					if (!seen[data[i].check_date]) { seen[data[i].check_date] = 1; dates.push(data[i].check_date); }
+					if (!pseen[data[i].platform]) { pseen[data[i].platform] = 1; platforms.push(data[i].platform); }
+				}
+				dates.sort();
+				var series = platforms.map(function (p) {
+					return {
+						name: p, type: 'line', smooth: true, symbolSize: 5,
+						data: dates.map(function (d) {
+							for (var k = 0; k < data.length; k++) {
+								if (data[k].check_date === d && data[k].platform === p) return data[k].total_checks;
+							}
+							return 0;
+						})
+					};
+				});
+				chart.setOption({
+					tooltip: { trigger: 'axis' },
+					legend: { data: platforms, top: 4 },
+					grid: { left: 40, right: 16, top: 40, bottom: 28 },
+					xAxis: { type: 'category', boundaryGap: false, data: dates },
+					yAxis: { type: 'value', name: '检查次数', minInterval: 1 },
+					series: series
+				});
+				chart.resize();
+			} else {
+				trendEl.innerHTML = '<p style="text-align:center;color:#999;padding:60px 0;">暂无趋势数据</p>';
+			}
+		})($);
+		// tab 切换回来时重置尺寸
+		element.on('tab(main)', function (data) {
+			if (data.index == 0 && chart) setTimeout(function () { chart.resize(); }, 50);
+		});
+	}
+
 	form.on('submit(form-settings)', function () {
 		adminAjax.postform('#form-settings', function (data) {
 			var json = toJson(data);

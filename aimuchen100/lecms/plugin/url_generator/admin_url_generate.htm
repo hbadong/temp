@@ -1,49 +1,93 @@
 {inc:header.htm}
+<style>
+.gen-card { max-width: 640px; }
+.gen-site-row { display: flex; justify-content: space-between; padding: 10px 14px; border: 1px solid #eee; border-radius: 4px; margin-bottom: 8px; cursor: pointer; transition: all .15s; }
+.gen-site-row:hover { border-color: #1E9FFF; background: #f8fcff; }
+.gen-site-row.selected { border-color: #1E9FFF; background: #f0f8ff; box-shadow: 0 0 0 1px #1E9FFF inset; }
+.gen-site-row .site-name { font-size: 14px; }
+.gen-site-row .site-domain { color: #999; font-size: 12px; margin-left: 8px; }
+.gen-site-row .site-cnt { color: #1E9FFF; font-size: 13px; white-space: nowrap; }
+</style>
 <div class="layuimini-container">
 	<div class="layuimini-main">
-		<div class="layui-card">
-			<div class="layui-card-header">批量生成URL</div>
+		<div class="layui-card gen-card">
+			<div class="layui-card-header">批量生成 URL</div>
 			<div class="layui-card-body">
 				<form class="layui-form" id="form" action="?admin_url-generate_post-ajax-1" method="post">
 					<input type="hidden" name="FORM_HASH" value="{@form_hash()}" />
+					<div class="layui-form-item layui-form-item-pane" style="display:none;">
+						<label class="layui-form-label">选择站点</label>
+						<div class="layui-input-block">
+							<select name="site_id" id="site_id_sel" required lay-verify="required">
+								<option value="">请选择站点</option>
+								{loop:$sites $site}
+								<option value="{$site['sid']}">{$site['site_name']} ({$site['domain']})</option>
+								{/loop}
+							</select>
+						</div>
+					</div>
 					<div class="layui-form-item">
-                    <label class="layui-form-label">选择站点</label>
-                    <div class="layui-input-block">
-                        <select name="site_id" required lay-verify="required">
-                            <option value="">请选择站点</option>
-                            {loop:$sites $site}
-                            <option value="{$site['sid']}">{$site['site_name']} ({$site['domain']})</option>
-                            {/loop}
-                        </select>
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">生成数量</label>
-                    <div class="layui-input-block">
-                        <input type="number" name="count" value="1000" min="1" max="100000" required lay-verify="required" class="layui-input">
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <div class="layui-input-block">
-                        <button class="layui-btn" lay-submit lay-filter="form">生成URL</button>
-                        <a href="?admin_url-index" class="layui-btn layui-btn-primary">返回</a>
-                    </div>
-                </div>
-			</form>
+						<label class="layui-form-label">选择站点</label>
+						<div class="layui-input-block">
+							{loop:$sites $site}
+							<div class="gen-site-row" data-sid="{$site['sid']}">
+								<span>
+									<span class="site-name">{$site['site_name']}</span>
+									<span class="site-domain">({$site['domain']})</span>
+								</span>
+								<span class="site-cnt">{@isset($site_counts[$site['sid']]) ? '已有 ' . $site_counts[$site['sid']] . ' 条' : '暂无 URL'}</span>
+							</div>
+							{/loop}
+							{if:empty($sites)}
+							<p style="color:#999;padding:10px 0;">暂无可用站点，请先在站点管理中启用站点</p>
+							{/if}
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">生成数量</label>
+						<div class="layui-input-block">
+							<input type="number" name="count" id="count_input" value="1000" min="1" max="100000" required lay-verify="required" class="layui-input" placeholder="1-100000">
+							<div style="color:#999;font-size:12px;margin-top:4px;">单次生成数量，建议保持默认 1000，避免单次耗时过长</div>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<div class="layui-input-block">
+							<button class="layui-btn" lay-submit lay-filter="form"><i class="layui-icon">&#xe61b;</i> 生成 URL</button>
+							<a href="?admin_url-index" class="layui-btn layui-btn-primary">返回</a>
+						</div>
+					</div>
+				</form>
 			</div>
 		</div>
 	</div>
 </div>
 <script type="text/javascript">
-	layui.use(['form','layer', 'miniTab'], function () {
-		var layer = layui.layer, form = layui.form, miniTab = layui.miniTab;
+	layui.use(['form','layer', 'miniTab', 'jquery'], function () {
+		var layer = layui.layer, form = layui.form, miniTab = layui.miniTab, $ = layui.jquery;
 
-		//监听提交
+		// 点击站点卡片选中
+		var selSid = '';
+		$('.gen-site-row').on('click', function () {
+			$('.gen-site-row').removeClass('selected');
+			$(this).addClass('selected');
+			selSid = $(this).data('sid');
+			$('#site_id_sel').val(selSid);
+		});
+
 		form.on('submit(form)', function () {
-			adminAjax.postform('#form',function (data) {
+			if (!selSid) {
+				layer.msg('请先选择站点', {icon: 5});
+				return false;
+			}
+			var count = parseInt($('#count_input').val(), 10);
+			if (!count || count < 1 || count > 100000) {
+				layer.msg('生成数量需在 1-100000 之间', {icon: 5});
+				return false;
+			}
+			adminAjax.postform('#form', function (data) {
 				var json = toJson(data);
 				layer.msg(json.msg, {icon: json.err==0 ? 1 : 5});
-				if(json.err==0) {
+				if (json.err==0) {
 					setTimeout(function(){
 						miniTab.reloadIframe('index.php?admin_url-index');
 						miniTab.deleteCurrentByIframe();

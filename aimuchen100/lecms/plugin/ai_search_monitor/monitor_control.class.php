@@ -18,8 +18,29 @@ class monitor_control extends admin_control {
 
         // 获取统计数据
         $stats = $model->get_stats($site_id, 7);
+        $stats = $stats ?: array();
         $keywords = $model->get_keywords($site_id);
+        $keywords = $keywords ?: array();
         $trend = $reporter->get_trend(30);
+        $trend = $trend ?: array();
+
+        // 概览汇总（7天）
+        $summary = array('keyword_count' => count($keywords), 'total_checks' => 0, 'found_count' => 0, 'avg_confidence' => 0);
+        foreach ($stats as $s) {
+            $summary['total_checks'] += (int)$s['total_checks'];
+            $summary['found_count'] += (int)$s['found_count'];
+            $summary['avg_confidence'] += (float)$s['avg_confidence'] * (int)$s['total_checks'];
+        }
+        if ($summary['total_checks'] > 0) {
+            $summary['avg_confidence'] = round($summary['avg_confidence'] / $summary['total_checks'], 1);
+        }
+
+        // 平台中文映射
+        $platform_names = array(
+            'baidu_wenxin' => '百度文心',
+            'doubao' => '字节豆包',
+            'wechat_ai' => '微信 AI 搜索',
+        );
 
         // 插件设置（合并进主页面第二个 tab）
         $settings = $this->runtime->xget('ai_search_monitor_settings');
@@ -37,6 +58,9 @@ class monitor_control extends admin_control {
         $this->assign('stats', $stats);
         $this->assign('keywords', $keywords);
         $this->assign('trend', $trend);
+        $this->assign('trend_json', _json_encode($trend));
+        $this->assign('summary', $summary);
+        $this->assign('platform_names', $platform_names);
         $this->assign('settings', $settings);
         $this->display('dashboard.htm');
     }

@@ -27,10 +27,25 @@ class data_export_control extends admin_control {
         $rows = $this->db->fetch_all("SELECT * FROM {$pre}export_log{$where} ORDER BY id DESC LIMIT {$pagenum} OFFSET {$offset}");
         $rows = $rows ?: array();
 
+        // 概览统计（全量，不带筛选）
+        $o_row = $this->db->fetch_all("SELECT status, COUNT(*) AS cnt FROM {$pre}export_log GROUP BY status");
+        $overview = array('total' => 0, 'running' => 0, 'done' => 0, 'failed' => 0);
+        if ($o_row) {
+            foreach ($o_row as $o) {
+                $s = $o['status'];
+                $overview['total'] += (int)$o['cnt'];
+                if (isset($overview[$s])) $overview[$s] = (int)$o['cnt'];
+            }
+        }
+        // 模式中文映射
+        $mode_names = array('full' => '完整导出', 'cleanup' => '清理导出');
+
         $pagebar = $this->get_pagebar($total, $pagenum, $page, 5, $extra);
         $this->assign('rows', $rows);
         $this->assign('status', $status);
         $this->assign('keyword', $keyword);
+        $this->assign('overview', $overview);
+        $this->assign('mode_names', $mode_names);
         $this->assign('pagebar', $pagebar);
 
         // 插件设置（原 settings() 逻辑合并进主页面第二个 tab）

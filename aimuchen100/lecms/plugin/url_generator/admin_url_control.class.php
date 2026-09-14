@@ -37,9 +37,34 @@ class admin_url_control extends admin_control {
 
         $sql .= " LIMIT {$pagenum} OFFSET " . (($page - 1) * $pagenum);
         $urls = $this->db->fetch_all($sql);
+        $urls = $urls ?: array();
 
         // 获取站点列表（用于筛选）
         $sites = $this->site_manager->get_list();
+        $site_names = array();
+        if ($sites && is_array($sites)) {
+            foreach ($sites as $site) {
+                $site_names[$site['sid']] = $site['site_name'] . (isset($site['domain']) && $site['domain'] ? '（' . $site['domain'] . '）' : '');
+            }
+        }
+
+        // 概览统计：各状态数量（care：所有站点，用于顶部卡片）
+        $tabpre = $_ENV['_config']['db']['master']['tablepre'];
+        $o_row = $this->db->fetch_all("SELECT status, COUNT(*) AS cnt FROM `{$tabpre}cms_url_map` GROUP BY status");
+        $overview = array('count_1' => 0, 'count_2' => 0, 'count_3' => 0, 'total' => 0);
+        if ($o_row) {
+            foreach ($o_row as $o) {
+                $k = 'count_' . (int)$o['status'];
+                if (isset($overview[$k])) $overview[$k] = (int)$o['cnt'];
+                $overview['total'] += (int)$o['cnt'];
+            }
+        }
+
+        // URL 类型中文映射
+        $type_names = array(
+            1 => '列表型', 2 => '数字详情', 3 => '分类型', 4 => '标签型',
+            5 => '日期型', 6 => '别名型', 7 => '灵活型', 8 => 'HashId',
+        );
 
         // 读取插件设置（供「插件设置」tab 渲染）
         $settings = $this->runtime->xget('url_generator_settings');
@@ -62,6 +87,9 @@ class admin_url_control extends admin_control {
 
         $this->assign('urls', $urls);
         $this->assign('sites', $sites);
+        $this->assign('site_names', $site_names);
+        $this->assign('type_names', $type_names);
+        $this->assign('overview', $overview);
         $this->assign('total', $total);
         $this->assign('page', $page);
         $this->assign('keyword', $keyword);
@@ -75,7 +103,17 @@ class admin_url_control extends admin_control {
      */
     public function generate() {
         $sites = $this->site_manager->get_list();
+        // 各站点已有 URL 数量（供生成表单提示）
+        $tabpre = $_ENV['_config']['db']['master']['tablepre'];
+        $cnt_row = $this->db->fetch_all("SELECT site_id, COUNT(*) AS cnt FROM `{$tabpre}cms_url_map` GROUP BY site_id");
+        $site_counts = array();
+        if ($cnt_row) {
+            foreach ($cnt_row as $c) {
+                $site_counts[$c['site_id']] = (int)$c['cnt'];
+            }
+        }
         $this->assign('sites', $sites);
+        $this->assign('site_counts', $site_counts);
         $this->display();
     }
 
@@ -108,10 +146,6 @@ class admin_url_control extends admin_control {
         $deleted = $this->url_generator->clean_unused_urls($days);
         $this->message(0, "清理完成，共处理 {$deleted} 个URL", '?admin_url-index');
     }
-
-    /**
-     * 设置页已合并进主页面第二个 tab，此处仅做兼容跳转
-     */
     public function settings() {
         $this->message(0, '', 'index.php?admin_url-index-tab-settings');
     }

@@ -13,9 +13,24 @@ class spider_iprange_control extends admin_control {
         if($keyword !== '') $extra['keyword'] = $keyword;
         $total = $ir->count_list($engine, $keyword);
         $rows = $ir->list($engine, $keyword, $page, 50);
+        // 统计（全量）
+        $pdo = spider_runtime::$pdo;
+        $pre = spider_runtime::$pre;
+        $st = $pdo->query("SELECT COUNT(*) AS cnt, SUM(enabled=1) AS enabled FROM `{$pre}spider_ip_range`");
+        $ov = $st->fetch(PDO::FETCH_ASSOC);
+        $overview = array(
+            'total' => $ov ? (int)$ov['cnt'] : 0,
+            'enabled' => $ov ? (int)$ov['enabled'] : 0,
+        );
+        $engine_names = array(
+            'baidu' => '百度', 'google' => 'Google', 'bing' => 'Bing',
+            'sogou' => '搜狗', '360' => '360', 'sm' => '神马', 'other' => '其他',
+        );
         $this->view->assign('rows', $rows);
         $this->view->assign('engine', $engine);
         $this->view->assign('keyword', $keyword);
+        $this->view->assign('overview', $overview);
+        $this->view->assign('engine_names', $engine_names);
         $pagebar = $this->get_pagebar($total, 50, $page, 5, $extra); $this->view->assign('pagebar', $pagebar);
         $this->view->display('spider_iprange.htm');
     }

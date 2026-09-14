@@ -82,4 +82,41 @@ class spider_blacklist {
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         return $row ? (int)$row['cnt'] : 0;
     }
+
+    // 命中明细概览统计：总数/拦截数/IP与UA命中数/类型分布
+    public function hit_overview($site_id) {
+        $pdo = spider_runtime::$pdo;
+        $pre = spider_runtime::$pre;
+        $today = time() - 86400;
+        $single_sql = "FROM `{$pre}spider_blacklist_hit` WHERE site_id=?";
+        $all_sql = "FROM `{$pre}spider_blacklist_hit` WHERE site_id=?";
+        $total = $pdo->prepare("SELECT COUNT(*) AS cnt " . $all_sql);
+        $total->execute(array((int)$site_id));
+        $total = $total->fetch(PDO::FETCH_ASSOC);
+        $intercepted = $pdo->prepare("SELECT COUNT(*) AS cnt " . $single_sql . " AND is_intercepted=1");
+        $intercepted->execute(array((int)$site_id));
+        $intercepted = $intercepted->fetch(PDO::FETCH_ASSOC);
+        $today_st = $pdo->prepare("SELECT COUNT(*) AS cnt " . $single_sql . " AND hit_at >= ?");
+        $today_st->execute(array((int)$site_id, $today));
+        $today_st = $today_st->fetch(PDO::FETCH_ASSOC);
+        $types = $pdo->prepare("SELECT match_type, COUNT(*) AS cnt " . $single_sql . " GROUP BY match_type");
+        $types->execute(array((int)$site_id));
+        $type_map = array();
+        foreach ($types->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $type_map[$row['match_type']] = (int)$row['cnt'];
+        }
+        // 生成友好文案，如 "IP 12 / UA 3 / CIDR 1"
+        $type_labels = array('ip' => 'IP', 'ua' => 'UA', 'ip_cidr' => 'CIDR');
+        $type_text = array();
+        foreach ($type_map as $k => $v) {
+            $type_text[] = (isset($type_labels[$k]) ? $type_labels[$k] : $k) . ' ' . $v;
+        }
+        return array(
+            'total' => $total ? (int)$total['cnt'] : 0,
+            'intercepted' => $intercepted ? (int)$intercepted['cnt'] : 0,
+            'today' => $today_st ? (int)$today_st['cnt'] : 0,
+            'types' => $type_map,
+            'type_text' => $type_text ? implode(' / ', $type_text) : '0',
+        );
+    }
 }

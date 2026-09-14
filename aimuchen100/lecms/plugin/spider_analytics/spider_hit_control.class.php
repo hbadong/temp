@@ -10,7 +10,9 @@ class spider_hit_control extends admin_control {
         $bl = new spider_blacklist();
         $total = $bl->count_hits($site_id);
         $rows = $bl->list_hits($site_id, $pagenum, ($page - 1) * $pagenum);
+        $overview = $bl->hit_overview($site_id);
         $this->view->assign('rows', $rows);
+        $this->view->assign('overview', $overview);
         $pagebar = $this->get_pagebar($total, $pagenum, $page);
         $this->view->assign('pagebar', $pagebar);
         $this->view->display('spider_hit.htm');

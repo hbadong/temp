@@ -18,6 +18,25 @@
 .field-block .layui-input-block { margin-left: 140px; }
 .ratio-bar { display: flex; flex-wrap: wrap; gap: 6px 18px; padding: 4px 0; }
 .ratio-sum { padding: 8px 12px; border-radius: 4px; background: #f6f6f6; color: #666; font-size: 12px; }
+.url-stat-card { padding: 18px 20px 14px; border-radius: 6px; color: #fff; position: relative; overflow: hidden; }
+.url-stat-card .stat-num { font-size: 28px; font-weight: 700; line-height: 1.1; }
+.url-stat-card .stat-label { font-size: 13px; opacity: .85; margin-top: 6px; }
+.url-stat-card .stat-icon { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); font-size: 42px; opacity: .18; }
+.url-stat-card.bg-total { background: linear-gradient(135deg, #3AA8FF, #1E9FFF); }
+.url-stat-card.bg-pending { background: linear-gradient(135deg, #FFB84D, #FF8000); }
+.url-stat-card.bg-used { background: linear-gradient(135deg, #2BC6A2, #16BAaa); }
+.url-stat-card.bg-expired { background: linear-gradient(135deg, #8B95A7, #6B7688); }
+.url-list .cell-url { max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block; vertical-align: bottom; }
+.type-badge { display: inline-block; min-width: 56px; text-align: center; padding: 2px 8px; border-radius: 3px; font-size: 12px; }
+.tb-1 { background: #E8F4FF; color: #1E9FFF; }
+.tb-2 { background: #EDF9F5; color: #16BAaa; }
+.tb-3 { background: #FFF3E8; color: #FF8000; }
+.tb-4 { background: #F4E8FF; color: #9C4DFF; }
+.tb-5 { background: #F0F0F0; color: #666; }
+.tb-6 { background: #EAFFF6; color: #2FAA6E; }
+.tb-7 { background: #FFF8E6; color: #D98C00; }
+.tb-8 { background: #EAF2FF; color: #3B71D9; }
+@media (max-width:600px) { .url-list .cell-url { max-width: 140px; } }
 @media (max-width: 900px) { .settings-grid { grid-template-columns: 1fr; } .field-block .layui-input-block { margin-left: 0; } }
 
 @media (max-width: 600px) {
@@ -37,10 +56,42 @@
 			<div class="layui-tab-content">
 				<!-- Tab 1：功能（原 URL 列表页内容） -->
 				<div class="layui-tab-item layui-show">
-					<div class="layui-card">
+					<div class="layui-row layui-col-space12">
+						<div class="layui-col-md3 layui-col-xs6">
+							<div class="url-stat-card bg-total">
+								<div class="stat-num">{$overview['total']}</div>
+								<div class="stat-label">URL 总量</div>
+								<i class="layui-icon stat-icon">&#xe63e;</i>
+							</div>
+						</div>
+						<div class="layui-col-md3 layui-col-xs6">
+							<div class="url-stat-card bg-pending">
+								<div class="stat-num">{$overview['count_1']}</div>
+								<div class="stat-label">待生成</div>
+								<i class="layui-icon stat-icon">&#xe6af;</i>
+							</div>
+						</div>
+						<div class="layui-col-md3 layui-col-xs6">
+							<div class="url-stat-card bg-used">
+								<div class="stat-num">{$overview['count_2']}</div>
+								<div class="stat-label">已使用</div>
+								<i class="layui-icon stat-icon">&#xe60e;</i>
+							</div>
+						</div>
+						<div class="layui-col-md3 layui-col-xs6">
+							<div class="url-stat-card bg-expired">
+								<div class="stat-num">{$overview['count_3']}</div>
+								<div class="stat-label">已失效</div>
+								<i class="layui-icon stat-icon">&#xe616;</i>
+							</div>
+						</div>
+					</div>
+
+					<div class="layui-card" style="margin-top:15px">
 						<div class="layui-card-header">
-							URL 列表
+							URL 列表<span style="font-weight:400;color:#999;font-size:12px;margin-left:10px;">当前筛选项下 {$total} 条</span>
 							<a href="javascript:;" class="layui-btn layui-btn-sm layui-btn-primary js-open-generate" style="float:right"><i class="layui-icon">&#xe654;</i> 生成URL</a>
+							<a href="javascript:;" class="layui-btn layui-btn-sm js-cleanup" style="float:right;margin-right:8px"><i class="layui-icon">&#xe616;</i> 清理失效</a>
 						</div>
 						<div class="layui-card-body">
 							<form class="layui-form" action="" method="get">
@@ -71,7 +122,7 @@
 									{/if}
 								</div>
 							</form>
-							<table class="layui-table" lay-skin="line">
+							<table class="layui-table url-list" lay-skin="line">
 								<thead>
 									<tr>
 										<th>ID</th>
@@ -87,10 +138,16 @@
 									{loop:$urls $url}
 									<tr>
 										<td>{$url['id']}</td>
-										<td>{$url['site_id']}</td>
-										<td>{$url['url']}</td>
-										<td>{$url['type']}</td>
-										<td>{$url['score']}</td>
+										<td>{@isset($site_names[$url['site_id']]) ? $site_names[$url['site_id']] : $url['site_id']}</td>
+										<td><span class="cell-url" title="{@htmlspecialchars($url['url'], ENT_QUOTES, 'UTF-8')}">{$url['url']}</span></td>
+<td>
+									{if:isset($type_names[$url['type']])}<span class="type-badge tb-{$url['type']}">{@$type_names[$url['type']]}</span>
+									{else}<span class="layui-badge layui-bg-gray">类型{$url['type']}</span>
+									{/if}
+								</td>
+										<td>
+											{@$url['score'] >= 85 ? '<span class="layui-badge layui-bg-green">' . $url['score'] . '</span>' : ($url['score'] >= 75 ? '<span class="layui-badge layui-bg-orange">' . $url['score'] . '</span>' : '<span class="layui-badge layui-bg-red">' . $url['score'] . '</span>')}
+										</td>
 										<td>
 											{if:$url['status']==1}<span class="layui-badge layui-bg-orange">待生成</span>{/if}
 											{if:$url['status']==2}<span class="layui-badge layui-bg-green">已使用</span>{/if}
@@ -100,7 +157,12 @@
 									</tr>
 									{/loop}
 									{if:empty($urls)}
-									<tr><td colspan="7" style="text-align:center">暂无URL数据</td></tr>
+									<tr>
+										<td colspan="7" style="text-align:center; color:#999; padding:40px 0">
+											<i class="layui-icon layui-icon-face-cry" style="font-size:32px; display:block; margin-bottom:8px; color:#ccc"></i>
+											暂无 URL 数据，<a class="layui-link" href="javascript:;" onclick="$('.js-open-generate').click()">点击生成</a>
+										</td>
+									</tr>
 									{/if}
 								</tbody>
 							</table>
@@ -267,6 +329,13 @@ layui.use(['form', 'layer', 'jquery', 'element'], function () {
 		miniTab.openNewTabByIframe({
 			href: "index.php?admin_url-generate",
 			title: "批量生成URL"
+		});
+	});
+	// 清理失效 URL
+	$('.js-cleanup').on('click', function () {
+		layer.confirm('确定清理过期且未使用的 URL？', {icon: 3, title: '清理失效URL'}, function (index) {
+			layer.close(index);
+			adminAjax.postd('index.php?admin_url-cleanup-ajax-1', {days: 30, FORM_HASH: '{@form_hash()}'});
 		});
 	});
 	// 支持 index.php?admin_url-index-tab-settings 直达「插件设置」tab
