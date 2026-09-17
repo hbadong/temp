@@ -76,6 +76,7 @@ Entries discovered by the Agent during task execution should follow this format:
   - `db_pdo_mysql` 缺失 `insert()` 方法，但多个插件模型（competitor_site、keyword、sync_queue、cps_config、external_link、enterprise_site 等）调用 `$this->db->insert("`{pre}{table}`", $data)`，会触发 `Call to undefined method db_pdo_mysql::insert()`。一次性修复：在 `/workspace/aimuchen100/lecms/xiunophp/db/db_pdo_mysql.class.php` 类末尾添加 `public function insert($table, $data)`，用 `prepare` + `array_values` 绑定参数，返回 `lastInsertId`
   - `R($k, $var='G')` 第二个参数是来源字符串（'G'/'P'/'R'），不是默认值。误写 `R('page', 1)` 会被 switch 不匹配，$var=1 整数，`$var['page']` 在 PHP 7.4 返回 null，page=0 导致 SQL `LIMIT N OFFSET -N` 查询返回空且无错误。正确写法：(int)R('page', 'R')。已确认 bug 处：spider_blacklist_control:6、spider_dashboard_control:39,49
   - 模板引擎 `{loop:array('a','b') $v}` 内联数组语法不被支持（`$reg_arr` 正则要求 `\$` 前缀），会导致循环体 `{loop:...}...{/loop}` 原样输出、内部 `$v` 未定义，触发 `Undefined variable: v`。正确做法：控制器 `$this->assign('list', array(...))`，模板 `{loop:$list $v}`。注意 `$this->assign($k, &$v)` 是引用传参，**不能传表达式/字面量/三目**（`assign('x', $a ?: '')` 会报 `Cannot pass parameter 2 by reference`），必须先赋给变量再传；`assign_value()` 按值传参无此限制
+  - 模板插值 `{$var[下标]}` 形式的表达式（如 `{$type_names[$url['type']]}`）**不支持变量下标**，会原样输出；改 `{@ $type_names[$url['type']]}`（PHP 表达式标签）可正常编译。**模板内禁止写闭包**（`array_map(function($x)...` 会被编译器正则截断导致 syntax error/模板丢失），复杂计算须在控制器/模型预生成再 assign
   - 插件控制器/模板编译缓存在 `/workspace/aimuchen100/runcache/admin_control/*.class.php` 和 `runcache/admin_view/default,*.htm.php`。修改插件源码后必须删除对应缓存文件，否则改动不生效
   - POST 写入测试：FORM_HASH = `substr(md5(substr($_ENV['_time'],0,-5).$_ENV['_config']['auth_key']),16)`，每秒变化但同一秒内多次 POST 共享同一值。必须带 `X-Requested-With: XMLHttpRequest` 头才返回 JSON。返回格式有三种：E() 用 `{"err":0,"msg":"..."}`、message() 用 `{"status":0,"message":"...","jumpurl":...}`、错误页用 `{"error":"[程序异常]..."}`
   - site_manager 插件的 `le_site_manager` 表结构必须是 INT 时间戳（`created_at INT UNSIGNED`），而 core_engine.sql 默认建为 DATETIME，会导致 INSERT 报 `Incorrect datetime value`。插件 install.php 的 source 是权威
@@ -147,6 +148,7 @@ Entries discovered by the Agent during task execution should follow this format:
   - 后台插件**模型文件也有编译缓存** `runcache/lecms_model/*.class.php`（core::model 走 RUNTIME_MODEL），后台 debug_admin=0 时改模型源码必须 mv 对应缓存才生效；控制器缓存同理在 runcache/admin_control/。前台 debug=2 时 control/model 每次重编译无需清缓存
   - url_generator 8 种类型 rewrite URL 全部验证通过：/list-{p}.html、/{id}.html、/category/{slug}.html、/tag/{name}.html、/{year}/{month}/{slug}.html、/{alias}.html（需 le_only_alias 登记 alias→id）、/{cid}/{id}/{yyyymmdd}/game.html、/{base36(id)}.html；生成入口 admin_url-generate_post（site_id+count，按比例生成，flexible/hashid 比例 0.05 需 count≥20 才出）
   - 后台隔夜登录态过期（admauth/session），重登走 /tmp/admin_login.php 流程：先 GET /admin/ 抓页面内 FORM_HASH（登录页有真实 input hidden），POST `index-login-ajax-1`（action 是 login 不是 login_post）
+  - 后台访问鉴权：`cookie_pre=letfCJb_`、`admin_safe_entrance=0`、`admin_vcode=0`。历史 cookie 过期后可用 PHP `str_auth()` 直接生成 token 走 Header 访问：`php -r 'require "lecms/xiunophp/lib/base.func.php"; echo urlencode(str_auth("1\tadmin\t<密码md5>", "ENCODE", "<auth_key>"));'`，`curl -H "Cookie: letfCJb_admauth=$TOKEN"`。admin uid=1；auth_key 在 config.inc.php；输出必须 urlencode。生成脚本存于 /tmp/admin_token.sh
 
 
 
