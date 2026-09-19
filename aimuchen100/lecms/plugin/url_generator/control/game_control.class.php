@@ -78,32 +78,72 @@ class game_control extends base_control {
         // 关联 URL 记录
         $this->associate_url($game['id']);
 
+        // 分类名关联（基于后台 game_center 的 cms_game_category 表）
+        $cat_name = '';
+        if(!empty($game['category_id'])) {
+            $tablepre = $_ENV['_config']['db']['master']['tablepre'];
+            $cat_row = $this->db->fetch_first("SELECT name FROM `{$tablepre}cms_game_category` WHERE id=" . (int)$game['category_id'] . " LIMIT 1");
+            if($cat_row) $cat_name = $cat_row['name'];
+        }
+        $game['cat_name'] = $cat_name;
+        // 平台拆分数组（模板不支持动态下标插值, 控制器预拼好平台徽标 HTML）
+        $plat_html = '';
+        if(!empty($game['platform'])) {
+            foreach(explode(',', $game['platform']) as $p) {
+                $p = trim($p);
+                if($p !== '') $plat_html .= '<span class="game-plat">' . htmlspecialchars($p, ENT_QUOTES, 'UTF-8') . '</span>';
+            }
+        }
+        $game['plat_html'] = $plat_html;
+        // 标签拆分数组
+        $game['tag_list'] = $game['tags'] ? array_values(array_filter(array_map('trim', explode(',', $game['tags'])))) : array();
+
         $this->assign_value('game', $game);
         $this->assign_value('pagebar', '');
         $this->display('url_generator_game_detail.htm');
     }
 
     /**
-     * 分类型渲染：按 slug 关键字匹配游戏列表
+     * 分类型渲染：按分类别名（/category/{alias}.html）匹配游戏列表
+     * 优先使用后台 game_center 建立的 cms_game_category 表（alias→category_id），
+     * 兼容旧数据：分类别名未命中时回退按 tags LIKE 匹配。
      */
     private function render_category($slug) {
         $site_id = (int)(defined('CURRENT_SITE_ID') ? CURRENT_SITE_ID : 0);
         $pagenum = 20;
         $page = max(1, (int)R('page', 'R'));
-        $offset = ($page - 1) * $pagenum;
+        $where = array('site_id' => $site_id, 'status' => 1);
 
-        // 按 slug 关键词过滤 tags，避免 /category/rpg.html 与 /category/action.html
-        // 渲染同一份全站游戏列表（修复前 $where 仅 site_id，slug 只作标题展示）
         $tablepre = $_ENV['_config']['db']['master']['tablepre'];
-        $like = addslashes($slug);
-        $rows = $this->db->fetch_all("SELECT * FROM `{$tablepre}cms_game`
-            WHERE site_id = {$site_id} AND tags LIKE '%{$like}%'
-            ORDER BY id DESC LIMIT {$offset}, {$pagenum}");
-        $total_row = $this->db->fetch_first("SELECT COUNT(*) AS num FROM `{$tablepre}cms_game`
-            WHERE site_id = {$site_id} AND tags LIKE '%{$like}%'");
-        $total = $total_row ? (int)$total_row['num'] : 0;
+        $slug_clean = addslashes($slug);
+        $cat_title = '分类：' . htmlspecialchars($slug, ENT_QUOTES, 'UTF-8');
 
-        $this->assign_value('title', '分类：' . htmlspecialchars($slug));
+        // 1. 命中分类表别名：按 category_id 精确过滤
+        $cat_row = $this->db->fetch_first("SELECT id, name FROM `{$tablepre}cms_game_category`
+            WHERE site_id = {$site_id} AND alias = '{$slug_clean}' AND enabled = 1 LIMIT 1");
+        if($cat_row) {
+            $where['category_id'] = (int)$cat_row['id'];
+            $cat_title = '分类：' . htmlspecialchars($cat_row['name'], ENT_QUOTES, 'UTF-8');
+        }
+
+        $total = $this->game->find_count($where);
+        $offset = ($page - 1) * $pagenum;
+        $rows = $this->game->find_fetch($where, array('id' => -1), $offset, $pagenum);
+
+        // 2. 分类表未命中：回退旧行为按 tags LIKE 匹配
+        if(!$cat_row && $total == 0 && $slug !== '') {
+            $rows = $this->db->fetch_all("SELECT * FROM `{$tablepre}cms_game`
+                WHERE site_id = {$site_id} AND status = 1 AND tags LIKE '%{$slug_clean}%'
+                ORDER BY id DESC LIMIT {$offset}, {$pagenum}");
+            $total_row = $this->db->fetch_first("SELECT COUNT(*) AS num FROM `{$tablepre}cms_game`
+                WHERE site_id = {$site_id} AND status = 1 AND tags LIKE '%{$slug_clean}%'");
+            $total = $total_row ? (int)$total_row['num'] : 0;
+        }
+
+        $rows = $this->build_display_rows($rows, $site_id);
+
+        $this->assign_value('title', $cat_title);
+        $this->assign_value('cat_name', $cat_row ? htmlspecialchars($cat_row['name'], ENT_QUOTES, 'UTF-8') : '');
         $this->assign_value('games', $rows);
         $this->assign_value('total', $total);
         $this->assign_value('page', $page);
@@ -123,11 +163,13 @@ class game_control extends base_control {
         $tablepre = $_ENV['_config']['db']['master']['tablepre'];
         $like = addslashes($name);
         $rows = $this->db->fetch_all("SELECT * FROM `{$tablepre}cms_game`
-            WHERE site_id = {$site_id} AND tags LIKE '%{$like}%'
+            WHERE site_id = {$site_id} AND status = 1 AND tags LIKE '%{$like}%'
             ORDER BY id DESC LIMIT {$offset}, {$pagenum}");
         $total_row = $this->db->fetch_first("SELECT COUNT(*) AS num FROM `{$tablepre}cms_game`
-            WHERE site_id = {$site_id} AND tags LIKE '%{$like}%'");
+            WHERE site_id = {$site_id} AND status = 1 AND tags LIKE '%{$like}%'");
         $total = $total_row ? (int)$total_row['num'] : 0;
+
+        $rows = $this->build_display_rows($rows, $site_id);
 
         $this->assign_value('title', '标签：' . htmlspecialchars($name));
         $this->assign_value('games', $rows);
@@ -146,9 +188,11 @@ class game_control extends base_control {
         $page = max(1, (int)R('page', 'R'));
         $offset = ($page - 1) * $pagenum;
 
-        $where = array('site_id' => $site_id);
+        $where = array('site_id' => $site_id, 'status' => 1);
         $list = $this->game->find_fetch($where, array('id' => -1), $offset, $pagenum);
         $total = $this->game->find_count($where);
+
+        $list = $this->build_display_rows($list, $site_id);
 
         $this->assign_value('title', sprintf('%04d年%02d月归档', (int)$year, (int)$month));
         $this->assign_value('games', $list);
@@ -167,16 +211,53 @@ class game_control extends base_control {
         $page = max(1, (int)R('page', 'R'));
         $offset = ($page - 1) * $pagenum;
 
-        $where = array('site_id' => $site_id, 'category_id' => (int)$cid);
+        $where = array('site_id' => $site_id, 'category_id' => (int)$cid, 'status' => 1);
         $list = $this->game->find_fetch($where, array('id' => -1), $offset, $pagenum);
         $total = $this->game->find_count($where);
 
-        $this->assign_value('title', '分类 #' . (int)$cid);
+        $list = $this->build_display_rows($list, $site_id);
+        $cat_name = '';
+        if($total > 0) {
+            $tablepre = $_ENV['_config']['db']['master']['tablepre'];
+            $cat_row = $this->db->fetch_first("SELECT name FROM `{$tablepre}cms_game_category` WHERE id=" . (int)$cid . " LIMIT 1");
+            if($cat_row) $cat_name = $cat_row['name'];
+        }
+
+        $this->assign_value('title', '分类：' . ($cat_name !== '' ? $cat_name : '#' . (int)$cid));
+        $this->assign_value('cat_name', $cat_name);
         $this->assign_value('games', $list);
         $this->assign_value('total', $total);
         $this->assign_value('page', $page);
         $this->assign_value('pagebar', $this->build_pagebar($total, $pagenum, $page));
         $this->display('url_generator_game_list.htm');
+    }
+
+    /**
+     * 列表行显示字段聚合：分类名 + 平台徽标 HTML + 标签数组
+     * 模板引擎 {${var[key]}} 插值不支持动态下标/函数，统一在控制器预拼好
+     */
+    private function build_display_rows($rows, $site_id) {
+        $rows = (array)$rows;
+        if(empty($rows)) return $rows;
+        $tablepre = $_ENV['_config']['db']['master']['tablepre'];
+        // 一次查出当前站点全部分类，避免逐行查询
+        $cats = array();
+        $cat_all = $this->db->fetch_all("SELECT id, name FROM `{$tablepre}cms_game_category` WHERE site_id=" . (int)$site_id);
+        foreach((array)$cat_all as $c) $cats[$c['id']] = $c['name'];
+
+        foreach($rows as $k => $row) {
+            $rows[$k]['cat_name'] = isset($cats[$row['category_id']]) ? $cats[$row['category_id']] : '';
+            $plat_html = '';
+            if(!empty($row['platform'])) {
+                foreach(explode(',', $row['platform']) as $p) {
+                    $p = trim($p);
+                    if($p !== '') $plat_html .= '<span class="game-plat">' . htmlspecialchars($p, ENT_QUOTES, 'UTF-8') . '</span>';
+                }
+            }
+            $rows[$k]['plat_html'] = $plat_html;
+            $rows[$k]['tag_list'] = !empty($row['tags']) ? array_values(array_filter(array_map('trim', explode(',', $row['tags'])))) : array();
+        }
+        return $rows;
     }
 
     /**

@@ -18,10 +18,30 @@ class game_list_control extends base_control {
         $site_id = defined('CURRENT_SITE_ID') ? CURRENT_SITE_ID : 0;
 
         // 获取游戏列表（find_fetch 返回复合 key 数组，不能依赖 $games[0] 取 total）
-        $where = array('site_id' => (int)$site_id);
+        $where = array('site_id' => (int)$site_id, 'status' => 1);
         $games = $this->game->get_list($site_id, $page, $pagenum);
         $total = $this->game->find_count($where);
 
+        // 列表行显示字段聚合：分类名 + 平台徽标 + 标签数组
+        $cats = array();
+        $tablepre = $_ENV['_config']['db']['master']['tablepre'];
+        $cat_all = $this->db->fetch_all("SELECT id, name FROM `{$tablepre}cms_game_category` WHERE site_id=" . (int)$site_id);
+        foreach((array)$cat_all as $c) $cats[$c['id']] = $c['name'];
+        foreach($games as $k => $g) {
+            $games[$k]['cat_name'] = isset($cats[$g['category_id']]) ? $cats[$g['category_id']] : '';
+            $plat_html = '';
+            if(!empty($g['platform'])) {
+                foreach(explode(',', $g['platform']) as $p) {
+                    $p = trim($p);
+                    if($p !== '') $plat_html .= '<span class="game-plat">' . htmlspecialchars($p, ENT_QUOTES, 'UTF-8') . '</span>';
+                }
+            }
+            $games[$k]['plat_html'] = $plat_html;
+            $games[$k]['tag_list'] = !empty($g['tags']) ? array_values(array_filter(array_map('trim', explode(',', $g['tags'])))) : array();
+        }
+
+        $this->assign_value('title', '游戏列表');
+        $this->assign_value('cat_name', '');
         $this->assign_value('games', $games);
         $this->assign_value('page', $page);
         $this->assign_value('pagenum', $pagenum);
