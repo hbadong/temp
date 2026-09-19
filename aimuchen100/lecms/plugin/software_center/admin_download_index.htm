@@ -1,0 +1,140 @@
+{inc:header.htm}
+<style>
+.dl-stats { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 16px; }
+.dl-stat { flex: 1; min-width: 180px; border-radius: 8px; padding: 18px 20px 14px; color: #fff; position: relative; overflow: hidden; }
+.dl-stat .num { font-size: 28px; font-weight: 700; line-height: 1.1; }
+.dl-stat .lbl { font-size: 13px; opacity: .85; margin-top: 6px; }
+.dl-stat i { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); font-size: 42px; opacity: .18; }
+.bg-game { background: linear-gradient(135deg,#3AA8FF,#1E9FFF); }
+.bg-cps { background: linear-gradient(135deg,#FFB84D,#FF8000); }
+.bg-soft { background: linear-gradient(135deg,#2BC6A2,#16BAaa); }
+.bg-cate { background: linear-gradient(135deg,#9C8DF5,#7B68EE); }
+.bg-dl { background: linear-gradient(135deg,#FF8DA1,#FF5C77); }
+.bg-url { background: linear-gradient(135deg,#6FC3FF,#3D9BE9); }
+.guide-step { display: flex; align-items: flex-start; padding: 12px 0; border-bottom: 1px dashed #eee; }
+.guide-step:last-child { border-bottom: none; }
+.guide-num { width: 26px; height: 26px; border-radius: 50%; background: #1E9FFF; color: #fff; text-align: center; line-height: 26px; font-size: 13px; margin-right: 12px; flex-shrink: 0; }
+.guide-body b { display: block; margin-bottom: 3px; }
+.guide-body span { color: #999; font-size: 12px; }
+</style>
+<div class="layuimini-container">
+	<div class="layuimini-main">
+
+		<div class="layui-card">
+			<div class="layui-card-header">分类管理总览
+				<span style="float:right;color:#999;font-size:13px;">当前站点：{@isset($site_names[$site_id]) ? $site_names[$site_id] : '站点#' . $site_id}</span>
+			</div>
+			<div class="layui-card-body">
+				<div class="dl-stats">
+					<div class="dl-stat bg-game">
+						<div class="num">{$game_stats['total']}</div>
+						<div class="lbl">游戏总数</div>
+						<i class="layui-icon">&#xe63c;</i>
+					</div>
+					<div class="dl-stat bg-cps">
+						<div class="num">{$game_stats['cps_linked']}</div>
+						<div class="lbl">已关联 CPS 游戏</div>
+						<i class="layui-icon">&#xe735;</i>
+					</div>
+					<div class="dl-stat bg-soft">
+						<div class="num">{$soft_stats['total']}</div>
+						<div class="lbl">软件总数</div>
+						<i class="layui-icon">&#xe651;</i>
+					</div>
+					<div class="dl-stat bg-cate">
+						<div class="num">{$cate_stats['enabled']} / {$cate_stats['total']}</div>
+						<div class="lbl">软件分类（启用/总数）</div>
+						<i class="layui-icon">&#xe61a;</i>
+					</div>
+					<div class="dl-stat bg-dl">
+						<div class="num">{$soft_stats['downloads']}</div>
+						<div class="lbl">软件下载次数</div>
+						<i class="layui-icon">&#xe601;</i>
+					</div>
+					<div class="dl-stat bg-url">
+						<div class="num">{$url_stats['total']}</div>
+						<div class="lbl">URL 收录（游戏 {$url_stats['game']} / 软件 {$url_stats['soft']}）</div>
+						<i class="layui-icon">&#xe60a;</i>
+					</div>
+				</div>
+
+				<div class="layui-row layui-col-space15">
+					<div class="layui-col-md6">
+						<div style="border:1px solid #eee;border-radius:6px;padding:14px 18px;height:100%;">
+							<h3 style="font-size:15px;font-weight:600;margin-bottom:8px;"><i class="layui-icon" style="color:#1E9FFF;">&#xe63c;</i> 游戏下载行业</h3>
+							<p style="color:#666;font-size:13px;line-height:1.8;">
+								自动覆盖行业 CPS 平台接入的全部游戏，当前共 <b style="color:#1E9FFF;">{$game_stats['total']}</b> 款游戏、CPS 点击 <b style="color:#FF8000;">{$game_stats['cps_clicks']}</b> 次。
+								游戏 URL 收录 <b>{$url_stats['game']}</b> 条，由 url_generator 引擎自动生成。
+							</p>
+							<div style="margin-top:10px;">
+								<button class="layui-btn layui-btn-sm layui-btn-normal" id="btn-sync"><i class="layui-icon">&#xe602;</i> 同步游戏数据</button>
+								<a class="layui-btn layui-btn-sm layui-btn-primary" href="index.php?admin_url-index">URL 生成管理</a>
+							</div>
+						</div>
+					</div>
+					<div class="layui-col-md6">
+						<div style="border:1px solid #eee;border-radius:6px;padding:14px 18px;height:100%;">
+							<h3 style="font-size:15px;font-weight:600;margin-bottom:8px;"><i class="layui-icon" style="color:#16BAaa;">&#xe651;</i> 软件下载行业</h3>
+							<p style="color:#666;font-size:13px;line-height:1.8;">
+								依靠游戏行业海量数据带动软件收录。当前上架 <b style="color:#16BAaa;">{$soft_stats['online']}</b> 款软件、
+								今日新增 <b>{$soft_stats['today']}</b> 款，累计下载 <b style="color:#FF5C77;">{$soft_stats['downloads']}</b> 次，URL 收录 <b>{$url_stats['soft']}</b> 条。
+							</p>
+							<div style="margin-top:10px;">
+								<a class="layui-btn layui-btn-sm" href="index.php?admin_soft-import"><i class="layui-icon">&#xe609;</i> 批量导入软件</a>
+								<a class="layui-btn layui-btn-sm layui-btn-primary" href="index.php?admin_soft-index">软件管理</a>
+								<a class="layui-btn layui-btn-sm layui-btn-primary" href="index.php?admin_softcate-index">软件分类</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="layui-card">
+			<div class="layui-card-header">新手引导：三步搭建任意下载行业站点</div>
+			<div class="layui-card-body">
+				<div class="guide-step">
+					<div class="guide-num">1</div>
+					<div class="guide-body">
+						<b>规划软件分类</b>
+						<span>系统已预置办公/影音/系统工具等 8 个常见大类，可在「软件分类」中自定义增删改并配置 SEO。</span>
+						<a href="index.php?admin_softcate-index" style="font-size:12px;color:#1E9FFF;">去配置 →</a>
+					</div>
+				</div>
+				<div class="guide-step">
+					<div class="guide-num">2</div>
+					<div class="guide-body">
+						<b>批量导入软件数据</b>
+						<span>下载 CSV 模板，整理软件名称/分类/版本/下载地址等信息后批量导入，系统自动去重并生成收录 URL。</span>
+						<a href="index.php?admin_soft-import" style="font-size:12px;color:#1E9FFF;">去导入 →</a>
+					</div>
+				</div>
+				<div class="guide-step">
+					<div class="guide-num">3</div>
+					<div class="guide-body">
+						<b>发布上线软件站</b>
+						<span>前台访问 /soft/ 即为软件下载站首页；游戏站流量通过页内「热门游戏」区块反向导入软件栏目，收录随游戏数据持续增长。</span>
+						<a href="/soft/" target="_blank" style="font-size:12px;color:#1E9FFF;">预览软件站 →</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div>
+<script>
+layui.use(['layer', 'jquery'], function() {
+	var layer = layui.layer, $ = layui.$;
+	$('#btn-sync').on('click', function() {
+		adminAjax.postd('index.php?admin_download-sync_games-ajax-1', {site_id: {$site_id}, FORM_HASH: '{@form_hash()}'}, function(data) {
+			var json = toJson(data);
+			layer.msg(json.message || json.msg, {icon: (json.status == 0 || json.err == 0) ? 1 : 5});
+			if(json.status == 0 || json.err == 0) {
+				setTimeout(function(){ window.location.reload(); }, 1200);
+			}
+		});
+	});
+});
+</script>
+</body>
+</html>

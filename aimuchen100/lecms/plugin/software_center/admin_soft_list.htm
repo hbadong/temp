@@ -1,0 +1,130 @@
+{inc:header.htm}
+<style>
+.soft-filter { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 12px; }
+.soft-filter select, .soft-filter input { margin: 0; }
+.tb-cat { color: #1E9FFF; }
+.tb-plat { display: inline-block; padding: 1px 8px; background: #F0F7FF; border: 1px solid #D4E7FF; border-radius: 3px; color: #1E9FFF; font-size: 12px; margin-right: 4px; }
+.st-on { color: #16BAaa; }
+.st-off { color: #999; }
+.url-link { max-width: 220px; display: inline-block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; vertical-align: middle; }
+</style>
+<div class="layuimini-container">
+	<div class="layuimini-main">
+		<div class="layui-card">
+			<div class="layui-card-header">
+				软件管理
+				<span style="float:right;">
+					<a class="layui-btn layui-btn-sm layui-btn-normal" href="index.php?admin_soft-set"><i class="layui-icon">&#xe608;</i> 添加软件</a>
+					<a class="layui-btn layui-btn-sm" href="index.php?admin_soft-import"><i class="layui-icon">&#xe609;</i> 批量导入</a>
+				</span>
+			</div>
+			<div class="layui-card-body">
+				<form class="layui-form" method="get" action="index.php">
+					<input type="hidden" name="admin_soft-index">
+					<div class="soft-filter">
+						<div class="layui-inline" style="margin:0;width:150px;">
+							<select name="cat_id">
+								<option value="0">全部分类</option>
+								{loop:$cats $c}
+								<option value="{$c['id']}" {@$filter['cat_id'] == $c['id'] ? 'selected' : ''}>{$c['name']}</option>
+								{/loop}
+							</select>
+						</div>
+						<div class="layui-inline" style="margin:0;width:130px;">
+							<select name="status">
+								<option value="">全部状态</option>
+								<option value="1" {@$filter['status'] === '1' ? 'selected' : ''}>已上架</option>
+								<option value="0" {@$filter['status'] === '0' ? 'selected' : ''}>已下架</option>
+							</select>
+						</div>
+						<div class="layui-inline" style="margin:0;width:140px;">
+							<select name="platform">
+								<option value="">全部平台</option>
+								{loop:$platforms $p}
+								<option value="{$p}" {@$filter['platform'] == $p ? 'selected' : ''}>{$p}</option>
+								{/loop}
+							</select>
+						</div>
+						<div class="layui-input-inline" style="margin:0;width:180px;">
+							<input type="text" name="keyword" value="{@htmlspecialchars($filter['keyword'], ENT_QUOTES, 'UTF-8')}" placeholder="软件名称搜索" autocomplete="off" class="layui-input">
+						</div>
+						<button type="submit" class="layui-btn layui-btn-sm layui-btn-primary"><i class="layui-icon">&#xe615;</i> 筛选</button>
+						<span style="color:#999;font-size:13px;margin-left:6px;">当前筛选项下 {$total} 款软件</span>
+					</div>
+				</form>
+
+				<table class="layui-table" lay-size="sm">
+					<colgroup><col width="60"><col><col width="110"><col width="150"><col width="120"><col width="80"><col width="80"><col width="170"></colgroup>
+					<thead><tr><th>ID</th><th>软件名称</th><th>分类</th><th>平台</th><th>版本 / 大小</th><th>下载量</th><th>状态</th><th>操作</th></tr></thead>
+					<tbody>
+					{loop:$rows $r}
+						<tr>
+							<td>{$r['id']}</td>
+							<td>
+								<div><a href="index.php?admin_soft-set-id-{$r['id']}" style="color:#333;">{$r['name']}</a></div>
+								<div class="url-link" title="{$r['download_url']}">{@$r['download_url'] ? '<a href="' . htmlspecialchars($r['download_url'], ENT_QUOTES, 'UTF-8') . '" target="_blank" style="color:#999;font-size:12px;">' . htmlspecialchars($r['download_url'], ENT_QUOTES, 'UTF-8') . '</a>' : '<span style="color:#ccc;font-size:12px;">暂无下载地址</span>'}</div>
+							</td>
+							<td><span class="tb-cat">{$r['cat_name']}</span></td>
+							<td>
+								{@$_arr = explode(',', $r['platform'])}
+								{loop:$_arr $_p}
+								<span class="tb-plat">{@trim($_p) ? htmlspecialchars(trim($_p), ENT_QUOTES, 'UTF-8') : ''}</span>
+								{/loop}
+							</td>
+							<td>{@$r['version'] ? htmlspecialchars($r['version'], ENT_QUOTES, 'UTF-8') : '-'} / {@$r['size'] ? htmlspecialchars($r['size'], ENT_QUOTES, 'UTF-8') : '-'}</td>
+							<td><b style="color:#FF5C77;">{$r['downloads']}</b></td>
+							<td>{@$r['status'] == 1 ? '<span class="st-on">已上架</span>' : '<span class="st-off">已下架</span>'}</td>
+							<td>
+								<a class="layui-btn layui-btn-xs" href="index.php?admin_soft-set-id-{$r['id']}">编辑</a>
+								<a class="layui-btn layui-btn-xs layui-btn-warm js-toggle" href="javascript:;" data-id="{$r['id']}" data-name="{$r['name']}" data-to="{@$r['status'] == 1 ? '下架' : '上架'}">{@$r['status'] == 1 ? '下架' : '上架'}</a>
+								<a class="layui-btn layui-btn-xs layui-btn-danger js-del" href="javascript:;" data-id="{$r['id']}" data-name="{$r['name']}">删除</a>
+							</td>
+						</tr>
+					{/loop}
+					{if:empty($rows)}
+					<tr><td colspan="8" style="text-align:center;padding:36px 0;color:#999;">
+						<div style="font-size:40px;margin-bottom:8px;">&#x1f4e6;</div>
+						暂无软件，点击右上角「添加软件」或「批量导入」开始建设软件站
+					</td></tr>
+					{/if}
+					</tbody>
+				</table>
+				{$pagebar}
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+layui.use(['layer', 'jquery'], function() {
+	var layer = layui.layer, $ = layui.$;
+	var FORM_HASH = '{@form_hash()}';
+
+	// 上下架
+	$(document).on('click', '.js-toggle', function() {
+		var id = $(this).data('id'), name = $(this).data('name'), to = $(this).data('to');
+		layer.confirm('确认将「' + name + '」' + to + '？', function(index) {
+			layer.close(index);
+			adminAjax.postd('index.php?admin_soft-toggle-ajax-1', {id: id, FORM_HASH: FORM_HASH}, function(data) {
+				var json = toJson(data);
+				layer.msg(json.message || json.msg, {icon: (json.status == 0 || json.err == 0) ? 1 : 5});
+				if(json.status == 0 || json.err == 0) setTimeout(function(){ window.location.reload(); }, 900);
+			});
+		});
+	});
+
+	// 删除
+	$(document).on('click', '.js-del', function() {
+		var id = $(this).data('id'), name = $(this).data('name');
+		layer.confirm('确认删除「' + name + '」？删除后前台 URL 同步失效。', function(index) {
+			layer.close(index);
+			adminAjax.postd('index.php?admin_soft-del-ajax-1', {id: id, FORM_HASH: FORM_HASH}, function(data) {
+				var json = toJson(data);
+				layer.msg(json.message || json.msg, {icon: (json.status == 0 || json.err == 0) ? 1 : 5});
+				if(json.status == 0 || json.err == 0) setTimeout(function(){ window.location.reload(); }, 900);
+			});
+		});
+	});
+});
+</script>
+</body>
+</html>

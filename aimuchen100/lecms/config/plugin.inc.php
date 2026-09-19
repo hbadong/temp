@@ -92,5 +92,9 @@ return array (
   array (
     'enable' => 1,
   ),
+  'software_center' => 
+  array (
+    'enable' => 1,
+  ),
 );
 ?>

@@ -1,0 +1,117 @@
+{inc:header.htm}
+<style>
+.import-card { max-width: 780px; }
+.import-card .layui-card-header { font-weight: 600; }
+.csv-cols { background: #F8F9FB; border: 1px solid #eee; border-radius: 6px; padding: 12px 16px; font-size: 13px; color: #555; line-height: 2; }
+.csv-cols b { color: #333; }
+.imp-log-table td { font-size: 12px; }
+.res-ok { color: #16BAaa; font-weight: 600; }
+.res-fail { color: #FF5C77; font-weight: 600; }
+</style>
+<div class="layuimini-container">
+	<div class="layuimini-main">
+		<div class="layui-card import-card">
+			<div class="layui-card-header">
+				<i class="layui-icon" style="color:#1E9FFF;">&#xe609;</i> 批量导入软件
+			</div>
+			<div class="layui-card-body">
+				<div class="csv-cols" style="margin-bottom:16px;">
+					<b>CSV 列顺序（9 列）：</b><br>
+					软件名称, 所属分类, 版本号, 软件大小, 系统平台, 下载地址, 封面图, 软件简介, 标签<br>
+					说明：分类不存在时<b>自动创建</b>；软件名称与现有数据<b>重复时自动跳过</b>；建议使用 UTF-8 编码保存 CSV 文件
+				</div>
+				<div style="margin-bottom:18px;">
+					<a class="layui-btn layui-btn-warm layui-btn-sm" href="index.php?admin_soft-csvtemplate"><i class="layui-icon">&#xe601;</i> 下载 CSV 模板</a>
+				</div>
+				<form id="form" class="layui-form" action="?admin_soft-import_post-ajax-1" method="post" enctype="multipart/form-data">
+					<input type="hidden" name="FORM_HASH" value="{@form_hash()}" />
+					<input type="hidden" name="site_id" value="{$site_id}" />
+					<div class="layui-form-item">
+						<label class="layui-form-label">CSV 文件</label>
+						<div class="layui-input-block">
+							<button type="button" class="layui-btn" id="pick_btn"><i class="layui-icon">&#xe61c;</i> 选择文件</button>
+							<span id="file_name" style="color:#999;font-size:13px;margin-left:8px;">未选择文件</span>
+							<input type="file" name="csv_file" id="csv_file" accept=".csv" style="display:none;" />
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<div class="layui-input-block">
+							<button class="layui-btn" lay-submit lay-filter="form"><i class="layui-icon">&#xe609;</i> 开始导入</button>
+							<a class="layui-btn layui-btn-primary" href="index.php?admin_soft-index">返回列表</a>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+
+		<div class="layui-card">
+			<div class="layui-card-header">最近导入日志</div>
+			<div class="layui-card-body">
+				<table class="layui-table imp-log-table" lay-size="sm">
+					<thead><tr><th width="70">ID</th><th>文件名</th><th width="90">总行数</th><th width="90">成功</th><th width="90">失败</th><th>失败明细</th><th width="160">时间</th></tr></thead>
+					<tbody>
+					{loop:$logs $l}
+						<tr>
+							<td>{$l['id']}</td>
+							<td>{@htmlspecialchars($l['filename'], ENT_QUOTES, 'UTF-8')}</td>
+							<td>{$l['total']}</td>
+							<td><span class="res-ok">{$l['success']}</span></td>
+							<td><span class="res-fail">{$l['failed']}</span></td>
+							<td style="max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="{$l['detail']}">{@$l['detail'] ? htmlspecialchars($l['detail'], ENT_QUOTES, 'UTF-8') : '-'}</td>
+							<td>{$l['dateline_text']}</td>
+						</tr>
+					{/loop}
+					{if:empty($logs)}
+					<tr><td colspan="7" style="text-align:center;color:#999;padding:24px 0;">暂无导入记录，上传 CSV 后此处将记录每次导入结果</td></tr>
+					{/if}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+layui.use(['form','layer','jquery','upload','miniTab'], function() {
+	var layer = layui.layer, form = layui.form, $ = layui.jquery, miniTab = layui.miniTab;
+
+	// 手动选文件（不自动上传，随表单一起提交）
+	$('#pick_btn').on('click', function() { $('#csv_file').click(); });
+	$('#csv_file').on('change', function() {
+		var f = $(this).val();
+		$('#file_name').text(f ? f.split('\\').pop().split('/').pop() : '未选择文件');
+	});
+
+	form.on('submit(form)', function() {
+		var has = $('#csv_file').val();
+		if(!has) { layer.msg('请先选择 CSV 文件', {icon: 5}); return false; }
+		var loading = layer.load(1, {shade: [0.2, '#000']});
+		var fd = new FormData($('#form')[0]);
+		$.ajax({
+			type: 'POST',
+			cache: false,
+			url: $('#form').attr('action'),
+			data: fd,
+			processData: false,
+			contentType: false,
+			dataType: 'json',
+			success: function(json) {
+				layer.close(loading);
+				layer.msg(json.message || json.msg, {icon: (json.status == 0 || json.err == 0) ? 1 : 5});
+				if(json.status == 0 || json.err == 0) {
+					setTimeout(function(){
+						miniTab.reloadIframe('index.php?admin_soft-import');
+						miniTab.deleteCurrentByIframe();
+					}, 1500);
+				}
+			},
+			error: function(xhr) {
+				layer.close(loading);
+				layer.msg('提交失败，代码:' + xhr.status, {icon: 5});
+			}
+		});
+		return false;
+	});
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,150 @@
+{inc:header.htm}
+<style>
+.soft-set-card { max-width: 760px; }
+.soft-set-card .layui-card-header { font-weight: 600; }
+.field-hint { display: block; color: #999; font-size: 12px; margin-top: 4px; line-height: 1.6; }
+.cover-preview { max-width: 120px; max-height: 90px; margin-top: 6px; border-radius: 4px; border: 1px solid #eee; display: none; }
+</style>
+<div class="layuimini-container">
+	<div class="layuimini-main">
+		<div class="layui-card soft-set-card">
+			<div class="layui-card-header">
+				<i class="layui-icon" style="color:#1E9FFF;">&#xe651;</i> {@$data['id'] > 0 ? '编辑软件' : '添加软件'}
+			</div>
+			<div class="layui-card-body">
+				<form id="form" class="layui-form" action="?admin_soft-set_post-ajax-1" method="post">
+					<input type="hidden" name="FORM_HASH" value="{@form_hash()}" />
+					<input type="hidden" name="id" value="{$data['id']}" />
+					<input type="hidden" name="site_id" value="{$data['site_id']}" />
+
+					<div class="layui-form-item">
+						<label class="layui-form-label required">软件名称</label>
+						<div class="layui-input-block">
+							<input type="text" name="name" value="{$data['name']}" autocomplete="off" placeholder="例如：360安全浏览器" class="layui-input" lay-verify="required" lay-reqtext="软件名称不能为空" />
+							<span class="field-hint">站点内软件名称唯一，导入与手动添加均按名称去重</span>
+						</div>
+					</div>
+
+					<div class="layui-form-item">
+						<label class="layui-form-label">所属分类</label>
+						<div class="layui-input-block" style="max-width:300px;">
+							<select name="cat_id" lay-filter="cat_id">
+								<option value="0">未分类</option>
+								{loop:$cats $c}
+								<option value="{$c['id']}" {@$data['cat_id'] == $c['id'] ? 'selected' : ''}>{$c['name']}</option>
+								{/loop}
+							</select>
+							<span class="field-hint">分类在「软件分类」中维护，缺少分类可先去创建</span>
+						</div>
+					</div>
+
+					<div class="layui-form-item">
+						<label class="layui-form-label">版本号</label>
+						<div class="layui-input-inline">
+							<input type="text" name="version" value="{$data['version']}" autocomplete="off" placeholder="例如 13.0.2256.0" class="layui-input">
+						</div>
+						<label class="layui-form-label">软件大小</label>
+						<div class="layui-input-inline">
+							<input type="text" name="size" value="{$data['size']}" autocomplete="off" placeholder="例如 48MB" class="layui-input">
+						</div>
+					</div>
+
+					<div class="layui-form-item">
+						<label class="layui-form-label">系统平台</label>
+						<div class="layui-input-block" style="max-width:300px;">
+							<input type="text" name="platform" value="{$data['platform']}" autocomplete="off" placeholder="Windows, macOS" class="layui-input">
+							<span class="field-hint">多平台用英文逗号分隔：Windows, macOS, Linux, Android, iOS</span>
+						</div>
+					</div>
+
+					<div class="layui-form-item">
+						<label class="layui-form-label required">下载地址</label>
+						<div class="layui-input-block">
+							<input type="text" name="download_url" value="{$data['download_url']}" autocomplete="off" placeholder="https://example.com/setup.exe" class="layui-input" lay-verify="required" lay-reqtext="下载地址不能为空" />
+							<span class="field-hint">前台下载按钮将跳转至该地址并累计下载次数</span>
+						</div>
+					</div>
+
+					<div class="layui-form-item">
+						<label class="layui-form-label">封面图</label>
+						<div class="layui-input-block">
+							<input type="text" name="cover" id="cover_input" value="{$data['cover']}" autocomplete="off" placeholder="https://example.com/cover.jpg" class="layui-input">
+							<img id="cover_preview" class="cover-preview" src="{$data['cover']}" />
+						</div>
+					</div>
+
+					<div class="layui-form-item">
+						<label class="layui-form-label">软件简介</label>
+						<div class="layui-input-block">
+							<textarea name="intro" placeholder="一句话简介，展示在列表页" class="layui-textarea" style="height:70px;">{$data['intro']}</textarea>
+						</div>
+					</div>
+
+					<div class="layui-form-item">
+						<label class="layui-form-label">详细介绍</label>
+						<div class="layui-input-block">
+							<textarea name="content" placeholder="软件功能特点等详细介绍，展示在详情页" class="layui-textarea" style="height:140px;">{$data['content']}</textarea>
+						</div>
+					</div>
+
+					<div class="layui-form-item">
+						<label class="layui-form-label">标签</label>
+						<div class="layui-input-block">
+							<input type="text" name="tags" value="{$data['tags']}" autocomplete="off" placeholder="浏览器,工具" class="layui-input">
+							<span class="field-hint">英文逗号分隔，用于详情页相关推荐</span>
+						</div>
+					</div>
+
+					<div class="layui-form-item">
+						<label class="layui-form-label">上架状态</label>
+						<div class="layui-input-block" style="padding-top:8px;">
+							<input type="radio" name="status" value="1" title="上架" {@$data['status'] == 1 ? 'checked' : ''}>
+							<input type="radio" name="status" value="0" title="下架" {@$data['status'] == 0 ? 'checked' : ''}>
+							<span class="field-hint">下架后前台列表与详情不再展示，URL 同步失效</span>
+						</div>
+					</div>
+
+					<div class="layui-form-item" style="margin-top:22px;">
+						<div class="layui-input-block">
+							<button class="layui-btn" lay-submit lay-filter="form"><i class="layui-icon">&#xe605;</i> 保存</button>
+							<a class="layui-btn layui-btn-primary" href="index.php?admin_soft-index">返回列表</a>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+layui.use(['form','layer','jquery','miniTab'], function() {
+	var layer = layui.layer, form = layui.form, miniTab = layui.miniTab, $ = layui.jquery;
+
+	// 封面预览
+	function refreshPreview() {
+		var url = $.trim($('#cover_input').val());
+		if(url) {
+			$('#cover_preview').attr('src', url).show();
+		} else {
+			$('#cover_preview').hide();
+		}
+	}
+	$('#cover_input').on('change blur', refreshPreview);
+	refreshPreview();
+
+	form.on('submit(form)', function() {
+		adminAjax.postform('#form', function(data) {
+			var json = toJson(data);
+			layer.msg(json.message || json.msg, {icon: (json.status == 0 || json.err == 0) ? 1 : 5});
+			if(json.status == 0 || json.err == 0) {
+				setTimeout(function(){
+					miniTab.reloadIframe('index.php?admin_soft-index');
+					miniTab.deleteCurrentByIframe();
+				}, 1200);
+			}
+		});
+		return false;
+	});
+});
+</script>
+</body>
+</html>
