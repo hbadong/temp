@@ -1,0 +1,80 @@
+{inc:header.htm}
+<style>
+.gamecate-set-card { max-width: 640px; }
+.field-hint { display: block; color: #999; font-size: 12px; margin-top: 4px; line-height: 1.6; }
+</style>
+<div class="layuimini-container">
+	<div class="layuimini-main">
+		<div class="layui-card gamecate-set-card">
+			<div class="layui-card-header">
+				<i class="layui-icon" style="color:#1E9FFF;">&#xe651;</i> {@$data['id'] > 0 ? '编辑分类' : '添加分类'}
+			</div>
+			<div class="layui-card-body">
+				<form id="form" class="layui-form" action="?admin_gamecate-set_post-ajax-1" method="post">
+					<input type="hidden" name="FORM_HASH" value="{@form_hash()}" />
+					<input type="hidden" name="id" value="{$data['id']}" />
+					<input type="hidden" name="site_id" value="{$data['site_id']}" />
+
+					<div class="layui-form-item">
+						<label class="layui-form-label required">分类名称</label>
+						<div class="layui-input-block">
+							<input type="text" name="name" value="{$data['name']}" autocomplete="off" placeholder="例如：角色扮演" class="layui-input" lay-verify="required" lay-reqtext="分类名称不能为空" />
+						</div>
+					</div>
+
+					<div class="layui-form-item">
+						<label class="layui-form-label">分类别名</label>
+						<div class="layui-input-block">
+							<input type="text" name="alias" value="{$data['alias']}" autocomplete="off" placeholder="例如：rpg" class="layui-input" />
+							<span class="field-hint">用于生成前台地址 /category/{别名}.html；留空时自动由分类名生成。建议使用英文小写</span>
+						</div>
+					</div>
+
+					<div class="layui-form-item">
+						<label class="layui-form-label">分类简介</label>
+						<div class="layui-input-block">
+							<textarea name="intro" placeholder="分类简介，展示在分类页" class="layui-textarea" style="height:80px;">{$data['intro']}</textarea>
+						</div>
+					</div>
+
+					<div class="layui-form-item">
+						<label class="layui-form-label">启用状态</label>
+						<div class="layui-input-block" style="padding-top:8px;">
+							<input type="radio" name="enabled" value="1" title="启用" {@$data['enabled'] == 1 ? 'checked' : ''}>
+							<input type="radio" name="enabled" value="0" title="停用" {@$data['enabled'] == 0 ? 'checked' : ''}>
+							<span class="field-hint">停用后前台分类页 URL 同步失效</span>
+						</div>
+					</div>
+
+					<div class="layui-form-item" style="margin-top:22px;">
+						<div class="layui-input-block">
+							<button class="layui-btn" lay-submit lay-filter="form"><i class="layui-icon">&#xe605;</i> 保存</button>
+							<a class="layui-btn layui-btn-primary" href="index.php?admin_gamecate-index">返回列表</a>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+layui.use(['form','layer','jquery','miniTab'], function() {
+	var layer = layui.layer, form = layui.form, $ = layui.jquery, miniTab = layui.miniTab;
+
+	form.on('submit(form)', function() {
+		adminAjax.postform('#form', function(data) {
+			var json = toJson(data);
+			layer.msg(json.message || json.msg, {icon: (json.status == 0 || json.err == 0) ? 1 : 5});
+			if(json.status == 0 || json.err == 0) {
+				setTimeout(function(){
+					miniTab.reloadIframe('index.php?admin_gamecate-index');
+					miniTab.deleteCurrentByIframe();
+				}, 1200);
+			}
+		});
+		return false;
+	});
+});
+</script>
+</body>
+</html>

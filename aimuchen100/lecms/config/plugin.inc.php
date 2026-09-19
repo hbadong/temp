@@ -96,5 +96,9 @@ return array (
   array (
     'enable' => 1,
   ),
+  'game_center' => 
+  array (
+    'enable' => 1,
+  ),
 );
 ?>
