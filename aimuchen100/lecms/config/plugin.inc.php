@@ -100,5 +100,17 @@ return array (
   array (
     'enable' => 1,
   ),
+  'template_rewrite' => 
+  array (
+    'enable' => 1,
+  ),
+  'master_api' => 
+  array (
+    'enable' => 1,
+  ),
+  'sync_client' => 
+  array (
+    'enable' => 1,
+  ),
 );
 ?>

@@ -1,0 +1,138 @@
+{inc:header.htm}
+<style>
+.sc-card { max-width: 980px; }
+.sc-card .layui-card-header { font-weight: 600; }
+.field-hint { display: block; color: #999; font-size: 12px; margin-top: 4px; line-height: 1.6; }
+.sc-input { max-width: 480px; }
+.sc-logs td { font-size: 12px; }
+</style>
+<div class="layuimini-container">
+	<div class="layuimini-main">
+		<div class="layui-card sc-card">
+			<div class="layui-card-header">
+				<i class="layui-icon" style="color:#1E9FFF;">&#xe62b;</i> 站群数据同步客户端设置
+			</div>
+			<div class="layui-card-body">
+				<div class="field-hint" style="margin-bottom:12px;">
+					配置主站同步 API 地址与 Token 后，即可拉取主站数据（games/articles/categories/tags）。
+					数据以主站 main_id 映射 upsert，主站已 AI 改写的内容（is_ai_rewritten=1）自动跳过。
+					支持图片本地化（白名单 host 下载，其余原样保留，失败移除 img 标签）。
+				</div>
+				<div class="field-hint" style="margin-bottom:12px;">
+					当前配置站点：
+					<select id="site_sel" style="width:200px;display:inline-block;">
+						{loop:$sites $s}
+						<option value="{$s['sid']}" {@$s['sid'] == $site_id ? 'selected' : ''}>{$s['sid']}. {$s['site_name']} ({$s['domain']})</option>
+						{/loop}
+					</select>
+					<a class="layui-btn layui-btn-xs" href="javascript:;" id="btn_switch">切换</a>
+				</div>
+				<form id="form" class="layui-form" action="?admin_sync_client-set_post-ajax-1" method="post">
+					<input type="hidden" name="FORM_HASH" value="{@form_hash()}" />
+					<input type="hidden" name="site_id" value="{$site_id}" />
+					<div class="layui-form-item">
+						<label class="layui-form-label">主站 API URL</label>
+						<div class="layui-input-block">
+							<input type="text" name="master_url" value="{$st['master_url']}" autocomplete="off" placeholder="http://主站域名/index.php" class="layui-input sc-input" />
+							<span class="field-hint">主站同步端点，如 http://localhost:8080/index.php?master_api-sync</span>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">同步 Token</label>
+						<div class="layui-input-block">
+							<input type="text" name="token" value="{$st['token']}" autocomplete="off" placeholder="主站后台生成的 API Token" class="layui-input sc-input" />
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">目标站点</label>
+						<div class="layui-input-block">
+							<input type="number" name="target_site" value="{$st['target_site']}" min="1" class="layui-input sc-input" style="width:120px;" />
+							<span class="field-hint">同步数据写入的站点 ID（通常即当前配置站点）</span>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">Cron Key</label>
+						<div class="layui-input-block">
+							<input type="text" name="cron_key" value="{$st['cron_key']}" autocomplete="off" placeholder="留空自动生成" class="layui-input sc-input" />
+							<span class="field-hint">定时任务 URL：http://域名/index.php?sync_client-cron&amp;key={$st['cron_key']}</span>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">图片白名单</label>
+						<div class="layui-input-block">
+							<input type="text" name="img_whitelist" value="{$st['img_whitelist']}" autocomplete="off" placeholder="如 img.example.com,static.example.com（逗号分隔）" class="layui-input sc-input" />
+							<span class="field-hint">命中白名单 host 的正文图片将下载到本地上传目录；其余 host 原样保留，下载失败移除 img 标签</span>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">启用同步</label>
+						<div class="layui-input-block">
+							<input type="checkbox" name="sync_games" value="1" lay-skin="switch" lay-text="游戏|关" {@$st['sync_games'] ? 'checked' : ''} />
+							<input type="checkbox" name="sync_articles" value="1" lay-skin="switch" lay-text="文章|关" {@$st['sync_articles'] ? 'checked' : ''} />
+							<input type="checkbox" name="sync_categories" value="1" lay-skin="switch" lay-text="分类|关" {@$st['sync_categories'] ? 'checked' : ''} />
+							<input type="checkbox" name="sync_tags" value="1" lay-skin="switch" lay-text="标签|关" {@$st['sync_tags'] ? 'checked' : ''} />
+						</div>
+					</div>
+					<div class="layui-form-item" style="margin-top:20px;">
+						<div class="layui-input-block" style="margin-left:0;">
+							<button class="layui-btn" lay-submit lay-filter="form"><i class="layui-icon">&#xe605;</i> 保存配置</button>
+							<a class="layui-btn layui-btn-normal" href="?admin_sync_client-run-site_id-{$site_id}"><i class="layui-icon">&#xe654;</i> 立即全部同步</a>
+						</div>
+					</div>
+				</form>
+				<hr style="margin:18px 0;" />
+				<div class="field-hint" style="margin-bottom:8px;">最近同步日志（当前站点）：</div>
+				<table class="layui-table layui-form sc-logs" lay-skin="line">
+					<thead>
+						<tr>
+							<th style="width:70px;">类型</th>
+							<th style="width:60px;">结果</th>
+							<th style="width:80px;">条数</th>
+							<th>消息</th>
+							<th style="width:150px;">时间</th>
+						</tr>
+					</thead>
+					<tbody>
+						{loop:$logs $l}
+						<tr>
+							<td>{$l['sync_type']}</td>
+							<td>{if:$l['status']}<span class="layui-badge layui-bg-green">成功</span>{else}<span class="layui-badge layui-bg-red">失败</span>{/if}</td>
+							<td>{$l['item_count']}</td>
+							<td>{$l['message']}</td>
+							<td>{$l['created_at']}</td>
+						</tr>
+						{/loop}
+						{if:empty($logs)}
+						<tr><td colspan="5" style="text-align:center;color:#999;">暂无同步记录</td></tr>
+						{/if}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+layui.use(['form','layer','jquery','miniTab'], function() {
+	var layer = layui.layer, form = layui.form, miniTab = layui.miniTab, $ = layui.jquery;
+
+	form.on('submit(form)', function() {
+		adminAjax.postform('#form', function(data) {
+			var json = toJson(data);
+			layer.msg(json.message || json.msg, {icon: (json.status == 0 || json.err == 0) ? 1 : 5});
+			if(json.status == 0 || json.err == 0) {
+				setTimeout(function(){
+					miniTab.reloadIframe('index.php?admin_sync_client-index');
+				}, 1200);
+			}
+		});
+		return false;
+	});
+
+	$('#btn_switch').on('click', function() {
+		var sid = $('#site_sel').val();
+		location.href = '?admin_sync_client-index-site_id-' + sid;
+	});
+});
+</script>
+</body>
+</html>
