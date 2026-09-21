@@ -1,0 +1,31 @@
+# 实施任务清单
+
+- [x] T1 game_center 升级
+  - [x] 1.1 install.php 迁移 le_cms_game 新列（main_id/source/content_hash/is_ai_rewritten）
+  - [x] 1.2 game_center_model：download_url 加密存取 + content_hash 计算
+  - [x] 1.3 url_generator 新增 download control（/download-{id}.html 302+计数）
+  - [x] 1.4 admin_game_set.htm 下载说明与前台模板按钮指向中转端点
+- [x] T2 ai_content_factory 扩展
+  - [x] 2.1 install.php 迁移 le_cms_article/le_cms_game_category 新列
+  - [x] 2.2 新任务类型 game_detail/article_content/category_seo/tag_seo + 提示词配置
+  - [x] 2.3 批量入口（游戏列表/分类列表/文章）
+  - [x] 2.4 admin 手工编辑清零 is_ai_rewritten
+- [x] T3 template_rewrite 插件（CSS 前缀）
+  - [x] 3.1 输出层替换 hook + per-site 前缀配置
+  - [x] 3.2 /dynamic-css.css 动态路由
+  - [x] 3.3 后台设置页
+- [x] T4 master_api 插件
+  - [x] 4.1 install.php（le_cms_api_token 表）+ Token 管理页
+  - [x] 4.2 sync JSON 端点（games/articles/categories/tags，增量+分页+签名+限频）
+- [x] T5 sync_client 插件
+  - [x] 5.1 install.php（le_cms_sync_log + 依赖列检查）+ 设置页
+  - [x] 5.2 拉取/验签/事务 upsert（games 含 url_map 登记）
+  - [x] 5.3 articles/categories 同步 + 图片本地化（白名单）
+  - [x] 5.4 跳过 is_ai_rewritten=1 + 同步日志 + cron 端点
+- [x] T6 全链路回归（后台 CRUD/前台页面/双站同步/AI 任务/模板前缀）
+  - [x] 6.1 前台游戏详情（主站/分站，/download-{id}.html 302+计数）
+  - [x] 6.2 前台文章/分类/标签页渲染（/game/{id}.html 文章、/category/{slug}.html、/tag/{name}.html）
+  - [x] 6.3 双站同步数据渲染（分站同步内容/图片/前缀 sub-gm-）
+  - [x] 6.4 AI 任务链路（mock 端点验证改写+标记+同步跳过联动）
+  - [x] 6.5 动态 CSS 端点（主站 siteA-gm-*/分站 sub-gm-*）
+- [ ] T7 提交推送
