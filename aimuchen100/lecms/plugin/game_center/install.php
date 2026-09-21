@@ -39,6 +39,11 @@ $game_cols = array(
     'intro'            => "ALTER TABLE `{$game_table}` ADD COLUMN `intro` VARCHAR(1000) DEFAULT '' COMMENT '游戏简介' AFTER `download_url`",
     'updated_at'       => "ALTER TABLE `{$game_table}` ADD COLUMN `updated_at` DATETIME DEFAULT NULL COMMENT '更新时间' AFTER `created_at`",
     'content_id'       => "ALTER TABLE `{$game_table}` ADD COLUMN `content_id` INT DEFAULT 0 COMMENT '关联内容ID' AFTER `updated_at`",
+    // 站群同步与内容指纹（对齐游嘻CMS方案，规避其前台过滤缺陷）
+    'main_id'          => "ALTER TABLE `{$game_table}` ADD COLUMN `main_id` INT UNSIGNED DEFAULT 0 COMMENT '主站源游戏ID: 0为本站创建' AFTER `content_id`",
+    'source'           => "ALTER TABLE `{$game_table}` ADD COLUMN `source` VARCHAR(50) DEFAULT '' COMMENT '数据来源: 本地/master_api' AFTER `main_id`",
+    'content_hash'     => "ALTER TABLE `{$game_table}` ADD COLUMN `content_hash` CHAR(64) DEFAULT '' COMMENT '内容指纹 HMAC-SHA256' AFTER `source`",
+    'is_ai_rewritten'  => "ALTER TABLE `{$game_table}` ADD COLUMN `is_ai_rewritten` TINYINT DEFAULT 0 COMMENT 'AI改写标记: 1已改写' AFTER `content_hash`",
 );
 $exists = array();
 $rows = $this->db->fetch_all("SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = '{$game_table}'");
@@ -47,6 +52,9 @@ foreach($game_cols as $col => $sql_alter) {
     if(isset($exists[$col])) continue;
     $this->db->query($sql_alter);
 }
+
+// download_url 存 AES-256-CBC 密文（base64 后约 1.34 倍长度），扩容到 1000
+$this->db->query("ALTER TABLE `{$game_table}` MODIFY `download_url` VARCHAR(1000) DEFAULT '' COMMENT '下载地址(AES-256-CBC密文)'");
 
 // 3. 预置 8 个常见游戏分类（alias 与 url_generator 已生成的 /category/{slug}.html 一一对应）
 $site_row = $this->db->fetch_first("SELECT sid FROM `{$tablepre}site_manager` WHERE status=1 ORDER BY sid ASC LIMIT 1");

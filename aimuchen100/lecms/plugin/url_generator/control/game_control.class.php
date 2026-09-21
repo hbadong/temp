@@ -97,10 +97,37 @@ class game_control extends base_control {
         $game['plat_html'] = $plat_html;
         // 标签拆分数组
         $game['tag_list'] = $game['tags'] ? array_values(array_filter(array_map('trim', explode(',', $game['tags'])))) : array();
+        // 下载中转页地址（download_url 库中为密文，前台永不直出）
+        $game['download_page_url'] = !empty($_ENV['_config']['lecms_parseurl'])
+            ? '/download-' . $game['id'] . C('url_suffix')
+            : 'index.php?game-download-id-' . $game['id'];
 
         $this->assign_value('game', $game);
         $this->assign_value('pagebar', '');
         $this->display('url_generator_game_detail.htm');
+    }
+
+    /**
+     * 下载中转端点：/download-{id}.html
+     * 解密 download_url 后 302 跳转并计数；真实地址不落任何 HTML 输出
+     */
+    public function download() {
+        $id = (int)R('id', 'R');
+        $site_id = (int)(defined('CURRENT_SITE_ID') ? CURRENT_SITE_ID : 0);
+        $game = $id > 0 ? $this->game->get($id) : array();
+        if(!$game || ($site_id > 0 && (int)$game['site_id'] !== $site_id) || (int)$game['status'] != 1) {
+            header('HTTP/1.1 404 Not Found');
+            exit('Not Found');
+        }
+        $game_center = core::model('game_center');
+        $url = $game_center->decrypt_download_url($game['download_url']);
+        if($url === '' || !preg_match('#^https?://#i', $url)) {
+            header('HTTP/1.1 404 Not Found');
+            exit('Not Found');
+        }
+        $tablepre = $this->db->tablepre;
+        $this->db->query("UPDATE `{$tablepre}cms_game` SET downloads=downloads+1 WHERE id={$id}");
+        http_location($url, '302');
     }
 
     /**

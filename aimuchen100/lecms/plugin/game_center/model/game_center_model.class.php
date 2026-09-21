@@ -122,4 +122,51 @@ class game_center extends model {
         $tablepre = $this->db->tablepre;
         return $this->db->query("UPDATE `{$tablepre}cms_url_map` SET status=3 WHERE site_id=" . (int)$site_id . " AND url_hash='{$url_hash}'");
     }
+
+    /**
+     * 内容指纹：HMAC-SHA256（对比游嘻CMS：仅作数据一致性校验，前台零过滤，
+     * 避免其 data_signature 前台过滤导致本地游戏被隐藏的缺陷）
+     * 载荷必须使用明文字段（密文因随机 IV 每次不同，不可参与指纹）
+     * @param array $row 含 main_id/name/platform/category_id/intro/download_url(明文)
+     */
+    public function content_hash($row) {
+        $payload = implode('|', array(
+            isset($row['main_id']) ? (int)$row['main_id'] : 0,
+            isset($row['name']) ? (string)$row['name'] : '',
+            isset($row['platform']) ? (string)$row['platform'] : '',
+            isset($row['category_id']) ? (int)$row['category_id'] : 0,
+            isset($row['intro']) ? (string)$row['intro'] : '',
+            isset($row['download_url']) ? (string)$row['download_url'] : '',
+        ));
+        $key = hash_hmac('sha256', 'game_sync', C('auth_key'));
+        return hash_hmac('sha256', $payload, $key);
+    }
+
+    /**
+     * 下载地址加密：AES-256-CBC，密钥由 auth_key 派生（对比游嘻CMS 用部署目录派生，
+     * 换目录即全站下载失效；auth_key 随站点唯一且不随目录变化）
+     * 随机 IV 前置拼接后 base64；明文为空原样返回空串
+     */
+    public function encrypt_download_url($url) {
+        $url = trim((string)$url);
+        if($url === '') return '';
+        $key = hash('sha256', C('auth_key') . '|dl', true);
+        $iv = random_bytes(16);
+        $cipher = openssl_encrypt($url, 'aes-256-cbc', $key, OPENSSL_RAW_DATA, $iv);
+        if($cipher === false) return '';
+        return base64_encode($iv . $cipher);
+    }
+
+    /**
+     * 下载地址解密：兼容历史明文（base64 解不出或解密失败时原样返回）
+     */
+    public function decrypt_download_url($cipher) {
+        $cipher = trim((string)$cipher);
+        if($cipher === '') return '';
+        $raw = base64_decode($cipher, true);
+        if($raw === false || strlen($raw) <= 16) return $cipher;
+        $key = hash('sha256', C('auth_key') . '|dl', true);
+        $plain = openssl_decrypt(substr($raw, 16), 'aes-256-cbc', $key, OPENSSL_RAW_DATA, substr($raw, 0, 16));
+        return $plain === false ? $cipher : $plain;
+    }
 }

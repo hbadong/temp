@@ -66,6 +66,11 @@ class admin_game_control extends admin_control {
         );
         if($id > 0 && !$data) $this->message(1, lang('data_no_exists'));
 
+        // 编辑表单展示明文（库中存 AES-256-CBC 密文，解密失败原样返回兼容历史明文）
+        if($id > 0 && $data && isset($data['download_url']) && $data['download_url'] !== '') {
+            $data['download_url'] = $this->game_center->decrypt_download_url($data['download_url']);
+        }
+
         $cats = $this->game_category->admin_all($data['site_id']);
         $this->assign('data', $data);
         $this->assign('cats', $cats);
@@ -101,6 +106,12 @@ class admin_game_control extends admin_control {
             'tags' => trim(R('tags', 'P')),
             'status' => (int)R('status', 'P') ? 1 : 0,
         );
+
+        // 内容指纹基于明文载荷（密文含随机 IV 不可复现），随后将下载地址加密落库
+        $data['content_hash'] = $this->game_center->content_hash($data);
+        $data['download_url'] = $this->game_center->encrypt_download_url($data['download_url']);
+        // 手工编辑视为人工修正，清零 AI 改写标记（同步将重新拉取）
+        $data['is_ai_rewritten'] = 0;
 
         if($id > 0) {
             $data['id'] = $id;
