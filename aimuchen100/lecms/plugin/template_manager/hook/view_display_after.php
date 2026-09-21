@@ -16,7 +16,6 @@
 
 // 快速判定：仅前台生效（后台 admin 子应用用自己的视图层），且输出为 HTML（含 </head>）
 if (defined('APP_NAME') && APP_NAME === 'admin') {
-    echo $html;
     return;
 }
 
@@ -46,7 +45,6 @@ function tm_get_settings_safe() {
 
 $_tm_set = tm_get_settings_safe();
 if (empty($_tm_set['enabled']) || strpos($html, '</head>') === false) {
-    echo $html;
     return;
 }
 
@@ -134,5 +132,3 @@ if (defined('SITE_CONFIG')) {
         }
     }
 }
-
-echo $html;

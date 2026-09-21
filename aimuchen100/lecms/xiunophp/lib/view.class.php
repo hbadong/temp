@@ -26,23 +26,23 @@ class view{
             ob_start();
             include $tplfile;
             $html = ob_get_clean();
-            // hook view_display_after.php（插件可在此对 $html 做运行时注入后 echo）
+            // hook view_display_after.php（插件可在此对 $html 做运行时注入，不得 echo）
             // DEBUG=1 时框架源码直载，hook 标记注释不会像编译期那样被内联执行，
-            // 需在此显式加载插件的同名 hook 文件（与编译内联行为对齐）
+            // 需在此显式加载插件的同名 hook 文件（与编译内联行为对齐）。
+            // 多个插件可注册同名 hook：所有 hook 只允许就地修改 $html，由框架统一 echo 一次，
+            // 避免每个 hook 各自 echo 造成输出重复。
             if(DEBUG && is_dir(PLUGIN_PATH)) {
                 $plugins = core::get_plugins();
                 if(!empty($plugins['enable'])) {
-                    $__hook_file = PLUGIN_PATH.key($plugins['enable']).'/hook/view_display_after.php';
                     foreach($plugins['enable'] as $__p => $__v) {
                         $__hook_file = PLUGIN_PATH.$__p.'/hook/view_display_after.php';
                         if(is_file($__hook_file)) { include $__hook_file; }
                     }
                 }
                 unset($__p, $__v, $__hook_file);
-            }else{
-                // hook view_display_echo.php
-                echo $html;
             }
+            // hook view_display_echo.php
+            echo $html;
         }else{
             if( !DEBUG ){
                 echo lang('tpl_file_not_exists', array('tplfile'=>$_ENV['_theme'].'/'.$filename));

@@ -1,0 +1,80 @@
+{inc:header.htm}
+<style>
+.tr-site-card { max-width: 980px; }
+.tr-site-card .layui-card-header { font-weight: 600; }
+.tr-site-card table.layui-table td, .tr-site-card table.layui-table th { text-align: left; }
+.tr-prefix-input { width: 180px; display: inline-block; }
+.field-hint { display: block; color: #999; font-size: 12px; margin-top: 4px; line-height: 1.6; }
+</style>
+<div class="layuimini-container">
+	<div class="layuimini-main">
+		<div class="layui-card tr-site-card">
+			<div class="layui-card-header">
+				<i class="layui-icon" style="color:#1E9FFF;">&#xe64c;</i> 模板伪原创设置
+			</div>
+			<div class="layui-card-body">
+				<div class="field-hint" style="margin-bottom:12px;">
+					输出层 CSS 类前缀替换：站点启用并配置前缀后，前台 HTML 与 /dynamic-css.css 中所有
+					<code>gm-</code> 前缀类名（<code>\bgm-</code> 词边界）将被替换为站点前缀，各站 DOM/CSS 结构互不相同。
+					前缀仅允许字母/数字/下划线/连字符（2-20 位）。未启用或前缀为空时页面原样输出。
+				</div>
+				<form id="form" class="layui-form" action="?admin_template_rewrite-set_post-ajax-1" method="post">
+					<input type="hidden" name="FORM_HASH" value="{@form_hash()}" />
+					<table class="layui-table" lay-skin="line">
+						<thead>
+							<tr>
+								<th style="width:60px;">站点ID</th>
+								<th>站点名称</th>
+								<th style="width:180px;">域名</th>
+								<th style="width:90px;">启用</th>
+								<th>CSS 前缀</th>
+							</tr>
+						</thead>
+						<tbody>
+							{loop:$rows $s}
+							<tr>
+								<td>{$s['sid']}</td>
+								<td>{$s['site_name']}{if:$s['status'] != 1}<span class="layui-badge layui-bg-gray" style="margin-left:6px;">停用</span>{/if}</td>
+								<td>{$s['domain']}</td>
+								<td>
+									<input type="hidden" name="sid[]" value="{$s['sid']}" />
+									<input type="checkbox" name="enabled[{$s['sid']}]" lay-skin="switch" lay-text="开|关" value="1" {@$s['enabled'] ? 'checked' : ''} />
+								</td>
+								<td>
+									<input type="text" name="prefix[{$s['sid']}]" value="{$s['prefix']}" autocomplete="off" placeholder="如 siteA-gm" class="layui-input tr-prefix-input" />
+									<span class="field-hint" style="display:inline-block;margin-left:8px;">留空=不替换，规则 <code>\bgm-</code> → <code>{前缀}-</code></span>
+								</td>
+							</tr>
+							{/loop}
+						</tbody>
+					</table>
+					<div class="layui-form-item" style="margin-top:20px;">
+						<div class="layui-input-block" style="margin-left:0;">
+							<button class="layui-btn" lay-submit lay-filter="form"><i class="layui-icon">&#xe605;</i> 保存配置</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+layui.use(['form','layer','jquery','miniTab'], function() {
+	var layer = layui.layer, form = layui.form, miniTab = layui.miniTab, $ = layui.jquery;
+
+	form.on('submit(form)', function() {
+		adminAjax.postform('#form', function(data) {
+			var json = toJson(data);
+			layer.msg(json.message || json.msg, {icon: (json.status == 0 || json.err == 0) ? 1 : 5});
+			if(json.status == 0 || json.err == 0) {
+				setTimeout(function(){
+					miniTab.reloadIframe('index.php?admin_template_rewrite-index');
+				}, 1200);
+			}
+		});
+		return false;
+	});
+});
+</script>
+</body>
+</html>
