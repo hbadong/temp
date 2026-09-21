@@ -1,0 +1,101 @@
+{inc:header.htm}
+<div class="layuimini-container">
+	<div class="layuimini-main">
+		<div class="layui-card">
+			<div class="layui-card-header">
+				<i class="layui-icon" style="color:#1E9FFF;">&#xe62b;</i> 同步主站 API Token
+			</div>
+			<div class="layui-card-body">
+				<div style="padding:8px 0 14px;">
+					<a class="layui-btn" href="javascript:;" id="btn_add"><i class="layui-icon">&#xe654;</i> 生成 Token</a>
+					<span class="field-hint" style="display:inline-block;margin-left:10px;color:#999;font-size:12px;">
+						同步客户端用 Token 拉取本站数据（HMAC 验签 + 每 Token 每分钟 30 次限频）
+					</span>
+				</div>
+				<table class="layui-table" lay-skin="line">
+					<thead>
+						<tr>
+							<th style="width:280px;">Token</th>
+							<th>备注</th>
+							<th>状态</th>
+							<th>本分钟剩余配额</th>
+							<th style="width:170px;">最近请求</th>
+							<th style="width:150px;">创建时间</th>
+							<th style="width:150px;">操作</th>
+						</tr>
+					</thead>
+					<tbody>
+						{loop:$rows $r}
+						<tr>
+							<td><code style="font-size:12px;word-break:break-all;">{$r['token']}</code></td>
+							<td>{$r['remark']}</td>
+							<td>{if:$r['enabled']}<span class="layui-badge layui-bg-green">启用</span>{else}<span class="layui-badge layui-bg-gray">停用</span>{/if}</td>
+							<td>{$r['win_left']}</td>
+							<td>{$r['last_hit']}</td>
+							<td>{$r['created_at']}</td>
+							<td>
+								<a class="layui-btn layui-btn-xs" href="?admin_master_api-toggle-id-{$r['id']}">{if:$r['enabled']}停用{else}启用{/if}</a>
+								<a class="layui-btn layui-btn-xs layui-btn-danger js-del" data-id="{$r['id']}" href="javascript:;">删除</a>
+							</td>
+						</tr>
+						{/loop}
+					</tbody>
+				</table>
+				{if:$pagebar}{$pagebar}{/if}
+			</div>
+		</div>
+	</div>
+</div>
+<div id="add_layer" style="display:none;padding:20px;">
+	<form id="add_form" class="layui-form">
+		<div class="layui-form-item">
+			<label class="layui-form-label">备注</label>
+			<div class="layui-input-block">
+				<input type="text" name="remark" value="" autocomplete="off" placeholder="例如：站点B同步客户端，限速每分钟 30 次" class="layui-input">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<div class="layui-input-block">
+				<button class="layui-btn" lay-submit lay-filter="addForm"><i class="layui-icon">&#xe605;</i> 生成</button>
+			</div>
+		</div>
+	</form>
+</div>
+<script>
+layui.use(['form','layer','jquery','miniTab'], function() {
+	var layer = layui.layer, form = layui.form, $ = layui.jquery, miniTab = layui.miniTab;
+
+	$('#btn_add').on('click', function(){
+		layer.open({
+			type: 1, title: '生成 API Token', area: ['420px', 'auto'], content: $('#add_layer')
+		});
+	});
+
+	form.on('submit(addForm)', function() {
+		var data = form.val('addForm');
+		if(!data.remark) {
+			layer.msg('请填写备注，用于标识同步客户端'); return false;
+		}
+		adminAjax.post('/index.php', 'admin_master_api-create_post-ajax-1', $.param(data), function(res) {
+			res = toJson(res);
+			if(res.status == 0) {
+				layer.msg('已生成：' + res.message);
+			} else {
+				layer.msg(res.message || '生成失败', {icon: 5});
+			}
+			layer.closeAll();
+			setTimeout(function(){ miniTab.reloadIframe('index.php?admin_master_api-index'); }, 800);
+		});
+		return false;
+	});
+
+	$('.js-del').on('click', function() {
+		var id = $(this).data('id');
+		layer.confirm('确认删除该 Token？删除后同步客户端将无法拉取。', function() {
+			location.href = '?admin_master_api-delete-id-' + id;
+		});
+	});
+});
+</script>
+</body>
+</html>
