@@ -99,6 +99,7 @@
 										<th style="width:56px;">ID</th>
 										<th>站点</th>
 										<th>分类</th>
+										<th style="width:110px;">任务类型</th>
 										<th>创建人</th>
 										<th style="width:190px;">进度</th>
 										<th>状态</th>
@@ -113,6 +114,7 @@
 										<td>{$task['id']}</td>
 										<td>{@isset($site_names[$task['site_id']]) ? $site_names[$task['site_id']] : ('站点' . $task['site_id'])}</td>
 										<td>{@isset($category_names[$task['category_id']]) ? $category_names[$task['category_id']] : ('分类' . $task['category_id'])}</td>
+										<td>{$task['type_name']}</td>
 										<td>{@isset($creator_names[$task['creator_uid']]) ? $creator_names[$task['creator_uid']] : 'AI内容工厂'}</td>
 										<td>
 											<span id="task-progress-{$task['id']}">{$task['success']}+{$task['fail']}/{$task['total']}</span>
@@ -145,7 +147,7 @@
 									</tr>
 									{/loop}
 									{if:empty($tasks)}
-									<tr><td colspan="9" style="text-align:center">暂无任务数据</td></tr>
+									<tr><td colspan="10" style="text-align:center">暂无任务数据</td></tr>
 									{/if}
 								</tbody>
 							</table>
@@ -267,6 +269,44 @@
 												<input type="radio" name="no_url_generate" value="1" title="启用" {if:$settings['no_url_generate']}checked{/if}>
 												<input type="radio" name="no_url_generate" value="0" title="禁用" {if:empty($settings['no_url_generate'])}checked{/if}>
 												<span class="field-hint">启用后 URL 池耗尽时仍继续生成并自动创建 /{id}.html 映射（C6）</span>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<!-- T2：伪原创提示词模板 -->
+								<div class="layui-card settings-card">
+									<div class="layui-card-header">
+										<span><i class="layui-icon">&#xe9aa;</i> 伪原创改写提示词（游嘻CMS 扩展）</span>
+										<span class="header-tip">留空使用内置默认；改写任务调用 AI 时使用；支持在任务内覆盖</span>
+									</div>
+									<div class="settings-grid" style="margin-top:8px;">
+										<div class="layui-form-item" style="flex-direction:column;align-items:stretch;">
+											<label class="layui-form-label" style="width:auto;text-align:left;padding:0 0 6px;">游戏详情改写</label>
+											<div class="layui-input-inline" style="width:100%;flex:none;">
+												<textarea name="prompt_game_detail" class="layui-textarea" style="min-height:80px;" placeholder="留空使用内置默认：游戏名称/平台/分类/简介/介绍/标签 → 输出 intro/description/tags/seo_title/seo_keywords/seo_description JSON">{$settings['prompt_game_detail']}</textarea>
+												<span class="field-hint">game_detail 任务：改写游戏简介/介绍/标签与 SEO，置 is_ai_rewritten 并重算指纹</span>
+											</div>
+										</div>
+										<div class="layui-form-item" style="flex-direction:column;align-items:stretch;">
+											<label class="layui-form-label" style="width:auto;text-align:left;padding:0 0 6px;">文章内容改写</label>
+											<div class="layui-input-inline" style="width:100%;flex:none;">
+												<textarea name="prompt_article_content" class="layui-textarea" style="min-height:80px;" placeholder="留空使用内置默认：标题+原文 → 输出 content/seo_title/seo_keywords/seo_description JSON">{$settings['prompt_article_content']}</textarea>
+												<span class="field-hint">article_content 任务：仅改写来源为 api/AI内容工厂 的文章，避免覆盖人工编辑</span>
+											</div>
+										</div>
+										<div class="layui-form-item" style="flex-direction:column;align-items:stretch;">
+											<label class="layui-form-label" style="width:auto;text-align:left;padding:0 0 6px;">分类SEO改写</label>
+											<div class="layui-input-inline" style="width:100%;flex:none;">
+												<textarea name="prompt_category_seo" class="layui-textarea" style="min-height:80px;" placeholder="留空使用内置默认：分类名/别名/简介/SEO → 输出 intro/seo_title/seo_keywords/seo_description JSON">{$settings['prompt_category_seo']}</textarea>
+												<span class="field-hint">category_seo 任务：改写游戏分类简介与 SEO 三要素</span>
+											</div>
+										</div>
+										<div class="layui-form-item" style="flex-direction:column;align-items:stretch;">
+											<label class="layui-form-label" style="width:auto;text-align:left;padding:0 0 6px;">标签SEO改写</label>
+											<div class="layui-input-inline" style="width:100%;flex:none;">
+												<textarea name="prompt_tag_seo" class="layui-textarea" style="min-height:80px;" placeholder="留空使用内置默认：标签名/介绍/SEO → 输出 content/seo_title/seo_keywords/seo_description JSON">{$settings['prompt_tag_seo']}</textarea>
+												<span class="field-hint">tag_seo 任务：改写本站文章引用的标签介绍与 SEO 三要素</span>
 											</div>
 										</div>
 									</div>

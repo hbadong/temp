@@ -12,6 +12,17 @@
                     <legend>创建 AI 任务</legend>
                     <div class="layui-field-box">
                         <div class="layui-form-item">
+                            <label class="layui-form-label required">任务类型</label>
+                            <div class="layui-input-block">
+                                <select name="task_type" lay-filter="task_type" lay-verify="required">
+                                    {loop:$task_types $tt $tv}
+                                    <option value="{$tt}">{$tv['label']}</option>
+                                    {/loop}
+                                </select>
+                                <div class="layui-form-mid layui-word-aux" id="type_desc">{$task_types['article']['desc']}</div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
                             <label class="layui-form-label required">目标站点</label>
                             <div class="layui-input-block">
                                 <select name="site_id" lay-verify="required">
@@ -22,7 +33,7 @@
                                 <div class="layui-form-mid layui-word-aux">生成的文章归属该站点</div>
                             </div>
                         </div>
-                        <div class="layui-form-item">
+                        <div class="layui-form-item" id="cate_item">
                             <label class="layui-form-label required">发布分类</label>
                             <div class="layui-input-block">
                                 {$cidhtml}
@@ -60,6 +71,19 @@
     layui.use(['form','layer', 'miniTab'], function () {
         var layer = layui.layer, form = layui.form, miniTab = layui.miniTab;
         form.render();
+
+        // T2：任务类型切换——改写类任务无需发布分类
+        var typeDescs = {
+            {loop:$task_types $tt $tv}"{$tt}": "{$tv['desc']}",{/loop}
+        };
+        function onTypeChange(v) {
+            var isArticle = (v === 'article');
+            document.getElementById('cate_item').style.display = isArticle ? '' : 'none';
+            var td = document.getElementById('type_desc');
+            if(typeDescs[v]) td.innerHTML = typeDescs[v];
+        }
+        form.on('select(task_type)', function(data){ onTypeChange(data.value); form.render(); });
+        onTypeChange('article');
 
         // 监听提交
         form.on('submit(form)', function () {

@@ -360,6 +360,68 @@ class ai_api_adapter {
     }
 
     /**
+     * 伪原创改写（单条）：提示词内嵌目标原内容，返回 AI 输出的原始 JSON 对象
+     * 与 generate() 区别：
+     * - 不套用"生成N篇文章"模板文案，由调用方 prompt 全权指定输出结构
+     * - 未配置 API Key 时返回 false（改写无本地模板可降级，调用方跳过该条）
+     * - parse 用 parse_response_object：返回关联数组（保留自定义键），非标准化数组
+     * @param string $prompt 系统提示词（含原内容与输出 JSON 结构要求）
+     * @param string $category_name 分类名（仅日志/上下文用途）
+     * @return array|false 原样 JSON 对象；失败返回 false
+     */
+    public function rewrite_once($prompt, $category_name = '') {
+        if(empty($this->config['api_key'])) return false;
+
+        $url = rtrim($this->config['api_base_url'], '/') . '/chat/completions';
+        $messages = array(
+            array('role' => 'system', 'content' => $prompt),
+            array('role' => 'user', 'content' => '请直接输出上述要求的 JSON 结果，不要附加任何解释。'),
+        );
+
+        $max_retries = max(0, (int)$this->config['max_retries']);
+        for($i = 0; $i <= $max_retries; $i++) {
+            $response = $this->call_api($url, $messages);
+            if($response !== false) {
+                $obj = $this->parse_response_object($response);
+                if($obj !== null) return $obj;
+                continue;
+            }
+            if($this->last_error_code == 429) {
+                $backoff = min(2 * pow(2, $i), 30);
+                if($i < $max_retries) sleep($backoff);
+                continue;
+            }
+            if($i < $max_retries) sleep(1);
+        }
+        return false;
+    }
+
+    /**
+     * 解析伪原创响应为原始对象（保留自定义键；数组取首项；剥离 code fence）
+     */
+    private function parse_response_object($json) {
+        $data = json_decode($json, true);
+        if(!$data || !isset($data['choices'][0]['message']['content'])) return null;
+
+        $content = $data['choices'][0]['message']['content'];
+        $trimmed = trim($content);
+        if(preg_match('/^```(?:json|php|text)?\s*(.*?)\s*```$/is', $trimmed, $m)) {
+            $trimmed = trim($m[1]);
+        }
+
+        $obj = json_decode($trimmed, true);
+        if(!is_array($obj)) {
+            if(preg_match('/\{.*\}/s', $trimmed, $m)) {
+                $obj = json_decode(trim($m[0]), true);
+            }
+        }
+        if(!is_array($obj)) return null;
+        // 若返回的是 JSON 数组，取首个对象
+        if(isset($obj[0]) && is_array($obj[0])) $obj = $obj[0];
+        return $obj;
+    }
+
+    /**
      * 获取最后错误码
      */
     public function get_last_error_code() {

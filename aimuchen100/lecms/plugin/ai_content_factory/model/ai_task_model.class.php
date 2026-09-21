@@ -31,12 +31,15 @@ class ai_task extends model {
     /**
      * 创建 AI 任务
      * @param int $creator_uid 创建人 uid（B8：内容归属）
+     * @param string $task_type 任务类型: article(默认,生成新文章)/game_detail/article_content/category_seo/tag_seo
      */
-    public function create_task($site_id, $category_id, $count, $prompt_template = '', $creator_uid = 0) {
+    public function create_task($site_id, $category_id, $count, $prompt_template = '', $creator_uid = 0, $task_type = 'article') {
+        $task_type = in_array($task_type, array('article', 'game_detail', 'article_content', 'category_seo', 'tag_seo')) ? $task_type : 'article';
         $task_id = $this->create(array(
             'site_id' => $site_id,
             'category_id' => $category_id,
             'creator_uid' => (int)$creator_uid,
+            'task_type' => $task_type,
             'prompt_template' => $prompt_template,
             'batch_size' => min(50, $count),
             'total' => $count,
@@ -111,6 +114,10 @@ class ai_task extends model {
             'batch_limit' => 100,
             'max_retries' => 3,
             'no_url_generate' => 0,
+            'prompt_game_detail' => '',
+            'prompt_article_content' => '',
+            'prompt_category_seo' => '',
+            'prompt_tag_seo' => '',
         );
         if($row) {
             foreach($defaults as $k => $dv) {
@@ -173,8 +180,18 @@ class ai_task extends model {
             return array('success' => $success_total, 'fail' => $fail_total, 'total' => $total, 'done' => true, 'degraded' => false);
         }
 
-        $limit = min($pending, (int)$task['batch_size'] > 0 ? (int)$task['batch_size'] : 50);
-        $settings = $this->get_settings($site_id);
+        // 游嘻CMS AI 伪原创扩展：按任务类型分派（article 走原有文章生成，其余走改写）
+        if(!isset($task['task_type']) || $task['task_type'] === '' || $task['task_type'] === 'article') {
+            return $this->execute_article_generate($task, $task_id, $site_id, $total, $success_total, $fail_total);
+        }
+        return $this->execute_rewrite($task, $task_id, $site_id, $total, $success_total, $fail_total);
+    }
+
+    /**
+     * 原有文章生成执行（execute 的 article 分支，逻辑不变）
+     */
+    private function execute_article_generate($task, $task_id, $site_id, $total, $success_total, $fail_total) {
+        $tablepre = $_ENV['_config']['db']['master']['tablepre'];
 
         // 获取待使用的 URL
         $urls = $this->get_pending_urls($site_id, $limit);
@@ -498,6 +515,282 @@ class ai_task extends model {
         }
 
         return $article_id;
+    }
+
+    /**
+     * ===== 游嘻CMS AI 伪原创改写执行 =====
+     * 任务类型: game_detail/article_content/category_seo/tag_seo
+     * 通用流程：取待改写目标(is_ai_rewritten=0) → 逐条 rewrite_once → 更新字段并置标记。
+     * 未配置 API Key 时无本地模板可降级，该批全部计失败并提示。
+     */
+    private function execute_rewrite($task, $task_id, $site_id, $total, $success_total, $fail_total) {
+        $tablepre = $_ENV['_config']['db']['master']['tablepre'];
+        $task_type = $task['task_type'];
+        $limit = min(max(0, $total - $success_total - $fail_total), (int)$task['batch_size'] > 0 ? (int)$task['batch_size'] : 50);
+
+        // 各类型目标表/字段配置
+        $cfg = array(
+            'game_detail' => array(
+                'table' => 'cms_game',
+                'key' => 'id',
+                'select' => "SELECT id,name,platform,category_id,intro,description,tags FROM `{$tablepre}cms_game` WHERE site_id={$site_id} AND status=1 AND is_ai_rewritten=0 ORDER BY id ASC LIMIT {$limit}",
+                'count'  => "SELECT COUNT(*) c FROM `{$tablepre}cms_game` WHERE site_id={$site_id} AND status=1 AND is_ai_rewritten=0",
+                'label' => '游戏',
+            ),
+            'article_content' => array(
+                'table' => 'cms_article',
+                'key' => 'id',
+                'select' => "SELECT a.id,a.title,a.source FROM `{$tablepre}cms_article` a WHERE a.site_id={$site_id} AND a.is_ai_rewritten=0 AND a.source IN ('api','AI内容工厂') ORDER BY a.id ASC LIMIT {$limit}",
+                'count'  => "SELECT COUNT(*) c FROM `{$tablepre}cms_article` WHERE site_id={$site_id} AND is_ai_rewritten=0 AND source IN ('api','AI内容工厂')",
+                'label' => '文章',
+            ),
+            'category_seo' => array(
+                'table' => 'cms_game_category',
+                'key' => 'id',
+                'select' => "SELECT id,name,alias,intro,seo_title,seo_keywords,seo_description FROM `{$tablepre}cms_game_category` WHERE site_id={$site_id} AND is_ai_rewritten=0 ORDER BY id ASC LIMIT {$limit}",
+                'count'  => "SELECT COUNT(*) c FROM `{$tablepre}cms_game_category` WHERE site_id={$site_id} AND is_ai_rewritten=0",
+                'label' => '分类',
+            ),
+            'tag_seo' => array(
+                'table' => 'cms_article_tag',
+                'key' => 'tagid',
+                'select' => "SELECT DISTINCT t.tagid,t.name,t.content,t.seo_title,t.seo_keywords,t.seo_description FROM `{$tablepre}cms_article_tag` t JOIN `{$tablepre}cms_article` a ON a.site_id={$site_id} AND a.tags LIKE CONCAT('%\"', t.tagid, '\":%') WHERE t.is_ai_rewritten=0 ORDER BY t.tagid ASC LIMIT {$limit}",
+                'count'  => "SELECT COUNT(DISTINCT t.tagid) c FROM `{$tablepre}cms_article_tag` t JOIN `{$tablepre}cms_article` a ON a.site_id={$site_id} AND a.tags LIKE CONCAT('%\"', t.tagid, '\":%') WHERE t.is_ai_rewritten=0",
+                'label' => '标签',
+            ),
+        );
+
+        $tcfg = isset($cfg[$task_type]) ? $cfg[$task_type] : null;
+        if(!$tcfg) {
+            $this->save($task_id, array('status' => 3, 'exec_lock' => 0, 'updated_at' => date('Y-m-d H:i:s', $_ENV['_time'])));
+            $this->append_log($task_id, '未知任务类型：' . $task_type . '，任务终止');
+            return array('success' => $success_total, 'fail' => $fail_total, 'total' => $total, 'done' => true, 'degraded' => false);
+        }
+
+        $rows = $this->db->fetch_all($tcfg['select']);
+        $count_row = $this->db->fetch_first($tcfg['count']);
+        $eligible = $count_row ? (int)$count_row['c'] : 0;
+
+        // 已无待改写目标
+        if($eligible <= 0) {
+            $final_status = ($success_total > 0) ? 2 : 3;
+            $this->save($task_id, array('status' => $final_status, 'exec_lock' => 0, 'updated_at' => date('Y-m-d H:i:s', $_ENV['_time'])));
+            return array('success' => $success_total, 'fail' => $fail_total, 'total' => $total, 'done' => true, 'degraded' => false);
+        }
+
+        $adapter = new ai_api_adapter($site_id, $this->db);
+        if(empty($adapter->get_config()['api_key'])) {
+            // 未配置 API Key：改写无降级模板，整批计失败
+            $fail_total += min($limit, $eligible);
+            $this->save($task_id, array(
+                'fail' => $fail_total,
+                'status' => ($success_total > 0) ? 1 : 3,
+                'exec_lock' => 0,
+                'updated_at' => date('Y-m-d H:i:s', $_ENV['_time']),
+            ));
+            $this->append_log($task_id, '未配置 API Key，改写任务无法执行，本批 ' . min($limit, $eligible) . ' 条计失败');
+            $done = ($success_total + $fail_total >= $total);
+            return array('success' => $success_total, 'fail' => $fail_total, 'total' => $total, 'done' => $done, 'degraded' => true);
+        }
+
+        $success = 0;
+        $fail = 0;
+        foreach($rows as $row) {
+            $obj = $this->rewrite_one($task, $row, $tcfg);
+            if($obj === false || empty($obj)) {
+                $fail++;
+                continue;
+            }
+            if($this->apply_rewrite($task, $row, $obj, $tcfg)) {
+                $success++;
+            } else {
+                $fail++;
+            }
+        }
+
+        $success_total += $success;
+        $fail_total += $fail;
+
+        $task_status = ($success_total >= $total) ? 2 : (($success > 0 || $fail_total >= $total) ? ($success_total > 0 ? 1 : 3) : 1);
+        $this->save($task_id, array(
+            'success' => $success_total,
+            'fail' => $fail_total,
+            'status' => $task_status,
+            'exec_lock' => 0,
+            'updated_at' => date('Y-m-d H:i:s', $_ENV['_time']),
+        ));
+        if($success > 0 || $fail > 0) {
+            $this->append_log($task_id, '改写批次：成功 ' . $success . '，失败 ' . $fail);
+        }
+
+        $done = ($success_total + $fail_total >= $total);
+        return array('success' => $success_total, 'fail' => $fail_total, 'total' => $total, 'done' => $done, 'degraded' => false);
+    }
+
+    /**
+     * 构造改写提示词并调用 AI（返回 AI 输出的原始 JSON 对象）
+     * @return array|false
+     */
+    private function rewrite_one($task, $row, $tcfg) {
+        $tablepre = $_ENV['_config']['db']['master']['tablepre'];
+        $type = $task['task_type'];
+        $settings = $this->get_settings((int)$task['site_id']);
+        $template = '';
+        if($type === 'game_detail') $template = isset($settings['prompt_game_detail']) ? $settings['prompt_game_detail'] : '';
+        elseif($type === 'article_content') $template = isset($settings['prompt_article_content']) ? $settings['prompt_article_content'] : '';
+        elseif($type === 'category_seo') $template = isset($settings['prompt_category_seo']) ? $settings['prompt_category_seo'] : '';
+        elseif($type === 'tag_seo') $template = isset($settings['prompt_tag_seo']) ? $settings['prompt_tag_seo'] : '';
+
+        $template = trim((string)$template);
+        if($template !== '') {
+            $prompt = $template;
+        } else {
+            $prompt = $this->default_rewrite_prompt($type, $row, $tcfg);
+        }
+
+        // 任务级自定义模板（prompt_template 覆盖插件级模板）
+        $task_tpl = trim((string)$task['prompt_template']);
+        if($task_tpl !== '') $prompt = $task_tpl;
+
+        $adapter = new ai_api_adapter((int)$task['site_id'], $this->db);
+        return $adapter->rewrite_once($prompt, '');
+    }
+
+    /**
+     * 内置默认改写提示词（占位符 {name}/{content}/{seo_title} 等运行时替换）
+     */
+    private function default_rewrite_prompt($type, $row, $tcfg) {
+        $esc = function($v) { return trim(strip_tags((string)$v)); };
+        $cat_name = '';
+        if($type === 'game_detail') {
+            $tablepre = $_ENV['_config']['db']['master']['tablepre'];
+            if(!empty($row['category_id'])) {
+                $crow = $this->db->fetch_first("SELECT name FROM `{$tablepre}cms_game_category` WHERE id=" . (int)$row['category_id'] . " LIMIT 1");
+                if($crow) $cat_name = $crow['name'];
+            }
+        }
+
+        switch($type) {
+            case 'game_detail':
+                return "你是一名资深游戏内容编辑。请对以下游戏信息进行伪原创改写：保留核心事实，重写简介与详细介绍，使其表述不同、更吸引人，适合SEO。"
+                    . "游戏名称：{$row['name']}；平台：{$row['platform']}；分类：{$cat_name}；原简介：{$row['intro']}；原介绍：{$row['description']}；原标签：{$row['tags']}。"
+                    . "严格输出 JSON 对象，键为 intro(改写后简介,100字内)、description(改写后详细介绍,300-500字)、tags(逗号分隔)、seo_title、seo_keywords、seo_description。";
+            case 'article_content':
+                $tablepre = $_ENV['_config']['db']['master']['tablepre'];
+                $drow = $this->db->fetch_first("SELECT content FROM `{$tablepre}cms_article_data` WHERE id=" . (int)$row['id'] . " LIMIT 1");
+                $body = $drow ? mb_substr($drow['content'], 0, 2000, 'UTF-8') : '';
+                return "你是一名资深内容编辑。请对以下文章进行伪原创改写：保留核心信息与事实，重写正文使其表述完全不同、更生动，适合SEO。"
+                    . "文章标题：{$row['title']}；原文：{$body}。"
+                    . "严格输出 JSON 对象，键为 content(改写后正文)、seo_title、seo_keywords、seo_description。";
+            case 'category_seo':
+                return "你是一名资深SEO编辑。请对以下游戏分类信息进行伪原创改写：保留核心语义，重写简介与SEO三要素，表述不同、更吸引点击。"
+                    . "分类名称：{$row['name']}；别名：{$row['alias']}；原简介：{$row['intro']}；原SEO标题：{$row['seo_title']}；原关键词：{$row['seo_keywords']}；原描述：{$row['seo_description']}。"
+                    . "严格输出 JSON 对象，键为 intro(50字内)、seo_title(30字内)、seo_keywords、seo_description(80字内)。";
+            case 'tag_seo':
+                return "你是一名资深SEO编辑。请对以下标签信息进行伪原创改写：保留核心语义，重写标签介绍与SEO三要素，表述不同。"
+                    . "标签名称：{$row['name']}；原介绍：{$row['content']}；原SEO标题：{$row['seo_title']}；原关键词：{$row['seo_keywords']}；原描述：{$row['seo_description']}。"
+                    . "严格输出 JSON 对象，键为 content(标签介绍,50字内)、seo_title(30字内)、seo_keywords、seo_description(80字内)。";
+        }
+        return '';
+    }
+
+    /**
+     * 应用改写结果到目标行，并置 is_ai_rewritten=1
+     * 游戏改写后需重算内容指纹（intro 变化影响 content_hash），保证同步去重一致
+     * @return bool
+     */
+    private function apply_rewrite($task, $row, $obj, $tcfg) {
+        $tablepre = $_ENV['_config']['db']['master']['tablepre'];
+        $type = $task['task_type'];
+        $esc = function($v) { return "'" . addslashes(mb_substr(trim(strip_tags((string)$v)), 0, 1000, 'UTF-8')) . "'"; };
+
+        if($type === 'game_detail') {
+            $id = (int)$row['id'];
+            $intro = isset($obj['intro']) ? trim(strip_tags($obj['intro'])) : $row['intro'];
+            $description = isset($obj['description']) ? (string)$obj['description'] : (isset($obj['content']) ? $obj['content'] : $row['description']);
+            $tags = isset($obj['tags']) ? trim($obj['tags']) : $row['tags'];
+            // 注意：le_cms_game 无 seo 列，仅更新简介/介绍/标签
+            $this->db->query("UPDATE `{$tablepre}cms_game` SET
+                intro=" . $esc($intro) . ",
+                description=" . $esc($description) . ",
+                tags=" . $esc($tags) . ",
+                is_ai_rewritten=1,
+                updated_at='" . date('Y-m-d H:i:s', $_ENV['_time']) . "'
+                WHERE id={$id}");
+            // PDO 为 silent 模式，query() 出错静默返回 false：回查校验，未生效按失败计
+            $g = $this->db->fetch_first("SELECT * FROM `{$tablepre}cms_game` WHERE id={$id} LIMIT 1");
+            if(!$g || (int)$g['is_ai_rewritten'] !== 1) return false;
+            // 重算内容指纹（基于明文下载地址；指纹协议在 game_center 模型，保持单点实现）
+            $gc = core::model('game_center');
+            $plain = $gc->decrypt_download_url($g['download_url']);
+            $hash = $gc->content_hash(array(
+                'main_id' => $g['main_id'],
+                'name' => $g['name'],
+                'platform' => $g['platform'],
+                'category_id' => $g['category_id'],
+                'intro' => $g['intro'],
+                'download_url' => $plain,
+            ));
+            $this->db->query("UPDATE `{$tablepre}cms_game` SET content_hash='" . addslashes($hash) . "' WHERE id={$id}");
+            return true;
+        }
+
+        if($type === 'article_content') {
+            $id = (int)$row['id'];
+            $content = isset($obj['content']) ? (string)$obj['content'] : '';
+            $seo_title = isset($obj['seo_title']) ? trim(strip_tags($obj['seo_title'])) : '';
+            $seo_keywords = isset($obj['seo_keywords']) ? trim(strip_tags($obj['seo_keywords'])) : '';
+            $seo_description = isset($obj['seo_description']) ? trim(strip_tags($obj['seo_description'])) : '';
+            if($content === '') return false;
+            $this->db->query("UPDATE `{$tablepre}cms_article_data` SET content=" . $esc($content) . " WHERE id={$id}");
+            $this->db->query("UPDATE `{$tablepre}cms_article` SET
+                seo_title=" . $esc($seo_title) . ",
+                seo_keywords=" . $esc($seo_keywords) . ",
+                seo_description=" . $esc($seo_description) . ",
+                is_ai_rewritten=1
+                WHERE id={$id}");
+            $a = $this->db->fetch_first("SELECT is_ai_rewritten FROM `{$tablepre}cms_article` WHERE id={$id} LIMIT 1");
+            if(!$a || (int)$a['is_ai_rewritten'] !== 1) return false;
+            return true;
+        }
+
+        if($type === 'category_seo') {
+            $id = (int)$row['id'];
+            $intro = isset($obj['intro']) ? trim(strip_tags($obj['intro'])) : $row['intro'];
+            $seo_title = isset($obj['seo_title']) ? trim(strip_tags($obj['seo_title'])) : $row['seo_title'];
+            $seo_keywords = isset($obj['seo_keywords']) ? trim(strip_tags($obj['seo_keywords'])) : $row['seo_keywords'];
+            $seo_description = isset($obj['seo_description']) ? trim(strip_tags($obj['seo_description'])) : $row['seo_description'];
+            $this->db->query("UPDATE `{$tablepre}cms_game_category` SET
+                intro=" . $esc($intro) . ",
+                seo_title=" . $esc($seo_title) . ",
+                seo_keywords=" . $esc($seo_keywords) . ",
+                seo_description=" . $esc($seo_description) . ",
+                is_ai_rewritten=1
+                WHERE id={$id}");
+            $c = $this->db->fetch_first("SELECT is_ai_rewritten FROM `{$tablepre}cms_game_category` WHERE id={$id} LIMIT 1");
+            if(!$c || (int)$c['is_ai_rewritten'] !== 1) return false;
+            return true;
+        }
+
+        if($type === 'tag_seo') {
+            $id = (int)$row['tagid'];
+            $content = isset($obj['content']) ? trim(strip_tags($obj['content'])) : $row['content'];
+            $seo_title = isset($obj['seo_title']) ? trim(strip_tags($obj['seo_title'])) : $row['seo_title'];
+            $seo_keywords = isset($obj['seo_keywords']) ? trim(strip_tags($obj['seo_keywords'])) : $row['seo_keywords'];
+            $seo_description = isset($obj['seo_description']) ? trim(strip_tags($obj['seo_description'])) : $row['seo_description'];
+            $this->db->query("UPDATE `{$tablepre}cms_article_tag` SET
+                content=" . $esc($content) . ",
+                seo_title=" . $esc($seo_title) . ",
+                seo_keywords=" . $esc($seo_keywords) . ",
+                seo_description=" . $esc($seo_description) . ",
+                is_ai_rewritten=1
+                WHERE tagid={$id}");
+            $t = $this->db->fetch_first("SELECT is_ai_rewritten FROM `{$tablepre}cms_article_tag` WHERE tagid={$id} LIMIT 1");
+            if(!$t || (int)$t['is_ai_rewritten'] !== 1) return false;
+            return true;
+        }
+
+        return false;
     }
 
     /**

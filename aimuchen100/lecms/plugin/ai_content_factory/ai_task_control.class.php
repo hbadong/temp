@@ -87,10 +87,20 @@ class ai_task_control extends admin_control {
         }
 
         // 进度百分比（layui progress 需要）
+        $type_names = array(
+            'article' => '生成文章',
+            'game_detail' => '游戏伪原创',
+            'article_content' => '文章伪原创',
+            'category_seo' => '分类SEO',
+            'tag_seo' => '标签SEO',
+        );
         foreach($tasks as &$task) {
             $task['percent'] = ((int)$task['total'] > 0) ? round(((int)$task['success'] + (int)$task['fail']) / (int)$task['total'] * 100) : 0;
+            $tt = isset($task['task_type']) && $task['task_type'] !== '' ? $task['task_type'] : 'article';
+            $task['type_name'] = isset($type_names[$tt]) ? $type_names[$tt] : $tt;
         }
         unset($task);
+        $this->assign_value('type_names', $type_names);
 
         $this->assign_value('tasks', $tasks);
         $this->assign_value('sites', $sites);
@@ -209,7 +219,7 @@ class ai_task_control extends admin_control {
     }
 
     /**
-     * 创建任务表单（A4：分类下拉）
+     * 创建任务表单（A4：分类下拉；T2：任务类型选择）
      */
     public function create() {
         $sites = $this->site_manager->get_list();
@@ -218,9 +228,17 @@ class ai_task_control extends admin_control {
         $first_sid = 0;
         foreach($sites as $s) { $first_sid = (int)$s['sid']; break; }
         $settings = $this->ai_task->get_settings($first_sid);
+        $task_types = array(
+            'article' => array('label' => '生成新文章', 'desc' => 'AI 批量生成原创文章（默认）', 'need_category' => 1, 'need_count' => 1),
+            'game_detail' => array('label' => '游戏详情伪原创', 'desc' => '改写游戏简介/介绍/标签/SEO，置改写标记', 'need_category' => 0, 'need_count' => 1),
+            'article_content' => array('label' => '文章内容伪原创', 'desc' => '改写同步/生成的文章正文与SEO', 'need_category' => 0, 'need_count' => 1),
+            'category_seo' => array('label' => '游戏分类SEO伪原创', 'desc' => '改写游戏分类简介与SEO三要素', 'need_category' => 0, 'need_count' => 1),
+            'tag_seo' => array('label' => '标签SEO伪原创', 'desc' => '改写文章标签介绍与SEO三要素', 'need_category' => 0, 'need_count' => 1),
+        );
         $this->assign_value('sites', $sites);
         $this->assign_value('cidhtml', $cidhtml);
         $this->assign_value('settings', $settings);
+        $this->assign_value('task_types', $task_types);
         $this->display('task_create.htm');
     }
 
@@ -236,18 +254,24 @@ class ai_task_control extends admin_control {
         $category_id = (int)R('category_id', 'P');
         $count = (int)R('count', 'P');
         $prompt_template = trim(R('prompt_template', 'P'));
+        $task_type = trim(R('task_type', 'P'));
+        if(!in_array($task_type, array('article', 'game_detail', 'article_content', 'category_seo', 'tag_seo'))) {
+            $task_type = 'article';
+        }
 
         if($site_id <= 0 || $count <= 0) {
             E(1, '请选择站点并输入生成数量');
         }
 
-        // A4：分类校验（存在且属于文章模型）
-        if($category_id <= 0) {
-            E(1, '请选择分类');
-        }
-        $cat = $this->category->get($category_id);
-        if(empty($cat) || (int)$cat['mid'] != 2) {
-            E(1, '分类不存在或不属于文章模型');
+        // A4：分类校验（仅文章生成任务需要分类）
+        if($task_type === 'article') {
+            if($category_id <= 0) {
+                E(1, '请选择分类');
+            }
+            $cat = $this->category->get($category_id);
+            if(empty($cat) || (int)$cat['mid'] != 2) {
+                E(1, '分类不存在或不属于文章模型');
+            }
         }
 
         // B6：生成上限对齐 batch_limit 设置
@@ -257,8 +281,8 @@ class ai_task_control extends admin_control {
             E(1, '单次生成数量不能超过 ' . $batch_limit . '（可在插件设置中调整）');
         }
 
-        // 创建任务（B8：记录创建人）
-        $task_id = $this->ai_task->create_task($site_id, $category_id, $count, $prompt_template, $this->_user['uid']);
+        // 创建任务（B8：记录创建人；T2：记录任务类型）
+        $task_id = $this->ai_task->create_task($site_id, $category_id, $count, $prompt_template, $this->_user['uid'], $task_type);
         if(!$task_id) {
             E(1, '任务创建失败');
         }
@@ -495,6 +519,12 @@ class ai_task_control extends admin_control {
         // C8：无 URL 自动建链开关
         $no_url_generate = R('no_url_generate', 'P') ? 1 : 0;
 
+        // T2：每类型伪原创提示词模板
+        $prompt_game_detail = trim(R('prompt_game_detail', 'P'));
+        $prompt_article_content = trim(R('prompt_article_content', 'P'));
+        $prompt_category_seo = trim(R('prompt_category_seo', 'P'));
+        $prompt_tag_seo = trim(R('prompt_tag_seo', 'P'));
+
         $pre = $_ENV['_config']['db']['master']['tablepre'];
         $now = date('Y-m-d H:i:s', $_ENV['_time']);
 
@@ -513,14 +543,21 @@ class ai_task_control extends admin_control {
             $sets[] = "batch_limit={$batch_limit}";
             $sets[] = "max_retries={$max_retries}";
             $sets[] = "no_url_generate={$no_url_generate}";
+            $sets[] = "prompt_game_detail='" . addslashes($prompt_game_detail) . "'";
+            $sets[] = "prompt_article_content='" . addslashes($prompt_article_content) . "'";
+            $sets[] = "prompt_category_seo='" . addslashes($prompt_category_seo) . "'";
+            $sets[] = "prompt_tag_seo='" . addslashes($prompt_tag_seo) . "'";
             $sets[] = "updated_at='{$now}'";
             $this->db->exec("UPDATE `{$pre}ai_config` SET " . implode(', ', $sets) . " WHERE id=" . (int)$row['id']);
         } else {
             $this->db->exec("INSERT INTO `{$pre}ai_config`
-                (site_id, api_base_url, api_key, model, max_tokens, temperature, timeout, batch_limit, max_retries, no_url_generate, created_at, updated_at)
+                (site_id, api_base_url, api_key, model, max_tokens, temperature, timeout, batch_limit, max_retries, no_url_generate,
+                 prompt_game_detail, prompt_article_content, prompt_category_seo, prompt_tag_seo, created_at, updated_at)
                 VALUES
                 ({$site_id}, '" . addslashes($api_base_url) . "', '" . addslashes($api_key) . "', '" . addslashes($model) . "',
-                 {$max_tokens}, {$temperature}, {$timeout}, {$batch_limit}, {$max_retries}, {$no_url_generate}, '{$now}', '{$now}')");
+                 {$max_tokens}, {$temperature}, {$timeout}, {$batch_limit}, {$max_retries}, {$no_url_generate},
+                 '" . addslashes($prompt_game_detail) . "', '" . addslashes($prompt_article_content) . "',
+                 '" . addslashes($prompt_category_seo) . "', '" . addslashes($prompt_tag_seo) . "', '{$now}', '{$now}')");
         }
 
         E(0, '插件设置已保存');
