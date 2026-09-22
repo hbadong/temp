@@ -28,4 +28,6 @@
   - [x] 6.3 双站同步数据渲染（分站同步内容/图片/前缀 sub-gm-）
   - [x] 6.4 AI 任务链路（mock 端点验证改写+标记+同步跳过联动）
   - [x] 6.5 动态 CSS 端点（主站 siteA-gm-*/分站 sub-gm-*）
-- [ ] T7 提交推送
+- [x] T7 提交推送
+  - [x] 7.1 6 个逻辑提交（game_center/ai_content_factory/template_rewrite/master_api/sync_client/docs）
+  - [x] 7.2 push 到 origin/260913-fix-article-strategy-comprehensive（b93a2e8..52a61e4）
