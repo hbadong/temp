@@ -177,3 +177,26 @@ Entries discovered by the Agent during task execution should follow this format:
   - 原生 `required` 属性对 layui 表单不生效（layui 的 submit 拦截不会触发浏览器原生校验气泡），必填校验必须写 `lay-verify="required" lay-reqtext="提示语"`；layui v2.8.15 内置 verify 规则只有 `required/phone/email/url/identity`（无 number/date），自定义格式校验用 `lay-verify="ruleName"` + JS `form.verify({ruleName: function(value){ if(...) return '错误信息'; }})`
   - 表单模板加 lay-verify 后 mv 掉 `runcache/admin_view/default,{模板}.htm.php` 编译缓存才生效；控制器 POST 加服务端校验后 mv `runcache/admin_control/对应_control.class.php`
   - 校验双保险：前端 lay-verify 拦截空值，服务端 POST 方法必须再校验（empty/正则），两者提示文案保持一致；新增/编辑共用表单时，新增模式控制器需给 assign 的数组提供完整默认键（如 account 新增时 `$account=array('id'=>0,'platform'=>'wechat',...)`），否则模板 `{$account['platform']}` 触发 Undefined index 刷日志
+
+[回复语言]
+- Date: 2026-10-11
+- Context: 用户在 GEO 系统设计对话中明确要求
+- Instructions:
+  - 所有思考过程与回复使用中文
+
+[GEO 系统（geo-system）启动与测试]
+- Date: 2026-10-11
+- Context: Discovered by Agent 完成 geo-system 开发收口
+- Category: Operations & Deployment
+- Instructions:
+  - 一键启动：`/workspace/geo-system/start.sh`，后端 API 监听 3001，前端 Vite 监听 5173（对外预览入口，已配置 /api 反向代理到 3001 与 allowedHosts .monkeycode-ai.online）
+  - 后端必须以 `node --experimental-sqlite --no-warnings src/index.js` 启动（node:sqlite 在 Node 22 需实验标志）
+  - 单测：`cd server && npm test`（35 项，覆盖 auth/billing/analyze/crud/content/publish/tools/admin/frontend-map/upload，含并发计费、KYC 门禁、越权隔离、发布归属校验）；冒烟：`npm run smoke`（登录→诊断→写作文→B2B 发布→KYC 门禁→Admin 审核调账全链路）
+  - 测试坑：同一测试文件的全部用例共享一个临时 DATA_DIR（setupEnv 在文件顶部执行一次并播种），一个测试改动的用户状态（如 KYC）会延续到同文件后续测试；新用例要么自带写文章/提交 KYC 前置，要么用已实名 chinaz、避免重复 kyc 提交
+  - 计费语义：发布按「条」计费 = publish_price(默认 100 分) × 文章数 × 渠道数；写作 = write_price(200 分) × 篇数；复刻任务免费。上传上限 80MB（流式到量即断），扩展名白名单校验
+  - 发布接口校验：article_ids 必须为本用户文章、channel_ids 必须命中本类目渠道（weixin 为本人 valid 授权账号），否则拒绝创建任务，杜绝跨用户文章/类别串发
+  - 关键坑：node:sqlite 的 DatabaseSync 无内置 `transaction()` 方法，已在 server/src/db.js 用 BEGIN/COMMIT/ROLLBACK 封装 `db.transaction(fn)` 供路由复用，billing.js 的函数本身不可再套事务（否则嵌套 BEGIN 报错）
+  - 路由挂载顺序坑：content/publish/tools 三个 router 顶层有 `router.use(requireUser)`，若挂在 `/api/admin` 之前，`/api/admin/login` 会被它们先拦成 401；`/api/admin` 必须最先挂载
+  - 数据文件为 SQLite：`server/data/geo.db`（WAL 模式），删除该文件重启可重新生成种子数据
+  - 种子账号：用户 chinaz51008/chinaz51008（已实名）、demo/demo123（未实名）；管理 admin/admin123
+  - 任务 runner 单 tick 最多并发 2 条，进程内 tick 200ms，waitAll 在 test/helper.mjs 中经 createRequire 复用

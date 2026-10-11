@@ -1,0 +1,15 @@
+{
+  "name": "geo-system-server",
+  "version": "1.0.0",
+  "private": true,
+  "description": "GEO 生成式引擎优化系统后端",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node --experimental-sqlite --no-warnings src/index.js",
+    "test": "node --experimental-sqlite --no-warnings --test test/*.test.mjs",
+    "smoke": "node --experimental-sqlite --no-warnings test/smoke.mjs"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
