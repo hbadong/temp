@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8"/>
+	<meta name="generator" content="LECMS" />
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>{$cfg[titles]}</title>
+	<meta name="keywords" content="{$cfg[seo_keywords]}" />
+	<meta name="description" content="{$cfg[seo_description]}" />
+	<meta property="og:type" content="website" />
+	<meta property="og:site_name" content="{$cfg[webname]}" />
+	<meta property="og:title" content="{$cfg[titles]}" />
+	<meta property="og:description" content="{$cfg[seo_description]}" />
+	<link rel="stylesheet" href="{$cfg[tpl]}css/style.7.css?v=20261023c" type="text/css" media="all"/>
+	<script src="{$cfg[tpl]}js/data.7.js"></script>
+	<script src="{$cfg[tpl]}js/shuowen.7.js"></script>
+	<script src="{$cfg[tpl]}js/engine.7.js?v=20261023d"></script>
+	<script>
+		window._LE = {
+			uri: "{$cfg[weburl]}",
+			uid: "{$_uid}",
+			parseurl: "{$_parseurl}",
+			tpl: "{$cfg[tpl]}"
+		};
+	</script>
+	<script src="{$cfg[tpl]}js/main.7.js?v=20261023d"></script>
+</head>
+<body>
+<header class="site-header" id="site-header">
+	<div class="wrap header-inner">
+		<a class="logo" href="/">
+			<span class="logo-mark">名</span>
+			<span class="logo-text"><b>{$cfg[webname]}</b><i>智能起名 · 内容平台</i></span>
+		</a>
+		<nav class="nav" id="main-nav" style="margin-left:18px;">
+			<a href="{$cfg[tpl]}tool/naming.html">宝宝起名</a>
+			<a href="{$cfg[tpl]}tool/bazi.html">八字起名</a>
+			<a href="{$cfg[tpl]}tool/poems.html">诗词起名</a>
+			<a href="{$cfg[tpl]}tool/gaiming.html">成人改名</a>
+			<a href="{$cfg[tpl]}tool/score.html">姓名测试</a>
+			<a href="{$cfg[tpl]}tool/gongsi.html">公司起名</a>
+			<a href="{$cfg[tpl]}tool/zhouyi.html">周易起名</a>
+			<a href="{$cfg[tpl]}tool/kxzd.html">康熙字典</a>
+			<a href="{$cfg[tpl]}tool/baijiaxing.html">百家姓</a>
+			<a href="/chengyu/">成语词典</a>
+			<a href="/zidian/">汉语字典</a>
+			<a href="/cidian/">词语词典</a>
+		</nav>
+		<div style="margin-left:auto;display:flex;align-items:center;gap:8px;">
+			<span class="hot-quick" style="font-size:12px;color:var(--ink-2);" id="hot-quick"></span>
+			<button class="nav-toggle" id="nav-toggle" title="打开导航"><span data-ic="menu"></span></button>
+			<a class="header-search" href="{$cfg[webdir]}index.php?u=search-index" title="站内搜索"><span data-ic="search"></span></a>
+		</div>
+	</div>
+	<div class="nav-drawer" id="nav-drawer"><div class="wrap">
+		<a href="{$cfg[tpl]}tool/naming.html">宝宝起名</a>
+		<a href="{$cfg[tpl]}tool/score.html">姓名打分</a>
+		<a href="{$cfg[tpl]}tool/bazi.html">八字起名</a>
+		<a href="{$cfg[tpl]}tool/poems.html">诗词起名</a>
+		<a href="{$cfg[tpl]}tool/zhouyi.html">周易起名</a>
+		<a href="{$cfg[tpl]}tool/gongsi.html">公司起名</a>
+		<a href="{$cfg[tpl]}tool/gaiming.html">成人改名</a>
+		<a href="{$cfg[tpl]}tool/kxzd.html">康熙字典</a>
+		<a href="{$cfg[tpl]}tool/baijiaxing.html">百家姓</a>
+		<a href="{$cfg[tpl]}tool/match.html">姓名配对</a>
+		<a href="{$cfg[tpl]}tool/search.html">统一搜索</a>
+		<a href="{$cfg[webdir]}index.php?u=cate-index-cid-1">起名知识</a>
+		<a href="/chengyu/">成语词典</a>
+		<a href="/zidian/">汉语字典</a>
+		<a href="/cidian/">词语词典</a>
+	</div></div>
+</header>
+<script>
+(function(){
+	var tg = document.getElementById('nav-toggle'), dr = document.getElementById('nav-drawer');
+	if (tg && dr) tg.addEventListener('click', function(){ dr.classList.toggle('on'); });
+	/* 热门字/名直达链（对齐原站 navbar 热链） */
+	try {
+		var hq = document.getElementById('hot-quick');
+		if (hq && window.HM_DATA) {
+			var tpls = (window._LE && window._LE.tpl) || '/';
+			var hc = window.HM_DATA.CHARS.filter(function(x){return x.g!==0;}).slice(0,6);
+			var html = hc.map(function(x){ return '<a style="color:inherit;margin:0 3px;" href="'+tpls+'tool/char.html?c='+encodeURIComponent(x.c)+'" title="'+x.c+'字的寓意">'+x.c+'</a>'; }).join('');
+			['梓晴','宇轩','浩然'].forEach(function(nm){ html += '<a style="color:inherit;margin:0 3px;" href="'+tpls+'tool/mingzi.html?name='+encodeURIComponent(nm)+'" title="'+nm+'名字解析">'+nm+'</a>'; });
+			hq.innerHTML = html;
+		}
+	} catch(e){}
+})();
+</script>

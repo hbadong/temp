@@ -1,0 +1,15 @@
+{inc:header.htm}
+
+<div class="page-hero">
+	<div class="wrap"><h1>标签排行</h1><p>全站热门标签</p></div>
+</div>
+
+<div class="page-body wrap">
+	{block:taglist limit="60" orderby="count"}
+	<div class="poem-names" style="line-height:2.4;">
+		{loop:$data[list] $v}<a href="{$v[url]}" title="{$v[name]}">{$v[name]}</a>{/loop}
+	</div>
+	{/block}
+</div>
+
+{inc:footer.htm}

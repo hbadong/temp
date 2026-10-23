@@ -1,0 +1,106 @@
+{inc:header.htm}
+
+<div class="crumb"><div class="wrap">
+	<a href="{$cfg[weburl]}">首页</a>{loop:$cfg_var[place] $v}<span>&gt;</span><a href="{$v[url]}">{$v[name]}</a>{/loop}<span>&gt;</span>正文
+</div></div>
+
+<div class="page-body wrap">
+	{block:global_show show_prev_next="1" dateformat="Y-m-d"}{/block}
+	<div class="layout">
+		<div class="col-main">
+			<div class="article-box">
+				<h1>{$gdata[title]}</h1>
+			<div class="art-meta-row">
+				<span>作者：<em>{$gdata[author]}</em></span>
+				<span>分类：<em><a href="{$cfg_var[place][0][url]}">{$cfg_var[place][0][name]}</a></em></span>
+				<span class="right">阅读：<em>{$gdata[views]}</em></span>
+			</div>
+			{if:$gdata[haspic] && strpos($gdata[content], '<img') === false}
+			<figure class="art-cover">
+				<img src="{$cfg[webdir]}thumb.php?src={$gdata[pic]}&w=760&h=570" alt="{$gdata[title]}" loading="lazy">
+			</figure>
+			{/if}
+			<p class="article-lead"><b>摘要：</b>{$gdata[intro]}</p>
+				<div class="article-content">{$gdata[content]}</div>
+				<div class="report-sec">
+					<h3>延伸阅读</h3>
+					<ul class="art-more-list">
+						{block:list mid="2" limit="6" intronum="0"}
+						{loop:$data[list] $v}{if:$v[id] != $gdata[id]}<li><a href="{$v[url]}" title="{$v[title]}">{$v[subject]}</a></li>{/if}{/loop}
+						{/block}
+					</ul>
+				</div>
+				{if:$gdata[tag_arr]}
+				<div class="report-sec">
+					<h3>本文标签</h3>
+					<div class="tagline">{loop:$gdata[tag_arr] $v}<a href="{$v[url]}" title="{$v[name]}">{$v[name]}</a>{/loop}</div>
+				</div>
+				{/if}
+				{if:isset($gdata[prev][url]) || isset($gdata[next][url])}
+				<div class="cta-row">
+					{if:isset($gdata[prev][url])}<a class="btn-ghost" href="{$gdata[prev][url]}">上一篇：{$gdata[prev][title]}</a>{/if}
+					{if:isset($gdata[next][url])}<a class="btn-ghost" href="{$gdata[next][url]}">下一篇：{$gdata[next][title]}</a>{/if}
+				</div>
+				{/if}
+				<div class="comment-entry">
+					<p>对这篇文章有想法？参与讨论与提问</p>
+					<a class="btn-ghost" href="{$cfg[webdir]}index.php?u=comment-index-id-{$gdata[id]}-cid-{$gdata[cid]}">查看/发表评论（{$gdata[comments]}）</a>
+				</div>
+				<div class="cta-row">
+					<a class="btn-ghost" href="{$cfg[tpl]}tool/naming.html">去宝宝起名 →</a>
+					<a class="btn-ghost" href="{$cfg[tpl]}tool/score.html">去姓名打分 →</a>
+				</div>
+			</div>
+		</div>
+		<aside class="col-side">
+			<div class="side-box side-promo">
+				<div class="promo-art" aria-hidden="true">
+					<svg viewBox="0 0 120 96" width="100%" height="72">
+						<circle cx="60" cy="48" r="40" fill="none" stroke="#e6bdb2" stroke-width="1.5"/>
+						<circle cx="60" cy="48" r="27" fill="none" stroke="#e6bdb2" stroke-width="1"/>
+						<path d="M60 8v80M20 48h80M32 20l56 56M88 20L32 76" stroke="#f0d0c6" stroke-width="1"/>
+						<path d="M60 21l9 19 21 3-15 15 3 21-18-9-18 9 3-21-15-15 21-3z" fill="#c92009" opacity="0.82"/>
+						<circle cx="60" cy="48" r="7" fill="#fff"/>
+					</svg>
+				</div>
+				<h4>测一测你的名字</h4>
+				<p class="promo-txt">五格数理 · 生肖星座 · 音形义详解，一份报告看懂名字。</p>
+				<a class="btn-ghost" href="{$cfg[tpl]}tool/score.html">立即测名</a>
+			</div>
+			<div class="side-box">
+				<h4>阅读排行榜</h4>
+				{block:list_top orderby="views" limit="5" titlenum="26"}
+				<ul class="side-list">
+					{loop:$data[list] $v}<li><i>{$v[views]}</i><a href="{$v[url]}" title="{$v[title]}">{$v[subject]}</a></li>{/loop}
+					{if:empty($data[list])}<li>暂无内容</li>{/if}
+				</ul>
+				{/block}
+			</div>
+			<div class="side-box">
+				<h4>热门文章</h4>
+				{block:list cid="0" mid="2" limit="5" titlenum="24"}
+				<ul class="side-list">
+					{loop:$data[list] $v}<li><i>·</i><a href="{$v[url]}" title="{$v[title]}">{$v[subject]}</a></li>{/loop}
+					{if:empty($data[list])}<li>暂无内容</li>{/if}
+				</ul>
+				{/block}
+			</div>
+			<div class="side-box">
+				<h4>快捷工具</h4>
+				<div class="side-chars">
+					<a href="{$cfg[tpl]}tool/naming.html">起名</a>
+					<a href="{$cfg[tpl]}tool/score.html">打分</a>
+					<a href="{$cfg[tpl]}tool/bazi.html">八字</a>
+					<a href="{$cfg[tpl]}tool/poems.html">诗词</a>
+					<a href="{$cfg[tpl]}tool/zhouyi.html">周易</a>
+					<a href="{$cfg[tpl]}tool/kxzd.html">字典</a>
+					<a href="/chengyu/">成语</a>
+					<a href="/zidian/">汉字</a>
+					<a href="/cidian/">词语</a>
+				</div>
+			</div>
+		</aside>
+	</div>
+</div>
+
+{inc:footer.htm}
