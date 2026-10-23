@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 280" width="1200" height="280" preserveAspectRatio="xMidYMid slice">
+<defs>
+  <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#fdf1e3"/>
+    <stop offset="100%" stop-color="#f4e2c6"/>
+  </linearGradient>
+  <linearGradient id="fade" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#ffffff" stop-opacity="0"/>
+    <stop offset="100%" stop-color="#ffffff" stop-opacity="0.95"/>
+  </linearGradient>
+</defs>
+<rect width="1200" height="280" fill="url(#sky)"/>
+<circle cx="917" cy="55" r="26" fill="#ffffff" opacity="0.20"/>
+<circle cx="917" cy="55" r="50" fill="#ffffff" opacity="0.08"/>
+<path d="M0,280 L0,198.3 L133.3,199.8 L266.7,200.4 L400.0,196.0 L533.3,196.2 L666.7,190.9 L800.0,194.0 L933.3,194.6 L1066.7,196.9 L1200.0,190.8 L1200,280 Z" fill="#5d4a34" opacity="0.09"/>
+<path d="M0,280 L0,174.7 L171.4,178.0 L342.9,186.5 L514.3,191.3 L685.7,197.5 L857.1,183.7 L1028.6,170.1 L1200.0,159.8 L1200,280 Z" fill="#5d4a34" opacity="0.18"/>
+<path d="M0,280 L0,155.1 L240.0,158.8 L480.0,166.8 L720.0,170.5 L960.0,168.3 L1200.0,164.6 L1200,280 Z" fill="#5d4a34" opacity="0.35"/>
+<ellipse cx="676" cy="170" rx="198" ry="10" fill="#ffffff" opacity="0.28"/>
+<ellipse cx="89" cy="210" rx="248" ry="9" fill="#ffffff" opacity="0.32"/>
+<ellipse cx="104" cy="191" rx="151" ry="16" fill="#ffffff" opacity="0.35"/>
+<path d="M715,89 q7.1,-5.0 14.3,0" stroke="#5d4a34" stroke-width="1.6" fill="none" opacity="0.35"/>
+<path d="M655,88 q6.2,-4.3 12.4,0" stroke="#5d4a34" stroke-width="1.6" fill="none" opacity="0.35"/>
+<g opacity="0.92">
+<rect x="1104" y="44" width="46" height="46" rx="7" fill="#c92009" opacity="0.85"/>
+<text x="1127.0" y="78.0" font-family="STKaiti,KaiTi,SimSun,serif" font-size="26" fill="#ffffff" text-anchor="middle">诗</text>
+</g>
+<rect y="210" width="1200" height="70" fill="url(#fade)"/>
+</svg>

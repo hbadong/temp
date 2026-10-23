@@ -1,0 +1,55 @@
+<footer class="site-footer" id="site-footer">
+	<div class="wrap footer-inner">
+		<div class="footer-col">
+			<h4>快捷导航</h4>
+			<div class="footer-links">
+				<a href="{$cfg[tpl]}tool/naming.html">宝宝起名</a>
+				<a href="{$cfg[tpl]}tool/bazi.html">八字起名</a>
+				<a href="{$cfg[tpl]}tool/poems.html">诗词起名</a>
+				<a href="{$cfg[tpl]}tool/zhouyi.html">周易起名</a>
+				<a href="{$cfg[tpl]}tool/score.html">姓名测试</a>
+				<a href="{$cfg[tpl]}tool/gongsi.html">公司起名</a>
+				<a href="{$cfg[tpl]}tool/kxzd.html">康熙字典</a>
+				<a href="{$cfg[tpl]}tool/baijiaxing.html">百家姓</a>
+				<a href="{$cfg[tpl]}tool/match.html">姓名配对</a>
+				<a href="{$cfg[tpl]}tool/search.html">统一搜索</a>
+				<a href="{$cfg[webdir]}index.php?u=sitemap-txt">网站地图</a>
+				<a href="{$cfg[webdir]}index.php?u=tag-top">标签排行</a>
+			</div>
+		</div>
+		<div class="footer-col">
+			<h4>词典专区</h4>
+			<div class="footer-links">
+				<a href="/chengyu/">成语词典</a>
+				<a href="/zidian/">汉语字典</a>
+				<a href="/cidian/">词语词典</a>
+				<a href="/zidian/">部首查字</a>
+				<a href="/zidian/">拼音查字</a>
+			</div>
+		</div>
+		<div class="footer-col">
+			<h4>关于我们</h4>
+			<p class="footer-about">本站为原创起名功能演示系统：起名/测名工具 + 资讯内容，基于 LECMS 内容管理系统构建。命理模型为传统公共领域算法的简化实现，仅供娱乐参考。</p>
+		</div>
+		<div class="footer-col">
+			<h4>热门文章</h4>
+			{block:list cid="0" mid="2" limit="6" dateformat="Y-m-d"}
+			<div class="footer-links footer-art">
+				{loop:$data[list] $v}<a href="{$v[url]}" title="{$v[title]}">{$v[subject]}</a>{/loop}
+			</div>
+			{/block}
+		</div>
+	</div>
+
+	<div class="wrap footer-brand">
+		<span class="f-logo" aria-hidden="true">
+			<svg viewBox="0 0 44 44" width="36" height="36"><circle cx="22" cy="22" r="20" fill="#c92009"/><text x="22" y="30" text-anchor="middle" font-family="STKaiti,KaiTi,serif" font-size="22" fill="#fff">名</text></svg>
+		</span>
+		<b>{$cfg[webname]}</b>
+		<span class="f-ic" title="ICP备案">备</span>
+		<span class="f-ic" title="公安备案">警</span>
+	</div>
+	<div class="copyright">{$cfg[copyright]}</div>
+</footer>
+</body>
+</html>

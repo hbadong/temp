@@ -1,0 +1,27 @@
+{inc:header.htm}
+
+<div class="page-hero">
+	<div class="wrap">
+		<h1>评论列表</h1>
+		<p>全站最新评论</p>
+	</div>
+</div>
+
+<div class="page-body wrap">
+	{block:global_comment humandate="1" pagenum="10"}{/block}
+	<div class="art-list">
+		{loop:$gdata[list] $v}
+		<div class="art-item">
+			<div class="art-item-body">
+				<h3>{$v[author]}：</h3>
+				<p>{$v[content]}</p>
+				<div class="art-item-meta">{$v[date]}</div>
+			</div>
+		</div>
+		{/loop}
+		{if:empty($gdata[list])}<p class="empty">暂无评论。</p>{/if}
+		{if:$gdata[pages]}<div class="pagebar">{$gdata[pages]}</div>{/if}
+	</div>
+</div>
+
+{inc:footer.htm}

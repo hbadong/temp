@@ -1,0 +1,34 @@
+{inc:header.htm}
+
+<div class="page-hero">
+	<div class="wrap">
+		<h1>站内搜索</h1>
+		<p>搜索原创起名知识与资讯内容</p>
+	</div>
+</div>
+
+<div class="page-body wrap">
+	<form class="score-input-card" method="get" action="{$cfg[webdir]}index.php">
+		<input type="hidden" name="u" value="search-index">
+		<input type="hidden" name="mid" value="2">
+		<input type="text" name="keyword" value="{$keyword}" placeholder="输入关键字，如：五行、诗经、声调">
+		<button type="submit">搜 索</button>
+	</form>
+
+	{block:global_search pagenum="10" dateformat="Y-m-d" showviews="1"}{/block}
+	<div class="art-list">
+		{loop:$gdata[list] $v}
+		<a class="art-item" href="{$v[url]}" title="{$v[title]}">
+			<div class="art-item-body">
+				<h3>{$v[subject]}</h3>
+				<p>{$v[intro]}</p>
+				<div class="art-item-meta">{$v[date]} · 阅读 {$v[views]}</div>
+			</div>
+		</a>
+		{/loop}
+		{if:empty($gdata[list])}<p class="empty">没有找到相关内容。</p>{/if}
+		{if:$gdata[pages]}<div class="pagebar">{$gdata[pages]}</div>{/if}
+	</div>
+</div>
+
+{inc:footer.htm}

@@ -1,0 +1,4 @@
+[[app]]
+name = "app"
+port = 8_090
+cmd = 'service mariadb start >/dev/null 2>&1; sleep 3; cd "/var/www/lecms" && (nohup php -S 127.0.0.1:8091 -t /var/www/lecms >/var/www/lecms/prerender/backend.log 2>&1 &) ; (nohup /root/.pyenv/versions/3.11.1/bin/python3 /var/www/lecms/prerender/prender.py >/var/www/lecms/prerender/prender.log 2>&1 &) ; sleep 2; PORT=8090 php -S 0.0.0.0:8090 -t /var/www/lecms /var/www/lecms/prerender/router.php'

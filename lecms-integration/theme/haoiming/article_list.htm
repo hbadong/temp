@@ -1,0 +1,75 @@
+{inc:header.htm}
+
+<div class="crumb"><div class="wrap">
+	<a href="{$cfg[weburl]}">首页</a>{loop:$cfg_var[place] $v}<span>&gt;</span><a href="{$v[url]}">{$v[name]}</a>{/loop}
+</div></div>
+
+<div class="page-hero">
+	<div class="wrap">
+		<h1>{$cfg_var[place][0][name]}</h1>
+		<p>好名网 · 原创起名知识内容</p>
+	</div>
+</div>
+
+<div class="page-body wrap">
+	<div class="layout">
+		<div class="col-main">
+			<div class="art-list">
+				{block:global_cate pagenum="10" dateformat="Y-m-d" showviews="1"}{/block}
+				{loop:$gdata[list] $v}
+				<a class="art-item" href="{$v[url]}" title="{$v[title]}">
+					<div class="art-thumb">
+						{if:$v[pic]}<img src="{$cfg[webdir]}thumb.php?src={$v[pic]}&w=260&h=180" alt="{$v[title]}" loading="lazy">{else}<span class="ph">{$cfg_var[place][0][name]}</span>{/if}
+					</div>
+					<div class="art-item-body">
+						<h3>{$v[subject]}</h3>
+						<p>{$v[intro]}</p>
+						<div class="art-item-meta">
+							<span class="mi mi-date">{$v[date]}</span>
+							<span class="mi mi-view">阅读 {$v[views]}</span>
+						</div>
+					</div>
+				</a>
+				{/loop}
+				{if:empty($gdata[list])}<p class="empty">本栏目暂无文章。</p>{/if}
+				{if:$gdata[pages]}<div class="pagebar">{$gdata[pages]}</div>{/if}
+			</div>
+		</div>
+		<aside class="col-side">
+			<div class="side-box">
+				<h4>阅读排行榜</h4>
+				{block:list_top orderby="views" limit="5" titlenum="26"}
+				<ul class="side-list">
+					{loop:$data[list] $v}<li><i>{$v[views]}</i><a href="{$v[url]}" title="{$v[title]}">{$v[subject]}</a></li>{/loop}
+					{if:empty($data[list])}<li>暂无内容</li>{/if}
+				</ul>
+				{/block}
+			</div>
+			<div class="side-box">
+				<h4>热门文章</h4>
+				{block:list cid="0" mid="2" limit="5" titlenum="24"}
+				<ul class="side-list">
+					{loop:$data[list] $v}<li><i>·</i><a href="{$v[url]}" title="{$v[title]}">{$v[subject]}</a></li>{/loop}
+					{if:empty($data[list])}<li>暂无内容</li>{/if}
+				</ul>
+				{/block}
+			</div>
+			<div class="side-box">
+				<h4>快捷工具</h4>
+				<div class="side-chars">
+					<a href="{$cfg[tpl]}tool/naming.html">起名</a>
+					<a href="{$cfg[tpl]}tool/score.html">打分</a>
+					<a href="{$cfg[tpl]}tool/bazi.html">八字</a>
+					<a href="{$cfg[tpl]}tool/poems.html">诗词</a>
+					<a href="{$cfg[tpl]}tool/zhouyi.html">周易</a>
+					<a href="{$cfg[tpl]}tool/kxzd.html">字典</a>
+					<a href="/chengyu/">成语</a>
+					<a href="/zidian/">汉字</a>
+					<a href="/cidian/">词语</a>
+				</div>
+			</div>
+		</aside>
+	</div>
+</div>
+
+{inc:footer.htm}

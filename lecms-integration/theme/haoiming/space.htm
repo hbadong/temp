@@ -1,0 +1,23 @@
+{inc:header.htm}
+
+<div class="page-hero">
+	<div class="wrap"><h1>用户空间</h1><p>用户信息与内容</p></div>
+</div>
+
+<div class="page-body wrap">
+	{block:global_space pagenum="10" dateformat="Y-m-d"}{/block}
+	<div class="art-list">
+		{loop:$gdata[list] $v}
+		<a class="art-item" href="{$v[url]}">
+			<div class="art-item-body">
+				<h3>{$v[subject]}</h3>
+				<div class="art-item-meta">{$v[date]}</div>
+			</div>
+		</a>
+		{/loop}
+		{if:empty($gdata[list])}<p class="empty">暂无内容。</p>{/if}
+		{if:$gdata[pages]}<div class="pagebar">{$gdata[pages]}</div>{/if}
+	</div>
+</div>
+
+{inc:footer.htm}

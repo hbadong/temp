@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 280" width="1200" height="280" preserveAspectRatio="xMidYMid slice">
+<defs>
+  <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#f6efe6"/>
+    <stop offset="100%" stop-color="#eae0cf"/>
+  </linearGradient>
+  <linearGradient id="fade" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#ffffff" stop-opacity="0"/>
+    <stop offset="100%" stop-color="#ffffff" stop-opacity="0.95"/>
+  </linearGradient>
+</defs>
+<rect width="1200" height="280" fill="url(#sky)"/>
+<circle cx="770" cy="73" r="26" fill="#ffffff" opacity="0.20"/>
+<circle cx="770" cy="73" r="49" fill="#ffffff" opacity="0.08"/>
+<path d="M0,280 L0,193.3 L133.3,195.2 L266.7,195.1 L400.0,197.0 L533.3,194.7 L666.7,200.1 L800.0,200.5 L933.3,202.6 L1066.7,196.6 L1200.0,191.5 L1200,280 Z" fill="#54483a" opacity="0.09"/>
+<path d="M0,280 L0,181.0 L171.4,174.7 L342.9,180.3 L514.3,170.6 L685.7,170.0 L857.1,164.0 L1028.6,176.9 L1200.0,194.1 L1200,280 Z" fill="#54483a" opacity="0.18"/>
+<path d="M0,280 L0,151.5 L240.0,169.2 L480.0,175.8 L720.0,165.1 L960.0,158.2 L1200.0,152.1 L1200,280 Z" fill="#54483a" opacity="0.35"/>
+<ellipse cx="374" cy="200" rx="163" ry="9" fill="#ffffff" opacity="0.27"/>
+<ellipse cx="142" cy="214" rx="157" ry="11" fill="#ffffff" opacity="0.29"/>
+<ellipse cx="829" cy="221" rx="237" ry="10" fill="#ffffff" opacity="0.36"/>
+<path d="M795,111 q9.0,-6.3 18.0,0" stroke="#54483a" stroke-width="1.6" fill="none" opacity="0.35"/>
+<path d="M822,124 q8.2,-5.7 16.4,0" stroke="#54483a" stroke-width="1.6" fill="none" opacity="0.35"/>
+<path d="M483,119 q10.1,-7.0 20.1,0" stroke="#54483a" stroke-width="1.6" fill="none" opacity="0.35"/>
+<path d="M693,117 q8.2,-5.8 16.5,0" stroke="#54483a" stroke-width="1.6" fill="none" opacity="0.35"/>
+<g opacity="0.92">
+<rect x="1104" y="44" width="46" height="46" rx="7" fill="#c92009" opacity="0.85"/>
+<text x="1127.0" y="78.0" font-family="STKaiti,KaiTi,SimSun,serif" font-size="26" fill="#ffffff" text-anchor="middle">姓</text>
+</g>
+<rect y="210" width="1200" height="70" fill="url(#fade)"/>
+</svg>

@@ -1,0 +1,4 @@
+.codebuddy/
+.cloudstudio/
+node_modules/
+*.log

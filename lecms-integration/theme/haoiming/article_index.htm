@@ -1,0 +1,38 @@
+{inc:header.htm}
+
+<div class="page-hero">
+	<div class="wrap">
+		<h1>起名知识频道</h1>
+		<p>原创起名知识 · 分类浏览</p>
+	</div>
+</div>
+
+<div class="page-body wrap">
+	{block:category type="sibling" cid="0"}
+	<div class="kxzd-tabs">
+		{loop:$data $v}<a class="tab" href="{$v[url]}">{$v[name]}</a>{/loop}
+	</div>
+	{/block}
+	<div class="art-list">
+		{block:global_cate pagenum="10" dateformat="Y-m-d" showviews="1"}{/block}
+		{loop:$gdata[list] $v}
+		<a class="art-item" href="{$v[url]}" title="{$v[title]}">
+			<div class="art-thumb">
+				{if:$v[pic]}<img src="{$cfg[webdir]}thumb.php?src={$v[pic]}&w=260&h=180" alt="{$v[title]}" loading="lazy">{else}<span class="ph">名</span>{/if}
+			</div>
+			<div class="art-item-body">
+				<h3>{$v[subject]}</h3>
+				<p>{$v[intro]}</p>
+				<div class="art-item-meta">
+					<span class="mi mi-date">{$v[date]}</span>
+					<span class="mi mi-view">阅读 {$v[views]}</span>
+				</div>
+			</div>
+		</a>
+		{/loop}
+		{if:empty($gdata[list])}<p class="empty">暂无文章。</p>{/if}
+		{if:$gdata[pages]}<div class="pagebar">{$gdata[pages]}</div>{/if}
+	</div>
+</div>
+
+{inc:footer.htm}

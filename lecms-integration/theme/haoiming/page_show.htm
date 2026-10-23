@@ -1,0 +1,18 @@
+{inc:header.htm}
+
+<div class="page-hero">
+	<div class="wrap">
+		<h1>{$cfg_var[place][0][name]}</h1>
+		<p>单页内容</p>
+	</div>
+</div>
+
+<div class="page-body wrap">
+	{block:global_page}{/block}
+	<div class="article-box">
+		<h1>{$gdata[title]}</h1>
+		<div class="article-content">{$gdata[content]}</div>
+	</div>
+</div>
+
+{inc:footer.htm}
