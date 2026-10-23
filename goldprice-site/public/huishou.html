@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>黄金回收价格_黄金回收多少钱一克今日最新_金价查询网</title>
+<meta name="keywords" content="黄金回收,黄金回收价格,今日黄金回收多少钱一克,18K金回收,铂金回收" />
+<meta name="description" content="今日黄金回收价格实时查询：黄金回收、18K金回收、铂金回收、钯金回收、白银回收每克多少钱，附近7日回收价格走势图与回收避坑指南。" />
+<link rel="stylesheet" href="/css/style.css">
+<script src="/js/echarts.min.js"></script>
+</head>
+<body>
+
+<div class="header-hd">
+  <div class="nav">
+    <div class="hd-logo"><a href="/"><span class="logo-txt">金价查询网</span><span class="logo-sub">实时金价 · 黄金回收 · 品牌金价</span></a></div>
+    <span class="side_menu_btn"></span>
+    <ul>
+      <li><a href="/">首页</a></li>
+      <li><a href="/guojijinjia.html">国际金价</a></li>
+      <li><a href="/guoneijinjia.html">国内金价</a></li>
+      <li class="active"><a href="/huishou.html">黄金回收</a></li>
+      <li><a href="/pinpaijinjia.html">品牌金价</a></li>
+      <li><a href="/xianggang.html">香港金价</a></li>
+      <li><a href="/guoneijinjia.html#ag">白银价格</a></li>
+      <li><a href="/zoushitu.html">黄金价格走势图</a></li>
+      <li><a href="/zoushitu.html#pt">铂金价格走势图</a></li>
+      <li><a href="/zoushitu.html#pd">钯金价格走势图</a></li>
+    </ul>
+  </div>
+</div>
+
+<div class="container">
+  <div class="position clear"><span>当前位置</span>：<a href="/">金价查询网</a> > <a href="/huishou.html">黄金回收价格查询</a></div>
+  <div class="mianLeft">
+    <div class="mb20 validity clear">
+      <div class="h1-title"><h1 class="h1-txt">今日黄金回收价格</h1></div>
+      <div class="update">今日数据更新于：<span id="hsDate">--</span>（北京时间）</div>
+      <div class="validity-p"><p>黄金回收价格以当日大盘金价（上海黄金交易所 Au(T+D)）为基准折算，一般低于大盘价 10-20 元/克；18K 金按含金量 75% 折算。下表为各类贵金属今日回收参考价，具体成交价以回收商实时报价与检测结果为准。</p></div>
+    </div>
+
+    <div class="quote-box mb20">
+      <div class="data-status" id="dataStatus"><span class="dot"></span><span class="st-txt">数据加载中…</span><span class="refresh-note">每 60 秒自动刷新</span></div>
+      <table class="hq_table" width="100%" cellspacing="0" cellpadding="0">
+        <thead><tr><th width="34%">回收品种</th><th width="22%">今日回收价</th><th width="22%">计价基准</th><th width="22%">报价时间</th></tr></thead>
+        <tbody>
+          <tr class="bg" id="hs1"><td valign="middle" align="center" class="tabtitle">黄金回收价格</td><td valign="middle" align="center">--</td><td valign="middle" align="center">Au(T+D) 大盘价</td><td valign="middle" align="center" class="daTime">--</td></tr>
+          <tr id="hs5"><td valign="middle" align="center" class="tabtitle">铂金回收价格</td><td valign="middle" align="center">--</td><td valign="middle" align="center">国际铂金折算</td><td valign="middle" align="center" class="daTime">--</td></tr>
+          <tr class="bg" id="hs6"><td valign="middle" align="center" class="tabtitle">钯金回收价格</td><td valign="middle" align="center">--</td><td valign="middle" align="center">国际钯金折算</td><td valign="middle" align="center" class="daTime">--</td></tr>
+          <tr id="hs3"><td valign="middle" align="center" class="tabtitle">18K金回收价格</td><td valign="middle" align="center">--</td><td valign="middle" align="center">含金量 75%</td><td valign="middle" align="center" class="daTime">--</td></tr>
+          <tr class="bg" id="hs2"><td valign="middle" align="center" class="tabtitle">白银回收价格</td><td valign="middle" align="center">--</td><td valign="middle" align="center">白银T+D 折算</td><td valign="middle" align="center" class="daTime">--</td></tr>
+          <tr id="hs4"><td valign="middle" align="center" class="tabtitle">Au9999 基础金价</td><td valign="middle" align="center">--</td><td valign="middle" align="center">黄金T+D</td><td valign="middle" align="center" class="daTime">--</td></tr>
+          <tr class="bg" id="hs7"><td valign="middle" align="center" class="tabtitle">白银市场价参考</td><td valign="middle" align="center">--</td><td valign="middle" align="center">白银T+D 元/克</td><td valign="middle" align="center" class="daTime">--</td></tr>
+        </tbody>
+      </table>
+      <div class="update">单位：元/克 · 回收价 = 大盘基准价 × 回收折算系数，实时折算仅供参考</div>
+    </div>
+
+    <div class="chart-card mb20">
+      <div id="recycleChart"></div>
+      <div class="update" style="text-align:center;">近 7 日回收价格走势（系统上线首日以当前值填充，此后每日自动积累真实历史）</div>
+    </div>
+
+    <div class="text-box mb20">
+      <h3>黄金回收"高价"陷阱：为什么报价高反而到手少？</h3>
+      <p>部分回收商先以高于大盘价的价格吸引客户，再通过虚报成色、克扣重量（如"以 0.99 系数扣损耗"）、收取高额手续费/折旧费、要求清洗后复称等方式压价，最终到手价反而更低。正规回收应按实时大盘价打折、按检测后实际重量结算、不收取额外费用。</p>
+      <h3>黄金回收价格到底怎么算？</h3>
+      <p>黄金回收价 = 当日基础金价 × 成色系数 - 回收商折扣。足金 999 成色系数≈1，18K 金≈0.75，14K 金≈0.585。回收价通常比基础金价低 10-20 元/克，具体取决于回收商的熔炼与渠道成本。</p>
+      <h3>回收前的注意事项</h3>
+      <p>① 回收前查询当日大盘金价，做到心中有数；② 选择有实体门店、可当场检测结算的商家；③ 要求按"克重 × 单价"明码结算，拒绝任何形式的折旧费、手续费；④ 检测成色可要求复称与火检，保留凭证；⑤ 大额交易建议前往银行或交易所会员单位。</p>
+    </div>
+  </div>
+
+  <div class="sider">
+    <div class="askteacher">
+      <div class="sidertit">回收相关</div>
+      <div class="hyrd_con">
+        <a href="/guoneijinjia.html">国内大盘金价</a><a href="/pinpaijinjia.html">品牌金价</a>
+        <a href="/zoushitu.html">回收走势图</a>
+      </div>
+    </div>
+    <div class="siderlist">
+      <div class="sidertit">今日回收速报</div>
+      <div class="siderlist-con">
+        <ul>
+          <li><span class="news-box">黄金回收：<b id="sb_gold">--</b></span></li>
+          <li><span class="news-box">18K金回收：<b id="sb_18k">--</b></span></li>
+          <li><span class="news-box">铂金回收：<b id="sb_pt">--</b></span></li>
+          <li><span class="news-box">钯金回收：<b id="sb_pd">--</b></span></li>
+          <li><span class="news-box">白银回收：<b id="sb_ag">--</b></span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <div class="container">
+    <p>金价查询网 · 黄金价格实时报价系统（逆向分析与功能重建演示项目）</p>
+    <p>行情数据来源于公开行情源（新浪财经），本站仅做换算与展示；所有价格仅供参考，不构成投资建议。</p>
+  </div>
+</div>
+
+<script src="/js/quotes.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  var n = new Date();
+  var d = document.getElementById("hsDate");
+  if (d) d.textContent = n.getFullYear() + "年" + (n.getMonth() + 1) + "月" + n.getDate() + "日";
+});
+</script>
+<script>
+// 侧栏速报随行情刷新
+(function () {
+  var orig = window.setInterval;
+  function refreshSide() {
+    fetch("/api/quotes", { cache: "no-store" }).then(function (r) { return r.json(); }).then(function (d) {
+      if (!d.ok) return;
+      var v = d.derived;
+      var map = { sb_gold: v.huishouGold, sb_18k: v.huishou18k, sb_pt: v.huishouPt, sb_pd: v.huishouPd, sb_ag: v.huishouSilver };
+      Object.keys(map).forEach(function (k) {
+        var el = document.getElementById(k);
+        if (el) el.textContent = map[k] + " 元/克";
+      });
+    }).catch(function () {});
+  }
+  refreshSide();
+  orig(refreshSide, 60000);
+})();
+</script>
+</body>
+</html>

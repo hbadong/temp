@@ -1,0 +1,46 @@
+{
+  "_comment": "金价查询网站系统 — 运维配置文件（修改后重启服务生效，无需改动代码）",
+  "site": {
+    "name": "金价查询网",
+    "notice": "数据来源于公开行情，仅供参考，不构成投资建议。"
+  },
+  "rates": {
+    "usdcnyFallback": 6.67,
+    "usdhkdFallback": 7.84
+  },
+  "units": {
+    "ozToGram": 31.1035,
+    "taelToGram": 37.429
+  },
+  "derive": {
+    "touziJintiaoOffset": 16,
+    "huishouGoldOffset": -15,
+    "auSalesOffset": 3,
+    "huishouPtFactor": 0.871,
+    "huishouPdFactor": 0.673,
+    "huishou18kFactor": 0.7123,
+    "huishouSilverFactor": 0.694
+  },
+  "brands": [
+    { "name": "周大福",   "gold": 347, "pt": 263, "bar": 204, "ptOn": false },
+    { "name": "周生生",   "gold": 345, "pt": 263, "bar": 204, "ptOn": true },
+    { "name": "六福珠宝", "gold": 345, "pt": 263, "bar": 204, "ptOn": true },
+    { "name": "谢瑞麟",   "gold": 347, "pt": 0,   "bar": 204, "ptOn": false },
+    { "name": "金至尊",   "gold": 345, "pt": 263, "bar": 204, "ptOn": true },
+    { "name": "潮宏基",   "gold": 347, "pt": 263, "bar": 204, "ptOn": true },
+    { "name": "老凤祥",   "gold": 351, "pt": 314, "bar": 204, "ptOn": true },
+    { "name": "老庙黄金", "gold": 347, "pt": 364, "bar": 204, "ptOn": true },
+    { "name": "菜百首饰", "gold": 354, "pt": 0,   "bar": 204, "ptOn": false },
+    { "name": "周六福",   "gold": 179, "pt": 283, "bar": 204, "ptOn": true },
+    { "name": "中国黄金", "gold": 320, "pt": 209, "bar": 204, "ptOn": true },
+    { "name": "周大生",   "gold": 347, "pt": 0,   "bar": 204, "ptOn": false }
+  ],
+  "refresh": {
+    "defaultIntervalSec": 60,
+    "options": [30, 60, 120]
+  },
+  "theme": {
+    "default": "light",
+    "allowUserToggle": true
+  }
+}

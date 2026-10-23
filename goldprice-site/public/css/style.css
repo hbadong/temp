@@ -1,0 +1,259 @@
+/* ============================================================
+   金价查询网站系统 — 全站样式（变量化，支持暗色模式）
+   视觉复刻自 huangjinjiage.cn（自研实现，未复制其 CSS 源码）
+   ============================================================ */
+
+/* ---------- 配色变量（浅色默认） ---------- */
+:root {
+  --bg-page: #f5f6f8;
+  --bg-card: #ffffff;
+  --bg-subtle: #ecf2f5;
+  --bg-subtle2: #e3e3e3;
+  --bg-stripe: #f7f7f7;
+  --text: #333333;
+  --text-mid: #555555;
+  --text-weak: #888888;
+  --text-faint: #bbbbbb;
+  --link: #477fd2;
+  --primary: #0070C0;
+  --primary2: #1e8cda;
+  --primary-deep: #2b699a;
+  --border: #d7dfe6;
+  --border-soft: rgba(0,0,0,.06);
+  --border-soft2: #eeeeee;
+  --border-strong: #bfbfbf;
+  --up: #e93030;
+  --down: #1a9e4b;
+  --warn: #e9a13b;
+  --accent: #B32D12;
+  --bg-hover: #e8f0ff;
+  --shadow: rgba(0,0,0,.06);
+}
+
+/* ---------- 暗色模式 ---------- */
+[data-theme="dark"] {
+  --bg-page: #0f1419;
+  --bg-card: #171d26;
+  --bg-subtle: #1d2530;
+  --bg-subtle2: #161c24;
+  --bg-stripe: #1a212b;
+  --text: #d7dee7;
+  --text-mid: #a7b2bf;
+  --text-weak: #7e8896;
+  --text-faint: #5f6b78;
+  --link: #5b9bd5;
+  --primary: #1e8cda;
+  --primary2: #0e6fc0;
+  --primary-deep: #2b699a;
+  --border: #2b343f;
+  --border-soft: rgba(255,255,255,.08);
+  --border-soft2: rgba(255,255,255,.06);
+  --border-strong: #39424d;
+  --up: #ff5b5b;
+  --down: #36d399;
+  --warn: #f0b040;
+  --accent: #e15a3f;
+  --bg-hover: #1b2a3d;
+  --shadow: rgba(0,0,0,.3);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: "Microsoft YaHei", "PingFang SC", "Helvetica Neue", Arial, sans-serif;
+  background: var(--bg-page);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.6;
+  transition: background .25s, color .25s;
+}
+a { text-decoration: none; color: var(--link); }
+ul, ol { list-style: none; }
+.clear::after { content: ""; display: block; clear: both; }
+
+/* ---------- 顶部导航（复刻：蓝绿渐变横幅） ---------- */
+.header-hd {
+  width: 100%;
+  background: linear-gradient(to right, var(--primary2), var(--primary));
+  margin-bottom: 20px;
+}
+.header-hd .nav { width: 1200px; margin: 0 auto; height: 55px; line-height: 55px; position: relative; }
+.header-hd .hd-logo { margin-right: 10px; float: left; }
+.header-hd .hd-logo a { display: block; height: 55px; }
+.header-hd .hd-logo .logo-txt {
+  font-size: 22px; font-weight: 700; color: #fff; letter-spacing: 2px;
+  display: inline-block; line-height: 55px;
+}
+.header-hd .hd-logo .logo-sub { font-size: 12px; color: rgba(255,255,255,.85); margin-left: 8px; }
+.header-hd .nav ul { float: left; margin-left: 20px; }
+.header-hd .nav ul li { display: inline-block; }
+.header-hd .nav ul li.active { background: var(--primary-deep); }
+.header-hd .nav ul li a {
+  text-decoration: none; display: block; padding: 0 10px; color: #fff;
+  text-align: center; font-size: 14px; font-weight: 700;
+}
+.header-hd .nav ul li a:hover { background: var(--primary-deep); }
+.side_menu_btn { display: none; }
+
+/* ---------- 工具条（主题切换 + 刷新间隔，由 JS 注入） ---------- */
+.nav-tools { float: right; height: 55px; display: flex; align-items: center; gap: 8px; }
+.nav-tool {
+  font-size: 13px; color: var(--text); background: var(--bg-card);
+  border: 1px solid var(--border); border-radius: 16px; padding: 4px 12px;
+  cursor: pointer; line-height: 1.6; white-space: nowrap;
+}
+.nav-tool:hover { border-color: var(--primary); color: var(--primary); }
+.nav-tools .refresh-sel { height: 28px; border-radius: 14px; }
+
+/* ---------- 主体布局 ---------- */
+.container { width: 1200px; margin: 0 auto; }
+.mianLeft { float: left; width: 840px; }
+.sider { float: right; width: 340px; }
+.mb20 { margin-bottom: 20px; }
+
+/* ---------- 行情表格（复刻 hq_table） ---------- */
+.hq_table { width: 100%; font-size: 16px; word-wrap: break-word; background: var(--bg-card); }
+.hq_table thead { background: var(--bg-subtle); }
+.hq_table th {
+  color: var(--text-weak); height: 45px; line-height: 45px; font-weight: 400;
+  border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+}
+.hq_table tr { height: 35px; line-height: 35px; }
+.hq_table td {
+  height: 30px; text-align: center;
+  border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); border-right: 1px solid var(--border);
+}
+.hq_table td:last-child { border-right: none; }
+.hq_table td.tabtitle { height: 18px; line-height: 18px; overflow: hidden; color: var(--link); }
+.hq_table tr.bg td, .hq_table tr.bg th { background: var(--bg-stripe); }
+
+/* 涨红跌绿（A 股惯例） */
+.up { color: var(--up) !important; font-weight: 600; }
+.down { color: var(--down) !important; font-weight: 600; }
+.flat { color: var(--text-weak); }
+
+/* ---------- 板块标题 ---------- */
+.sectionTitle {
+  font-size: 18px; font-weight: 700; color: var(--text);
+  border-left: 4px solid var(--primary); padding-left: 12px;
+  margin: 18px 0 12px; line-height: 22px;
+}
+.titleWarp { background: var(--bg-card); padding: 16px 20px 0; border-radius: 5px 5px 0 0; border: 1px solid var(--border-soft); border-bottom: none; }
+
+/* ---------- 行情卡片 ---------- */
+.quote-box { background: var(--bg-card); border: 1px solid var(--border-soft); border-radius: 5px; padding: 0 0 10px; overflow: hidden; }
+.quote-box .tabrow { padding: 10px 20px 0; }
+.quote-tabs { display: flex; gap: 8px; padding: 12px 20px 0; flex-wrap: wrap; }
+.quote-tabs button {
+  border: 1px solid var(--border); background: var(--bg-card); color: var(--text-mid); cursor: pointer;
+  padding: 5px 16px; border-radius: 20px; font-size: 14px;
+}
+.quote-tabs button.active, .quote-tabs button:hover { background: var(--primary); border-color: var(--primary); color: #fff; }
+
+/* ---------- 黄金实时行情动态（复刻时间轴） ---------- */
+#news { position: relative; background: var(--bg-subtle2); box-sizing: border-box; padding-bottom: 30px; overflow: hidden; border-radius: 5px; }
+.newsTitleWarp { background: var(--bg-card); padding-top: 20px; }
+#news .timeLine {
+  position: absolute; height: calc(100% - 190px); width: 45px; top: 150px; left: 0;
+  border-right: 3px solid var(--border-strong);
+}
+#news .singleNew { font-size: 16px; line-height: 28px; padding: 28px 40px 0 30px; margin-left: 48px; width: 700px; position: relative; }
+#news .singleNew .timeIcon {
+  position: absolute; left: -18px; top: 30px; background-color: var(--primary-deep);
+  width: 28px; height: 28px; border-radius: 50%;
+}
+#news .singleNew .times { color: var(--text-weak); font-size: 13px; }
+#news .singleNew .desc { color: var(--text-mid); padding-bottom: 10px; }
+
+/* ---------- 走势图 ---------- */
+.part5 { padding: 10px 0 20px; background: var(--bg-card); border-radius: 5px; border: 1px solid var(--border-soft); }
+.part5 .map { padding: 10px 20px; }
+.part5 .map img { display: block; margin: 15px auto 0; max-width: 100%; }
+.chart-grid { display: flex; flex-wrap: wrap; gap: 16px; padding: 10px 20px 20px; }
+.chart-grid .chart-item { flex: 1 1 45%; min-width: 300px; background: var(--bg-subtle); border: 1px solid var(--border-soft2); border-radius: 5px; padding: 10px; text-align: center; }
+.chart-grid .chart-item h4 { font-size: 15px; color: var(--text); margin-bottom: 8px; font-weight: 600; }
+.chart-grid .chart-item img { max-width: 100%; height: auto; }
+.chart-grid .chart-item .chart-canvas { width: 100%; height: 230px; }
+.chart-fail { display: flex; align-items: center; justify-content: center; height: 230px; color: var(--text-weak); font-size: 13px; }
+
+/* ---------- 侧边栏卡片 ---------- */
+.askteacher { border-radius: 5px; border: 1px solid rgba(0,0,0,.1); background: var(--bg-card); overflow: hidden; margin-bottom: 16px; }
+[data-theme="dark"] .askteacher { border-color: var(--border); }
+.sidertit { height: 24px; line-height: 24px; font-size: 18px; font-style: normal; font-weight: 600; color: var(--text); padding: 18px 20px 10px; }
+.hyrd_con { margin-top: 5px; display: flex; flex-wrap: wrap; padding: 0 8px 14px; }
+.hyrd_con a {
+  display: block; float: left; height: 29px; line-height: 29px; padding: 0 10px;
+  background: var(--bg-subtle); border-radius: 2px; font-style: normal; font-weight: normal;
+  color: var(--text); margin-bottom: 10px; margin-left: 8px; font-size: 13px;
+}
+.hyrd_con a:hover { background: var(--accent); color: #fff; }
+.siderlist { margin-top: 10px; border-radius: 5px; border: 1px solid rgba(0,0,0,.1); background: var(--bg-card); overflow: hidden; margin-bottom: 16px; }
+[data-theme="dark"] .siderlist { border-color: var(--border); }
+.siderlist-con ul li { border-top: 1px solid var(--border-soft2); }
+.siderlist-con ul li:hover { background: var(--bg-hover); }
+.siderlist-con .news-box { padding: 11px 16px; width: 100%; display: block; font-size: 13px; color: var(--text-mid); }
+.siderlist-con .news-box .n-title { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* ---------- 面包屑 / 页面头 ---------- */
+.position { padding: 8px 0; color: var(--text-weak); font-size: 13px; }
+.position a { color: var(--text-mid); }
+.h1-title { padding: 10px 0 4px; }
+.h1-txt { font-size: 22px; color: var(--text); font-weight: 700; }
+.validity { background: var(--bg-card); border: 1px solid var(--border-soft); border-radius: 5px; padding: 6px 20px 14px; }
+.validity-p { color: var(--text-weak); font-size: 13px; }
+.update { font-size: 12px; color: var(--text-weak); padding: 6px 0; text-align: right; }
+
+/* ---------- 知识/文字板块 ---------- */
+.text-box { background: var(--bg-card); border: 1px solid var(--border-soft); border-radius: 5px; padding: 18px 22px; margin-bottom: 20px; }
+.text-box h3 { font-size: 16px; color: var(--text); margin: 14px 0 8px; }
+.text-box h3:first-child { margin-top: 0; }
+.text-box p { color: var(--text-mid); margin-bottom: 8px; text-align: justify; }
+.text-box table { width: 100%; border-collapse: collapse; margin: 8px 0; }
+.text-box table td, .text-box table th { border: 1px solid var(--border); padding: 6px 10px; font-size: 13px; text-align: center; }
+
+/* ---------- 数据状态条 ---------- */
+.data-status { font-size: 12px; color: var(--text-weak); padding: 4px 2px 10px; }
+.data-status .st-txt { margin-right: 6px; }
+.data-status .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--down); margin-right: 5px; vertical-align: middle; }
+.data-status .dot.stale { background: var(--warn); }
+.data-status .dot.err { background: var(--up); }
+.data-status .dot.loading { background: var(--primary); animation: dotpulse 1s ease-in-out infinite; }
+@keyframes dotpulse { 0%,100% { opacity: 1; } 50% { opacity: .25; } }
+.refresh-note { color: var(--text-faint); margin-left: 8px; }
+
+/* ---------- 页脚 ---------- */
+.footer { background: var(--bg-card); border-top: 1px solid var(--border); margin-top: 30px; padding: 24px 0 30px; color: var(--text-weak); font-size: 12px; }
+.footer .container { text-align: center; }
+.footer p { margin-bottom: 6px; }
+.footer a { color: var(--text-weak); margin: 0 6px; }
+
+/* ---------- ECharts 容器 ---------- */
+#containerprice, #recycleChart, .chart-canvas { width: 100%; background: var(--bg-card); }
+#containerprice, #recycleChart { height: 380px; }
+.chart-card { background: var(--bg-card); border: 1px solid var(--border-soft); border-radius: 5px; padding: 14px 10px 6px; margin-bottom: 20px; }
+
+/* ---------- 响应式（复刻原站移动端行为） ---------- */
+@media (max-width: 1220px) {
+  .container { width: 96%; }
+  .mianLeft { width: calc(100% - 360px); }
+  .sider { width: 340px; }
+}
+@media (max-width: 992px) {
+  .mianLeft, .sider { float: none; width: 100%; }
+  .header-hd .nav { width: 100%; }
+  .header-hd .nav ul { display: none; float: none; margin-left: 0; }
+  .header-hd .nav ul.open { display: block; background: var(--primary); position: absolute; top: 55px; left: 0; right: 0; z-index: 99; }
+  .header-hd .nav ul.open li { display: block; }
+  .nav-tools { position: absolute; right: 46px; top: 0; }
+  .nav-tools .refresh-sel { display: none; }
+  .side_menu_btn {
+    display: block; width: 25px; height: 25px; position: absolute; right: 11px; top: 15px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3'%3E%3Cpath d='M3 6h18M3 12h18M3 18h18'/%3E%3C/svg%3E") no-repeat center center;
+    background-size: 100% 72%; cursor: pointer;
+  }
+  .hq_table { font-size: 12px; }
+  .hq_table th { line-height: 21px; height: auto; }
+  #news { padding-bottom: 10px; }
+  #news .singleNew { width: 100%; padding: 10px; margin-left: 0; box-sizing: border-box; }
+  #news .timeLine { display: none; }
+  .chart-grid .chart-item { flex: 1 1 100%; }
+}

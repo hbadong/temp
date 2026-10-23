@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>今日国内金价_国内金价多少钱一克_金价查询网</title>
+<meta name="keywords" content="国内金价,今日金价,金价多少钱一克,黄金T+D,Au9999" />
+<meta name="description" content="国内金价实时行情：上海黄金交易所黄金T+D、白银T+D最新价格，国内黄金/白银/铂金/钯金今日价格、销售价格、最高最低价查询。" />
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<div class="header-hd">
+  <div class="nav">
+    <div class="hd-logo"><a href="/"><span class="logo-txt">金价查询网</span><span class="logo-sub">实时金价 · 黄金回收 · 品牌金价</span></a></div>
+    <span class="side_menu_btn"></span>
+    <ul>
+      <li><a href="/">首页</a></li>
+      <li><a href="/guojijinjia.html">国际金价</a></li>
+      <li class="active"><a href="/guoneijinjia.html">国内金价</a></li>
+      <li><a href="/huishou.html">黄金回收</a></li>
+      <li><a href="/pinpaijinjia.html">品牌金价</a></li>
+      <li><a href="/xianggang.html">香港金价</a></li>
+      <li><a href="/guoneijinjia.html#ag">白银价格</a></li>
+      <li><a href="/zoushitu.html">黄金价格走势图</a></li>
+      <li><a href="/zoushitu.html#pt">铂金价格走势图</a></li>
+      <li><a href="/zoushitu.html#pd">钯金价格走势图</a></li>
+    </ul>
+  </div>
+</div>
+
+<div class="container">
+  <div class="position clear"><span>当前位置</span>：<a href="/">金价查询网</a> > <a href="/guoneijinjia.html">国内金价查询</a></div>
+  <div class="mianLeft">
+    <div class="mb20 validity clear">
+      <div class="h1-title"><h1 class="h1-txt">国内金价实时行情</h1></div>
+      <div class="update" id="dataStatus2">今日数据更新于：<span id="domDate">--</span>（北京时间）</div>
+      <div class="validity-p"><p>国内金价通常指上海黄金交易所 Au(T+D) 现货延期交收合约的实时价格（元/克），是国内实物黄金、投资金条、黄金回收定价的基准。本页同步提供黄金、白银、铂金、钯金的今日价格、销售价格与日内高低价。</p></div>
+    </div>
+
+    <div class="quote-box mb20">
+      <div class="data-status" id="dataStatus"><span class="dot"></span><span class="st-txt">数据加载中…</span><span class="refresh-note">每 60 秒自动刷新</span></div>
+      <table class="hq_table bx" width="100%" cellspacing="0" cellpadding="0" border="0" align="center">
+        <thead>
+          <tr>
+            <th style="white-space: nowrap;padding: 12px 10px;">贵金属品种</th>
+            <th style="white-space: nowrap;padding: 12px 10px;">今日价格</th>
+            <th style="white-space: nowrap;padding: 12px 10px;">销售价格</th>
+            <th style="white-space: nowrap;padding: 12px 10px;">最高价格</th>
+            <th style="white-space: nowrap;padding: 12px 10px;">最低价格</th>
+            <th style="white-space: nowrap;padding: 12px 10px;">报价日期</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr id="au_cn"><td>黄金价格</td><td>--</td><td>--</td><td>--</td><td>--</td><td class="daTime">--</td></tr>
+          <tr id="ag_cn" class="bg"><td>白银价格</td><td>--</td><td>--</td><td>--</td><td>--</td><td class="daTime">--</td></tr>
+          <tr id="pt_cn"><td>铂金价格</td><td>--</td><td>--</td><td>--</td><td>--</td><td class="daTime">--</td></tr>
+          <tr id="pd_cn" class="bg"><td>钯金价格</td><td>--</td><td>--</td><td>--</td><td>--</td><td class="daTime">--</td></tr>
+        </tbody>
+      </table>
+      <div class="update">单位：元/克 · 黄金/白银基准为上海黄金交易所 T+D 合约 · 铂金/钯金为国际现货按汇率折算</div>
+    </div>
+
+    <div class="quote-box mb20">
+      <div class="title sectionTitle" style="padding:14px 20px 0;margin-top:0;">国内金价相关报价</div>
+      <table class="hq_table" width="100%" cellspacing="0" cellpadding="0">
+        <thead><tr><th width="40%">项目</th><th width="30%">今日价格</th><th width="30%">说明</th></tr></thead>
+        <tbody>
+          <tr class="bg"><td valign="middle" align="center" class="tabtitle">投资金条</td><td valign="middle" align="center" id="bar_price">--</td><td valign="middle" align="center">大盘价 + 加工费</td></tr>
+          <tr><td valign="middle" align="center" class="tabtitle">黄金回收</td><td valign="middle" align="center" id="recycle_price">--</td><td valign="middle" align="center">大盘价 - 回收折扣</td></tr>
+          <tr class="bg"><td valign="middle" align="center" class="tabtitle">白银价格</td><td valign="middle" align="center" id="ag_price">--</td><td valign="middle" align="center">白银T+D 折算元/克</td></tr>
+        </tbody>
+      </table>
+      <div class="update">金条与回收价格为大盘基准价折算，银行及金店实际报价以各机构挂牌为准</div>
+    </div>
+
+    <div class="text-box mb20" id="ag">
+      <h3>国内白银价格（今日银价）</h3>
+      <p>国内白银价格一般参考上海黄金交易所白银 Ag(T+D) 合约（报价单位为元/千克），折算为元/克后即为通常所说的"今日银价"。白银既有贵金属投资属性也有工业属性，价格波动通常大于黄金。</p>
+      <h3>国内金价是怎么构成的？</h3>
+      <p>国内金价以人民币计价，核心基准包括：①上海黄金交易所 Au(T+D) 现货延期合约的实时成交价；②Au99.99、Au99.95 等现货实盘合约报价；③银行投资金条与品牌金店首饰金价，均在大盘价基础上加成不同的加工费与品牌溢价。</p>
+      <h3>影响国内金价的因素</h3>
+      <p>国际金价（伦敦金/COMEX 黄金期货）以美元计价，国内金价 = 国际金价 × 人民币汇率折算 + 内外盘价差，因此除国际行情外，人民币汇率波动、上海黄金交易所供需、国内实物黄金消费旺季（如婚庆、春节）都会影响国内金价。</p>
+    </div>
+  </div>
+
+  <div class="sider">
+    <div class="askteacher">
+      <div class="sidertit">相关查询</div>
+      <div class="hyrd_con">
+        <a href="/huishou.html">黄金回收</a><a href="/pinpaijinjia.html">品牌金价</a>
+        <a href="/guojijinjia.html">国际金价</a><a href="/zoushitu.html">金价走势图</a>
+        <a href="/xianggang.html">香港金价</a>
+      </div>
+    </div>
+    <div class="siderlist">
+      <div class="sidertit">交易所官网</div>
+      <div class="siderlist-con">
+        <ul>
+          <li><a class="news-box" href="https://www.sge.com.cn/" target="_blank" rel="noopener noreferrer"><span class="n-title">上海黄金交易所</span></a></li>
+          <li><a class="news-box" href="https://www.shfe.com.cn/" target="_blank" rel="noopener noreferrer"><span class="n-title">上海期货交易所</span></a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <div class="container">
+    <p>金价查询网 · 黄金价格实时报价系统（逆向分析与功能重建演示项目）</p>
+    <p>行情数据来源于公开行情源（新浪财经），本站仅做换算与展示；所有价格仅供参考，不构成投资建议。</p>
+  </div>
+</div>
+
+<script src="/js/quotes.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  var d = document.getElementById("domDate");
+  if (d) {
+    var n = new Date();
+    d.textContent = n.getFullYear() + "年" + (n.getMonth() + 1) + "月" + n.getDate() + "日";
+  }
+});
+</script>
+</body>
+</html>

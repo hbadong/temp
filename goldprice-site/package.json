@@ -1,0 +1,13 @@
+{
+  "name": "goldprice-site",
+  "version": "1.0.0",
+  "description": "金价查询网站系统（逆向分析与功能重建演示项目）",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "MIT"
+}
