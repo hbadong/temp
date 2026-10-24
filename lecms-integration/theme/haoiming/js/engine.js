@@ -634,7 +634,7 @@ E.generateByBazi = function (surname, gender, birth, limit, prefs) {
         const wg = E.wuge(full);
         const q = qualityScore(full, given, wg, birth, fixedInfo.w, b.favorable);
         results.push({ name: full, given, chars: [fixedInfo, x], score: q.final, wg: wg ? wg.score : 70, wx: fixedInfo.w + x.w,
-          reason: `含辈分字「${fixed}」，配${x.w}行字呼应喜用神${b.favorable}` });
+          reason: `含指定用字「${fixed}」，配${x.w}行字呼应喜用神${b.favorable}` });
       });
     });
   }

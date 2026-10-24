@@ -774,7 +774,7 @@
           <div class="meta">${d.self.m}</div>
           <div class="cta-row">
             <a class="btn-ghost" href="${toolUrl("score.html")}?name=李${encodeURIComponent(c)}">测「李${c}」评分</a>
-            <a class="btn-ghost" href="${toolUrl("naming.html")}?surname=李&gender=1&date=2026-01-01">用该字起名</a>
+            <a class="btn-ghost" href="${toolUrl("naming.html")}?surname=李&gender=${d.self.g === 2 ? 2 : 1}&date=2026-01-01&fixed=${encodeURIComponent(c)}">用该字起名</a>
           </div>
         </div>
         <div class="bigchar">${glyphSvg(c, 150)}</div>
