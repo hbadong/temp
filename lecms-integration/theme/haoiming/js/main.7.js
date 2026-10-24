@@ -654,7 +654,7 @@
               <a href="${toolUrl("naming.html")}">宝宝起名</a><a href="${toolUrl("bazi.html")}">八字起名</a><a href="${toolUrl("poems.html")}">诗词起名</a>
               <a href="${toolUrl("shijing.html")}">诗经起名</a><a href="${toolUrl("chuci.html")}">楚辞起名</a><a href="${toolUrl("tangshi.html")}">唐诗起名</a><a href="${toolUrl("songci.html")}">宋词起名</a>
               <a href="${toolUrl("zhouyi.html")}">周易起名</a><a href="${toolUrl("score.html")}">姓名测试</a><a href="${toolUrl("gongsi.html")}">公司起名</a>
-              <a href="${toolUrl("kxzd.html")}">康熙字典</a><a href="${toolUrl("baijiaxing.html")}">百家姓</a><a href="${toolUrl("match.html")}">姓名配对</a>
+              <a href="${toolUrl("kxzd.html")}">康熙字典</a><a href="${toolUrl("taiyang.html")}">真太阳时</a><a href="${toolUrl("baijiaxing.html")}">百家姓</a><a href="${toolUrl("match.html")}">姓名配对</a>
               <a href="${toolUrl("chongming.html")}">重名查询</a><a href="${toolUrl("shengxiao.html")}">生肖年起名</a><a href="${toolUrl("faq.html")}">起名问答</a><a href="${toolUrl("lib.html")}">好名字库</a><a href="${toolUrl("service.html")}">人工起名服务</a>
             </div>
           </div>
@@ -679,6 +679,7 @@
             </div>
           </div>
         </div>
+        <div class="wrap footer-disclaimer" style="margin:14px auto 0;padding:14px 18px;background:#fbf3ef;border:1px solid #f0d9cf;border-radius:8px;font-size:13px;line-height:1.85;color:#8a6b58;">本站所有起名 / 测名 / 排盘工具均为传统公共领域算法（四柱排盘、五格剖象、康熙笔画、生肖宜忌、重名估算）的<b>简化演示实现</b>，不构成命理、医疗、法律或投资建议；古籍用语（如「数理吉凶」）属民俗文化表述，请理性看待。给孩子起名的最终决定，请结合家庭文化期望、方言读音与书写便利性综合判断。<b>结果仅供娱乐参考。</b></div>
         <div class="copyright">© 好名网 · 原创功能演示系统</div>`;
     }
   }
