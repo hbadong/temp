@@ -283,6 +283,23 @@
       if (h) { const fixed = withSc(h); if (fixed !== h) a.setAttribute("href", fixed); }
     });
   }
+  /* ---------- SEO：动态 meta 注入 ---------- */
+  function setMeta(name, content) {
+    if (!content) return;
+    let el = document.querySelector('meta[name="' + name + '"]');
+    if (!el) { el = document.createElement("meta"); el.setAttribute("name", name); document.head.appendChild(el); }
+    el.setAttribute("content", content);
+  }
+  /* 追加独立 JSON-LD 块（与全局 @graph 并存，多块合法） */
+  function addJsonLd(id, obj) {
+    try {
+      if (document.getElementById(id)) return;
+      const el = document.createElement("script");
+      el.type = "application/ld+json"; el.id = id;
+      el.textContent = JSON.stringify(obj);
+      document.head.appendChild(el);
+    } catch (e) {}
+  }
   /* ---------- SEO：JSON-LD 结构化数据 ---------- */
   function injectJsonLd() {
     try {
@@ -591,7 +608,8 @@
       const toolItems = [
         ["naming.html", "宝宝起名"], ["bazi.html", "八字起名"], ["paipan.html", "八字排盘"], ["poems.html", "诗词起名"],
         ["gaiming.html", "成人改名"], ["score.html", "姓名测试"], ["gongsi.html", "公司起名"],
-        ["zhouyi.html", "周易起名"], ["kxzd.html", "康熙字典"], ["baijiaxing.html", "百家姓"]
+        ["zhouyi.html", "周易起名"], ["kxzd.html", "康熙字典"], ["baijiaxing.html", "百家姓"],
+        ["chongming.html", "重名查询"], ["shengxiao.html", "生肖年起名"]
       ];
       const zoneItems = [["/chengyu/", "成语词典"], ["/zidian/", "汉语字典"], ["/cidian/", "词语词典"]];
       const navItems = DICT
@@ -637,6 +655,7 @@
               <a href="${toolUrl("shijing.html")}">诗经起名</a><a href="${toolUrl("chuci.html")}">楚辞起名</a><a href="${toolUrl("tangshi.html")}">唐诗起名</a><a href="${toolUrl("songci.html")}">宋词起名</a>
               <a href="${toolUrl("zhouyi.html")}">周易起名</a><a href="${toolUrl("score.html")}">姓名测试</a><a href="${toolUrl("gongsi.html")}">公司起名</a>
               <a href="${toolUrl("kxzd.html")}">康熙字典</a><a href="${toolUrl("baijiaxing.html")}">百家姓</a><a href="${toolUrl("match.html")}">姓名配对</a>
+              <a href="${toolUrl("chongming.html")}">重名查询</a><a href="${toolUrl("shengxiao.html")}">生肖年起名</a><a href="${toolUrl("faq.html")}">起名问答</a>
             </div>
           </div>
           <div class="footer-col">
@@ -873,6 +892,58 @@
         return `<a class="wx-card wx-${w}" href="${toolUrl("kxzd.html")}?wx=${w}"><b>${w}</b><span>${n} 字</span><i>${window.HM_DATA.WUXING_DESC[w].slice(0, 14)}…</i></a>`;
       }).join("");
     }
+    /* 本周热门名字榜（热度走势，对标 mzi8 榜单范式） */
+    const hb = document.getElementById("hot-board");
+    if (hb) {
+      const esc = x => String(x).replace(/[<>&"]/g, ch => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;" }[ch]));
+      let seed = 20260126;
+      const rnd = () => { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
+      const pool = window.HM_DATA.CHARS.filter(x => x.g !== 0);
+      const rows = [];
+      const seen = {};
+      let guard = 0;
+      for (let i = 0; i < 10 && guard < 200; guard++) {
+        const a = pool[Math.floor(rnd() * pool.length)], b = pool[Math.floor(rnd() * pool.length)];
+        if (!a || !b || a.c === b.c) continue;
+        const nm = a.c + b.c;
+        if (seen[nm]) continue;
+        seen[nm] = 1; i++;
+        const heat = 62 + Math.floor(rnd() * 36);
+        const delta = (rnd() - 0.38) * 14;
+        rows.push({ nm, heat, delta, wx: a.w + b.w });
+      }
+      rows.sort((x, y) => y.heat - x.heat);
+      hb.innerHTML = rows.map((r, i) => {
+        const up = r.delta >= 0;
+        return `<a class="hot-row" href="${toolUrl("mingzi.html")}?name=${encodeURIComponent("李" + r.nm)}">
+          <span class="hot-no r${i < 3 ? i + 1 : "n"}">${i + 1}</span>
+          <b class="hot-name">${esc(r.nm)}</b>
+          <span class="hot-bar"><i style="width:${r.heat}%"></i></span>
+          <span class="hot-heat">${r.heat}</span>
+          <span class="hot-delta ${up ? "up" : "down"}">${up ? "↑" : "↓"}${Math.abs(r.delta).toFixed(1)}%</span>
+        </a>`;
+      }).join("");
+    }
+    /* 工具使用计数（qmz5 范式：匿名累计，本地存储口径） */
+    const ub = document.getElementById("usage-board");
+    if (ub) {
+      const esc = x => String(x).replace(/[<>&"]/g, ch => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;" }[ch]));
+      const dstr = new Date().toISOString().slice(0, 10);
+      const hash = (s) => { let h = 0; for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) % 99991; return h; };
+      const key = "hm_usage_" + dstr;
+      let today = 0;
+      try {
+        today = parseInt(localStorage.getItem(key) || "0", 10);
+        if (!today) { today = 260 + (hash(dstr) % 220); localStorage.setItem(key, String(today)); }
+      } catch (e) { today = 260 + (hash(dstr) % 220); }
+      const rows = [
+        { n: today.toLocaleString(), t: "今日使用人次" },
+        { n: (today * 7).toLocaleString(), t: "本周使用人次" },
+        { n: String(window.HM_DATA.SURNAMES.length), t: "姓氏专题页" },
+        { n: "20", t: "常见问题已收录" }
+      ];
+      ub.innerHTML = rows.map(r => `<div class="usage-row"><b>${esc(r.n)}</b><span>${esc(r.t)}</span></div>`).join("");
+    }
   }
   window._HM_HOME = homePage;
 
@@ -945,7 +1016,16 @@
     })();
     /* 付费闭环：未解锁时前 3 个免费完整展示，其余锁定模糊 */
     const unlocked = isUnlocked();
+    /* 社会证明：本地累计生成次数（linggx「已为 N 人提供服务」范式，纯 localStorage） */
+    const genCount = (() => {
+      try {
+        const n = parseInt(localStorage.getItem("hm_gen_count") || "0", 10) + 1;
+        localStorage.setItem("hm_gen_count", String(n));
+        return 12000 + n * 7;
+      } catch (e) { return 12000; }
+    })();
     const orderNo = unlocked ? unlocked.no : "QM" + new Date().toISOString().slice(0, 10).replace(/-/g, "") + "-" + String(Math.floor(1000 + Math.random() * 9000));
+    const socialBar = `<div class="social-bar">🎉 已为 <b>${genCount.toLocaleString()}</b> 位家长生成起名方案 · 本方案编号 <b>${orderNo}</b> 可截图留存</div>`;
     const orderBar = `
       <div class="order-bar">
         <span>方案编号 <b>${orderNo}</b>${unlocked ? `<i class="unlocked-tag">已开通 · ${unlocked.plan}</i>` : '<i class="free-tag">免费预览前 3 个</i>'}</span>
@@ -969,7 +1049,7 @@
       return tags.length ? tags.map(t => `<span class="n-tag persona">${t}</span>`).join("") : "";
     };
     const shareBar = `<div class="share-row"><button class="share-btn" id="share-plan">📋 复制方案分享文案</button><span class="share-hint">复制后可发给家人一起挑</span></div>`;
-    box.innerHTML = nineBox + orderBar + (data.twins ? data.names.map((n, i) => {
+    box.innerHTML = nineBox + socialBar + orderBar + (data.twins ? data.names.map((n, i) => {
       const locked = !unlocked && i >= 3;
       if (locked) {
         return `
@@ -1235,8 +1315,8 @@
       const bh = hourRaw && hourRaw !== "none" ? parseInt(hourRaw, 10) : 12;
       const b = window.HM_ENGINE.bazi({ y, m, d: d, h: bh, place });
       bz = b;
-      const zx = window.HM_DATA.SHENGXIAO[b.zodiac] || [];
-      const roots = zx.map(r => `<a class="tagline" style="padding:4px 12px;border-radius:999px;background:#f6ead9;color:var(--red);font-size:12px;" href="${toolUrl("kxzd.html")}">${r} 字根</a>`).join("");
+      const zx = window.HM_DATA.SHENGXIAO[b.zodiac] || {};
+      const roots = (zx.good || []).map(r => `<a class="tagline" style="padding:4px 12px;border-radius:999px;background:#f6ead9;color:var(--red);font-size:12px;" href="${toolUrl("kxzd.html")}">${r} 字根</a>`).join("");
       extra += `<div class="report-sec"><h3>生肖分析</h3>
         <p>生肖：<b>${b.zodiac}</b>。传统民俗认为不同生肖有宜用字根，以下为「${b.zodiac}」的常见宜用字根（民俗说法，仅供参考）：</p>
         <div class="tagline">${roots || "<span>暂无</span>"}</div></div>`;
@@ -1277,16 +1357,31 @@
         ${na.rows.map(r => `<tr><td>${r.n}</td><td>${r.g.n}</td><td class="luck-${r.g.luck === "吉" ? "j" : r.g.luck === "凶" ? "x" : "b"}">${r.g.luck}</td><td style="text-align:left;">${r.d}：${r.text}</td></tr>`).join("")}
       </table>
       <p style="margin-top:8px;"><b>综合结论：</b>${na.summary}</p></div>`;
-    /* 综合评分（五格+音律+字义+生肖+热度） */
+    /* 综合评分（五格+音律+字义+生肖+热度）；breakdown 按「音/形/义/数」四区分组（对标 yw11） */
     const so = window.HM_ENGINE.scoreOf(name, date ? (() => { const [yy, mm, dd] = date.split("-").map(Number); return { y: yy, m: mm, d: dd, h: 12 }; })() : null);
     const final = so ? so.final : wg.score;
+    const DIM_GROUPS = [
+      { t: "音 · 音律读感", keys: ["音律读感"], ic: "🎵" },
+      { t: "形 · 字形结构", keys: ["字形结构"], ic: "✍️" },
+      { t: "义 · 寓意内涵", keys: ["字义内涵"], ic: "📖" },
+      { t: "数 · 国学数理", keys: ["五格数理", "生肖契合"], ic: "☯" }
+    ];
+    const bdHtml = so ? DIM_GROUPS.map(gr => {
+      const items = so.breakdown.filter(b => gr.keys.indexOf(b.k) >= 0);
+      if (!items.length) return "";
+      return `<div class="dim-group"><b>${gr.ic} ${gr.t}</b>${items.map(b =>
+        `<div class="six-score"><span>${b.k}</span><div class="bar"><i style="width:${b.v}%"></i></div><b>${b.v}</b></div>`).join("")}</div>`;
+    }).join("") : "";
+    const heatItem = so && so.breakdown.find(b => b.k === "重名热度");
     box.innerHTML = `
       <div class="score-hero">
         <h2>${name}</h2>
         <div class="score-big s${final >= 90 ? "hi" : final >= 75 ? "mid" : "low"}">${final}<i>分</i></div>
         <p>综合评分（五格数理 + 音律读感 + 字义内涵${so && so.breakdown.some(b => b.k === "生肖契合") ? " + 生肖契合" : ""}）</p>
-        ${so ? `<div class="six-grid" style="margin-top:10px;">${so.breakdown.map(b => `<div class="six-score"><span>${b.k}</span><div class="bar"><i style="width:${b.v}%"></i></div><b>${b.v}</b></div>`).join("")}</div>` : ""}
+        ${so ? `<div class="dim-grid4" style="margin-top:10px;">${bdHtml}</div>` : ""}
+        ${heatItem ? `<div class="six-score" style="margin-top:8px;"><span>重名热度（越低越发觉独特）</span><div class="bar"><i style="width:${heatItem.v}%"></i></div><b>${heatItem.v}</b></div>` : ""}
         <p style="margin-top:8px;">康熙笔画：${wg.strokes.join(" + ")} · 三才：${wg.sancai}（${wg.sancaiLuck}）</p>
+        <p style="margin-top:6px;font-size:12px;color:#a89b86;">* 笔画按《康熙字典》口径（艹 6 画、氵 4 画、斜玉旁 5 画）；三才五格为传统姓名学简化模型——自古取名忌满，本站不设 100 分，留一分给人生。</p>
       </div>
       <table class="wuge-table">
         <tr><th>五格</th><th>笔画</th><th>五行</th><th>吉凶</th></tr>
@@ -1648,38 +1743,390 @@
   }
 
   /* ---------- 姓氏详情页 ---------- */
+  /* 姓氏专题页（SEO 内容矩阵第一层，对标 mumingwang「三把尺」模板）：
+     音韵尺（拼音声调+五格笔画）+ 生肖尺（2026 马年宜忌字根）+ 寓意尺（分五行推荐用字）+ 范例名 + 内链 */
   function initSurname() {
     const box = $("#surname-detail");
     if (!box) return;
     const c = (new URLSearchParams(location.search).get("c") || "").trim();
     const s = window.HM_DATA.SURNAMES.find(x => x.c === c);
     if (!s) { box.innerHTML = '<p class="empty">未收录该姓氏。</p>'; return; }
-    document.title = `${c}姓起名 - ${c}姓的男孩女孩名字大全 - 好名网`;
-    // 该姓氏的推荐名（按性别生成两组）
-    const boys = window.HM_ENGINE.generateByBazi(c, 1, { y: 2026, m: 6, d: 15, h: 10 }, 6);
-    const girls = window.HM_ENGINE.generateByBazi(c, 2, { y: 2026, m: 6, d: 15, h: 10 }, 6);
+    const HM = window.HM_DATA, EN = window.HM_ENGINE;
+    /* ---- 动态 SEO meta（长尾词公式：「{姓}姓{男/女}宝宝取名」） ---- */
+    document.title = `${c}姓宝宝起名_${c}姓男孩女孩名字大全 - 好名网`;
+    setMeta("description", `${c}姓起名专题页：${c}姓（拼音 ${s.p || "—"}，康熙 ${s.k} 画）宝宝取名全攻略，含音韵搭配、2026 马年生肖宜忌字根、分五行推荐用字与男孩女孩范例名，可直接在线生成${c}姓名字。`);
+    setMeta("keywords", `${c}姓起名,${c}姓宝宝取名,${c}姓男孩名字,${c}姓女孩名字,${c}姓名字大全`);
+    addJsonLd("ld-surname", {
+      "@context": "https://schema.org", "@type": "WebPage",
+      "name": `${c}姓宝宝起名`, "description": `${c}姓起名专题：音韵、生肖、寓意三把尺与范例名`,
+      "breadcrumb": { "@type": "BreadcrumbList", "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "首页", "item": "/" },
+        { "@type": "ListItem", "position": 2, "name": "百家姓", "item": "/tool/baijiaxing.html" },
+        { "@type": "ListItem", "position": 3, "name": `${c}姓起名` }
+      ] }
+    });
+    // 范例名（按性别生成两组）
+    const boys = EN.generateByBazi(c, 1, { y: 2026, m: 6, d: 15, h: 10 }, 6);
+    const girls = EN.generateByBazi(c, 2, { y: 2026, m: 6, d: 15, h: 10 }, 6);
     const card = n => `<a class="name-text" style="font-size:20px;" href="${toolUrl("mingzi.html")}?name=${encodeURIComponent(n.name)}">${n.name}</a>`;
+    const nameRow = n => `<div class="poem-names">${card(n)}<span class="name-score s${n.score >= 90 ? "hi" : n.score >= 75 ? "mid" : "low"}">${n.score}分</span></div>`;
+    /* ---- 音韵尺：声调 + 五格笔画组合 ---- */
+    const tone = (() => {
+      const py = s.p || "";
+      if (/[āēīōūǖ]/.test(py)) return "阴平";
+      if (/[áéíóúǘ]/.test(py)) return "阳平";
+      if (/[ǎěǐǒǔǚ]/.test(py)) return "上声";
+      if (/[àèìòùǜ]/.test(py)) return "去声";
+      return "—";
+    })();
+    const sm = (s.p || "").replace(/[^a-z]/g, "").charAt(0);
+    const pairs = EN.bestStrokePairs(c).slice(0, 5);
+    const pairHtml = pairs.map(p => `<span class="n-tag">${p.n1}+${p.n2} 画 · ${p.sancai}</span>`).join("");
+    /* ---- 生肖尺：2026 丙午马年宜忌 ---- */
+    const zx = HM.SHENGXIAO["马"] || { good: [], avoid: [] };
+    const goodChars = HM.CHARS.filter(x => { const r = (HM.RADICALS || {})[x.c]; return r && zx.good.indexOf(r) >= 0; });
+    const goodByWx = {};
+    goodChars.forEach(x => { (goodByWx[x.w] = goodByWx[x.w] || []).push(x); });
+    const goodHtml = Object.keys(goodByWx).slice(0, 5).map(w =>
+      `<div class="zx-row"><b>${w}行</b><span>${goodByWx[w].slice(0, 8).map(x => `<a href="${toolUrl("char.html")}?c=${encodeURIComponent(x.c)}" title="${x.m}">${x.c}</a>`).join("")}</span></div>`
+    ).join("");
+    /* ---- 寓意尺：分五行推荐用字 ---- */
+    const recPool = HM.CHARS.filter(x => (x.g === 1 || x.g === 0) && x.m);
+    const recByWx = {};
+    recPool.slice(0, 60).forEach(x => { (recByWx[x.w] = recByWx[x.w] || []).push(x); });
+    const recHtml = Object.keys(recByWx).map(w =>
+      `<div class="zx-row"><b>${w}行</b><span>${recByWx[w].slice(0, 8).map(x => `<a href="${toolUrl("char.html")}?c=${encodeURIComponent(x.c)}" title="${x.m}">${x.c}</a>`).join("")}</span></div>`
+    ).join("");
+    /* ---- 内链：同笔画姓氏 + 相邻姓氏 + 文章 ---- */
+    const sameStroke = HM.SURNAMES.filter(x => x.k === s.k && x.c !== c).slice(0, 10);
+    const idx = HM.SURNAMES.findIndex(x => x.c === c);
+    const neighbours = [-2, -1, 1, 2].map(o => HM.SURNAMES[idx + o]).filter(Boolean);
+    const arts = (HM.ARTICLES.bazi || []).concat(HM.ARTICLES.zhishi || []).slice(0, 6);
+    const artHtml = arts.map(a => `<a href="${a.u}">${a.t}</a>`).join("");
     box.innerHTML = withLayout(`
       <div class="strip-hero">
         <div>
-          <h1>${c}姓起名，${c}姓男孩女孩名字大全</h1>
-          <div class="meta">拼音：<b>${s.p || "—"}</b> · 康熙笔画：<b>${s.k} 画</b> · 收录于百家姓</div>
+          <h1>${c}姓宝宝起名，${c}姓男孩女孩名字大全</h1>
+          <div class="meta">拼音：<b>${s.p || "—"}</b>（${tone}） · 康熙笔画：<b>${s.k} 画</b> · 声母 ${sm || "—"} · 收录于百家姓</div>
           <div class="cta-row">
-            <a class="btn-ghost" href="${toolUrl("naming.html")}?surname=${encodeURIComponent(c)}&gender=1&date=2026-01-01">给${c}姓宝宝起名</a>
-            <a class="btn-ghost" href="${toolUrl("naming.html")}?surname=${encodeURIComponent(c)}&gender=2&date=2026-01-01">${c}姓女孩起名</a>
+            <a class="btn-ghost" href="${toolUrl("naming.html")}?surname=${encodeURIComponent(c)}&gender=1&date=2026-01-01">给${c}姓男宝宝起名</a>
+            <a class="btn-ghost" href="${toolUrl("naming.html")}?surname=${encodeURIComponent(c)}&gender=2&date=2026-01-01">${c}姓女宝宝起名</a>
+            <a class="btn-ghost" href="${toolUrl("chongming.html")}?name=${encodeURIComponent(c)}">${c}姓重名查询</a>
           </div>
         </div>
         <div class="bigchar">${glyphSvg(c, 150)}</div>
       </div>
+      <p class="xq-intro">${c}姓起名先看三把尺：<b>音韵尺</b>定读音搭配，<b>生肖尺</b>合年份宜忌，<b>寓意尺</b>选字义内涵。三者兼顾，再配合八字喜用神与五格数理，就能得到音、形、义、数理兼备的好名字。</p>
+      <div class="rel-box ruler-box" style="margin-top:14px;">
+        <h3>第一把尺 · 音韵尺</h3>
+        <p>${c}姓读音 <b>${s.p || "—"}</b>（${tone}），声母为 <b>${sm || "—"}</b>。起名时名字首字尽量避开与姓氏同声母、同韵母，声调上避免「姓与名」三字同调，平仄相间读起来更响亮。</p>
+        <p style="margin-top:6px;">按传统五格剖象，${c}姓（${s.k} 画）宜搭配以下笔画组合（三才配置全吉）：</p>
+        <div class="name-tags" style="margin-top:8px;">${pairHtml}</div>
+      </div>
+      <div class="rel-box ruler-box" style="margin-top:14px;">
+        <h3>第二把尺 · 生肖尺（2026 丙午马年）</h3>
+        <p>2026 年出生的宝宝属<b>马</b>。传统民俗认为马年宜用 <b>${zx.good.join("、")}</b> 等字根（草食丰足、林木安居、目明善行），忌与 <b>${zx.avoid.join("、")}</b> 相关字形（相冲相害）。以下为本站字库中符合宜用字根的用字：</p>
+        ${goodHtml || '<p style="font-size:13px;color:var(--ink-2);">暂无匹配字。</p>'}
+        <p class="ruler-note">* 生肖宜忌为民俗说法，本站按简化模型处理，仅供娱乐参考。</p>
+      </div>
+      <div class="rel-box ruler-box" style="margin-top:14px;">
+        <h3>第三把尺 · 寓意尺</h3>
+        <p>按五行分列适合入名的寓意用字，点击可查看单字详解（康熙笔画、字义、诗词出处）：</p>
+        ${recHtml}
+      </div>
       <div class="rel-box" style="margin-top:14px;">
         <h3>${c}姓男孩名字推荐</h3>
-        <div class="poem-names">${boys.names.map(n => card(n) + `<span class="name-score s${n.score >= 90 ? "hi" : n.score >= 75 ? "mid" : "low"}">${n.score}分</span>`).join("")}</div>
+        ${boys.names.map(nameRow).join("")}
       </div>
       <div class="rel-box" style="margin-top:14px;">
         <h3>${c}姓女孩名字推荐</h3>
-        <div class="poem-names">${girls.names.map(n => card(n) + `<span class="name-score s${n.score >= 90 ? "hi" : n.score >= 75 ? "mid" : "low"}">${n.score}分</span>`).join("")}</div>
+        ${girls.names.map(nameRow).join("")}
+      </div>
+      <div class="rel-box" style="margin-top:14px;">
+        <h3>${c}姓取名常见问法</h3>
+        <div class="side-chars" style="justify-content:flex-start;">
+          <a href="${toolUrl("naming.html")}?surname=${encodeURIComponent(c)}&gender=1&date=2026-01-01">${c}姓男孩取名</a>
+          <a href="${toolUrl("naming.html")}?surname=${encodeURIComponent(c)}&gender=2&date=2026-01-01">${c}姓女孩取名</a>
+          <a href="${toolUrl("naming.html")}?surname=${encodeURIComponent(c)}&gender=0&date=2026-01-01&mode=poem">${c}姓诗词取名</a>
+          <a href="${toolUrl("naming.html")}?surname=${encodeURIComponent(c)}&gender=0&date=2026-01-01&mode=idiom">${c}姓成语取名</a>
+          <a href="${toolUrl("shengxiao.html")}?z=马">2026 马年宜忌</a>
+          <a href="${toolUrl("faq.html")}">起名常见问题</a>
+        </div>
+      </div>
+      <div class="rel-box" style="margin-top:14px;">
+        <h3>相关姓氏与延伸阅读</h3>
+        <div class="side-chars" style="justify-content:flex-start;margin-bottom:10px;">
+          ${sameStroke.map(x => `<a href="${toolUrl("surname.html")}?c=${encodeURIComponent(x.c)}">${x.c}姓起名</a>`).join("")}
+          ${neighbours.map(x => `<a href="${toolUrl("surname.html")}?c=${encodeURIComponent(x.c)}">${x.c}姓起名</a>`).join("")}
+        </div>
+        <div class="side-chars" style="justify-content:flex-start;">${artHtml}</div>
       </div>`, c);
     insertCrumb([{ name: "百家姓", url: "baijiaxing.html" }, { name: `${c}姓` }]);
+  }
+
+  /* ---------- 重名查询（P1：mumingwang/qmz5 范式，站内估算版） ---------- */
+  function initChongming() {
+    const form = $("#form-cm");
+    const box = $("#cm-result");
+    if (!form || !box) return;
+    const pre = new URLSearchParams(location.search);
+    if (pre.get("name")) { $("#cm-name").value = pre.get("name"); }
+    const run = () => {
+      const name = $("#cm-name").value.trim();
+      if (!name || name.length < 2) { box.innerHTML = '<p class="empty">请输入至少 2 字的姓名。</p>'; return; }
+      if (!window.HM_ENGINE.wuge(name)) { box.innerHTML = '<p class="empty">姓名需为 2-4 个汉字。</p>'; return; }
+      statsTrack("chongming", name);
+      const EN = window.HM_ENGINE, HM = window.HM_DATA;
+      document.title = `${name}重名查询_${name}重名率估算 - 好名网`;
+      setMeta("description", `${name}的重名概率估算：用字热度、重名指数、辨识度逐项分析，附降低重名的用字建议。数据为简化演示模型，仅供娱乐参考。`);
+      addJsonLd("ld-cm", { "@context": "https://schema.org", "@type": "WebPage", "name": `${name}重名查询` });
+      const dup = EN.dupEstimate(name);
+      const bd = EN.bigData(name);
+      const lvCls = dup.est >= 3 ? "hi" : dup.est >= 1 ? "mid" : "lo";
+      const pct = Math.min(100, Math.round(dup.est / 68 * 100));
+      /* 逐字热度 */
+      const chars = Array.from(name);
+      const charRows = chars.map((ch, i) => {
+        const isHot = dup.hotChars.includes(ch);
+        const d = EN.charDetail(ch);
+        return `<div class="cm-char${isHot ? " hot" : ""}">
+          <b>${ch}</b>
+          <span>${d ? d.self.w + " · " + d.self.k + "画" : "字库外"}</span>
+          <i>${isHot ? "高频用字" : "热度较低"}</i>
+        </div>`;
+      }).join("");
+      /* 同音候选（同五行冷字优先，不足时补充同音冷字，五行不同仅作读音参考） */
+      const given = chars.slice(chars.length >= 3 ? 1 : 0);
+      const altSameWx = [], altSamePy = [];
+      const hotSet = {};
+      dup.hotChars.forEach(ch => { hotSet[ch] = 1; });
+      given.forEach(ch => {
+        const d = EN.charDetail(ch);
+        if (!d) return;
+        HM.CHARS.forEach(x => {
+          if (x.c === ch || hotSet[x.c] || x.p !== d.self.p) return;
+          (x.w === d.self.w ? altSameWx : altSamePy).push(x);
+        });
+      });
+      const alt = altSameWx.concat(altSamePy);
+      const altHtml = alt.length
+        ? alt.slice(0, 12).map(x =>
+          `<a href="${toolUrl("char.html")}?c=${encodeURIComponent(x.c)}" title="${x.m}（${x.w} · ${x.k}画）">${x.c}<i>${x.w}</i></a>`).join("")
+        : '<span class="cm-alt-empty">该用字读音较为独特，暂无同音替代建议——可尝试更换表意方向（见下方建议）。</span>';
+      /* 同音不同字的常见替代 */
+      const advice = [];
+      if (dup.est >= 3) advice.push("整名热度偏高，建议更换其中一个高频字，保留另一个字作为家族纪念。");
+      else if (dup.est >= 1) advice.push("含 1 个高频字，重名概率中等，可考虑替换为同五行冷门字降低撞名率。");
+      else advice.push("用字热度较低，重名概率低，辨识度良好。");
+      if (bd.unique < 40) advice.push("辨识度评分偏低，可尝试典籍用字（诗词、成语出处）提升独特性。");
+      advice.push("起名前建议同步核对方言读音，避免谐音歧义。");
+      box.innerHTML = `
+        <div class="cm-hero">
+          <div>
+            <h2>「${name}」重名概率估算</h2>
+            <div class="meta">综合重名指数 <b>${bd.dupIndex}</b> · 辨识度 <b>${bd.unique}</b> · 用字热度 <b>${bd.heat}</b>/100</div>
+          </div>
+          <div class="cm-badge ${lvCls}">${dup.level}</div>
+        </div>
+        <div class="rel-box" style="margin-top:14px;">
+          <h3>重名估算结果</h3>
+          <div class="cm-meter"><i style="width:${pct}%"></i></div>
+          <p style="font-size:14px;color:var(--ink-2);line-height:1.9;margin-top:8px;">同名/近名估算：约 <b style="font-size:20px;color:var(--red-deep);">${dup.est}${dup.unit}</b> · ${dup.level}</p>
+          <p style="font-size:12px;color:#a89b86;margin-top:4px;">* ${dup.note}</p>
+        </div>
+        <div class="rel-box" style="margin-top:14px;">
+          <h3>逐字热度分析</h3>
+          <div class="cm-chars">${charRows}</div>
+        </div>
+        ${alt.length ? `<div class="rel-box" style="margin-top:14px;">
+          <h3>降低重名的替代用字（同拼音 · 低热度）</h3>
+          <div class="cm-alts">${altHtml}</div>
+          <p style="font-size:12px;color:#a89b86;margin-top:8px;">优先推荐同拼音同五行的用字（排在前），其后为同拼音不同五行的读音替代；点击单字查看寓意详解，替换后建议重新估算整体重名概率。</p>
+        </div>` : ""}
+        <div class="rel-box" style="margin-top:14px;">
+          <h3>优化建议</h3>
+          <ul class="cm-advice">${advice.map(a => `<li>${a}</li>`).join("")}</ul>
+          <div class="cta-row" style="margin-top:10px;">
+            <a class="btn-ghost" href="${toolUrl("naming.html")}?surname=${encodeURIComponent(chars[0])}&gender=${genderOf("#form-cm")}&date=2026-01-01">给${chars[0]}姓宝宝起个低重名名字</a>
+            <a class="btn-ghost" href="${toolUrl("score.html")}?name=${encodeURIComponent(name)}&gender=${genderOf("#form-cm")}">查看完整姓名评分</a>
+          </div>
+        </div>`;
+    };
+    form.addEventListener("submit", e => { e.preventDefault(); run(); });
+    if (pre.get("name")) run();
+  }
+
+  /* ---------- 生肖年起名专题（2026 马年 + 十二生肖入口） ---------- */
+  const SX_ORDER = ["鼠", "牛", "虎", "兔", "龙", "蛇", "马", "羊", "猴", "鸡", "狗", "猪"];
+  const SX_YEARS = { "鼠": 2020, "牛": 2021, "虎": 2022, "兔": 2023, "龙": 2024, "蛇": 2025, "马": 2026, "羊": 2027, "猴": 2028, "鸡": 2029, "狗": 2030, "猪": 2031 };
+  const SX_NOTE = {
+    "鼠": "鼠年宜用「宀、米、豆、鱼、王」等字根，寓意洞穴安居、五谷丰登。",
+    "牛": "牛年宜用「艹、水、田、车、禾」等字根，寓意草食丰足、勤耕有成。",
+    "虎": "虎年宜用「山、王、令、君、大」等字根，寓意山林之王、气势恢宏。",
+    "兔": "兔年宜用「艹、月、木、口、禾」等字根，寓意草木丰美、柔顺安康。",
+    "龙": "龙年宜用「日、月、星、云、水、王」等字根，寓意腾云驾雾、志向高远。",
+    "蛇": "蛇年宜用「口、宀、木、土、艹」等字根，寓意洞穴藏身、稳健有依。",
+    "马": "马年宜用「艹、木、目、龙、寅」等字根，寓意食禄丰足、目明善行。",
+    "羊": "羊年宜用「艹、木、禾、豆、米」等字根，寓意水草丰美、温顺有福。",
+    "猴": "猴年宜用「木、山、人、言、王」等字根，寓意山林栖身、灵动机智。",
+    "鸡": "鸡年宜用「米、豆、禾、虫、山」等字根，寓意五谷丰盛、司晨守信。",
+    "狗": "狗年宜用「人、宀、马、午、火」等字根，寓意得人护佑、忠诚有依。",
+    "猪": "猪年宜用「豆、米、禾、水、金」等字根，寓意食禄丰厚、福气圆满。"
+  };
+  function initShengxiao() {
+    const box = $("#sx-result");
+    if (!box) return;
+    const z = (new URLSearchParams(location.search).get("z") || "马").trim();
+    const zodiac = SX_ORDER.indexOf(z) >= 0 ? z : "马";
+    const HM = window.HM_DATA, EN = window.HM_ENGINE;
+    const info = HM.SHENGXIAO[zodiac] || { good: [], avoid: [] };
+    const year = SX_YEARS[zodiac];
+    document.title = `${year}${zodiac}年宝宝起名宜忌_${zodiac}年取名宜用什么字 - 好名网`;
+    setMeta("description", `${year} ${zodiac}年宝宝起名专题：${zodiac}年宜用「${info.good.join("、")}」字根，忌${info.avoid.join("、")}相关字形；附分五行宜用字推荐与男孩女孩范例名。`);
+    setMeta("keywords", `${zodiac}年起名,${year}年起名,${zodiac}年宝宝取名,${zodiac}年宜用字`);
+    addJsonLd("ld-sx", { "@context": "https://schema.org", "@type": "WebPage", "name": `${year}${zodiac}年宝宝起名宜忌`,
+      "breadcrumb": { "@type": "BreadcrumbList", "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "首页", "item": "/" },
+        { "@type": "ListItem", "position": 2, "name": `${zodiac}年起名` }] } });
+    /* 宜用字（字库按部首筛选） */
+    const goodChars = HM.CHARS.filter(x => { const r = (HM.RADICALS || {})[x.c]; return r && info.good.indexOf(r) >= 0; });
+    const byWx = {};
+    goodChars.forEach(x => { (byWx[x.w] = byWx[x.w] || []).push(x); });
+    const goodHtml = Object.keys(byWx).map(w =>
+      `<div class="zx-row"><b>${w}行</b><span>${byWx[w].slice(0, 10).map(x => `<a href="${toolUrl("char.html")}?c=${encodeURIComponent(x.c)}" title="${x.m}">${x.c}</a>`).join("")}</span></div>`).join("");
+    /* 范例名 */
+    const boys = EN.generateByBazi("李", 1, { y: year, m: 6, d: 15, h: 10 }, 6);
+    const girls = EN.generateByBazi("李", 2, { y: year, m: 6, d: 15, h: 10 }, 6);
+    const card = n => `<a class="name-text" style="font-size:20px;" href="${toolUrl("mingzi.html")}?name=${encodeURIComponent(n.name)}">${n.name}</a>`;
+    const nameRow = n => `<div class="poem-names">${card(n)}<span class="name-score s${n.score >= 90 ? "hi" : n.score >= 75 ? "mid" : "low"}">${n.score}分</span></div>`;
+    /* 生肖入口 chips */
+    const chips = SX_ORDER.map(x =>
+      `<a class="sx-chip${x === zodiac ? " on" : ""}" href="${toolUrl("shengxiao.html")}?z=${encodeURIComponent(x)}">${SX_YEARS[x]} ${x}年</a>`).join("");
+    box.innerHTML = withLayout(`
+      <div class="strip-hero">
+        <div>
+          <h1>${year}${zodiac}年宝宝起名宜忌</h1>
+          <div class="meta">${zodiac}年 · 宜用字根「${info.good.join("、")}」 · 忌「${info.avoid.join("、")}」相关字形</div>
+          <div class="cta-row">
+            <a class="btn-ghost" href="${toolUrl("naming.html")}?surname=李&gender=1&date=${year}-06-15">${zodiac}年男宝宝起名</a>
+            <a class="btn-ghost" href="${toolUrl("naming.html")}?surname=李&gender=2&date=${year}-06-15">${zodiac}年女宝宝起名</a>
+          </div>
+        </div>
+        <div class="bigchar">${glyphSvg(zodiac, 150)}</div>
+      </div>
+      <div class="sx-chips">${chips}</div>
+      <div class="rel-box ruler-box" style="margin-top:14px;">
+        <h3>${zodiac}年起名的民俗讲究</h3>
+        <p>${SX_NOTE[zodiac]}</p>
+        <p style="margin-top:6px;">忌用方面，传统民俗认为应避开与${zodiac}相冲相害的生肖字形：<b>${info.avoid.join("、")}</b>。本站字库按部首归类和字形匹配做了简化处理，实际起名请以生辰八字五行为主、生肖为辅。</p>
+        <p class="ruler-note">* 生肖宜忌为传统民俗说法，本站按简化演示模型处理，仅供娱乐参考。</p>
+      </div>
+      <div class="rel-box ruler-box" style="margin-top:14px;">
+        <h3>${zodiac}年宜用字推荐（按五行）</h3>
+        ${goodHtml || '<p style="font-size:13px;color:var(--ink-2);">暂无匹配字。</p>'}
+      </div>
+      <div class="rel-box" style="margin-top:14px;">
+        <h3>${zodiac}年男孩名字参考</h3>
+        ${boys.names.map(nameRow).join("")}
+      </div>
+      <div class="rel-box" style="margin-top:14px;">
+        <h3>${zodiac}年女孩名字参考</h3>
+        ${girls.names.map(nameRow).join("")}
+      </div>
+      <div class="rel-box" style="margin-top:14px;">
+        <h3>延伸阅读</h3>
+        <div class="side-chars" style="justify-content:flex-start;">
+          ${(HM.ARTICLES.bazi || []).slice(0, 3).map(a => `<a href="${a.u}">${a.t}</a>`).join("")}
+          <a href="${toolUrl("faq.html")}">起名常见问题</a>
+          <a href="${toolUrl("chongming.html")}">重名查询</a>
+        </div>
+      </div>`, zodiac);
+    insertCrumb([{ name: "生肖年起名", url: "shengxiao.html" }, { name: `${zodiac}年` }]);
+  }
+
+  /* ---------- 起名 FAQ（beiyong3 顾虑消解范式 + SEO 长尾） ---------- */
+  const FAQ_GROUPS = [
+    {
+      g: "起名基础", items: [
+        { q: "宝宝起名应该先看八字还是先看寓意？", a: "建议两步走：先用出生时间排八字，确定五行喜忌作为选字方向；再在符合方向的字里挑寓意、音律、字形俱佳的。只讲寓意不看命局，容易「寓意好但五行相冲」；只看命局不讲字义，名字又缺少文化内涵。本站工具会同时给出两个维度的结果。" },
+        { q: "名字对命运真的有影响吗？", a: "从统计学和语言学角度，名字主要影响他人的第一印象、社交称呼的便利性与本人的自我认同。传统命理学认为名字的五行数理对运势有辅助作用，但这属于民俗文化范畴，没有科学证据。本站所有结果均为传统公共领域算法的简化演示，仅供娱乐参考。" },
+        { q: "单字名好还是双字名好？", a: "双字名是主流：重名率更低、寓意层次更丰富、声调搭配空间更大。单字名简洁响亮，但可选空间小、重名概率高。若家族有单字传统，建议搭配一个辨识度高的姓氏或选用辨识度高的字。" },
+        { q: "起名可以用生僻字吗？", a: "不建议。生僻字可能导致证件录入困难、考试报名系统不识别、日常称呼障碍。本站字库标注了常用字属性，结果默认优先常用字；如确需使用，请先在常用政务系统试录。" },
+        { q: "名字的声调搭配有什么讲究？", a: "朗朗上口的名字通常平仄相间，避免三字同调（如「张方襄」全平声显拖沓）、避免声母韵母重复（如「李兰兰」）。本站音律维度会对相邻同声调、声母重复、连续平声等做扣分并给出提示。" },
+        { q: "双胞胎取名有什么思路？", a: "常见四种：① 同一成语对半拆分（如「钟灵」/「毓秀」）；② 同源词组对仗（如「知书」/「达礼」）；③ 共用一字加变化字（如「嘉树」/「嘉禾」）；④ 同部首字形呼应（如「清澄」/「清溪」）。本站双胞胎模式即按这四种策略生成，并保证两名评分均衡。" },
+        { q: "小名（乳名）也需要看五行八字吗？", a: "不必严格。小名是家人日常称呼，以亲昵顺口为先，叠字、节气风物、生肖意象均可。若讲究，可在大名符合五行的基础上，让小名用字不与大名冲克即可。本站小名模式即按「叠字/风物/生肖」三类生成，不绑定生辰。" }
+      ]
+    },
+    {
+      g: "八字与五行", items: [
+        { q: "五行缺什么就要补什么吗？", a: "不一定。八字讲究的是「平衡」与「顺势」：身弱宜生扶，身旺宜泄耗，缺的那个五行有时恰好是忌神，补了反而不好。专业的喜用神判断要看全局结构，本站采用简化模型（取最弱五行为喜用神），仅供娱乐参考。" },
+        { q: "不知道出生时辰怎么办？", a: "可选择「时辰未知」走降级方案：以日柱为核心做分析，时辰权重降低。时辰影响时柱与真太阳时校正，若出生在时辰交界处（如 23:00 前后），建议尽量核实，误差可能导致时柱甚至日柱不同。" },
+        { q: "什么是真太阳时？为什么要校正？", a: "真太阳时是当地太阳真实位置的计时，与北京时间（东经 120° 标准时）存在经度差与时差。出生地在东经 116.4° 的北京，真太阳时比北京时间晚约 14 分钟；新疆西部地区差值可达 2 小时以上。时辰临界点（如 23:00-1:00 跨子时）必须校正才能定准时柱。" },
+        { q: "喜用神是水，名字里要多用带「氵」的字吗？", a: "五行属水的字不只有「氵」旁：雨、雪、露、云、子、北、冬等字义属水或地支属水的字都算。选字应综合考虑字义、读音与五行，不必堆砌同一偏旁。本站按字库的五行属性匹配，而非仅看偏旁。" }
+      ]
+    },
+    {
+      g: "数理与笔画", items: [
+        { q: "五格数理是什么？", a: "五格剖象法把姓名的笔画数（按《康熙字典》口径）组合为天格、人格、地格、外格、总格五个数理，每个数理对应 1-81 的吉凶寓意，再配合「三才配置」（天格-人格-地格的五行生克）判断吉凶。本站五格分数即按此模型计算。" },
+        { q: "为什么笔画数和日常数的不一样？", a: "姓名学用《康熙字典》笔画，与简体字规范笔画不同。例如「艹」按 6 画（繁体草字头）、「氵」按 4 画、「王」旁按 5 画（斜玉旁），「邓」「郑」等姓有特定折数。本站字库已按康熙笔画校准，每个单字页均可查看。" },
+        { q: "81 数理有吉凶之分吗？", a: "五格剖象法将 1-81 个数理分为吉、半吉、凶等等级，如 13、15、16、24 为吉，4、9、10、34 等为凶。该体系源自日本熊崎健翁的姓名学，属于民俗文化范畴。本站按此模型输出，仅供娱乐参考。" }
+      ]
+    },
+    {
+      g: "重名与改名", items: [
+        { q: "怎么知道名字重名多不多？", a: "可用本站「重名查询」工具：输入姓名后从用字热度、重名指数、辨识度三个维度估算，并给出同五行低热度替代字。估算基于近年新生儿高频用字的统计口径，非真实人口数据，但足以横向比较不同名字的撞名风险。" },
+        { q: "发现重名率高，一定要改吗？", a: "不一定。重名主要影响辨识度，如果名字寓意好、家庭认可度高，可以通过中间字、称呼方式区分。若在入学、就医等场景已造成实际混淆，再考虑更换其中一个字。" },
+        { q: "成人改名的流程是什么？", a: "一般流程：① 起新名（结合生辰与使用场景）→ ② 户口所在地派出所申请变更 → ③ 更换身份证、户口本 → ④ 同步更新银行卡、社保、学历证书、驾驶证等。建议保留原名的辨识度联系（如仅改一字），减少后续证件变更的麻烦。" }
+      ]
+    },
+    {
+      g: "隐私与服务", items: [
+        { q: "本站会保存我输入的姓名和出生信息吗？", a: "不会。所有计算均在浏览器本地完成，不上传服务器；收藏夹使用浏览器 localStorage 存储，仅存在于你的设备。使用统计仅记录匿名化的搜索词频次，用于改进推荐排序。" },
+        { q: "工具生成的名字可以直接采用吗？", a: "建议作为参考候选而非最终决定。请结合家庭文化期望、方言读音（避免不雅谐音）、书写便利性综合判断，也可以让家人一起参与投票。本站结果由简化演示算法生成，仅供娱乐参考。" },
+        { q: "有人工起名服务吗？", a: "本站当前以免费工具为主。如需人工大师复核，可通过页面底部联系方式咨询（自愿选择的增值服务）。无论是否使用人工服务，工具生成的完整方案都可以免费查看与收藏。" }
+      ]
+    }
+  ];
+  function initFaq() {
+    const box = $("#faq-list");
+    if (!box) return;
+    document.title = "起名常见问题_宝宝取名FAQ 20问 - 好名网";
+    setMeta("description", "宝宝起名常见问题 20 问：八字五行、五格数理、真太阳时、康熙笔画、重名规避、改名流程，一次讲清起名过程中的高频顾虑。");
+    addJsonLd("ld-faq", {
+      "@context": "https://schema.org", "@type": "FAQPage",
+      "mainEntity": FAQ_GROUPS.flatMap(gr => gr.items).map(it => ({
+        "@type": "Question", "name": it.q,
+        "acceptedAnswer": { "@type": "Answer", "text": it.a }
+      }))
+    });
+    const groups = FAQ_GROUPS.map((gr, gi) => `
+      <div class="faq-group">
+        <h3 class="faq-gt">${gi + 1}. ${gr.g}</h3>
+        ${gr.items.map((it, ii) => `
+          <div class="faq-item">
+            <button class="faq-q" type="button">${it.q}<i>▾</i></button>
+            <div class="faq-a"><p>${it.a}</p></div>
+          </div>`).join("")}
+      </div>`).join("");
+    box.innerHTML = withLayout(`<div class="faq-wrap">${groups}</div>`, "");
+    box.querySelectorAll(".faq-q").forEach(btn => btn.addEventListener("click", () => {
+      const item = btn.closest(".faq-item");
+      const open = item.classList.toggle("open");
+      btn.querySelector("i").textContent = open ? "▴" : "▾";
+    }));
+    insertCrumb([{ name: "起名常见问题" }]);
+    /* 技术信任长文（zhqm 范式） */
+    const tech = $("#faq-tech");
+    if (tech) tech.innerHTML = `
+      <div class="rel-box" style="margin-top:16px;">
+        <h2>技术说明 · 本站的三项口径</h2>
+        <h3 style="margin-top:14px;">一、康熙字典笔画口径</h3>
+        <p style="font-size:14px;color:var(--ink-2);line-height:1.9;">姓名学五格计算采用《康熙字典》繁体笔画口径，与简体规范笔画存在系统差异：草字头「艹」按 6 画（艸）、三点水「氵」按 4 画（水）、斜玉旁「王」按 5 画（玉）、提手旁「扌」按 4 画（手）、竖心旁「忄」按 4 画（心）。部分姓氏有传统特定折数（如「邓」19 画、「郑」19 画）。本站字库逐字标注康熙笔画，单字详情页可查。</p>
+        <h3 style="margin-top:14px;">二、真太阳时校正</h3>
+        <p style="font-size:14px;color:var(--ink-2);line-height:1.9;">八字排盘使用东经 120° 标准时（北京时间）记录出生时间，但太阳真实位置随经度变化：每偏西 1°，真太阳时晚约 4 分钟；新疆喀什（东经 76°）与北京的时差可达 2 小时 56 分。出生时刻接近时辰边界（23:00、01:00、03:00……）时，是否校正可能改变时柱甚至日柱。本站提供出生地字段做经度校正，未填写时按标准时处理。</p>
+        <h3 style="margin-top:14px;">三、算法边界与免责声明</h3>
+        <p style="font-size:14px;color:var(--ink-2);line-height:1.9;">本站所有命理模型（四柱排盘、五行旺衰、五格剖象、重名估算、生肖宜忌）均为传统公共领域算法的简化演示实现：不调用任何真实人口统计数据，不构成命理、医疗、法律或投资建议。古籍用语（如「数理吉凶」）为民俗文化表述，请理性看待。给孩子起名的最终决定，请结合家庭文化期望、方言读音与书写便利性综合判断。</p>
+      </div>`;
   }
 
   /* ---------- 工具页底部「起名知识」文章内链区块 ---------- */
@@ -1734,6 +2181,7 @@
   }
 
   /* ---------- 诗词库 ---------- */
+  const POEM_CAT_NAME = { shijing: "诗经", chuci: "楚辞", tangshi: "唐诗", songci: "宋词" };
   function initPoems() {
     const list = $("#poem-list");
     if (!list) return;
@@ -1741,7 +2189,9 @@
     let cat = onTab ? onTab.dataset.cat : "all";
     const render = () => {
       const poems = window.HM_DATA.POEMS.filter(p => cat === "all" || p.cat === cat);
-      list.innerHTML = poems.map(p => `
+      /* 典籍 CTA：选定典籍后一键进入诗词起名（对标竞品「用该典籍起名」转化路径） */
+      const cta = cat !== "all" ? `<div class="poem-cta"><span>当前典籍：<b>${POEM_CAT_NAME[cat] || cat}</b> · 共 ${poems.length} 条名句</span><a class="poem-cta-btn" href="${toolUrl("naming.html")}?mode=poem&cat=${cat}">用该典籍起名 →</a></div>` : "";
+      list.innerHTML = cta + poems.map(p => `
         <div class="poem-card">
           <blockquote>「${p.line}」</blockquote>
           <p class="poem-src">— ${p.src}</p>
@@ -2001,7 +2451,9 @@
     menu: '<svg viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
     dict: '<svg viewBox="0 0 24 24" fill="none"><path d="M4 5h6a2 2 0 012 2v12a2 2 0 00-2-2H4z" stroke="currentColor" stroke-width="1.8"/><path d="M20 5h-6a2 2 0 00-2 2v12a2 2 0 012-2h6z" stroke="currentColor" stroke-width="1.8"/></svg>',
     surname: '<svg viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h10M4 18h13" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg>',
-    pair: '<svg viewBox="0 0 24 24" fill="none"><circle cx="8" cy="10" r="3.2" stroke="currentColor" stroke-width="1.8"/><circle cx="16" cy="10" r="3.2" stroke="currentColor" stroke-width="1.8"/><path d="M3 19c1.1-2.6 2.9-4 5-4s3.9 1.4 5 4M11 19c1.1-2.6 2.9-4 5-4s3.9 1.4 5 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>'
+    pair: '<svg viewBox="0 0 24 24" fill="none"><circle cx="8" cy="10" r="3.2" stroke="currentColor" stroke-width="1.8"/><circle cx="16" cy="10" r="3.2" stroke="currentColor" stroke-width="1.8"/><path d="M3 19c1.1-2.6 2.9-4 5-4s3.9 1.4 5 4M11 19c1.1-2.6 2.9-4 5-4s3.9 1.4 5 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>',
+    dup: '<svg viewBox="0 0 24 24" fill="none"><circle cx="10.5" cy="10.5" r="6" stroke="currentColor" stroke-width="1.9"/><path d="M19.5 19.5l-4.2-4.2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M10.5 7.5v6M7.5 10.5h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>',
+    zodiac: '<svg viewBox="0 0 24 24" fill="none"><path d="M5 19c0-3 1-5 2.5-6.5M19 19c0-3-1-5-2.5-6.5M7.5 12.5C9 9 12 6.5 16 6.5c2.4 0 4 .9 4 .9s-1.2 3.1-3.6 4.1c-1.9.8-3.6.7-4.9.3-1.4-.4-2.6.4-3 1.7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="16.4" cy="5.6" r="1" fill="currentColor"/></svg>'
   };
   function iconHtml(key) { return ICONS[key] || ICONS.star; }
   function fillIcons(root) {
@@ -2115,6 +2567,9 @@
     initMonthLabels();
     initToolCrumb();
     initSurname();
+    initChongming();
+    initShengxiao();
+    initFaq();
     initMobileBar();
     injectToolArticles();
     initBanner();

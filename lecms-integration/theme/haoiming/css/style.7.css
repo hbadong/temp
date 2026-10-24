@@ -1014,3 +1014,117 @@ input.pp-input {
 .pk-max { color: var(--red-deep); background: #fdf0ee; font-weight: 700; }
 .pk-table .wx-bar { margin-top: 0; height: 12px; }
 .pk-tip { font-size: 11px; color: #b3a78f; margin-top: 10px; line-height: 1.7; }
+
+/* ===== 第四轮优化（SEO 内容矩阵 + 转化）：姓氏三把尺 / 重名查询 / 生肖专题 / FAQ ===== */
+
+/* --- 姓氏专题页 --- */
+.xq-intro { font-size: 14px; color: var(--ink-2); line-height: 1.9; margin: 14px 0 0; }
+.ruler-box { border-left: 3px solid var(--gold); }
+.ruler-box h3 { color: var(--red-deep); }
+.zx-row { display: flex; align-items: baseline; gap: 10px; margin-top: 8px; flex-wrap: wrap; }
+.zx-row b { flex: 0 0 44px; font-size: 13px; color: var(--red-deep); }
+.zx-row span { flex: 1; display: flex; flex-wrap: wrap; gap: 6px; }
+.zx-row a, .cm-alts a { display: inline-flex; flex-direction: column; align-items: center; min-width: 34px; padding: 4px 6px; border: 1px solid var(--line); border-radius: 6px; background: #fffdf7; font-family: var(--serif); font-size: 17px; color: var(--ink); text-decoration: none; transition: all .15s; }
+.zx-row a:hover, .cm-alts a:hover { border-color: var(--red); color: var(--red-deep); }
+.zx-row a i, .cm-alts a i { font-style: normal; font-size: 10px; color: #a89b86; }
+.ruler-note { font-size: 12px; color: #b3a78f; margin-top: 8px; }
+
+/* --- 重名查询 --- */
+.cm-hero { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; background: linear-gradient(135deg, #fffdf7, #fdf6ea); border: 1px solid #ecdcae; border-radius: 12px; padding: 16px 18px; }
+.cm-hero h2 { font-family: var(--serif); font-size: 20px; color: var(--red-deep); }
+.cm-hero .meta { font-size: 13px; color: var(--ink-2); margin-top: 4px; }
+.cm-badge { font-size: 14px; font-weight: 700; padding: 8px 18px; border-radius: 999px; }
+.cm-badge.lo { background: #eef6ee; color: #2e7d32; }
+.cm-badge.mid { background: #fdf6e3; color: #9a6b00; }
+.cm-badge.hi { background: #fdf0ee; color: var(--red); }
+.cm-meter { height: 14px; border-radius: 999px; background: #f0e9d8; overflow: hidden; }
+.cm-meter i { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg, #d8a24a, var(--red)); transition: width .4s; }
+.cm-chars { display: flex; flex-wrap: wrap; gap: 10px; }
+.cm-char { display: flex; flex-direction: column; align-items: center; padding: 8px 14px; border: 1px solid var(--line); border-radius: 10px; background: #fffdf7; }
+.cm-char b { font-family: var(--serif); font-size: 26px; }
+.cm-char span { font-size: 11px; color: #a89b86; margin-top: 2px; }
+.cm-char i { font-style: normal; font-size: 11px; color: #2e7d32; margin-top: 2px; }
+.cm-char.hot { border-color: #ecc9c2; background: #fdf0ee; }
+.cm-char.hot i { color: var(--red); }
+.cm-alts { display: flex; flex-wrap: wrap; gap: 8px; }
+.cm-advice { padding-left: 18px; font-size: 14px; color: var(--ink-2); line-height: 2; }
+
+/* --- 生肖专题 --- */
+.sx-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 0; }
+.sx-chip { font-size: 12px; padding: 5px 12px; border-radius: 999px; background: #f6f1e6; color: var(--ink-2); border: 1px solid var(--line); text-decoration: none; transition: all .15s; }
+.sx-chip:hover { border-color: var(--red); color: var(--red-deep); }
+.sx-chip.on { background: var(--red); border-color: var(--red); color: #fff; }
+
+/* --- FAQ --- */
+.faq-wrap { display: flex; flex-direction: column; gap: 18px; }
+.faq-group { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px 18px; }
+.faq-gt { font-family: var(--serif); font-size: 17px; color: var(--red-deep); margin-bottom: 6px; }
+.faq-item { border-bottom: 1px dashed var(--line); }
+.faq-item:last-child { border-bottom: none; }
+.faq-q { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 13px 0; background: none; border: none; font-size: 15px; font-weight: 600; color: var(--ink); text-align: left; cursor: pointer; }
+.faq-q:hover { color: var(--red-deep); }
+.faq-q i { font-style: normal; font-size: 12px; color: #a89b86; flex: 0 0 auto; }
+.faq-a { display: none; padding: 0 0 14px; }
+.faq-item.open .faq-a { display: block; }
+.faq-a p { font-size: 14px; color: var(--ink-2); line-height: 2; }
+@media (max-width: 640px) {
+  .cm-hero { flex-direction: column; align-items: flex-start; }
+  .cm-char { padding: 6px 10px; }
+  .faq-q { font-size: 14px; }
+}
+
+/* --- 结果页社会证明条 --- */
+.social-bar { margin: 0 0 14px; padding: 10px 14px; border-radius: 10px; background: linear-gradient(90deg, #fbf3e2, #f7ecd8); border: 1px solid #ecd9b6; font-size: 13px; color: #7a6a4f; text-align: center; line-height: 1.8; }
+.social-bar b { color: var(--red-deep); font-family: var(--serif); font-size: 15px; }
+
+/* --- 评分页音形义数四区分组（对标 yw11 分组呈现） --- */
+.dim-grid4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(215px, 1fr)); gap: 10px; }
+.dim-group { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+.dim-group > b { display: block; font-family: var(--serif); font-size: 14px; color: var(--red-deep); padding-bottom: 6px; margin-bottom: 4px; border-bottom: 1px dashed var(--line); }
+.dim-group .six-score > span { width: 64px; font-size: 12px; }
+.dim-group .six-score b { width: 34px; }
+@media (max-width: 640px) {
+  .dim-grid4 { grid-template-columns: 1fr 1fr; }
+  .dim-group .six-score > span { width: 56px; font-size: 11px; }
+}
+
+/* --- 本周热门名字榜 + 工具使用计数 --- */
+.hot-sec { display: grid; grid-template-columns: 1.6fr 1fr; gap: 18px; align-items: start; }
+.hot-board h3, .usage-board h3 { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.hot-week { font-size: 12px; font-weight: 400; color: #a89b86; }
+.hot-board { padding-top: 12px; }
+.hot-row { display: flex; align-items: center; gap: 10px; padding: 7px 0; border-bottom: 1px dashed var(--line); text-decoration: none; color: inherit; }
+.hot-row:last-child { border-bottom: none; }
+.hot-row:hover .hot-name { color: var(--red-deep); }
+.hot-no { flex: none; width: 22px; height: 22px; line-height: 22px; text-align: center; border-radius: 6px; font-size: 12px; font-weight: 700; background: #f0e6d6; color: #a89b86; }
+.hot-no.r1 { background: var(--red); color: #fff; }
+.hot-no.r2 { background: #e8b96a; color: #fff; }
+.hot-no.r3 { background: #dcc9a8; color: #fff; }
+.hot-name { flex: none; width: 58px; font-family: var(--serif); font-size: 17px; font-weight: 700; color: var(--ink); transition: color .15s; }
+.hot-bar { flex: 1; height: 8px; border-radius: 4px; background: #f0e6d6; overflow: hidden; }
+.hot-bar i { display: block; height: 100%; border-radius: 4px; background: linear-gradient(90deg, #e8b96a, #c92009); }
+.hot-heat { flex: none; width: 26px; text-align: right; font-size: 13px; color: var(--ink-2); }
+.hot-delta { flex: none; width: 62px; text-align: right; font-size: 12px; font-weight: 600; }
+.hot-delta.up { color: var(--red-deep); }
+.hot-delta.down { color: #2e7d32; }
+.usage-board { padding-top: 12px; }
+.usage-row { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; padding: 9px 0; border-bottom: 1px dashed var(--line); }
+.usage-row:last-of-type { border-bottom: none; }
+.usage-row b { font-family: var(--serif); font-size: 24px; color: var(--red-deep); }
+.usage-row span { font-size: 13px; color: var(--ink-2); }
+.usage-note { margin-top: 10px; font-size: 11px; color: #b5a98f; line-height: 1.7; }
+@media (max-width: 860px) {
+  .hot-sec { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  .hot-name { width: 48px; font-size: 16px; }
+  .hot-delta { width: 54px; font-size: 11px; }
+  .usage-row b { font-size: 21px; }
+}
+
+/* --- 诗词库典籍 CTA --- */
+.poem-cta { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; margin: 0 0 14px; padding: 12px 16px; border-radius: 10px; background: linear-gradient(90deg, #fbf3e2, #f7ecd8); border: 1px solid #ecd9b6; font-size: 14px; color: #7a6a4f; }
+.poem-cta b { font-family: var(--serif); color: var(--red-deep); font-size: 16px; }
+.poem-cta-btn { flex: none; padding: 8px 16px; border-radius: 999px; background: var(--red); color: #fff; font-size: 13px; font-weight: 600; text-decoration: none; transition: filter .15s; }
+.poem-cta-btn:hover { filter: brightness(1.08); }
+.cm-alts .cm-alt-empty { font-size: 13px; color: #a89b86; line-height: 1.8; }
