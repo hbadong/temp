@@ -790,11 +790,16 @@
     /* 起名构思 chips：点击填入期望输入框并滚动回表单（同样限选 3 个） */
     const wishhCnt = (() => {
       const wh = $("#wishh");
-      if (!wh || document.querySelector("#form-qmh .wish-limit-row")) return null;
+      if (!wh) return null;
+      const existed = document.querySelector(".wish-limit-row");
+      if (existed) return existed.querySelector(".wish-cnt");
       const row = document.createElement("div");
       row.className = "wish-limit-row";
       row.innerHTML = `<span>父母期望（点选意象，最多 3 个）</span><b class="wish-cnt">0/3</b>`;
-      wh.parentNode.insertBefore(row, wh.nextSibling);
+      /* 关键：插到 .field 之后（作为块级兄弟），不能插进 .field 内部——
+         .field 是 display:flex，插内部会让输入框与计数器并排，把输入框挤窄 */
+      const field = wh.closest(".field") || wh;
+      field.parentNode.insertBefore(row, field.nextSibling);
       return row.querySelector(".wish-cnt");
     })();
     const wishhUpdate = () => {
