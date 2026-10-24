@@ -1202,7 +1202,38 @@ E.scoreOf = function (name, birth) {
   };
 };
 
-E.generateByBazi = function (surname, gender, birth, limit, prefs) {
+  /* 典籍出处索引：字 → {src, line}。
+     第一遍取诗词名句中的「精选名」用字（高质量直配）；
+     第二遍用整句命中兜底并过滤虚词，扩大覆盖；
+     第三遍用成语词典兜底（每条带典籍出处），保证字库常用字基本有处可考。
+     供八字等引擎结果卡展示「用字出处」，对标竞品出处标注（报告二 5.3）。 */
+  var _CHAR_SOURCE_CACHE = null;
+  function charSourceIndex() {
+    if (_CHAR_SOURCE_CACHE) return _CHAR_SOURCE_CACHE;
+    var idx = {};
+    var SKIP = { "的":1,"之":1,"以":1,"其":1,"而":1,"于":1,"於":1,"乎":1,"兮":1,"矣":1,"焉":1,"也":1,"与":1,"为":1,"是":1,"不":1,"无":1,"在":1,"有":1,"我":1 };
+    (HM.POEMS || []).forEach(function (p) {
+      (p.names || []).forEach(function (nm) {
+        Array.from(nm.n || "").forEach(function (c) { if (c && !idx[c]) idx[c] = { src: p.src, line: p.line }; });
+      });
+    });
+    (HM.POEMS || []).forEach(function (p) {
+      Array.from(p.line || "").forEach(function (c) {
+        if (c && !idx[c] && !SKIP[c]) idx[c] = { src: p.src, line: p.line };
+      });
+    });
+    /* 成语兜底：line=成语本身，src=成语典籍出处（缺失时退为「成语 · 释义」），
+       与结果卡 blockquote 格式天然契合 */
+    (HM.IDIOMS || []).forEach(function (it) {
+      Array.from(it.n || "").forEach(function (c) {
+        if (c && !idx[c] && !SKIP[c]) idx[c] = { src: it.s || ("成语 · " + it.y), line: it.n };
+      });
+    });
+    _CHAR_SOURCE_CACHE = idx;
+    return idx;
+  }
+  E.charSourceIndex = charSourceIndex;
+  E.generateByBazi = function (surname, gender, birth, limit, prefs) {
   limit = limit || 12;
   prefs = prefs || {};
   const b = E.bazi(birth);
@@ -1328,6 +1359,17 @@ E.generateByBazi = function (surname, gender, birth, limit, prefs) {
       });
     });
   }
+  /* 典籍加分：用字有典可考的名字小幅加分（+3，不颠覆五格/音律主导的排序），
+     让「有出处」的名字稳定排在前面，结果页前排卡片典故覆盖率更高 */
+  (function () {
+    var idx0 = charSourceIndex();
+    results.forEach(function (r) {
+      var g = r.given || "";
+      for (var i3 = 0; i3 < g.length; i3++) {
+        if (idx0[g.charAt(i3)]) { r.score = Math.min(99, r.score + 5); break; }
+      }
+    });
+  })();
   results.sort((a, b2) => b2.score - a.score);
   const pool = fixedInfo ? results.filter(r => r.given.includes(fixed)) : results;
   /* 同首字去重：每首字最多 3 个，保证名字多样性 */
@@ -1339,6 +1381,18 @@ E.generateByBazi = function (surname, gender, birth, limit, prefs) {
     if (byFirst[fc] <= 3 && bySecond[sc] <= 3) diversified.push(r);
     if (diversified.length >= limit) break;
   }
+  /* 用字出处：为命中学典用字的结果补充 line/src，复用结果卡 blockquote 渲染（报告二 5.3） */
+  (function () {
+    var idx = charSourceIndex();
+    diversified.forEach(function (r) {
+      if (r.line) return;
+      var g = r.given || r.name || "";
+      for (var i2 = 0; i2 < g.length; i2++) {
+        var s = idx[g.charAt(i2)];
+        if (s) { r.line = s.line; r.src = s.src; break; }
+      }
+    });
+  })();
   return { bazi: b, names: diversified };
 };
 
