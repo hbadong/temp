@@ -566,6 +566,7 @@ const BRANCH_CQ = {
         if (idiomUsed >= 2 || results.length > limit * 12) return;
         const c1 = pair.charAt(0), c2 = pair.charAt(1);
         if (avoid.indexOf(c1) >= 0 || avoid.indexOf(c2) >= 0) return;
+        if (!prefAvoidOk(c1, prefs) || !prefAvoidOk(c2, prefs)) return;
         const i1 = idiomChar(c1), i2 = idiomChar(c2);
         /* 性别过滤：任一字为明确异性用字则跳过 */
         if (gender === 1 && (i1.g === 2 || i2.g === 2)) return;
@@ -596,9 +597,12 @@ const BRANCH_CQ = {
         /* 虚词尾字轻降权：「凌之」「善若」类文气有余而现代读感略弱 */
         const PARTICLES = "之若如而以于与焉其";
         const particlePen = PARTICLES.indexOf(c2) >= 0 ? 4 : 0;
+        const form = E.formScore(pair);
+        const dialect = E.dialectRisks(full);
         const final = Math.round(Math.max(55, Math.min(99,
-          wg.score * 0.42 + ph.score * 0.20 + sem * 1.0 * 0.15 + wxMatch * 0.12
-          + Math.min(100, 60 + zb * 10) * 0.08 - dup - particlePen - (riskLv === 1 ? 8 : 0))));
+          wg.score * 0.40 + ph.score * 0.19 + sem * 1.0 * 0.14 + wxMatch * 0.12
+          + Math.min(100, 60 + zb * 10) * 0.07 + form.score * 0.05
+          - dup - particlePen - (riskLv === 1 ? 8 : 0) - dialect.penalty * 0.5)));
         usedName[full] = 1;
         idiomUsed++;
         const wxDesc = hit >= 1 ? `补${b.favorable}（喜用神）` : (sup >= 1 ? `取${support}以生${b.favorable}` : `五行${i1.w || "—"}${i2.w || "—"}`);
@@ -609,8 +613,12 @@ const BRANCH_CQ = {
           wg: wg.score,
           wx: (i1.w || "?") + (i2.w || "?"),
           idiom: it.n, idiomMean: it.y, idiomFrom: it.s || "",
+          dupEstimate: E.dupEstimate(full),
+          form: { tags: form.tags },
           reason: `出自成语「${it.n}」（${it.y}）${it.s ? "，典出" + it.s : ""}；${wxDesc}`
             + (riskLv === 1 ? `；⚠ 谐音「${risks[0].with}」需斟酌` : (ph.issues.length ? `；${ph.issues[0]}` : "；音律谐畅"))
+            + (dialect.issues.length ? `；⚠ ${dialect.issues[0]}` : "")
+            + (form.tags.indexOf("结构错落有致") >= 0 ? "；字形结构错落" : "")
             + (zb > 0 ? `；生肖${b.zodiac}年宜用` : (zb < 0 ? `；⚠ 生肖${b.zodiac}年忌用字根` : ""))
             + (dup >= 2 ? "；用字较热门，重名率偏高" : "")
         });
@@ -979,6 +987,150 @@ const hotSet = {};
 HOT2.split("").forEach(c => { hotSet[c] = 2; });
 HOT1.split("").forEach(c => { if (!hotSet[c]) hotSet[c] = 1; });
 function hotCount(given) { return Array.from(given).reduce((a, c) => a + (hotSet[c] || 0), 0); }
+
+/* ================= 第二轮深度优化：字形搭配 / 方言谐音 / 重名估算 / 偏好过滤 ================= */
+
+/* 字形搭配分：繁简互补、结构错落、笔画跨度合理 */
+E.formScore = function (given) {
+  const chars = Array.from(given);
+  if (chars.length < 2) return { score: 80, tags: ["单字名"], strokes: [], structs: [] };
+  const ks = chars.map(c => { const it = HM.CHARS.find(x => x.c === c); return it ? it.k : 8; });
+  const structs = chars.map(E.structOf);
+  let sc = 82;
+  const tags = [];
+  const diff = Math.max.apply(null, ks) - Math.min.apply(null, ks);
+  if (diff >= 9) { sc -= 10; tags.push("笔画跨度大，书写失衡"); }
+  else if (diff >= 2 && diff <= 5) { sc += 4; tags.push("繁简相宜"); }
+  if (structs[0] === structs[1]) { sc -= 6; tags.push("结构重复"); }
+  else { sc += 5; tags.push("结构错落有致"); }
+  if (ks.some(k => k >= 20)) { sc -= 5; tags.push("含繁难字"); }
+  if (ks.some(k => k <= 4) && ks.some(k => k >= 15)) { sc += 3; tags.push("简繁搭配"); }
+  return { score: Math.max(50, Math.min(98, sc)), tags, strokes: ks, structs };
+};
+
+/* 方言谐音：南方常见易混音（平翘舌 / 鼻边音 n-l / h-f / 前后鼻音）*/
+E.dialectRisks = function (full) {
+  const chars = Array.from(full);
+  const SM_CONFUSE = [["zh", "z"], ["ch", "c"], ["sh", "s"], ["n", "l"], ["h", "f"], ["r", "l"]];
+  const YM_CONFUSE = [["en", "eng"], ["in", "ing"], ["an", "ang"], ["ian", "iang"]];
+  const issues = [];
+  for (let i = 1; i < chars.length; i++) {
+    const p1 = pyOfChar(chars[i - 1]), p2 = pyOfChar(chars[i]);
+    if (!p1 || !p2) continue;
+    const s1 = p1.replace(/[^a-z]/g, ""), s2 = p2.replace(/[^a-z]/g, "");
+    for (const pair of SM_CONFUSE) {
+      const a = pair[0], b = pair[1];
+      if ((s1.indexOf(a) === 0 && s2.indexOf(b) === 0) || (s1.indexOf(b) === 0 && s2.indexOf(a) === 0)) {
+        issues.push(chars[i - 1] + chars[i] + "（" + a + "/" + b + " 方言易混）");
+      }
+    }
+    for (const pair of YM_CONFUSE) {
+      const a = pair[0], b = pair[1];
+      if ((s1.length > a.length && s1.slice(-a.length) === a && s2.slice(-b.length) === b) ||
+          (s2.length > b.length && s2.slice(-b.length) === b && s1.slice(-a.length) === a)) {
+        issues.push(chars[i - 1] + chars[i] + "（" + a + "/" + b + " 方言易混）");
+      }
+    }
+  }
+  return { issues: issues.slice(0, 3), penalty: Math.min(8, issues.length * 3) };
+};
+
+/* 重名估算：基于近年新生儿高频用字通行统计口径的区间估算（非真实人口数据）*/
+E.dupEstimate = function (name) {
+  const chars = Array.from(name);
+  const given = chars.slice(chars.length >= 3 ? 1 : 0).join("");
+  let w = 0;
+  const hot = [];
+  Array.from(given).forEach(c => {
+    const lv = hotSet[c] || 0;
+    if (lv === 2) { w += 34; hot.push(c); }
+    else if (lv === 1) { w += 12; hot.push(c); }
+  });
+  /* 权重 → 估算同名人数（万人）：w=0 约 0.4 万；w=34 约 1.6 万；w=68 约 6 万 */
+  const est = 0.4 * Math.pow(1.5, Math.min(8, w / 17));
+  let level = "重名概率极低";
+  if (w >= 55) level = "重名概率较高";
+  else if (w >= 34) level = "重名概率中等";
+  else if (w >= 12) level = "重名概率较低";
+  return {
+    est: Math.round(Math.min(est, 68) * 10) / 10, unit: "万人", level, hotChars: hot,
+    note: "基于近年新生儿高频用字统计口径估算，仅供参考，非真实人口普查数据"
+  };
+};
+
+/* ============================================================
+ * 展示层辅助模块（竞品对标：九维解析 / 拼音 / 五行分布 / 性格标签）
+ * ============================================================ */
+const SEMI_LABEL = { nature: "自然", bright: "阳光", smart: "智慧", aspire: "进取", virtue: "品德", elegant: "雅趣", gentle: "温婉", wealth: "福气", health: "康健", other: "" };
+/* 性格标签：语义类别 → 四字性格描述（linggx365 好名库卡片范式） */
+const SEMI_PERSONA = { nature: "亲近自然", bright: "明朗豁达", smart: "聪慧机敏", aspire: "积极进取", virtue: "端方正直", elegant: "儒雅有礼", gentle: "温柔内敛", wealth: "福泽深厚", health: "康健安乐" };
+
+/* 全名拼音（含声调），逐字查字库，姓氏查 SURNAMES */
+E.pinyinOf = function (name) {
+  return Array.from(name).map(c => pyOfChar(c) || "").filter(Boolean).join(" ");
+};
+/* 名字（不含姓）五行分布：返回各五行占比（0-100） */
+E.wxDist = function (name) {
+  const chars = Array.from(name);
+  const given = chars.slice(chars.length >= 3 ? 1 : 0);
+  const cnt = { "金": 0, "木": 0, "水": 0, "火": 0, "土": 0 };
+  let n = 0;
+  given.forEach(c => { const w = wuxingOf(c); if (cnt[w] != null) { cnt[w]++; n++; } });
+  if (!n) return null;
+  const out = {};
+  Object.keys(cnt).forEach(w => { out[w] = Math.round(cnt[w] / n * 100); });
+  return out;
+};
+/* 性格标签：取名字用字的语义类别，去重后映射为性格描述 */
+E.personaTags = function (name) {
+  const chars = Array.from(name);
+  const given = chars.slice(chars.length >= 3 ? 1 : 0);
+  const cats = [];
+  given.forEach(c => { const k = semanticOf(c); if (k !== "other" && cats.indexOf(k) < 0) cats.push(k); });
+  return cats.slice(0, 2).map(k => SEMI_PERSONA[k]).filter(Boolean);
+};
+/* 九维解析：对齐竞品「九大维度」叙事，全部取自既有评分体系 */
+E.nineDims = function (name, birth) {
+  const s = E.scoreOf(name, birth);
+  if (!s) return null;
+  const chars = Array.from(name);
+  const given = chars.slice(chars.length >= 3 ? 1 : 0);
+  const gAvg = (() => {
+    let sum = 0, n = 0;
+    given.forEach(c => { const i = HM.CHARS.find(x => x.c === c); if (i && i.g) { sum += i.g; n++; } });
+    return n ? sum / n : 1.5;
+  })();
+  /* 性别倾向：用字性别与名主性别的一致度（无 birth 时按用字自身性别均值） */
+  const genderFit = Math.round(Math.max(40, Math.min(99, 100 - Math.abs(gAvg - (birth && birth.g != null ? birth.g : gAvg)) * 30)));
+  const wx = E.wxDist(name);
+  return [
+    { k: "国学助益", v: s.wg.score, tip: "生辰八字与五格数理的综合助益" },
+    { k: "音律读感", v: s.phonetic.score, tip: "平仄、声母、韵母搭配" },
+    { k: "寓意内涵", v: s.breakdown.find(x => x.k === "字义内涵").v, tip: "字义、典籍出处与谐音" },
+    { k: "字型结构", v: s.breakdown.find(x => x.k === "字形结构").v, tip: "繁简相宜、结构错落与书写" },
+    { k: "性别倾向", v: genderFit, tip: "用字与性别气质的匹配度" },
+    { k: "生肖契合", v: s.breakdown.find(x => x.k === "生肖契合") ? s.breakdown.find(x => x.k === "生肖契合").v : 70, tip: "生肖宜忌与部首呼应" },
+    { k: "五行平衡", v: wx ? Math.round(100 - Math.max.apply(null, Object.keys(wx).map(w => Math.abs(wx[w] - 20))) * 1.6) : null, tip: "金木水火土分布均衡度" },
+    { k: "重名热度", v: s.breakdown.find(x => x.k === "重名热度").v, tip: "越低越发觉独特" },
+    { k: "综合评分", v: s.final, tip: "六维加权总分", total: true }
+  ].filter(x => x.v != null);
+};
+
+/* 高级偏好过滤：忌用偏旁（含偏旁字面）与父母名避讳（同字/同音）*/
+function prefAvoidOk(c, prefs) {
+  prefs = prefs || {};
+  const rads = Array.from(prefs.avoidRadical || "");
+  const rad = (HM.RADICALS || {})[c] || "";
+  if (rad && rads.indexOf(rad) >= 0) return false;
+  if (rads.indexOf(c) >= 0) return false;
+  const pnames = (prefs.parents || "").split(/[,，\s]+/).filter(Boolean);
+  const pc = pyOfChar(c);
+  for (const pn of pnames) {
+    if (pn.indexOf(c) >= 0) return false;
+    if (pc && Array.from(pn).some(ch => pyOfChar(ch) === pc)) return false;
+  }
+  return true;
+}
 /* 生肖宜用字根加分、忌用字根减分（六冲/六害生肖字形）
  * 匹配通道：① 字的主要部首（HM.RADICALS）② 生肖相关字形（HM.ZODIAC_PARTS）③ 字本身 */
 function zodiacBonus(birth, given) {
@@ -1001,7 +1153,7 @@ function zodiacBonus(birth, given) {
   });
   return sc;
 }
-/* 综合分：五格 45% + 音律 20% + 语义 15% + 五行契合 12% + 生肖 8%（重名扣减） */
+/* 综合分：五格 43% + 音律 19% + 语义 14% + 五行契合 12% + 生肖 7% + 字形 5%（重名/方言谐音扣减） */
 function qualityScore(full, given, wg, birth, mainWx, favorable) {
   const wgN = wg ? wg.score : 70;
   const ph = E.phoneticScore(full);
@@ -1010,8 +1162,11 @@ function qualityScore(full, given, wg, birth, mainWx, favorable) {
   const zb = zodiacBonus(birth, given);
   const hot = hotCount(given);
   const dup = hot >= 3 ? 14 : hot === 2 ? 8 : hot === 1 ? 4 : 0;
-  const final = Math.round(wgN * 0.45 + ph.score * 0.20 + sem * 1.0 * 0.15 + wxMatch * 0.12 + Math.min(100, 60 + zb * 10) * 0.08 - dup);
-  return { final: Math.max(55, Math.min(99, final)), ph, sem, dup, zb, hot };
+  const form = E.formScore(given);
+  const dialect = E.dialectRisks(full);
+  const final = Math.round(wgN * 0.43 + ph.score * 0.19 + sem * 1.0 * 0.14 + wxMatch * 0.12
+    + Math.min(100, 60 + zb * 10) * 0.07 + form.score * 0.05 - dup - dialect.penalty * 0.5);
+  return { final: Math.max(55, Math.min(99, final)), ph, sem, dup, zb, hot, form, dialect };
 }
 
 /* 综合姓名评分（打分页主分）：五格42% + 音律22% + 字义16% + 生肖12% + 热度8% */
@@ -1027,17 +1182,23 @@ E.scoreOf = function (name, birth) {
   if (birth) zb = zodiacBonus(birth, given);
   const hot = hotCount(given);
   const dup = hot >= 3 ? 14 : hot === 2 ? 8 : hot === 1 ? 4 : 0;
+  const form = E.formScore(name.slice(1));
+  const dialect = E.dialectRisks(name);
   const final = Math.round(Math.max(55, Math.min(99,
-    wg.score * 0.42 + ph.score * 0.22 + sem * 1.0 * 0.16 + Math.min(100, 60 + zb * 8) * 0.12 + 88 * 0.08 - dup)));
+    wg.score * 0.40 + ph.score * 0.21 + sem * 1.0 * 0.15 + Math.min(100, 60 + zb * 8) * 0.11
+    + form.score * 0.05 + 88 * 0.08 - dup - dialect.penalty * 0.5)));
   return {
     final, wg, phonetic: ph, sem, zodiacBonus: zb, dup,
     breakdown: [
       { k: "五格数理", v: wg.score },
       { k: "音律读感", v: ph.score },
       { k: "字义内涵", v: Math.min(99, sem * 6 + 15) },
+      { k: "字形结构", v: form.score },
       { k: "生肖契合", v: birth ? Math.min(99, 60 + zb * 8) : null },
       { k: "重名热度", v: 100 - dup * 5 }
-    ].filter(x => x.v != null)
+    ].filter(x => x.v != null),
+    dupEstimate: E.dupEstimate(name),
+    dialect: dialect.issues.length ? dialect : null
   };
 };
 
@@ -1054,13 +1215,17 @@ E.generateByBazi = function (surname, gender, birth, limit, prefs) {
   const results = [];
   const avoid = Array.from((prefs.avoid || "").trim());
   const fixed = (prefs.fixed || "").trim();
+  /* 名字字数：prefs.wordCount = "1"单字名 | "2"双字名 | "3"三字名 | ""不限 */
+  const wc = (prefs.wordCount || "").trim();
+  const wantSingle = wc === "1", wantTriple = wc === "3";
+  const wantDouble = !wantSingle && !wantTriple;
   /* 父母期望 → 语素类别（如"健康聪明"→health+smart，匹配的候选字加权） */
   const WISH_KW = { "平安":["health"], "健康":["health"], "快乐":["health"], "聪明":["smart"], "智慧":["smart"], "有出息":["aspire"], "成功":["aspire"], "坚强":["aspire"], "勇敢":["aspire"], "善良":["virtue"], "正直":["virtue"], "有气质":["elegant"], "有才华":["elegant"], "文静":["gentle"], "温柔":["gentle"], "阳光":["bright"], "开朗":["bright"], "富贵":["wealth"], "有福气":["wealth"] };
   let wishCats = [];
   Object.keys(WISH_KW).forEach(kw => { if ((prefs.wish || "").includes(kw)) wishCats = wishCats.concat(WISH_KW[kw]); });
   const wishBonus = c => { const cat = semanticOf(c); return wishCats.includes(cat) ? 8 : 0; };
   const tabooWx = b.tabooWx;
-  const okChar = x => !avoid.includes(x.c) && x.c !== surname.charAt(0) && (!tabooWx || x.w !== tabooWx);
+  const okChar = x => !avoid.includes(x.c) && x.c !== surname.charAt(0) && (!tabooWx || x.w !== tabooWx) && prefAvoidOk(x.c, prefs);
   let mainPool = HM.CHARS.filter(x => x.w === targets[0] && (x.g === gender || x.g === 0) && okChar(x));
   if (mainPool.length < 6) mainPool = HM.CHARS.filter(x => targets.includes(x.w) && (x.g === gender || x.g === 0) && okChar(x));
   if (mainPool.length < 6) mainPool = HM.CHARS.filter(x => (x.g === gender || x.g === 0) && okChar(x));
@@ -1071,7 +1236,25 @@ E.generateByBazi = function (surname, gender, birth, limit, prefs) {
   const subs = shuffle(subAll).slice(0, 16);
   /* 固定字（辈分字）模式：另一字从喜用池取 */
   const fixedInfo = fixed && Array.from(fixed).length === 1 ? HM.CHARS.find(x => x.c === fixed) : null;
-  for (let i = 0; i < mains.length; i++) {
+  /* 单字名候选 */
+  if (wantSingle) {
+    shuffle(mainPool).slice(0, 10).forEach(m => {
+      const full = surname + m.c;
+      if (results.some(r => r.name === full)) return;
+      const wg = E.wuge(full);
+      const q = qualityScore(full, m.c, wg, birth, m.w, b.favorable);
+      const hk = E.phonetic(full);
+      const riskLv = hk && hk.risks && hk.risks.length ? Math.max.apply(null, hk.risks.map(r2 => r2.lv || 1)) : 0;
+      results.push({
+        name: full, given: m.c, chars: [m],
+        score: Math.max(50, Math.min(99, q.final + wishBonus(m.c) - (riskLv === 2 ? 18 : riskLv === 1 ? 8 : 0))),
+        wg: wg ? wg.score : 70, wx: m.w, dupEstimate: E.dupEstimate(full),
+        reason: `单字名，取${m.w}行「${m.c}」${targets[0] === b.favorable ? "补喜用神" : "合五行偏好"}，简洁响亮`
+      });
+    });
+  }
+  /* 双字名候选 */
+  if (wantDouble) for (let i = 0; i < mains.length; i++) {
     for (let j = 0; j < subs.length && results.length < limit * 5; j++) {
       const given = i % 2 === 0 ? mains[i].c + subs[j].c : subs[j].c + mains[i].c;
       if (results.some(r => r.name === surname + given)) continue;
@@ -1089,6 +1272,7 @@ E.generateByBazi = function (surname, gender, birth, limit, prefs) {
         : `按偏好取${targets[0]}，辅以${subs[j].w}（喜用神${b.favorable}）`)
         + (tabooWx ? `；忌${tabooWx}已避开` : "")
         + (risk ? `；⚠ 谐音「${hk.risks[0].with}」需斟酌` : q.ph.issues.length ? `；${q.ph.issues[0]}` : "；音律谐畅")
+        + (q.dialect.issues.length ? `；⚠ ${q.dialect.issues[0]}` : "")
         + (q.dup >= 2 ? "；用字较热门，重名率偏高" : "");
       results.push({
         name: full, given,
@@ -1096,22 +1280,51 @@ E.generateByBazi = function (surname, gender, birth, limit, prefs) {
         score: Math.max(50, Math.min(99, sc)),
         wg: wg ? wg.score : 70,
         wx: mains[i].w + subs[j].w,
+        dupEstimate: E.dupEstimate(full),
         reason
       });
     }
   }
-  /* 固定字（辈分）组合补充 */
+  /* 三字名候选：主字 + 辅字 + 第三字（隔位取字避免与辅字重复） */
+  if (wantTriple) for (let i = 0; i < mains.length && results.length < limit * 5; i++) {
+    for (let j = 0; j < subs.length && results.length < limit * 5; j++) {
+      const k = (j + 5) % subs.length;
+      if (k === j) continue;
+      const seq = i % 2 === 0 ? [mains[i].c, subs[j].c, subs[k].c] : [subs[k].c, mains[i].c, subs[j].c];
+      const given = seq.join("");
+      const full = surname + given;
+      if (results.some(r => r.name === full)) continue;
+      const wg = E.wuge(full);
+      const q = qualityScore(full, given, wg, birth, mains[i].w, b.favorable);
+      let sc3 = q.final + wishBonus(mains[i].c) + wishBonus(subs[j].c) + wishBonus(subs[k].c);
+      const hk3 = E.phonetic(full);
+      const riskLv3 = hk3 && hk3.risks && hk3.risks.length ? Math.max.apply(null, hk3.risks.map(r3 => r3.lv || 1)) : 0;
+      sc3 -= (riskLv3 === 2 ? 18 : riskLv3 === 1 ? 8 : 0);
+      results.push({
+        name: full, given,
+        chars: [mains[i], subs[j], subs[k]],
+        score: Math.max(50, Math.min(99, sc3)),
+        wg: wg ? wg.score : 70,
+        wx: mains[i].w + subs[j].w + subs[k].w,
+        dupEstimate: E.dupEstimate(full),
+        reason: `三字名，${mains[i].w}${subs[j].w}${subs[k].w}递进${targets[0] === b.favorable ? "，补喜用神" : ""}，层次丰富`
+      });
+    }
+  }
+  /* 固定字（辈分）组合补充；fixedPos：0=辈分字在名前，1=在名后，空=不限 */
   if (fixedInfo) {
+    const positions = prefs.fixedPos === "0" ? [0] : prefs.fixedPos === "1" ? [1] : [0, 1];
     const pool2 = HM.CHARS.filter(x => okChar(x) && x.c !== fixedInfo.c && (x.g === gender || x.g === 0) && x.w === b.favorable);
     shuffle(pool2).slice(0, 4).forEach(x => {
-      const cand = [fixedInfo.c + x.c, x.c + fixedInfo.c];
-      cand.forEach(given => {
+      positions.forEach(pos => {
+        const given = pos === 0 ? fixedInfo.c + x.c : x.c + fixedInfo.c;
         const full = surname + given;
         if (results.some(r => r.name === full)) return;
         const wg = E.wuge(full);
         const q = qualityScore(full, given, wg, birth, fixedInfo.w, b.favorable);
         results.push({ name: full, given, chars: [fixedInfo, x], score: q.final, wg: wg ? wg.score : 70, wx: fixedInfo.w + x.w,
-          reason: `含指定用字「${fixed}」，配${x.w}行字呼应喜用神${b.favorable}` });
+          dupEstimate: E.dupEstimate(full),
+          reason: `含指定用字「${fixed}」（${pos === 0 ? "名前" : "名后"}），配${x.w}行字呼应喜用神${b.favorable}` });
       });
     });
   }

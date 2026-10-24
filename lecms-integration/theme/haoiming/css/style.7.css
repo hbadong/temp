@@ -803,7 +803,8 @@ input.pp-input {
   .dict-grid { grid-template-columns: repeat(2, 1fr); }
   .dict-list { grid-template-columns: 1fr; }
   .dict-attrs { grid-template-columns: 1fr; }
-  .dict-zone-links { grid-template-columns: 1fr; }
+  /* 注意：.dict-zone-links.three 特异性(0,2,0)高于单类选择器，必须显式覆盖 */
+  .dict-zone-links, .dict-zone-links.three { grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); }
   .dict-search-box { margin-top: -30px; }
 }
 @media (max-width: 760px) {
@@ -812,7 +813,7 @@ input.pp-input {
 
 /* ===== 起名模式选择 chips ===== */
 .mode-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
-.mode-chips .chip { cursor: pointer; }
+.mode-chips .chip { cursor: pointer; width: auto; height: auto; border-radius: 999px; padding: 6px 13px; font-size: 13px; white-space: nowrap; }
 .mode-chips .chip.on { background: var(--red-deep, #8c1f1f); color: #fff; border-color: var(--red-deep, #8c1f1f); }
 
 /* ===== 双胞胎配对卡片 ===== */
@@ -915,3 +916,101 @@ input.pp-input {
   .ppz-fav-big { font-size: 36px; }
   .ppz-hero-fav { padding-left: 12px; }
 }
+
+/* ===== 第二轮优化：结果卡片标签（重名估算/字形搭配） ===== */
+.name-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.n-tag { font-size: 11px; padding: 2px 9px; border-radius: 999px; background: #f6f1e6; color: var(--ink-2); border: 1px solid var(--line); white-space: nowrap; }
+.n-tag.dup-lo { background: #eef6ee; color: #2e7d32; border-color: #c8e0c8; }
+.n-tag.dup-mid { background: #fdf6e3; color: #9a6b00; border-color: #ecdcae; }
+.n-tag.dup-hi { background: #fdf0ee; color: var(--red); border-color: #ecc9c2; }
+
+/* 期望标签 chips */
+.wish-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 2px; }
+.wchip { font-size: 12px; padding: 4px 12px; border-radius: 999px; background: #f6f1e6; color: var(--ink-2); border: 1px solid var(--line); cursor: pointer; user-select: none; transition: all .15s; }
+.wchip:hover { border-color: var(--red); color: var(--red-deep); }
+.wchip.on { background: var(--red); border-color: var(--red); color: #fff; }
+
+/* ===== 第三轮优化（竞品对标）：九维面板 / 拼音 / 五行条 / 性格标签 / 高级折叠 / 定字热字 / 字数 / 起名构思 ===== */
+
+/* --- 九维解析面板 --- */
+.nine-panel { background: linear-gradient(135deg, #fffdf7, #fdf6ea); border: 1px solid #ecdcae; border-radius: 12px; padding: 16px 18px; margin-bottom: 16px; }
+.nine-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; margin-bottom: 12px; }
+.nine-head b { font-family: var(--serif); font-size: 17px; color: var(--red-deep); letter-spacing: 1px; }
+.nine-head span { font-size: 12px; color: #a89b86; }
+.nine-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 8px 20px; }
+.dim-row { display: flex; align-items: center; gap: 10px; }
+.dim-k { flex: 0 0 76px; font-size: 12px; color: var(--ink); }
+.dim-bar { flex: 1; height: 8px; border-radius: 999px; background: #f0e9d8; overflow: hidden; }
+.dim-bar i { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg, #d8a24a, var(--red)); }
+.dim-v { flex: 0 0 30px; text-align: right; font-size: 12px; font-weight: 600; color: var(--red-deep); }
+.dim-row.dim-total .dim-bar i { background: linear-gradient(90deg, #c92009, #e6614f); }
+.dim-row.dim-total .dim-k { font-weight: 700; color: var(--red-deep); }
+.nine-tip { margin-top: 10px; font-size: 11px; color: #b3a78f; line-height: 1.7; }
+
+/* --- 结果卡：拼音 --- */
+.name-py { font-size: 11px; color: #a89b86; margin-left: 6px; font-style: italic; letter-spacing: .3px; white-space: nowrap; }
+
+/* --- 结果卡：五行占比条 --- */
+.wx-bar { display: flex; height: 14px; margin-top: 8px; border-radius: 4px; overflow: hidden; border: 1px solid var(--line); background: #faf7ef; }
+.wx-bar i { display: flex; align-items: center; justify-content: center; font-style: normal; font-size: 9px; color: #fff; transition: width .3s; }
+
+/* --- 结果卡：性格标签 --- */
+.n-tag.persona { background: #eef3fb; color: #3f6f9f; border-color: #cfdeee; }
+
+/* --- 高级选项折叠 --- */
+.adv-toggle { margin: 12px 0 6px; font-size: 13px; color: var(--ink-2); cursor: pointer; user-select: none; display: inline-flex; align-items: center; gap: 4px; }
+.adv-toggle:hover { color: var(--red-deep); }
+.adv-toggle .adv-arrow { font-style: normal; font-size: 11px; transition: transform .2s; }
+.adv-toggle.open .adv-arrow { transform: rotate(180deg); }
+.adv-body { display: none; }
+.adv-body.open { display: block; }
+
+/* --- 定字热门字 chips --- */
+.dz-chips { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 2px 0 12px; }
+.dz-label, .wc-label, .think-tip { font-size: 12px; color: #a89b86; }
+.dz-chip { font-size: 13px; font-family: var(--serif); min-width: 30px; text-align: center; padding: 3px 8px; border-radius: 6px; background: #fdf6ea; color: var(--red-deep); border: 1px solid #ecdcae; cursor: pointer; user-select: none; transition: all .15s; }
+.dz-chip:hover { border-color: var(--red); background: #fff; }
+.dz-chip.on { background: var(--red); border-color: var(--red); color: #fff; }
+
+/* --- 字数选择 chips --- */
+.wc-chips { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 10px 0 2px; }
+.wc-chip { font-size: 12px; padding: 4px 14px; border-radius: 999px; background: #f6f1e6; color: var(--ink-2); border: 1px solid var(--line); cursor: pointer; user-select: none; transition: all .15s; }
+.wc-chip:hover { border-color: var(--red); color: var(--red-deep); }
+.wc-chip.on { background: var(--red); border-color: var(--red); color: #fff; }
+
+/* --- 首页起名构思 --- */
+.think-tip { margin: 4px 0 12px; line-height: 1.8; }
+.think-chips { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+.think-chip { font-size: 14px; text-align: center; padding: 12px 8px; border-radius: 10px; background: #fdf9f0; border: 1px solid #f0e4c8; color: var(--ink); cursor: pointer; user-select: none; transition: all .18s; }
+.think-chip:hover { border-color: var(--red); color: var(--red-deep); transform: translateY(-1px); box-shadow: 0 3px 10px rgba(201, 32, 9, .08); }
+.think-chip.on { background: var(--red); border-color: var(--red); color: #fff; }
+@media (max-width: 640px) {
+  .nine-grid { grid-template-columns: 1fr; }
+  .dim-k { flex: 0 0 64px; }
+  .think-chips { grid-template-columns: repeat(2, 1fr); }
+  .name-py { display: block; margin-left: 0; }
+}
+
+/* --- 收藏夹：姓名 PK 对比（mumingwang 范式） --- */
+.fav-item { display: flex; align-items: center; gap: 8px; }
+.fav-item .fav-pick { flex: 0 0 auto; display: flex; align-items: center; cursor: pointer; }
+.fav-item .fav-pick input { width: 15px; height: 15px; accent-color: var(--red); cursor: pointer; }
+.fav-item .fav-name { flex: 1; }
+.fav-item.sel { background: #fdf3ee; }
+.fav-item.sel .fav-name { color: var(--red-deep); }
+.pk-hint { font-size: 12px; color: #a89b86; margin: 0 0 8px; }
+.pk-back { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.pk-back button { font-size: 12px; border: 1px solid var(--line); background: #fff; border-radius: 6px; padding: 5px 12px; cursor: pointer; color: var(--ink-2); }
+.pk-back button:hover { border-color: var(--red); color: var(--red-deep); }
+.pk-back span { font-size: 12px; color: #a89b86; }
+.pk-wrap { overflow-x: auto; }
+.pk-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.pk-table th, .pk-table td { border: 1px solid #f0e4c8; padding: 7px 8px; text-align: center; }
+.pk-table tr td:first-child, .pk-table th:first-child { background: #faf7ef; color: var(--ink-2); white-space: nowrap; font-weight: 400; text-align: left; }
+.pk-table .pk-name { font-family: var(--serif); font-size: 15px; color: var(--red-deep); background: #fdf9f0; }
+.pk-table .pk-name i { display: block; font-style: normal; font-size: 10px; color: #b98d2f; margin-top: 2px; }
+.pk-table .pk-best { background: linear-gradient(180deg, #fff3d8, #fde6bd); }
+.pk-num { font-weight: 600; color: var(--ink); }
+.pk-max { color: var(--red-deep); background: #fdf0ee; font-weight: 700; }
+.pk-table .wx-bar { margin-top: 0; height: 12px; }
+.pk-tip { font-size: 11px; color: #b3a78f; margin-top: 10px; line-height: 1.7; }

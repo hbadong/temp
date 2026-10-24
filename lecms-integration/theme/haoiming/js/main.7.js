@@ -69,6 +69,7 @@
       <div class="fav-head"><b>我的收藏夹</b><span class="fav-close" id="fav-close">✕</span></div>
       <div class="fav-body" id="fav-body"></div>
       <div class="fav-foot">
+        <button class="fav-pk" id="fav-pk">姓名对比</button>
         <button class="fav-copy" id="fav-copyall">复制全部名字</button>
         <button class="fav-clear" id="fav-clear">清空</button>
       </div>`;
@@ -76,19 +77,65 @@
     fab.addEventListener("click", () => { favRender(); panel.classList.add("on"); });
     $("#fav-close").addEventListener("click", () => panel.classList.remove("on"));
     $("#fav-clear").addEventListener("click", () => { if (confirm("确定清空收藏夹？")) { favClear(); favRender(); favRefresh(); } });
+    $("#fav-pk").addEventListener("click", () => favRenderPK());
     $("#fav-copyall").addEventListener("click", () => {
       const names = favList().map(x => x.name).join("、");
       if (!names) return toast("收藏夹还是空的");
       copyText("好名网收藏的名字：" + names, () => toast("已复制 " + favList().length + " 个名字"));
     });
   }
+  /* 姓名对比（PK）：勾选 2-4 个收藏名字并排比较（对标 mumingwang 对比范式） */
+  function favRenderPK() {
+    const body = $("#fav-body");
+    if (!body) return;
+    const l = favList();
+    const picked = body.querySelectorAll(".fav-item.sel [data-pk]:checked");
+    const names = Array.from(picked).map(c => c.value);
+    const back = `<div class="pk-back"><button id="pk-back">← 返回收藏列表</button><span>已选 ${names.length} 个</span></div>`;
+    if (names.length < 2 || names.length > 4) {
+      body.innerHTML = back + `<p class="fav-empty">请先在列表中勾选 <b>2-4 个</b>名字再对比。<br>点击名字左侧方框即可选择。</p>`;
+      const bk = $("#pk-back");
+      if (bk) bk.addEventListener("click", () => favRender());
+      return;
+    }
+    const rows = [];
+    const scoreData = names.map(n => { const s = window.HM_ENGINE.scoreOf(n); return s || { final: null, breakdown: [] }; });
+    const bestFinal = Math.max.apply(null, scoreData.map(s => s.final == null ? -1 : s.final));
+    const dimKeys = ["五格数理", "音律读感", "字义内涵", "字形结构", "生肖契合", "重名热度"];
+    rows.push(`<tr><th>对比项</th>${names.map((n, i) => `<th class="pk-name${scoreData[i].final === bestFinal ? " pk-best" : ""}">${n}${scoreData[i].final === bestFinal ? "<i>🏆 综合最佳</i>" : ""}</th>`).join("")}</tr>`);
+    rows.push(`<tr><td>综合评分</td>${scoreData.map(s => `<td class="pk-num">${s.final == null ? "—" : s.final + " 分"}</td>`).join("")}</tr>`);
+    dimKeys.forEach(k => {
+      const vals = scoreData.map(s => { const b = s.breakdown.find(x => x.k === k); return b ? b.v : null; });
+      const max = Math.max.apply(null, vals.map(v => v == null ? -1 : v));
+      rows.push(`<tr><td>${k}</td>${vals.map(v => `<td class="pk-num${v === max && max >= 0 ? " pk-max" : ""}">${v == null ? "—" : v}</td>`).join("")}</tr>`);
+    });
+    rows.push(`<tr><td>拼音</td>${names.map(n => `<td>${window.HM_ENGINE.pinyinOf(n) || "—"}</td>`).join("")}</tr>`);
+    rows.push(`<tr><td>五行分布</td>${names.map(n => {
+      const dist = window.HM_ENGINE.wxDist(n) || {};
+      const segs = Object.keys(dist).filter(w => dist[w] > 0).map(w => `<i style="width:${dist[w]}%;background:${{ "金": "#b98d2f", "木": "#3f7d4e", "水": "#3f6f9f", "火": "#b5372a", "土": "#8a6b3d" }[w]}" title="${w} ${dist[w]}%"></i>`).join("");
+      return `<td><div class="wx-bar">${segs}</div></td>`;
+    }).join("")}</tr>`);
+    rows.push(`<tr><td>性格标签</td>${names.map(n => `<td>${window.HM_ENGINE.personaTags(n).map(t => `<span class="n-tag persona">${t}</span>`).join("") || "—"}</td>`).join("")}</tr>`);
+    rows.push(`<tr><td>重名估算</td>${names.map(n => {
+      const d = window.HM_ENGINE.dupEstimate(n);
+      return `<td>${d ? `<span class="n-tag dup-${d.est >= 3 ? "hi" : d.est >= 1 ? "mid" : "lo"}">~${d.est}${d.unit} · ${d.level}</span>` : "—"}</td>`;
+    }).join("")}</tr>`);
+    rows.push(`<tr><td>方言谐音</td>${scoreData.map((s, i) => {
+      const d = window.HM_ENGINE.dialectRisks(names[i]);
+      return `<td>${d.issues.length ? `<span class="n-tag dup-hi">${d.issues.slice(0, 2).join("、")}</span>` : '<span class="n-tag dup-lo">无明显风险</span>'}</td>`;
+    }).join("")}</tr>`);
+    body.innerHTML = back + `<div class="pk-wrap"><table class="pk-table">${rows.join("")}</table></div><p class="pk-tip">* 对比为本地简化模型：未绑定生辰信息时，生肖契合维度不参与计分；命理模型仅供娱乐参考。</p>`;
+    const bk = $("#pk-back");
+    if (bk) bk.addEventListener("click", () => favRender());
+  }
   function favRender() {
     const body = $("#fav-body");
     if (!body) return;
     const l = favList();
     if (!l.length) { body.innerHTML = '<p class="fav-empty">还没有收藏的名字。<br>在起名结果页点击名字旁的 ♥ 即可收藏。</p>'; return; }
-    body.innerHTML = l.map(x => `
+    body.innerHTML = `<p class="pk-hint">勾选 2-4 个名字，点下方「姓名对比」并排比较 ↓</p>` + l.map(x => `
       <div class="fav-item">
+        <label class="fav-pick" title="勾选后加入对比"><input type="checkbox" data-pk value="${x.name}"></label>
         <div class="fav-name">${x.name}</div>
         ${x.meta ? `<div class="fav-meta">${x.meta}</div>` : ""}
         <div class="fav-ops">
@@ -98,6 +145,14 @@
       </div>`).join("");
     body.querySelectorAll("[data-copy]").forEach(b => b.addEventListener("click", () => copyText(b.dataset.copy, () => toast("已复制"))));
     body.querySelectorAll("[data-del]").forEach(b => b.addEventListener("click", () => { favRemove(b.dataset.del); favRender(); favRefresh(); }));
+    body.querySelectorAll(".fav-item").forEach(item => {
+      const cb = item.querySelector("[data-pk]");
+      if (cb) cb.addEventListener("change", () => {
+        const cnt = body.querySelectorAll("[data-pk]:checked").length;
+        if (cnt > 4) { cb.checked = false; return toast("最多选择 4 个名字对比"); }
+        item.classList.toggle("sel", cb.checked);
+      });
+    });
   }
   function favRefresh() {
     const c = $("#fav-count");
@@ -708,7 +763,27 @@
       if (!dt) return alert("请选择出生日期");
       const h = hourVal("#hourh");
       const place = $("#placeh").value.trim() || "未填写";
-      location.href = withSc(`${toolUrl("naming.html")}?surname=${encodeURIComponent(s)}&gender=${g}&date=${dt}&hour=${hourParam(h)}&place=${encodeURIComponent(place)}&mode=${qmhMode}`);
+      const wish = ($("#wishh") || {}).value ? $("#wishh").value.trim() : "";
+      let url = `${toolUrl("naming.html")}?surname=${encodeURIComponent(s)}&gender=${g}&date=${dt}&hour=${hourParam(h)}&place=${encodeURIComponent(place)}&mode=${qmhMode}`;
+      if (wish) url += `&wish=${encodeURIComponent(wish)}`;
+      location.href = withSc(url);
+    });
+    /* 起名构思 chips：点击填入期望输入框并滚动回表单 */
+    $$("#think-chips .think-chip").forEach(ch => {
+      ch.addEventListener("click", () => {
+        const inp = $("#wishh");
+        if (!inp) return;
+        const w = ch.dataset.w;
+        const cur = inp.value.split(/[,，]/).map(s => s.trim()).filter(Boolean);
+        const has = cur.includes(w);
+        inp.value = has ? cur.filter(s => s !== w).join("，") : cur.concat(w).join("，");
+        ch.classList.toggle("on", !has);
+        if (!has) {
+          toast(`已填入「${w}」意象`);
+          const form = $("#form-qmh");
+          if (form && form.scrollIntoView) form.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      });
     });
     const tf = $("#form-test");
     if (tf) tf.addEventListener("submit", e => {
@@ -818,7 +893,7 @@
     let data;
     if (mode === "poem") data = { names: window.HM_ENGINE.generateByPoem(surname, gender, q.get("cat") || "all", 12) };
     else if (mode === "zhouyi") data = { names: window.HM_ENGINE.generateByZhouyi(surname, gender, 12, q.get("gua") || "none") };
-    else if (mode === "idiom") data = window.HM_ENGINE.genIdiom(surname, gender, birth, 12, { avoid: q.get("avoid") || "" });
+    else if (mode === "idiom") data = window.HM_ENGINE.genIdiom(surname, gender, birth, 12, { avoid: q.get("avoid") || "", avoidRadical: q.get("avoidRadical") || "", parents: q.get("parents") || "" });
     else if (mode === "nickname") data = window.HM_ENGINE.genNickname(surname, gender, birth, 12);
     else if (mode === "twins") {
       /* gender: 1=男双 2=女双 0=龙凤胎 */
@@ -826,7 +901,11 @@
       data = window.HM_ENGINE.genTwins(surname, g1, g2, birth, 10);
       data.twins = true;
     }
-    else data = window.HM_ENGINE.generateByBazi(surname, gender, birth, 12, { wx1: q.get("wx1"), wx2: q.get("wx2"), avoid: q.get("avoid") || "", fixed: q.get("fixed") || "", wish: q.get("wish") || "" });
+    else data = window.HM_ENGINE.generateByBazi(surname, gender, birth, 12, {
+      wx1: q.get("wx1"), wx2: q.get("wx2"), avoid: q.get("avoid") || "", fixed: q.get("fixed") || "", wish: q.get("wish") || "",
+      avoidRadical: q.get("avoidRadical") || "", fixedPos: q.get("fixedPos") || "", parents: q.get("parents") || "",
+      wordCount: q.get("wordCount") || ""
+    });
 
     const modeName = mode === "poem" ? "诗词" : mode === "zhouyi" ? "周易" : mode === "idiom" ? "成语" : mode === "nickname" ? "小名" : mode === "twins" ? "双胞胎" : "八字";
     const MODE_NOTE = {
@@ -854,6 +933,16 @@
         ${MODE_NOTE[mode] ? `<p class="bazi-note" style="color:var(--red-deep);">【模式说明】${MODE_NOTE[mode]}</p>` : ""}
         <p class="bazi-note">* 命理模型为简化演示算法，仅供娱乐参考。</p>`;
     }
+    /* 九维解析面板：以榜首方案为样本，对齐竞品「九大维度」叙事 */
+    const nineBox = (() => {
+      if (!data.names.length) return "";
+      const top = data.names[0];
+      const birthForScore = { y, m, d, h: hour, place: birth.place, g: gender };
+      const dims = window.HM_ENGINE.nineDims(top.name, birthForScore);
+      if (!dims) return "";
+      const bar = d => `<div class="dim-row${d.total ? " dim-total" : ""}"><span class="dim-k">${d.k}</span><span class="dim-bar"><i style="width:${Math.max(6, Math.min(100, d.v))}%"></i></span><span class="dim-v">${d.v}</span></div>`;
+      return `<div class="nine-panel"><div class="nine-head"><b>九维解析</b><span>以榜首方案「${data.twins ? top.name1 + " / " + top.name2 : top.name}」为样本 · 点击名字可查看单项详情</span></div><div class="nine-grid">${dims.map(bar).join("")}</div><p class="nine-tip">* 各维度为简化演示模型的量化呈现，综合评分按五格、音律、字义、五行、生肖、字形加权计算，仅供娱乐参考。</p></div>`;
+    })();
     /* 付费闭环：未解锁时前 3 个免费完整展示，其余锁定模糊 */
     const unlocked = isUnlocked();
     const orderNo = unlocked ? unlocked.no : "QM" + new Date().toISOString().slice(0, 10).replace(/-/g, "") + "-" + String(Math.floor(1000 + Math.random() * 9000));
@@ -865,8 +954,22 @@
     const favOf = (n) => favList().some(x => x.name === n);
     const favBtn = (n, meta) => `<button class="fav-btn${favOf(n) ? " on" : ""}" data-fav="${n}" data-meta="${encodeURIComponent(meta)}" title="收藏此名">♥</button>`;
     const cardMeta = (n) => data.twins ? (n.name1 + " / " + n.name2) : n.name;
+    /* 五行占比条（竞品对标：jubaovip 五行百分比可视化） */
+    const WX_COLOR = { "金": "#b98d2f", "木": "#3f7d4e", "水": "#3f6f9f", "火": "#b5372a", "土": "#8a6b3d" };
+    const wxBar = (n) => {
+      const dist = window.HM_ENGINE.wxDist(n.name);
+      if (!dist) return "";
+      const segs = Object.keys(dist).filter(w => dist[w] > 0).map(w => `<i style="width:${dist[w]}%;background:${WX_COLOR[w]}" title="${w} ${dist[w]}%">${dist[w] >= 18 ? w + dist[w] + "%" : ""}</i>`).join("");
+      return `<div class="wx-bar">${segs}</div>`;
+    };
+    /* 拼音 + 性格标签 */
+    const pyOf = (n) => { const p = window.HM_ENGINE.pinyinOf(n.name); return p ? `<span class="name-py">${p}</span>` : ""; };
+    const personaOf = (n) => {
+      const tags = window.HM_ENGINE.personaTags(n.name);
+      return tags.length ? tags.map(t => `<span class="n-tag persona">${t}</span>`).join("") : "";
+    };
     const shareBar = `<div class="share-row"><button class="share-btn" id="share-plan">📋 复制方案分享文案</button><span class="share-hint">复制后可发给家人一起挑</span></div>`;
-    box.innerHTML = orderBar + (data.twins ? data.names.map((n, i) => {
+    box.innerHTML = nineBox + orderBar + (data.twins ? data.names.map((n, i) => {
       const locked = !unlocked && i >= 3;
       if (locked) {
         return `
@@ -886,13 +989,14 @@
       <div class="name-card twin-card">
         <div class="name-main">
           <span class="name-rank">${i + 1}</span>
-          <a class="name-text" href="${toolUrl("mingzi.html")}?name=${encodeURIComponent(n.name1)}">${n.name1}</a>
+          <a class="name-text" href="${toolUrl("mingzi.html")}?name=${encodeURIComponent(n.name1)}">${n.name1}</a>${pyOf({ name: n.name1 })}
           <span class="twin-plus">＋</span>
-          <a class="name-text" href="${toolUrl("mingzi.html")}?name=${encodeURIComponent(n.name2)}">${n.name2}</a>
+          <a class="name-text" href="${toolUrl("mingzi.html")}?name=${encodeURIComponent(n.name2)}">${n.name2}</a>${pyOf({ name: n.name2 })}
           ${favBtn(n.name1 + " / " + n.name2, n.reason)}
           <span class="name-score s${n.score >= 90 ? "hi" : n.score >= 75 ? "mid" : "low"}" title="配对综合分">${n.score}分</span>
         </div>
         <div class="name-sub">${n.reason} · 五格 ${n.wg1}/${n.wg2}</div>
+        <div class="name-tags">${personaOf({ name: n.name1 })}${personaOf({ name: n.name2 })}</div>
       </div>`;
     }).join("") : data.names.map((n, i) => {
       const locked = !unlocked && i >= 3;
@@ -912,11 +1016,13 @@
       <div class="name-card">
         <div class="name-main">
           <span class="name-rank">${i + 1}</span>
-          <a class="name-text" href="${toolUrl("mingzi.html")}?name=${encodeURIComponent(n.name)}">${n.name}</a>
+          <a class="name-text" href="${toolUrl("mingzi.html")}?name=${encodeURIComponent(n.name)}">${n.name}</a>${pyOf(n)}
           <a class="name-score s${n.score >= 90 ? "hi" : n.score >= 75 ? "mid" : "low"}" href="${toolUrl("score.html")}?name=${encodeURIComponent(n.name)}">${n.score}分</a>
           ${favBtn(n.name, (n.reason || "").replace(/"/g, "'"))}
         </div>
         <div class="name-sub">${n.reason}${n.wx ? ` · 五行：${n.wx}` : ""}${n.line ? `<blockquote>「${n.line}」— ${n.src}</blockquote>` : ""}</div>
+        ${wxBar(n)}
+        ${n.dupEstimate ? `<div class="name-tags"><span class="n-tag dup-${n.dupEstimate.est >= 3 ? "hi" : n.dupEstimate.est >= 1 ? "mid" : "lo"}" title="${n.dupEstimate.note}">重名估算 ~${n.dupEstimate.est}${n.dupEstimate.unit} · ${n.dupEstimate.level}</span>${n.form && n.form.tags.length ? `<span class="n-tag">${n.form.tags[0]}</span>` : ""}${personaOf(n)}</div>` : ""}
       </div>`;
     }).join("")) + shareBar + (unlocked ? "" : `
       <div class="unlock-banner">
@@ -1651,6 +1757,15 @@
 
   /* ---------- 通用起名表单（form-qm*） ---------- */
   function initNamingForms() {
+    /* 高级选项折叠：点击标题展开/收起（对标竞品「高级设置」折叠范式） */
+    $$(".adv-toggle").forEach(t => {
+      t.addEventListener("click", () => {
+        const body = t.nextElementSibling;
+        if (!body || !body.classList.contains("adv-body")) return;
+        const open = body.classList.toggle("open");
+        t.classList.toggle("open", open);
+      });
+    });
     /* URL 深度链接预填：从排盘页等入口带 date/hour/place 进入时自动回填表单 */
     const pre = new URLSearchParams(location.search);
     if (pre.get("date") || pre.get("hour") || pre.get("place")) {
@@ -1664,6 +1779,55 @@
         if (pre.get("place")) { const el = $("#place" + sfx); if (el) el.value = pre.get("place"); }
       });
     }
+    /* 高级偏好回填：wx1/wx2/avoid/fixed/wish/avoidRadical/fixedPos/parents/wordCount */
+    ["wx1", "wx2", "avoid", "fixed", "wish", "avoidRadical", "fixedPos", "parents", "wordCount"].forEach(k => {
+      if (!pre.get(k)) return;
+      $$("form[id^=form-qm]").forEach(f => {
+        const sfx = f.id.replace("form-qm", "");
+        const el = $("#" + k + sfx);
+        if (el) el.value = pre.get(k);
+      });
+    });
+    /* 期望标签快捷 chips：点击追加/移除关键词 */
+    $$(".wish-chips .wchip").forEach(ch => {
+      ch.addEventListener("click", () => {
+        const form = ch.closest("form");
+        if (!form) return;
+        const inp = form.querySelector("input[id^=wish]");
+        if (!inp) return;
+        const w = ch.dataset.w;
+        const has = inp.value.includes(w);
+        if (has) inp.value = inp.value.split(/[,，]/).map(s => s.trim()).filter(s => s && s !== w).join("，");
+        else inp.value = inp.value.trim() ? inp.value.trim() + "，" + w : w;
+        ch.classList.toggle("on", !has);
+      });
+    });
+    /* 定字热门字 chips：点击写入/移出「指定用字」输入框（对标 qmz99 TOP30 热字范式） */
+    $$(".dz-chips .dz-chip").forEach(ch => {
+      ch.addEventListener("click", () => {
+        const form = ch.closest("form");
+        if (!form) return;
+        const inp = form.querySelector("input[id^=fixed]");
+        if (!inp) return;
+        const w = ch.dataset.z;
+        const cur = inp.value.split(/[,，\s]/).map(s => s.trim()).filter(Boolean);
+        const has = cur.includes(w);
+        const next = has ? cur.filter(s => s !== w) : cur.concat(w);
+        inp.value = next.join("，");
+        ch.classList.toggle("on", !has);
+      });
+    });
+    /* 字数选择 chips：不限/单字/双字/三字 */
+    $$(".wc-chips .wc-chip").forEach(ch => {
+      ch.addEventListener("click", () => {
+        const form = ch.closest("form");
+        if (!form) return;
+        const inp = form.querySelector("input[id^=wordCount]");
+        if (!inp) return;
+        inp.value = ch.dataset.wc || "";
+        form.querySelectorAll(".wc-chips .wc-chip").forEach(c => c.classList.toggle("on", c === ch));
+      });
+    });
     $$("form[id^=form-qm]").forEach(form => {
       form.addEventListener("submit", e => {
         e.preventDefault();
@@ -1681,6 +1845,11 @@
           if ($("#avoid" + sfx) && $("#avoid" + sfx).value.trim()) url += `&avoid=${encodeURIComponent($("#avoid" + sfx).value.trim())}`;
           if ($("#fixed" + sfx) && $("#fixed" + sfx).value.trim()) url += `&fixed=${encodeURIComponent($("#fixed" + sfx).value.trim())}`;
           if ($("#wish" + sfx) && $("#wish" + sfx).value.trim()) url += `&wish=${encodeURIComponent($("#wish" + sfx).value.trim())}`;
+          if ($("#avoidRadical" + sfx) && $("#avoidRadical" + sfx).value.trim()) url += `&avoidRadical=${encodeURIComponent($("#avoidRadical" + sfx).value.trim())}`;
+          if ($("#fixedPos" + sfx) && $("#fixedPos" + sfx).value) url += `&fixedPos=${$("#fixedPos" + sfx).value}`;
+          if ($("#parents" + sfx) && $("#parents" + sfx).value.trim()) url += `&parents=${encodeURIComponent($("#parents" + sfx).value.trim())}`;
+          const wcEl = $("#wordCount" + sfx);
+          if (wcEl && wcEl.value) url += `&wordCount=${wcEl.value}`;
           url = url.replace("naming.html", "naming.html") + "&mode=bazi";
         }
         location.href = withSc(url);

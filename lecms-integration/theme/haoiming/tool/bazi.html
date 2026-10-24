@@ -35,14 +35,62 @@
         <div class="field"><input id="placebz" type="text" placeholder="出生城市（选填，真太阳时校正）"></div>
         <div class="field"><input id="wishbz" type="text" placeholder="父母期望（选填，如：健康聪明）"></div>
       </div>
+      <div class="wish-chips" id="wish-chips">
+        <span class="wchip" data-w="健康平安">健康平安</span>
+        <span class="wchip" data-w="聪明智慧">聪明智慧</span>
+        <span class="wchip" data-w="快乐开朗">快乐开朗</span>
+        <span class="wchip" data-w="善良正直">善良正直</span>
+        <span class="wchip" data-w="有气质">有气质</span>
+        <span class="wchip" data-w="文静温柔">文静温柔</span>
+        <span class="wchip" data-w="有出息">有出息</span>
+        <span class="wchip" data-w="富贵有福气">富贵有福气</span>
+      </div>
+      <div class="wc-chips">
+        <span class="wc-label">名字字数</span>
+        <span class="wc-chip on" data-wc="">不限</span>
+        <span class="wc-chip" data-wc="1">单字名</span>
+        <span class="wc-chip" data-wc="2">双字名</span>
+        <span class="wc-chip" data-wc="3">三字名</span>
+        <input type="hidden" id="wordCountbz" value="">
+      </div>
+      <div class="adv-toggle" id="adv-toggle-bz">高级选项 <i class="adv-arrow">▾</i></div>
+      <div class="adv-body" id="adv-body-bz">
       <div class="frow frow-stack">
           <div class="field"><input id="avoidbz" type="text" placeholder="排除用字（选填，如：伟涛）" maxlength="10"></div>
-          <div class="field"><input id="fixedbz" type="text" placeholder="辈分/固定字（选填，1字）" maxlength="1"></div>
+          <div class="field"><input id="fixedbz" type="text" placeholder="指定用字/辈分字（选填，可点下方热字）" maxlength="4"></div>
+        </div>
+      <div class="dz-chips" id="dz-chips-bz">
+        <span class="dz-label">定字热字</span>
+        <span class="dz-chip" data-z="安">安</span>
+        <span class="dz-chip" data-z="宁">宁</span>
+        <span class="dz-chip" data-z="一">一</span>
+        <span class="dz-chip" data-z="辰">辰</span>
+        <span class="dz-chip" data-z="言">言</span>
+        <span class="dz-chip" data-z="之">之</span>
+        <span class="dz-chip" data-z="亦">亦</span>
+        <span class="dz-chip" data-z="以">以</span>
+        <span class="dz-chip" data-z="嘉">嘉</span>
+        <span class="dz-chip" data-z="允">允</span>
+        <span class="dz-chip" data-z="清">清</span>
+        <span class="dz-chip" data-z="南">南</span>
+        <span class="dz-chip" data-z="禾">禾</span>
+        <span class="dz-chip" data-z="屹">屹</span>
+        <span class="dz-chip" data-z="珩">珩</span>
+        <span class="dz-chip" data-z="屿">屿</span>
+      </div>
+      <div class="frow frow-stack">
+          <div class="field"><input id="avoidRadicalbz" type="text" placeholder="忌用偏旁（选填，如：氵火）" maxlength="6"></div>
+          <div class="field"><select id="fixedPosbz"><option value="">辈分字位置（不限）</option><option value="0">辈分字在名前</option><option value="1">辈分字在名后</option></select></div>
+        </div>
+      <div class="frow frow-stack">
+          <div class="field"><input id="parentsbz" type="text" placeholder="父母姓名避讳（选填，如：李伟,王芳）" maxlength="24"></div>
+          <div class="field"></div>
         </div>
       <div class="frow">
           <div class="field"><select id="wx1bz"><option value="none">不限</option><option value="金">金</option><option value="木">木</option><option value="水">水</option><option value="火">火</option><option value="土">土</option></select></div>
           <div class="field"><select id="wx2bz"><option value="none">不限</option><option value="金">金</option><option value="木">木</option><option value="水">水</option><option value="火">火</option><option value="土">土</option></select></div>
         </div>
+      </div>
       <button class="btn-primary" type="submit">立即八字起名</button>
       <p class="form-tip">命理模型为简化演示算法，结果仅供娱乐参考</p>
     </form></div></div></div>  <div class="wrap"><div class="intro-sec">
