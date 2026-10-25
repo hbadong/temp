@@ -1,0 +1,23 @@
+[Unit]
+Description=Haoiming SEO Prerender Service (Playwright Chromium)
+After=network.target
+
+[Service]
+Type=simple
+# 部署时改成服务器上真实的 pyenv Python 路径（which python3 查看）
+ExecStart=/root/.pyenv/versions/3.11.1/bin/python3 /var/www/lecms/prerender/prender.py
+WorkingDirectory=/var/www/lecms/prerender
+Restart=always
+RestartSec=3
+# 无头 Chromium 需要 /dev/shm 足够（默认 64M 会崩，限制到 512M 或禁用 shm）
+Environment=PLAYWRIGHT_BROWSERS_PATH=/root/.cache/ms-playwright
+LimitNOFILE=65535
+# 安全加固（按需放宽）
+NoNewPrivileges=true
+PrivateTmp=true
+
+StandardOutput=append:/var/www/lecms/prerender/prender.log
+StandardError=append:/var/www/lecms/prerender/prender.log
+
+[Install]
+WantedBy=multi-user.target
