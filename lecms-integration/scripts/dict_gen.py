@@ -641,8 +641,12 @@ def main():
           '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
     sm += [f"<url><loc>{u}</loc></url>" for u in urls]
     sm.append("</urlset>")
-    open(f"{BASE}/sitemap-dict.xml", "w", encoding="utf-8").write("\n".join(sm))
-    print(f"[sitemap] {len(urls):,} URL")
+    # 2026-10-25：dict 子站 sitemap 不再写入 web 根目录（历史版本声明了外站 URL，
+    # 污染 robots.txt 的 sitemap 信任度）；产物归档到 scripts/archive/ 备查
+    out_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "archive")
+    os.makedirs(out_dir, exist_ok=True)
+    open(os.path.join(out_dir, "sitemap-dict.xml"), "w", encoding="utf-8").write("\n".join(sm))
+    print(f"[sitemap] {len(urls):,} URL -> archive/sitemap-dict.xml（不暴露公网）")
     print(f"完成：共生成 {n + 4:,} 个页面文件")
 
 if __name__ == "__main__":

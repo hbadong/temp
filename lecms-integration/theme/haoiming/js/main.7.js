@@ -290,6 +290,32 @@
     if (!el) { el = document.createElement("meta"); el.setAttribute("name", name); document.head.appendChild(el); }
     el.setAttribute("content", content);
   }
+  /* ---------- SEO：软404防护与输出转义（2026-10-25 审计 H1） ---------- */
+  /* 无效参数页（字库外字符 / 未收录姓氏 / 非汉字名字）注入 noindex，
+     关闭 ?c=/ ?name= 的无限 URL 空间，避免爬虫抓取配额浪费与软404判定 */
+  const escHtml = x => String(x).replace(/[<>&"]/g, ch => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;" }[ch]));
+  function seoNoindex() { setMeta("robots", "noindex"); }
+  function inCharPool(c) {
+    const HM = window.HM_DATA || {};
+    return !!(HM.CHARS || []).some(x => x.c === c)
+        || !!(HM.SURNAMES || []).some(x => x.c === c || x.s === c)
+        || !!(HM.IDIOM_CHARS || []).some(x => x.c === c);
+  }
+  /* ---------- SEO：参数顺序规范化（审计 M5） ---------- */
+  /* 固定 c → wx → name → z 顺序，其余参数（如 sharecode）按 key 排序追加，
+     消除 ?wx=木&c=王 与 ?c=王&wx=木 的重复内容入口 */
+  function normalizeToolParams() {
+    if (!/\/tool\/(char|surname|mingzi|shengxiao)\.html$/.test(location.pathname)) return;
+    const q = new URLSearchParams(location.search);
+    const order = ["c", "wx", "name", "z"];
+    const keys = order.filter(k => q.has(k))
+      .concat([...q.keys()].filter(k => order.indexOf(k) < 0).sort());
+    const norm = keys.map(k => k + "=" + encodeURIComponent((q.get(k) || "").trim())).join("&");
+    const cur = location.search.replace(/^\?/, "");
+    if (norm !== cur) {
+      history.replaceState(null, "", location.pathname + (norm ? "?" + norm : "") + location.hash);
+    }
+  }
   /* 追加独立 JSON-LD 块（与全局 @graph 并存，多块合法） */
   function addJsonLd(id, obj) {
     try {
@@ -1565,12 +1591,43 @@
     const box = $("#char-detail");
     if (!box) return;
     const c = (new URLSearchParams(location.search).get("c") || "").trim();
+    if (!c) {
+      /* 无参数：工具落地页（导航与 sitemap 可达），渲染引导态而非错误态 */
+      document.title = "汉字起名寓意查询_康熙字典单字详解 - 好名网";
+      const wxEntry = (window.HM_DATA.WUXING || ["金", "木", "水", "火", "土"]).map(w =>
+        `<a class="chip" href="${toolUrl("kxzd.html")}?wx=${encodeURIComponent(w)}">${w}行用字</a>`).join("");
+      box.innerHTML = withLayout(`
+        <div class="strip-hero">
+          <div>
+            <h1>汉字起名寓意查询</h1>
+            <div class="meta">查单个汉字的康熙笔画、五行属性、拼音部首与取名寓意</div>
+            <div class="cta-row">
+              <a class="btn-ghost" href="${toolUrl("kxzd.html")}">进入五行字库</a>
+              <a class="btn-ghost" href="${toolUrl("baijiaxing.html")}">百家姓起名</a>
+              <a class="btn-ghost" href="${toolUrl("naming.html")}">宝宝起名工具</a>
+            </div>
+          </div>
+          <div class="bigchar">${glyphSvg("名", 150)}</div>
+        </div>
+        <div class="rel-box" style="margin-top:14px;">
+          <h3>如何使用本页</h3>
+          <p style="font-size:14px;color:var(--ink-2);line-height:1.9;">在地址后添加 <code>?c=汉字</code> 即可查询该字详情，例如 <a href="${toolUrl("char.html")}?c=%E6%9E%97" style="color:var(--red);">char.html?c=林</a>。每个单字页提供拼音注音、康熙笔画、五行属性、字形结构、取名寓意、生肖宜忌，以及同音、同部首、同笔画、同五行四类关联用字推荐。</p>
+          <p style="font-size:14px;color:var(--ink-2);line-height:1.9;margin-top:6px;">也可以按五行系统浏览全部字库：</p>
+          <div class="side-chars" style="justify-content:flex-start;margin-top:8px;">${wxEntry}
+            <a class="chip" href="${toolUrl("kxzd.html")}">全部用字 →</a></div>
+        </div>`, "");
+      insertCrumb([{ name: "康熙字典", url: "kxzd.html" }, { name: "汉字详情" }]);
+      return;
+    }
     const d = window.HM_ENGINE.charDetail(c);
     if (!d) {
+      /* 字库外字符（含无效字符串/空参数）：noindex 防软404，并转义输出防 XSS（审计 H1） */
+      seoNoindex();
+      const cE = escHtml(c);
       /* 字库外任意字：懒加载全量说文库，渲染通用释义 */
       loadShuowenFull(() => {
         const sw = shuowenLookup(c);
-        if (!sw) { box.innerHTML = '<p class="empty">《说文解字》中未查到「' + c + '」字，请尝试其他汉字。</p>'; return; }
+        if (!sw) { box.innerHTML = '<p class="empty">《说文解字》中未查到「' + cE + '」字，请尝试其他汉字。</p>'; return; }
         document.title = `${c}字的说文解字释义 - 好名网`;
         insertCrumb([{ name: "康熙字典", url: "kxzd.html" }, { name: `${c}字` }]);
     statsGet(j => {
@@ -1580,7 +1637,7 @@
         const swBlocks = `
           <div class="rel-box" style="margin-top:14px;">
             <h3>《説文解字》清 · 陈昌治刻本</h3>
-            <p style="font-size:15px;color:var(--ink);line-height:2;font-family:var(--serif);">【卷${sw.vol || "—"}】【${sw.rad || ""}部】${c}<br>${sw.expl || ""}</p>
+            <p style="font-size:15px;color:var(--ink);line-height:2;font-family:var(--serif);">【卷${sw.vol || "—"}】【${sw.rad || ""}部】${cE}<br>${sw.expl || ""}</p>
             ${sw.fanqie ? `<p style="font-size:13px;color:var(--ink-2);margin-top:6px;">【反切】${sw.fanqie}</p>` : ""}
             ${sw.py ? `<p style="font-size:13px;color:var(--ink-2);margin-top:4px;">【拼音】${sw.py}</p>` : ""}
           </div>
@@ -1591,12 +1648,12 @@
           </div>` : ""}
           <div class="rel-box" style="margin-top:14px;">
             <h3>本字与五行起名</h3>
-            <p style="font-size:14px;color:var(--ink-2);line-height:1.9;">「${c}」字暂未收录进本站五行字库（含康熙笔画、五行属性与取名寓意评估），以上为《说文解字》原始释义。可从 <a href="${toolUrl("kxzd.html")}" style="color:var(--red);">五行字库</a> 选择已评估用字起名。</p>
+            <p style="font-size:14px;color:var(--ink-2);line-height:1.9;">「${cE}」字暂未收录进本站五行字库（含康熙笔画、五行属性与取名寓意评估），以上为《说文解字》原始释义。可从 <a href="${toolUrl("kxzd.html")}" style="color:var(--red);">五行字库</a> 选择已评估用字起名。</p>
           </div>`;
         box.innerHTML = withLayout(`
           <div class="strip-hero">
             <div>
-              <h1>${c}字的说文解字释义</h1>
+              <h1>${cE}字的说文解字释义</h1>
               <div class="meta">${sw.py ? "拼音 " + sw.py : ""}${sw.rad ? " · " + sw.rad + "部" : ""}${sw.fanqie ? " · 反切 " + sw.fanqie : ""}</div>
               <div class="cta-row"><a class="btn-ghost" href="${toolUrl("kxzd.html")}">返回字库</a></div>
             </div>
@@ -1729,7 +1786,9 @@
     const box = $("#mingzi-detail");
     if (!box) return;
     const name = (new URLSearchParams(location.search).get("name") || "").trim();
-    if (!name || name.length < 2) { box.innerHTML = '<p class="empty">请通过起名结果或排行页进入。</p>'; return; }
+    if (!name || name.length < 2) { seoNoindex(); box.innerHTML = '<p class="empty">请通过起名结果或排行页进入。</p>'; return; }
+    /* 非纯汉字或含字库外字符的名字页 → noindex（软404防护，审计 H1） */
+    if (!/^[\u4e00-\u9fff]+$/.test(name) || !Array.from(name).every(inCharPool)) seoNoindex();
     insertCrumb([{ name: "名字解析", url: "mingzi.html" }, { name: name }]);
     const d = window.HM_ENGINE.nameDetail(name);
     document.title = `${name}的寓意解析 - 好名网`;
@@ -1823,7 +1882,7 @@
     const WX_VALID = ["金", "木", "水", "火", "土"];
     const wx = WX_VALID.indexOf(wxQ) >= 0 ? wxQ : "";
     const s = window.HM_DATA.SURNAMES.find(x => x.c === c);
-    if (!s) { box.innerHTML = '<p class="empty">未收录该姓氏。</p>'; return; }
+    if (!s) { seoNoindex(); box.innerHTML = '<p class="empty">未收录该姓氏。</p>'; return; }
     const HM = window.HM_DATA, EN = window.HM_ENGINE;
     const WX_DESC = (HM.WUXING_DESC || {})[wx] || "";
     /* ---- 动态 SEO meta（长尾词公式：「{姓}姓{男/女}宝宝取名」/「{姓}姓五行缺{行}怎么取名」） ---- */
@@ -2775,6 +2834,7 @@
   }
 
   document.addEventListener("DOMContentLoaded", () => {
+    normalizeToolParams();
     patchLinks(document);
     fixLocalLinks(document);
     stripSelfLinks(document);

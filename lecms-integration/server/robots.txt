@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /lecms/
+Disallow: /admin*
+
+Sitemap: https://ad6acb5cb3aeb83e6.app.workbuddy.link/sitemap.xml

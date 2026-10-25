@@ -25,9 +25,12 @@ def main():
     urls.append(("/", "1.0", "daily"))
     tools = ["naming", "bazi", "poems", "shijing", "chuci", "tangshi", "songci",
              "zhouyi", "gaiming", "gongsi", "score", "match", "kxzd", "baijiaxing",
-             "surname", "char", "mingzi", "search"]
+             "surname", "char", "mingzi", "search", "faq", "lib"]
     for t in tools:
         urls.append((f"/view/haoiming/tool/{t}.html", "0.9", "weekly"))
+    # 十二生肖年起名专题（内容页经预渲染对爬虫可见，2026-10-25 纳入提交）
+    for z in ["鼠", "牛", "虎", "兔", "龙", "蛇", "马", "羊", "猴", "鸡", "狗", "猪"]:
+        urls.append((f"/view/haoiming/tool/shengxiao.html?z={quote(z, safe='')}", "0.6", "yearly"))
 
     # 栏目页
     for cid, alias, name in db_rows("SELECT cid, alias, name FROM lecms_category WHERE type=1 ORDER BY cid"):
@@ -93,11 +96,12 @@ def main():
         for s in surnames:
             sq = quote(s, safe="")
             urls.append((f"/view/haoiming/tool/surname.html?c={sq}", "0.7", "monthly"))
-            for w in WUXING:
-                urls.append((f"/view/haoiming/tool/surname.html?c={sq}&wx={quote(w, safe='')}", "0.6", "monthly"))
+            # 矩阵页（surname.html?c=X&wx=Y）canonical 指向姓氏主页，按 sitemap 规范
+            # 只提交规范 URL（2026-10-25 SEO 优化：消除 605 个非规范 URL 抓取浪费，
+            # 矩阵页保留站内互链发现，TDK 已差异化）
         for c in chars:
             urls.append((f"/view/haoiming/tool/char.html?c={quote(c, safe='')}", "0.55", "monthly"))
-        print(f"SEO 落地页矩阵: 姓氏 {len(surnames)} + 姓氏x五行 {len(surnames) * len(WUXING)} + 单字 {len(chars)}", file=sys.stderr)
+        print(f"SEO 落地页矩阵: 姓氏 {len(surnames)} + 单字 {len(chars)}（矩阵页不提交，canonical 已集中）", file=sys.stderr)
 
     root = ET.Element("urlset", xmlns=NS)
     for loc, pri, freq in urls:
@@ -111,19 +115,20 @@ def main():
     open(a.out, "w", encoding="utf-8").write("\n".join(xml))
     print(f"sitemap 已生成: {a.out} | {len(urls)} 个 URL | host={host}")
 
-    # robots.txt Sitemap 声明
+    # robots.txt Sitemap 声明：规范化重写（只保留本站 sitemap.xml，清除历史遗留的外站声明）
     rp = a.out.rsplit("/", 1)[0] + "/robots.txt"
     line = f"Sitemap: {host}/sitemap.xml"
     try:
         content = open(rp, encoding="utf-8").read()
-        if "Sitemap:" not in content:
-            open(rp, "a", encoding="utf-8").write("\n" + line + "\n")
-            print(f"robots.txt 已追加 Sitemap 声明")
-        else:
-            print("robots.txt 已含 Sitemap 声明")
     except FileNotFoundError:
-        open(rp, "w", encoding="utf-8").write(f"User-agent: *\nDisallow: /lecms/\nDisallow: /admin*\n{line}\n")
-        print("robots.txt 已创建")
+        content = ""
+    kept = [l for l in content.splitlines()
+            if not l.strip().lower().startswith("sitemap:")]
+    if not any(l.strip().lower().startswith("user-agent") for l in kept):
+        kept = ["User-agent: *", "Disallow: /lecms/", "Disallow: /admin*"] + kept
+    kept.append(line)
+    open(rp, "w", encoding="utf-8").write("\n".join(kept) + "\n")
+    print("robots.txt Sitemap 声明已规范化（仅 sitemap.xml）")
 
 if __name__ == "__main__":
     main()
