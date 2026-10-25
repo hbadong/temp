@@ -52,7 +52,7 @@ h1, h2, h3, .serif { font-family: var(--serif); letter-spacing: .04em; }
 .ink-banner {
   position: relative; overflow: hidden; color: #fff;
   min-height: 240px;
-  background: #8f2b21 url(img/banner-default.svg) center/cover no-repeat;
+  background: #8f2b21 url(/view/haoiming/img/banner-default.svg) center/cover no-repeat;
 }
 .ink-banner::before {
   content: ""; position: absolute; inset: 0;

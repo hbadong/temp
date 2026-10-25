@@ -2,3 +2,4 @@
 .cloudstudio/
 node_modules/
 *.log
+lecms-integration/scripts/gsc-credentials.json
