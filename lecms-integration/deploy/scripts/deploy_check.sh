@@ -62,6 +62,8 @@ echo "== 6. 敏感目录 =="
 for p in /lecms/ /install/ /log/ /runcache/ /__prerender_gateway; do
     check "$p 拒绝访问" "$(curl -s -o /dev/null -w '%{http_code}' "$SITE$p")" "403\|404"
 done
+check "JS 源文件禁止下载" "$(curl -s -o /dev/null -w '%{http_code}' "$SITE/view/haoiming/js/main.7.js")" "403"
+check "min JS 可正常访问"  "$(curl -s -o /dev/null -w '%{http_code}' "$SITE/view/haoiming/js/main.min.7.js")" "200"
 
 echo "== 7. sitemap 规模 =="
 U=$(curl -s "$SITE/sitemap.xml" | grep -c '<url>')

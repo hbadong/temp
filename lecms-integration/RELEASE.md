@@ -61,6 +61,13 @@
 - [ ] 线上抽查（爬虫 UA）：TDK / canonical / `X-Prerendered: 1` / gzip 头
 - [ ] Lighthouse 首页（Performance ≥ 90 / SEO = 100 为基线）
 - [ ] 预渲染服务健康：`curl http://127.0.0.1:8099/healthz`
+- [ ] JS 源码防护：`curl -o /dev/null -w '%{http_code}' https://域名/view/haoiming/js/main.7.js` 应为 **403**（未压缩源文件禁止下载，详见 js-security-assessment.md）
+
+### E. 生产特有项（沙箱无）
+
+- [ ] nginx conf 的「未压缩 JS 源文件 deny」规则生效（`deploy_check.sh` 已含该项检查）
+- [ ] web 根不含 `.map` source map 文件
+- [ ] `.git/` 不同步到生产
 
 ## 各脚本速查
 
