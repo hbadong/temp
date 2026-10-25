@@ -1341,9 +1341,9 @@
 
   /* ---------- 评分报告页（扩展版） ---------- */
   function initScore() {
-    ensureStrokes(() => {
     const box = $("#score-result");
-    if (!box) return;
+    if (!box) return;   /* 无评分容器（如首页）不预热 222KB 笔画库 */
+    ensureStrokes(() => {
     const q = new URLSearchParams(location.search);
     const name = (q.get("name") || "").trim();
     const gender = parseInt(q.get("gender") ?? "1", 10);
@@ -1782,9 +1782,9 @@
 
   /* ---------- 名字详情 ---------- */
   function initMingzi() {
-    ensureStrokes(() => {
     const box = $("#mingzi-detail");
-    if (!box) return;
+    if (!box) return;   /* 无名字容器不预热 222KB 笔画库 */
+    ensureStrokes(() => {
     const name = (new URLSearchParams(location.search).get("name") || "").trim();
     if (!name || name.length < 2) { seoNoindex(); box.innerHTML = '<p class="empty">请通过起名结果或排行页进入。</p>'; return; }
     /* 非纯汉字或含字库外字符的名字页 → noindex（软404防护，审计 H1） */
